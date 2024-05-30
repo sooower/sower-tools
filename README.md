@@ -1,7 +1,3 @@
-# Specification
-
-This plugin is a collection of tools for Sower.
-
 ## Features
 
 -   Generate schema and model file
