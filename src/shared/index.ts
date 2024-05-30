@@ -29,6 +29,8 @@ export function init(context: ExtensionContext) {
     pluginName = CommonUtils.mandatory(packageJsonContent.name);
 
     reloadConfiguration();
+
+    console.log(`${pluginName} is now active!`);
 }
 
 export async function subscribeReloadConfiguration() {

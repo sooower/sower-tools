@@ -1,15 +1,11 @@
 import { ExtensionContext, window } from "vscode";
 
 import { subscribeGenerateModel } from "./generateModel";
-import { init, pluginName, subscribeReloadConfiguration } from "./shared";
+import { init, subscribeReloadConfiguration } from "./shared";
 import { subscribeShowSelectedLines } from "./showSelectedLines";
 
 export async function activate(context: ExtensionContext) {
     try {
-        window.showInformationMessage(
-            `Extension "${pluginName}" is now active!`
-        );
-
         init(context);
 
         /* Add subscriptions */
