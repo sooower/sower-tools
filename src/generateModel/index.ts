@@ -15,7 +15,7 @@ import {
     FileNotEmptyError,
     NotSupportMultipleLineSqlError,
 } from "../shared/errors";
-import CommonUtils from "../utils/commonUtils";
+import CommonUtils from "../shared/utils/commonUtils";
 
 enum ETsType {
     Number = "number",

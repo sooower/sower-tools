@@ -8,7 +8,7 @@ import {
     WorkspaceConfiguration,
 } from "vscode";
 
-import CommonUtils from "../utils/commonUtils";
+import CommonUtils from "./utils/commonUtils";
 
 export let pluginCtx: ExtensionContext;
 export let pluginName: string;
