@@ -31,7 +31,7 @@ export function init(context: ExtensionContext) {
     reloadConfiguration();
 }
 
-export async function registerReloadConfiguration() {
+export async function subscribeReloadConfiguration() {
     const reloadConfig = workspace.onDidChangeConfiguration(() => {
         reloadConfiguration();
     });

@@ -54,7 +54,7 @@ enum ESqlType {
     Bytea = "BYTEA",
 }
 
-export async function registerGenerateModel() {
+export async function subscribeGenerateModel() {
     let generateModel = commands.registerCommand(
         `${pluginName}.generateModel`,
         async () => {

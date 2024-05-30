@@ -3,6 +3,11 @@
     "displayName": "sower-tools",
     "description": "",
     "version": "0.0.1",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "http://gitea.sower.fun/vsc-plugins/sower-tools.git"
+    },
     "engines": {
         "vscode": "^1.89.0"
     },

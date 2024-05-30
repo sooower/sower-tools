@@ -1,7 +1,7 @@
 import { ExtensionContext, window } from "vscode";
 
-import { registerGenerateModel } from "./generateModel";
-import { init, pluginName, registerReloadConfiguration } from "./shared";
+import { subscribeGenerateModel } from "./generateModel";
+import { init, pluginName, subscribeReloadConfiguration } from "./shared";
 
 export async function activate(context: ExtensionContext) {
     try {
@@ -11,8 +11,10 @@ export async function activate(context: ExtensionContext) {
 
         init(context);
 
-        await registerReloadConfiguration();
-        await registerGenerateModel();
+        /* Add subscriptions */
+
+        await subscribeReloadConfiguration();
+        await subscribeGenerateModel();
     } catch (e) {
         console.error(e);
         window.showErrorMessage(`${e}`);
