@@ -87,6 +87,16 @@
                     "type": "string",
                     "default": "Current TS File",
                     "description": "Configuration name of debugging the current opened file, location is <projectRootDir>/.vscode/launch.json."
+                },
+                "sower-tools.ShowDefaultOpenedDocument.documentNames": {
+                    "type": "array",
+                    "default": [
+                        "README.md",
+                        "readme.md",
+                        "CHANGELOG.md",
+                        "changelog.md"
+                    ],
+                    "description": "Default opened filenames, priority is by the order you placed in this array, configurations usually are  description or specification file of your project."
                 }
             }
         }
@@ -120,5 +130,8 @@
     },
     "dependencies": {
         "comment-json": "^4.2.3"
-    }
+    },
+    "extensionDependencies": [
+        "shd101wyy.markdown-preview-enhanced"
+    ]
 }

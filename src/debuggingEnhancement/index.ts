@@ -4,7 +4,7 @@ import { parse } from "comment-json";
 import path from "path";
 import { commands, debug, window, workspace } from "vscode";
 
-import { extensionCtx, extensionName, getSettingItem } from "../shared";
+import { extensionCtx, extensionName, getConfigurationItem } from "../shared";
 import CommonUtils from "../shared/utils/commonUtils";
 
 type TLaunchConfiguration = {
@@ -31,7 +31,7 @@ export async function subscribeDebuggingEnhancement() {
                     getDebuggingConfigurations().find(
                         (it) =>
                             it.name ===
-                            getSettingItem(
+                            getConfigurationItem(
                                 `${extensionName}.DebuggingEnhancement.debugProjectConfigurationName`
                             )
                     );
@@ -68,7 +68,7 @@ export async function subscribeDebuggingEnhancement() {
                     getDebuggingConfigurations().find(
                         (it) =>
                             it.name ===
-                            getSettingItem(
+                            getConfigurationItem(
                                 `${extensionName}.DebuggingEnhancement.debugCurrentFileConfigurationName`
                             )
                     );

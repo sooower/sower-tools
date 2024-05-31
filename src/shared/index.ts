@@ -44,11 +44,15 @@ export function reloadConfiguration() {
     userConfig = workspace.getConfiguration();
 
     enableOverwriteFile = CommonUtils.assertBoolean(
-        getSettingItem(`${extensionName}.GenerateModel.enableOverwriteFile`)
+        getConfigurationItem(
+            `${extensionName}.GenerateModel.enableOverwriteFile`
+        )
     );
 
     const specialWordsArr = CommonUtils.assertArray(
-        getSettingItem(`${extensionName}.GenerateModel.specialWordsMapping`)
+        getConfigurationItem(
+            `${extensionName}.GenerateModel.specialWordsMapping`
+        )
     )
         .map((it) => CommonUtils.assertString(it))
         .map((it) => {
@@ -62,6 +66,6 @@ export function reloadConfiguration() {
     specialWordsMap = new Map(specialWordsArr.map((it) => [it[0], it[1]]));
 }
 
-export function getSettingItem(name: string): unknown {
+export function getConfigurationItem(name: string): unknown {
     return workspaceConfig.get(name) ?? userConfig.get(name);
 }

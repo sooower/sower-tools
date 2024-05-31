@@ -4,6 +4,7 @@ import { subscribeDebuggingEnhancement } from "./debuggingEnhancement";
 import { subscribeGenerateModel } from "./generateModel";
 import { subscribeReloadConfiguration } from "./reloadConfiguration";
 import { init } from "./shared";
+import { subscribeShowDefaultOpenedDocument } from "./ShowDefaultOpenedDocument";
 import { subscribeShowSelectedLines } from "./showSelectedLines";
 
 export async function activate(context: ExtensionContext) {
@@ -16,6 +17,7 @@ export async function activate(context: ExtensionContext) {
         await subscribeGenerateModel();
         await subscribeShowSelectedLines();
         await subscribeDebuggingEnhancement();
+        await subscribeShowDefaultOpenedDocument();
     } catch (e) {
         console.error(e);
         window.showErrorMessage(`${e}`);
