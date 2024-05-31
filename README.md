@@ -3,6 +3,7 @@
 -   Generate schema and model file
 -   Show selected lines for any language
 -   Debug current file or project
+-   Show default opened document
 
 ## Usage
 
