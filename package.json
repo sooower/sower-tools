@@ -25,6 +25,14 @@
             {
                 "command": "sower-tools.generateModel",
                 "title": "Generate Model"
+            },
+            {
+                "command": "sower-tools.debugProject",
+                "title": "Debug Project"
+            },
+            {
+                "command": "sower-tools.debugCurrentFile",
+                "title": "Debug Current File"
             }
         ],
         "menus": {
@@ -36,9 +44,16 @@
             ],
             "sower-tools": [
                 {
+                    "command": "sower-tools.debugProject",
+                    "group": "001_debuggingEnhancement@001"
+                },
+                {
+                    "command": "sower-tools.debugCurrentFile",
+                    "group": "001_debuggingEnhancement@002"
+                },
+                {
                     "command": "sower-tools.generateModel",
-                    "group": "navigation@1",
-                    "order": 10,
+                    "group": "002_generateModel@001",
                     "when": "editorTextFocus && editorHasSelection && resourceLangId == typescript"
                 }
             ]
@@ -62,6 +77,16 @@
                     "type": "array",
                     "default": [],
                     "description": "Special words mapping, formatting [\"from1:to1\", \"from1:to1\", ...]."
+                },
+                "sower-tools.DebuggingEnhancement.debugProjectConfigurationName": {
+                    "type": "string",
+                    "default": "Debug Project",
+                    "description": "Configuration name of debugging the current opened project, location is <projectRootDir>/.vscode/launch.json."
+                },
+                "sower-tools.DebuggingEnhancement.debugCurrentFileConfigurationName": {
+                    "type": "string",
+                    "default": "Current TS File",
+                    "description": "Configuration name of debugging the current opened file, location is <projectRootDir>/.vscode/launch.json."
                 }
             }
         }
@@ -93,5 +118,7 @@
         "npm-run-all": "^4.1.5",
         "typescript": "^5.4.5"
     },
-    "dependencies": {}
+    "dependencies": {
+        "comment-json": "^4.2.3"
+    }
 }
