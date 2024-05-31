@@ -11,6 +11,11 @@ export async function subscribeShowDefaultOpenedDocument() {
         return;
     }
 
+    if (window.activeTextEditor !== undefined) {
+        // Do not show default opened document since has one opened
+        return;
+    }
+
     const defaultOpenedDocumentNames = CommonUtils.assertArray(
         getConfigurationItem(
             `${extensionName}.ShowDefaultOpenedDocument.documentNames`
