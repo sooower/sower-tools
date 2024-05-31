@@ -1,13 +1,13 @@
 {
     "name": "sower-tools",
     "displayName": "Sower Tools",
-    "description": "This plugin is a collection of tools.",
-    "version": "0.0.1",
+    "description": "This extension is a collection of tools.",
+    "version": "0.0.2",
     "publisher": "Sower",
     "icon": "/assets/icon.png",
     "repository": {
         "type": "git",
-        "url": "http://gitea.sower.fun/vsc-plugins/sower-tools.git"
+        "url": "http://gitea.sower.fun/vsc-extensions/sower-tools.git"
     },
     "license": "MIT",
     "engines": {
