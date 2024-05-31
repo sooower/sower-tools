@@ -10,37 +10,33 @@ import {
 
 import CommonUtils from "./utils/commonUtils";
 
-export let pluginCtx: ExtensionContext;
-export let pluginName: string;
+/* Extension configurations */
+export let extensionCtx: ExtensionContext;
+export let extensionName: string;
 
-export let workspaceConfig: WorkspaceConfiguration;
-export let userConfig: WorkspaceConfiguration;
+/* Generate modal configurations */
 export let enableOverwriteFile: boolean;
 export let specialWordsMap: Map<string, string>;
 
 export function init(context: ExtensionContext) {
-    pluginCtx = context;
     const packageJsonContent = JSON.parse(
         fs.readFileSync(
             path.join(context.extensionPath, "package.json"),
             "utf-8"
         )
     );
-    pluginName = CommonUtils.mandatory(packageJsonContent.name);
+    extensionCtx = context;
+    extensionName = CommonUtils.mandatory(packageJsonContent.name);
 
     reloadConfiguration();
 
-    console.log(`${pluginName} is now active!`);
+    console.log(`${extensionName} is now active!`);
 }
 
-export async function subscribeReloadConfiguration() {
-    const reloadConfig = workspace.onDidChangeConfiguration(() => {
-        reloadConfiguration();
-    });
-    pluginCtx.subscriptions.push(reloadConfig);
-}
+let workspaceConfig: WorkspaceConfiguration;
+let userConfig: WorkspaceConfiguration;
 
-function reloadConfiguration() {
+export function reloadConfiguration() {
     workspaceConfig = workspace.getConfiguration(
         undefined,
         Uri.file(".vscode/settings.json")
@@ -48,11 +44,11 @@ function reloadConfiguration() {
     userConfig = workspace.getConfiguration();
 
     enableOverwriteFile = CommonUtils.assertBoolean(
-        getSettingItem(`${pluginName}.GenerateModel.enableOverwriteFile`)
+        getSettingItem(`${extensionName}.GenerateModel.enableOverwriteFile`)
     );
 
     const specialWordsArr = CommonUtils.assertArray(
-        getSettingItem(`${pluginName}.GenerateModel.specialWordsMapping`)
+        getSettingItem(`${extensionName}.GenerateModel.specialWordsMapping`)
     )
         .map((it) => CommonUtils.assertString(it))
         .map((it) => {

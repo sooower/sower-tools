@@ -6,8 +6,8 @@ import { commands, ProgressLocation, Uri, window, workspace } from "vscode";
 
 import {
     enableOverwriteFile,
-    pluginCtx,
-    pluginName,
+    extensionCtx,
+    extensionName,
     specialWordsMap,
 } from "../shared";
 import {
@@ -55,8 +55,8 @@ enum ESqlType {
 }
 
 export async function subscribeGenerateModel() {
-    let generateModel = commands.registerCommand(
-        `${pluginName}.generateModel`,
+    const generateModel = commands.registerCommand(
+        `${extensionName}.generateModel`,
         async () => {
             window.withProgress(
                 {
@@ -83,7 +83,8 @@ export async function subscribeGenerateModel() {
             );
         }
     );
-    pluginCtx.subscriptions.push(generateModel);
+
+    extensionCtx.subscriptions.push(generateModel);
 }
 
 async function parseSqlAndGenerateFiles() {
@@ -103,14 +104,20 @@ async function parseSqlAndGenerateFiles() {
     /* Generate schema file */
 
     const [workspaceFolder] = CommonUtils.mandatory(workspace.workspaceFolders);
-    const schemaFilePath = `${workspaceFolder.uri.path}/src/models/${schemaName}/index.ts`;
+    const schemaFilePath = path.join(
+        workspaceFolder.uri.path,
+        "src",
+        "model",
+        schemaName,
+        "index.ts"
+    );
     if (!enableOverwriteFile) {
         assertFileNotEmpty(schemaFilePath);
     }
 
     const schemaFileContent = fs
         .readFileSync(
-            path.join(pluginCtx.extensionPath, "templates/schema.tpl"),
+            path.join(extensionCtx.extensionPath, "templates", "schema.tpl"),
             "utf-8"
         )
         .replace(
@@ -126,7 +133,14 @@ async function parseSqlAndGenerateFiles() {
 
     /* Generate model file */
 
-    const modelFilePath = `${workspaceFolder.uri.path}/src/models/${schemaName}/${tableName}/index.ts`;
+    const modelFilePath = path.join(
+        workspaceFolder.uri.path,
+        "src",
+        "models",
+        schemaName,
+        tableName,
+        "index.ts"
+    );
     if (!enableOverwriteFile) {
         assertFileNotEmpty(modelFilePath);
     }
@@ -192,7 +206,7 @@ async function parseSqlAndGenerateFiles() {
 
     const modelFileContent = fs
         .readFileSync(
-            path.join(pluginCtx.extensionPath, "templates/model.tpl"),
+            path.join(extensionCtx.extensionPath, "templates", "model.tpl"),
             "utf-8"
         )
         .replace(/{{EColumnContent}}/g, columnContent.join("\n    "))

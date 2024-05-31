@@ -1,6 +1,6 @@
 import { StatusBarAlignment, StatusBarItem, window } from "vscode";
 
-import { pluginCtx } from "../shared";
+import { extensionCtx } from "../shared";
 
 let statusBarItem: StatusBarItem;
 
@@ -22,7 +22,7 @@ export async function subscribeShowSelectedLines() {
         }
     });
 
-    pluginCtx.subscriptions.push(statusBarItem);
+    extensionCtx.subscriptions.push(statusBarItem);
 }
 
 function showSelectedLines(line: number) {
