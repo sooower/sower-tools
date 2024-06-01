@@ -1,10 +1,12 @@
-import fs from "node:fs";
-
 import { parse } from "comment-json";
 import path from "path";
-import { commands, debug, window, workspace } from "vscode";
 
-import { extensionCtx, extensionName, getConfigurationItem } from "../shared";
+import { fs, vscode } from "../shared";
+import {
+    extensionCtx,
+    extensionName,
+    getConfigurationItem,
+} from "../shared/init";
 import CommonUtils from "../shared/utils/commonUtils";
 
 type TLaunchConfiguration = {
@@ -23,7 +25,7 @@ type TLaunchConfiguration = {
 export async function subscribeDebuggingEnhancement() {
     /* Subscribe debug project command */
 
-    const debugProject = commands.registerCommand(
+    const debugProject = vscode.commands.registerCommand(
         `${extensionName}.debugProject`,
         async () => {
             try {
@@ -40,19 +42,19 @@ export async function subscribeDebuggingEnhancement() {
                     `Can not found project debugging config.`
                 );
 
-                if (debug.activeDebugSession !== undefined) {
-                    debug.stopDebugging(debug.activeDebugSession);
+                if (vscode.debug.activeDebugSession !== undefined) {
+                    vscode.debug.stopDebugging(vscode.debug.activeDebugSession);
                 }
 
                 const [workspaceFolder] = CommonUtils.mandatory(
-                    workspace.workspaceFolders
+                    vscode.workspace.workspaceFolders
                 );
-                await debug.startDebugging(workspaceFolder, {
+                await vscode.debug.startDebugging(workspaceFolder, {
                     ...debugProjectConfiguration,
                 });
             } catch (e) {
                 console.error(e);
-                window.showErrorMessage(`${e}`);
+                vscode.window.showErrorMessage(`${e}`);
             }
         }
     );
@@ -60,7 +62,7 @@ export async function subscribeDebuggingEnhancement() {
 
     /* Subscribe debug current file command */
 
-    const debugCurrentFile = commands.registerCommand(
+    const debugCurrentFile = vscode.commands.registerCommand(
         `${extensionName}.debugCurrentFile`,
         async () => {
             try {
@@ -77,19 +79,19 @@ export async function subscribeDebuggingEnhancement() {
                     `Can not found current ts file debugging config.`
                 );
 
-                if (debug.activeDebugSession !== undefined) {
-                    debug.stopDebugging(debug.activeDebugSession);
+                if (vscode.debug.activeDebugSession !== undefined) {
+                    vscode.debug.stopDebugging(vscode.debug.activeDebugSession);
                 }
 
                 const [workspaceFolder] = CommonUtils.mandatory(
-                    workspace.workspaceFolders
+                    vscode.workspace.workspaceFolders
                 );
-                await debug.startDebugging(workspaceFolder, {
+                await vscode.debug.startDebugging(workspaceFolder, {
                     ...debugCurrentFileConfiguration,
                 });
             } catch (e) {
                 console.error(e);
-                window.showErrorMessage(`${e}`);
+                vscode.window.showErrorMessage(`${e}`);
             }
         }
     );
@@ -149,7 +151,7 @@ function getDebuggingConfigurations() {
 function loadLaunchJsonContent(): unknown {
     try {
         const [workspaceFolder] = CommonUtils.mandatory(
-            workspace.workspaceFolders
+            vscode.workspace.workspaceFolders
         );
 
         const launchConfigPath = path.join(

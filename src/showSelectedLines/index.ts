@@ -1,18 +1,20 @@
 import { format } from "node:util";
 
-import { StatusBarAlignment, StatusBarItem, window } from "vscode";
+import { vscode } from "../shared";
+import { extensionCtx } from "../shared/init";
 
-import { extensionCtx } from "../shared";
-
-let statusBarItem: StatusBarItem;
+let statusBarItem: vscode.StatusBarItem;
 
 export async function subscribeShowSelectedLines() {
-    statusBarItem = window.createStatusBarItem(StatusBarAlignment.Right, 100);
+    statusBarItem = vscode.window.createStatusBarItem(
+        vscode.StatusBarAlignment.Right,
+        100
+    );
     showSelectedLines({});
     statusBarItem.show();
 
-    window.onDidChangeTextEditorSelection((event) => {
-        const activatedEditor = window.activeTextEditor;
+    vscode.window.onDidChangeTextEditorSelection((event) => {
+        const activatedEditor = vscode.window.activeTextEditor;
         if (activatedEditor === undefined) {
             return;
         }

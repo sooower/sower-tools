@@ -1,13 +1,12 @@
-import { ExtensionContext, window } from "vscode";
-
 import { subscribeDebuggingEnhancement } from "./debuggingEnhancement";
 import { subscribeGenerateModel } from "./generateModel";
 import { subscribeReloadConfiguration } from "./reloadConfiguration";
-import { init } from "./shared";
+import { vscode } from "./shared";
+import { init } from "./shared/init";
 import { subscribeShowDefaultOpenedDocument } from "./ShowDefaultOpenedDocument";
 import { subscribeShowSelectedLines } from "./showSelectedLines";
 
-export async function activate(context: ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
     try {
         init(context);
 
@@ -20,7 +19,7 @@ export async function activate(context: ExtensionContext) {
         await subscribeShowDefaultOpenedDocument();
     } catch (e) {
         console.error(e);
-        window.showErrorMessage(`${e}`);
+        vscode.window.showErrorMessage(`${e}`);
     }
 }
 

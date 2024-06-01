@@ -1,20 +1,18 @@
-import fs from "node:fs";
 import path from "node:path";
 import { format } from "node:util";
 
-import { commands, ProgressLocation, Uri, window, workspace } from "vscode";
-
-import {
-    enableOverwriteFile,
-    extensionCtx,
-    extensionName,
-    specialWordsMap,
-} from "../shared";
+import { fs, vscode } from "../shared";
 import {
     CreateStatementSqlNotIncludedError,
     FileNotEmptyError,
     NotSupportMultipleLineSqlError,
 } from "../shared/errors";
+import {
+    enableOverwriteFile,
+    extensionCtx,
+    extensionName,
+    specialWordsMap,
+} from "../shared/init";
 import CommonUtils from "../shared/utils/commonUtils";
 
 enum ETsType {
@@ -55,19 +53,19 @@ enum ESqlType {
 }
 
 export async function subscribeGenerateModel() {
-    const generateModel = commands.registerCommand(
+    const generateModel = vscode.commands.registerCommand(
         `${extensionName}.generateModel`,
         async () => {
-            window.withProgress(
+            vscode.window.withProgress(
                 {
-                    location: ProgressLocation.Notification,
+                    location: vscode.ProgressLocation.Notification,
                     title: "Generating files",
                     cancellable: false,
                 },
                 async (progress, token) => {
                     try {
                         const generatedFils = await parseSqlAndGenerateFiles();
-                        window.showInformationMessage(
+                        vscode.window.showInformationMessage(
                             format(
                                 `Generate files successfully.\n%s`,
                                 generatedFils.map((it) => `> ${it}`).join("\n")
@@ -77,7 +75,7 @@ export async function subscribeGenerateModel() {
                         return;
                     } catch (e) {
                         console.error(e);
-                        window.showErrorMessage(`${e}`);
+                        vscode.window.showErrorMessage(`${e}`);
                     }
                 }
             );
@@ -90,7 +88,7 @@ export async function subscribeGenerateModel() {
 async function parseSqlAndGenerateFiles() {
     /* Get selected text */
 
-    const editor = window.activeTextEditor;
+    const editor = vscode.window.activeTextEditor;
     CommonUtils.assert(editor !== undefined, `No editor activated.`);
 
     const selectedText = editor.document.getText(editor.selection);
@@ -103,7 +101,9 @@ async function parseSqlAndGenerateFiles() {
 
     /* Generate schema file */
 
-    const [workspaceFolder] = CommonUtils.mandatory(workspace.workspaceFolders);
+    const [workspaceFolder] = CommonUtils.mandatory(
+        vscode.workspace.workspaceFolders
+    );
     const schemaFilePath = path.join(
         workspaceFolder.uri.path,
         "src",
@@ -125,8 +125,8 @@ async function parseSqlAndGenerateFiles() {
             toLowerCamelCase(toLowerCamelCase(schemaName))
         );
 
-    await workspace.fs.writeFile(
-        Uri.file(schemaFilePath),
+    await vscode.workspace.fs.writeFile(
+        vscode.Uri.file(schemaFilePath),
         Buffer.from(schemaFileContent)
     );
     const generatedFiles = [schemaFilePath];
@@ -219,14 +219,14 @@ async function parseSqlAndGenerateFiles() {
         .replace(/{{insertContent}}/g, insertContent.join("\n    "))
         .replace(/{{tableName}}/g, toLowerCamelCase(tableName));
 
-    await workspace.fs.writeFile(
-        Uri.file(modelFilePath),
+    await vscode.workspace.fs.writeFile(
+        vscode.Uri.file(modelFilePath),
         Buffer.from(modelFileContent)
     );
     generatedFiles.push(modelFilePath);
 
     // Open model file in editor
-    await window.showTextDocument(Uri.file(modelFilePath));
+    await vscode.window.showTextDocument(vscode.Uri.file(modelFilePath));
 
     return generatedFiles;
 }

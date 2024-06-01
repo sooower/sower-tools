@@ -1,17 +1,16 @@
 import path from "node:path";
 
-import { commands, Uri, ViewColumn, window, workspace } from "vscode";
-
-import { extensionName, getConfigurationItem } from "../shared";
+import { vscode } from "../shared";
+import { extensionName, getConfigurationItem } from "../shared/init";
 import CommonUtils from "../shared/utils/commonUtils";
 
 export async function subscribeShowDefaultOpenedDocument() {
-    if (workspace.workspaceFolders === undefined) {
+    if (vscode.workspace.workspaceFolders === undefined) {
         // Do not show document when no workspace is open
         return;
     }
 
-    if (window.activeTextEditor !== undefined) {
+    if (vscode.window.activeTextEditor !== undefined) {
         // Do not show default opened document since has one opened
         return;
     }
@@ -22,19 +21,19 @@ export async function subscribeShowDefaultOpenedDocument() {
         )
     ).map((it) => CommonUtils.assertString(it));
 
-    const [workspaceFolder] = workspace.workspaceFolders;
+    const [workspaceFolder] = vscode.workspace.workspaceFolders;
     for (const docName of defaultOpenedDocumentNames) {
         try {
-            const doc = await workspace.openTextDocument(
+            const doc = await vscode.workspace.openTextDocument(
                 path.join(workspaceFolder.uri.path, docName)
             );
-            await window.showTextDocument(doc, {
+            await vscode.window.showTextDocument(doc, {
                 preview: true,
-                viewColumn: ViewColumn.One,
+                viewColumn: vscode.ViewColumn.One,
             });
-            await commands.executeCommand(
+            await vscode.commands.executeCommand(
                 "markdown-preview-enhanced.openPreview",
-                Uri.file(path.join(workspaceFolder.uri.path, docName))
+                vscode.Uri.file(path.join(workspaceFolder.uri.path, docName))
             );
 
             return;
