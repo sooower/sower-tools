@@ -24,3 +24,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -   Validate function params when ts document saved
+-   Refactor function parameters to use object parameter

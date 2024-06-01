@@ -5,6 +5,7 @@
 -   Debug current file or project in editor context enum.
 -   Show default opened document when there has no document opened in workspace, like README.md, CHANGELOG.md, etc.
 -   Validate function params when ts document saved.
+-   Refactor function parameters to use object parameter
 
 ## Usage
 
