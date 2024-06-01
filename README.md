@@ -4,6 +4,7 @@
 -   Show selected lines and code in status bar for any language.
 -   Debug current file or project in editor context enum.
 -   Show default opened document when there has no document opened in workspace, like README.md, CHANGELOG.md, etc.
+-   Validate function params when ts document saved.
 
 ## Usage
 

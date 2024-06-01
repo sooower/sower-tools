@@ -18,3 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Debug current file or project in editor context enum.
 -   Show default opened document when there has no document opened in workspace, like README.md, CHANGELOG.md, etc.
+
+## [0.0.3] - 2024-06-01
+
+### Added
+
+-   Validate function params when ts document saved
