@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to sower-tools will be documented in this file.
+All notable changes to "sower-tools" will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -9,12 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--   Generate schema and model file
--   Show selected lines for any language
+-   Generate schema and model file in default location for any selected sql text.
+-   Show selected lines and code in status bar for any language.
 
 ## [0.0.2] - 2024-05-31
 
 ### Added
 
--   Debug current file or project
--   Show default opened document
+-   Debug current file or project in editor context enum.
+-   Show default opened document when there has no document opened in workspace, like README.md, CHANGELOG.md, etc.
