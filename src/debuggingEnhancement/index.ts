@@ -23,7 +23,7 @@ type TLaunchConfiguration = {
 };
 
 export async function subscribeDebuggingEnhancement() {
-    /* Subscribe debug project command */
+    /* Subscribe command of debug project */
 
     const debugProject = vscode.commands.registerCommand(
         `${extensionName}.debugProject`,
@@ -60,7 +60,7 @@ export async function subscribeDebuggingEnhancement() {
     );
     extensionCtx.subscriptions.push(debugProject);
 
-    /* Subscribe debug current file command */
+    /* Subscribe command of debug current file */
 
     const debugCurrentFile = vscode.commands.registerCommand(
         `${extensionName}.debugCurrentFile`,

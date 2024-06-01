@@ -12,21 +12,9 @@ import {
     extensionCtx,
     extensionName,
 } from "../shared/init";
+import { ETsType } from "../shared/types";
 import { toLowerCamelCase, toUpperCamelCase } from "../shared/utils";
 import CommonUtils from "../shared/utils/commonUtils";
-
-enum ETsType {
-    Number = "number",
-    NumberArr = "number[]",
-    String = "string",
-    StringArr = "string[]",
-    Boolean = "boolean",
-    Date = "Date",
-    Buffer = "Buffer",
-    Unknown = "unknown",
-    Any = "any",
-    AnyArr = "any[]",
-}
 
 enum ESqlKeywords {
     Create = "CREATE",
