@@ -11,8 +11,8 @@ import {
     enableOverwriteFile,
     extensionCtx,
     extensionName,
-    specialWordsMap,
 } from "../shared/init";
+import { toLowerCamelCase, toUpperCamelCase } from "../shared/utils";
 import CommonUtils from "../shared/utils/commonUtils";
 
 enum ETsType {
@@ -338,30 +338,6 @@ async function parseCreateStmt(text: string) {
         tableName: CommonUtils.mandatory(tableName),
         detail: sqlDetailMap,
     };
-}
-
-function toLowerCamelCase(input: string) {
-    const camelCaseInput = input.replace(/[-_.](.)/g, (_, c) =>
-        c.toUpperCase()
-    );
-    let res =
-        camelCaseInput.slice(0, 1).toLowerCase() + camelCaseInput.slice(1);
-    for (const [k, v] of specialWordsMap) {
-        res = res.replaceAll(k, v);
-    }
-
-    return res;
-}
-
-function toUpperCamelCase(input: string) {
-    let camelCaseInput = toLowerCamelCase(input);
-    let res =
-        camelCaseInput.slice(0, 1).toUpperCase() + camelCaseInput.slice(1);
-    for (const [k, v] of specialWordsMap) {
-        res = res.replaceAll(k, v);
-    }
-
-    return res;
 }
 
 function mapTsType(columnType: string) {

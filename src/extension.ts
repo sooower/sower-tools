@@ -1,4 +1,5 @@
 import { subscribeDebuggingEnhancement } from "./debuggingEnhancement";
+import { subscribeEnhanceFunction } from "./functionEnhancement";
 import { subscribeGenerateModel } from "./generateModel";
 import { subscribeReloadConfiguration } from "./reloadConfiguration";
 import { vscode } from "./shared";
@@ -17,6 +18,7 @@ export async function activate(context: vscode.ExtensionContext) {
         await subscribeShowSelectedLines();
         await subscribeDebuggingEnhancement();
         await subscribeShowDefaultOpenedDocument();
+        await subscribeEnhanceFunction();
     } catch (e) {
         console.error(e);
         vscode.window.showErrorMessage(`${e}`);
