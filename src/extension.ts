@@ -4,7 +4,7 @@ import { subscribeGenerateModel } from "./generateModel";
 import { subscribeReloadConfiguration } from "./reloadConfiguration";
 import { vscode } from "./shared";
 import { init } from "./shared/init";
-import { subscribeShowDefaultOpenedDocument } from "./ShowDefaultOpenedDocument";
+import { subscribeShowDefaultOpenedDocument } from "./showDefaultOpenedDocument";
 import { subscribeShowSelectedLines } from "./showSelectedLines";
 
 export async function activate(context: vscode.ExtensionContext) {
