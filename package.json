@@ -45,11 +45,13 @@
             "sower-tools": [
                 {
                     "command": "sower-tools.debugProject",
-                    "group": "001_debuggingEnhancement@001"
+                    "group": "001_debuggingEnhancement@001",
+                    "when": "resourceLangId == typescript"
                 },
                 {
                     "command": "sower-tools.debugCurrentFile",
-                    "group": "001_debuggingEnhancement@002"
+                    "group": "001_debuggingEnhancement@002",
+                    "when": "resourceLangId == typescript"
                 },
                 {
                     "command": "sower-tools.generateModel",
