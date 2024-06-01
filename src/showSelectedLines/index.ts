@@ -7,22 +7,16 @@ import { extensionCtx } from "../shared";
 let statusBarItem: StatusBarItem;
 
 export async function subscribeShowSelectedLines() {
-    const activatedEditor = window.activeTextEditor;
-    if (activatedEditor === undefined) {
-        return;
-    }
-    const languageId = activatedEditor.document.languageId;
-
-    // Only support js and ts by now
-    if (languageId !== "javascript" && languageId !== "typescript") {
-        return;
-    }
-
     statusBarItem = window.createStatusBarItem(StatusBarAlignment.Right, 100);
     showSelectedLines({});
     statusBarItem.show();
 
     window.onDidChangeTextEditorSelection((event) => {
+        const activatedEditor = window.activeTextEditor;
+        if (activatedEditor === undefined) {
+            return;
+        }
+
         const [selection] = event.selections;
         if (selection.isEmpty) {
             return showSelectedLines({});
@@ -31,6 +25,10 @@ export async function subscribeShowSelectedLines() {
         const selectedText = activatedEditor.document
             .getText(activatedEditor.selection)
             .split(/\r?\n/);
+
+        const languageId = activatedEditor.document.languageId;
+
+        /* Handling per selected line */
 
         let lines = 0;
         let code = 0;
@@ -44,6 +42,9 @@ export async function subscribeShowSelectedLines() {
             const currLineText = activatedEditor.document.lineAt(i).text;
             const currSelectedLineText =
                 selectedText[i - indexOfSelectedLineStart];
+
+            /* Special handling for selected start or end line */
+
             if (
                 currSelectedLineText.trim() === "" &&
                 (i === indexOfSelectedLineStart || i === indexOfSelectedLineEnd)
@@ -54,17 +55,28 @@ export async function subscribeShowSelectedLines() {
                 continue;
             }
 
-            // Comment or blank line
-            if (
-                currLineText.trim() === "" ||
-                currLineText.trimStart().startsWith("//") ||
-                currLineText.trimStart().startsWith("/*") ||
-                currLineText.trimEnd().endsWith("*/") ||
-                currLineText.trimStart().startsWith("*")
-            ) {
+            /* Blank line */
+
+            if (currLineText.trim() === "") {
                 lines++;
                 continue;
             }
+
+            /* Comment line */
+
+            if (languageId === "javascript" || languageId === "typescript") {
+                if (
+                    currLineText.trimStart().startsWith("//") ||
+                    currLineText.trimStart().startsWith("/*") ||
+                    currLineText.trimEnd().endsWith("*/") ||
+                    currLineText.trimStart().startsWith("*")
+                ) {
+                    lines++;
+                    continue;
+                }
+            }
+
+            /* Code line */
 
             lines++;
             code++;
