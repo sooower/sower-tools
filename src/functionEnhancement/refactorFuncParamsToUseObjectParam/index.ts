@@ -7,83 +7,75 @@ import { extensionCtx, extensionName } from "../../shared/init";
 import { ETsType } from "../../shared/types";
 import { toUpperCamelCase } from "../../shared/utils";
 
-export function subscribeRefactorFuncParamsToUseObjectParam() {
-    const refactorFuncParamsToUseObjectParam = vscode.commands.registerCommand(
-        `${extensionName}.functionEnhancement.refactorFuncParamsToUseObjectParam`,
-        async () => {
-            try {
-                const activeEditor = vscode.window.activeTextEditor;
-                if (activeEditor === undefined) {
-                    return;
+let activatedEditor: vscode.TextEditor;
+let sourceFile: ts.SourceFile;
+
+export function subscribeRefactorFuncParametersToUseObjectParameter() {
+    const refactorFuncParametersToUseObjectParameter =
+        vscode.commands.registerCommand(
+            `${extensionName}.functionEnhancement.refactorFuncParametersToUseObjectParameter`,
+            async () => {
+                try {
+                    const editor = vscode.window.activeTextEditor;
+                    if (editor === undefined) {
+                        return;
+                    }
+
+                    activatedEditor = editor;
+
+                    const document = activatedEditor.document;
+                    sourceFile = ts.createSourceFile(
+                        document.fileName,
+                        document.getText(),
+                        ts.ScriptTarget.Latest,
+                        true
+                    );
+
+                    const cursorPosition = ts.getLineAndCharacterOfPosition(
+                        sourceFile,
+                        document.offsetAt(activatedEditor.selection.active)
+                    );
+                    const functionNode =
+                        findFunctionNodeAtPosition(cursorPosition);
+                    if (functionNode === undefined) {
+                        return;
+                    }
+
+                    await doRefactorFunctionParametersToUseObjectParameter(
+                        functionNode
+                    );
+                } catch (e) {
+                    console.error(e);
+                    vscode.window.showErrorMessage(`${e}`);
                 }
-
-                const document = activeEditor.document;
-                const sourceFile = ts.createSourceFile(
-                    document.fileName,
-                    document.getText(),
-                    ts.ScriptTarget.Latest,
-                    true
-                );
-
-                const cursorPosition = ts.getLineAndCharacterOfPosition(
-                    sourceFile,
-                    document.offsetAt(activeEditor.selection.active)
-                );
-                const functionNode = findFunctionNodeAtPosition(
-                    sourceFile,
-                    cursorPosition
-                );
-                if (functionNode === undefined) {
-                    return;
-                }
-
-                await refactorFunctionParameters(
-                    activeEditor,
-                    sourceFile,
-                    functionNode
-                );
-            } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(`${e}`);
             }
-        }
-    );
+        );
 
-    extensionCtx.subscriptions.push(refactorFuncParamsToUseObjectParam);
+    extensionCtx.subscriptions.push(refactorFuncParametersToUseObjectParameter);
 }
 
-function findFunctionNodeAtPosition(
-    sourceFile: ts.SourceFile,
-    position: ts.LineAndCharacter
-) {
+function findFunctionNodeAtPosition(position: ts.LineAndCharacter) {
     function find(node: ts.Node): ts.Node | undefined {
-        if (
-            ts.isFunctionDeclaration(node) ||
-            ts.isMethodDeclaration(node) ||
-            ts.isArrowFunction(node)
-        ) {
-            const { line } = sourceFile.getLineAndCharacterOfPosition(
-                node.getStart()
-            );
-            if (line === position.line) {
-                return node;
-            }
+        if (!ts.isFunctionDeclaration(node) && !ts.isArrowFunction(node)) {
+            return ts.forEachChild(node, find);
         }
-        return ts.forEachChild(node, find);
+
+        const { line } = sourceFile.getLineAndCharacterOfPosition(
+            node.getStart()
+        );
+
+        if (line === position.line) {
+            return node;
+        }
     }
+
     return find(sourceFile);
 }
 
-async function refactorFunctionParameters(
-    activeEditor: vscode.TextEditor,
-    sourceFile: ts.SourceFile,
-    node: ts.Node
-) {
-    if (
-        !ts.isFunctionDeclaration(node) &&
-        !ts.isMethodDeclaration(node) &&
-        !ts.isArrowFunction(node)
-    ) {
+async function doRefactorFunctionParametersToUseObjectParameter(node: ts.Node) {
+    /* Check node is named function declaration with parameters */
+
+    if (!ts.isFunctionDeclaration(node) && !ts.isArrowFunction(node)) {
         return;
     }
 
@@ -107,7 +99,7 @@ async function refactorFunctionParameters(
         return format(`%s%s: %s`, paramName, optional ? "?" : "", paramType);
     });
     const typeName = `T${toUpperCamelCase(node.name.getText())}Options`;
-    const typeText = format(
+    const typeDeclarationText = format(
         `\n\ntype ${typeName} = {\n\t%s\n};`,
         paramTypes.join(";")
     );
@@ -117,22 +109,23 @@ async function refactorFunctionParameters(
 
     const firstParam = node.parameters[0];
     const lastParam = node.parameters[node.parameters.length - 1];
-    const firstParamPos = sourceFile.getLineAndCharacterOfPosition(
-        // Because the parameter may contain decorators or modifiers,
-        // use getStart instead of pos
-        firstParam.getFullStart()
+    const firstParamStartPos = sourceFile.getLineAndCharacterOfPosition(
+        firstParam.getStart()
     );
-    const lastParamPos = sourceFile.getLineAndCharacterOfPosition(
+    const lastParamEndPos = sourceFile.getLineAndCharacterOfPosition(
         lastParam.getEnd()
     );
-    await activeEditor.edit((editBuilder) => {
+    await activatedEditor.edit((editBuilder) => {
         editBuilder.replace(
             new vscode.Range(
                 new vscode.Position(
-                    firstParamPos.line,
-                    firstParamPos.character
+                    firstParamStartPos.line,
+                    firstParamStartPos.character
                 ),
-                new vscode.Position(lastParamPos.line, lastParamPos.character)
+                new vscode.Position(
+                    lastParamEndPos.line,
+                    lastParamEndPos.character
+                )
             ),
             newParamsText
         );
@@ -141,10 +134,10 @@ async function refactorFunctionParameters(
     const funcStartPos = sourceFile.getLineAndCharacterOfPosition(
         node.getFullStart()
     );
-    await activeEditor.edit((editBuilder) => {
+    await activatedEditor.edit((editBuilder) => {
         editBuilder.insert(
             new vscode.Position(funcStartPos.line, funcStartPos.character),
-            typeText
+            typeDeclarationText
         );
     });
 }

@@ -1,7 +1,7 @@
-import { subscribeRefactorFuncParamsToUseObjectParam } from "./refactorFuncParamsToUseObjectParam";
-import { subscribeValidateFuncParameterTypeName } from "./validateFuncParameterTypeName";
+import { subscribeRefactorFuncParameterTypeName } from "./refactorFuncParameterTypeName";
+import { subscribeRefactorFuncParametersToUseObjectParameter } from "./refactorFuncParamsToUseObjectParam";
 
 export async function subscribeEnhanceFunction() {
-    subscribeValidateFuncParameterTypeName();
-    subscribeRefactorFuncParamsToUseObjectParam();
+    subscribeRefactorFuncParameterTypeName();
+    subscribeRefactorFuncParametersToUseObjectParameter();
 }

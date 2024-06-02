@@ -35,7 +35,7 @@
                 "title": "Debug Current File"
             },
             {
-                "command": "sower-tools.functionEnhancement.refactorFuncParamsToUseObjectParam",
+                "command": "sower-tools.functionEnhancement.refactorFuncParametersToUseObjectParameter",
                 "title": "Refactor Parameters"
             }
         ],
@@ -63,7 +63,7 @@
                     "when": "resourceLangId == typescript && editorTextFocus && editorHasSelection"
                 },
                 {
-                    "command": "sower-tools.functionEnhancement.refactorFuncParamsToUseObjectParam",
+                    "command": "sower-tools.functionEnhancement.refactorFuncParametersToUseObjectParameter",
                     "group": "003_functionEnhancement@001",
                     "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
                 }
