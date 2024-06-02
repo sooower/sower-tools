@@ -2,10 +2,10 @@ import { format } from "node:util";
 
 import ts from "typescript";
 
-import { fs, vscode } from "../../shared";
-import { extensionCtx } from "../../shared/init";
-import { toUpperCamelCase } from "../../shared/utils";
-import CommonUtils from "../../shared/utils/commonUtils";
+import { fs, vscode } from "@/src/shared";
+import { extensionCtx } from "@/src/shared/init";
+import { toUpperCamelCase } from "@/src/shared/utils";
+import CommonUtils from "@/src/shared/utils/commonUtils";
 
 let activatedEditor: vscode.TextEditor;
 let sourceFile: ts.SourceFile;

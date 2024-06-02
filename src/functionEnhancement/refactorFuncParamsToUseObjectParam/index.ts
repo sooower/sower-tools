@@ -2,10 +2,10 @@ import { format } from "node:util";
 
 import ts from "typescript";
 
-import { vscode } from "../../shared";
-import { extensionCtx, extensionName } from "../../shared/init";
-import { ETsType } from "../../shared/types";
-import { toUpperCamelCase } from "../../shared/utils";
+import { vscode } from "@/src/shared";
+import { extensionCtx, extensionName } from "@/src/shared/init";
+import { ETsType } from "@/src/shared/types";
+import { toUpperCamelCase } from "@/src/shared/utils";
 
 let activatedEditor: vscode.TextEditor;
 let sourceFile: ts.SourceFile;

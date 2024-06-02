@@ -1,5 +1,5 @@
-import crypto from "crypto";
-import { format, types } from "util";
+import crypto from "node:crypto";
+import { format, types } from "node:util";
 
 const EPSILON = 0.0001;
 const BASE32MAP = "0123456789abcdefghjkmnpqrstvwxyz"; // Crockford's Base32
