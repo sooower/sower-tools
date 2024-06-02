@@ -3,11 +3,6 @@ import { format } from "node:util";
 
 import { fs, vscode } from "../shared";
 import {
-    CreateStatementSqlNotIncludedError,
-    FileNotEmptyError,
-    NotSupportMultipleLineSqlError,
-} from "../shared/errors";
-import {
     enableOverwriteFile,
     extensionCtx,
     extensionName,
@@ -95,7 +90,7 @@ async function parseSqlAndGenerateFiles() {
     const schemaFilePath = path.join(
         workspaceFolder.uri.path,
         "src",
-        "model",
+        "models",
         schemaName,
         "index.ts"
     );
@@ -108,10 +103,7 @@ async function parseSqlAndGenerateFiles() {
             path.join(extensionCtx.extensionPath, "templates", "schema.tpl"),
             "utf-8"
         )
-        .replace(
-            /{{schemaName}}/g,
-            toLowerCamelCase(toLowerCamelCase(schemaName))
-        );
+        .replace(/{{schemaName}}/g, toLowerCamelCase(schemaName));
 
     await vscode.workspace.fs.writeFile(
         vscode.Uri.file(schemaFilePath),
@@ -226,17 +218,17 @@ type TColumnDetail = {
 };
 
 async function parseCreateStmt(text: string) {
-    if (
-        !text
+    CommonUtils.assert(
+        text
             .toUpperCase()
-            .includes(`${ESqlKeywords.Create} ${ESqlKeywords.Table}`)
-    ) {
-        throw new CreateStatementSqlNotIncludedError(text);
-    }
+            .includes(`${ESqlKeywords.Create} ${ESqlKeywords.Table}`),
+        `Create statement not included, sql: ${text}.`
+    );
 
-    if (!text.includes("\n")) {
-        throw new NotSupportMultipleLineSqlError(text);
-    }
+    CommonUtils.assert(
+        text.includes("\n"),
+        `Not support multiple line, sql: ${text}.`
+    );
 
     const stmts = text
         .split("\n")
@@ -480,10 +472,9 @@ function mapEnumName(enumType: string) {
 }
 
 function assertFileNotEmpty(filePath: string) {
-    if (
-        fs.existsSync(filePath) &&
-        fs.readFileSync(filePath, "utf-8").trim() !== ""
-    ) {
-        throw new FileNotEmptyError(filePath);
-    }
+    CommonUtils.assert(
+        !fs.existsSync(filePath) ||
+            fs.readFileSync(filePath, "utf-8").trim() === "",
+        `File "${filePath}" is not empty.`
+    );
 }
