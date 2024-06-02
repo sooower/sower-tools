@@ -24,10 +24,15 @@ export function subscribeRefactorFuncParametersToUseObjectParameter() {
                     activatedEditor = editor;
 
                     const document = activatedEditor.document;
+                    const currentFilePath = activatedEditor.document.fileName;
+                    if (!currentFilePath.endsWith(".ts")) {
+                        return;
+                    }
+
                     sourceFile = ts.createSourceFile(
                         document.fileName,
                         document.getText(),
-                        ts.ScriptTarget.Latest,
+                        ts.ScriptTarget.ES2015,
                         true
                     );
 
@@ -55,7 +60,9 @@ export function subscribeRefactorFuncParametersToUseObjectParameter() {
 }
 
 function findFunctionNodeAtPosition(position: ts.LineAndCharacter) {
-    function find(node: ts.Node): ts.Node | undefined {
+    function find(
+        node: ts.Node
+    ): ts.FunctionDeclaration | ts.ArrowFunction | undefined {
         if (!ts.isFunctionDeclaration(node) && !ts.isArrowFunction(node)) {
             return ts.forEachChild(node, find);
         }
@@ -72,12 +79,10 @@ function findFunctionNodeAtPosition(position: ts.LineAndCharacter) {
     return find(sourceFile);
 }
 
-async function doRefactorFunctionParametersToUseObjectParameter(node: ts.Node) {
+async function doRefactorFunctionParametersToUseObjectParameter(
+    node: ts.FunctionDeclaration | ts.ArrowFunction
+) {
     /* Check node is named function declaration with parameters */
-
-    if (!ts.isFunctionDeclaration(node) && !ts.isArrowFunction(node)) {
-        return;
-    }
 
     if (node.name === undefined) {
         return;

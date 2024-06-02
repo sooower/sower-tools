@@ -1,5 +1,6 @@
 import { subscribeDebuggingEnhancement } from "./debuggingEnhancement";
 import { subscribeEnhanceFunction } from "./functionEnhancement";
+import { subscribeGenerateEnumAssertionFunction } from "./generateEnumAssertionFunction";
 import { subscribeGenerateModel } from "./generateModel";
 import { subscribeReloadConfiguration } from "./reloadConfiguration";
 import { vscode } from "./shared";
@@ -19,6 +20,7 @@ export async function activate(context: vscode.ExtensionContext) {
         await subscribeDebuggingEnhancement();
         await subscribeShowDefaultOpenedDocument();
         await subscribeEnhanceFunction();
+        await subscribeGenerateEnumAssertionFunction();
     } catch (e) {
         console.error(e);
         vscode.window.showErrorMessage(`${e}`);

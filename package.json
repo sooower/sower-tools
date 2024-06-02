@@ -37,6 +37,10 @@
             {
                 "command": "sower-tools.functionEnhancement.refactorFuncParametersToUseObjectParameter",
                 "title": "Refactor Parameters"
+            },
+            {
+                "command": "sower-tools.generateEnumAssertionFunction",
+                "title": "Generate Enum Assertion"
             }
         ],
         "menus": {
@@ -65,6 +69,11 @@
                 {
                     "command": "sower-tools.functionEnhancement.refactorFuncParametersToUseObjectParameter",
                     "group": "003_functionEnhancement@001",
+                    "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
+                },
+                {
+                    "command": "sower-tools.generateEnumAssertionFunction",
+                    "group": "003_functionEnhancement@002",
                     "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
                 }
             ]
