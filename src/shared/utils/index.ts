@@ -1,4 +1,5 @@
 import { specialWordsMap } from "../init";
+import CommonUtils from "./commonUtils";
 
 export function toLowerCamelCase(input: string) {
     const camelCaseInput = input.replace(/[-_.](.)/g, (_, c) =>
@@ -22,4 +23,15 @@ export function toUpperCamelCase(input: string) {
     }
 
     return res;
+}
+
+export function mapEnumName(enumTypeName: string) {
+    CommonUtils.assert(
+        enumTypeName.length >= 2,
+        `Name of enumType is too short.`
+    );
+
+    return enumTypeName[0] === "E" && /[A-Z]/.test(enumTypeName[1])
+        ? enumTypeName.slice(1)
+        : enumTypeName;
 }

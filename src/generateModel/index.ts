@@ -8,7 +8,11 @@ import {
     extensionName,
 } from "../shared/init";
 import { ETsType } from "../shared/types";
-import { toLowerCamelCase, toUpperCamelCase } from "../shared/utils";
+import {
+    mapEnumName,
+    toLowerCamelCase,
+    toUpperCamelCase,
+} from "../shared/utils";
 import CommonUtils from "../shared/utils/commonUtils";
 
 enum ESqlKeywords {
@@ -460,15 +464,6 @@ function mapAssertMethod({ tsType, nullable, enumType }: TColumnDetail) {
             throw new Error(`Unexpected tsType "${tsType}".`);
         }
     }
-}
-
-function mapEnumName(enumType: string) {
-    CommonUtils.assert(enumType.length >= 2, `Name of enumType is too short.`);
-    return toLowerCamelCase(
-        enumType[0] === "E" && /[A-Z]/.test(enumType[1])
-            ? enumType.slice(1)
-            : enumType
-    );
 }
 
 function assertFileNotEmpty(filePath: string) {

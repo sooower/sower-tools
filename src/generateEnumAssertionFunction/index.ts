@@ -4,7 +4,11 @@ import ts from "typescript";
 
 import { vscode } from "../shared";
 import { extensionCtx, extensionName } from "../shared/init";
-import { toLowerCamelCase } from "../shared/utils";
+import {
+    mapEnumName,
+    toLowerCamelCase,
+    toUpperCamelCase,
+} from "../shared/utils";
 
 let activatedEditor: vscode.TextEditor;
 let sourceFile: ts.SourceFile;
@@ -43,6 +47,10 @@ export async function subscribeGenerateEnumAssertionFunction() {
                     return;
                 }
 
+                if (findAssertionFunction(enumNode.name.text)) {
+                    return;
+                }
+
                 await doGenerateEnumAssertionFunction(enumNode);
             } catch (e) {
                 console.error(e);
@@ -70,6 +78,26 @@ function findEnumNodeAtPosition(position: ts.LineAndCharacter) {
     }
 
     return find(sourceFile);
+}
+
+function findAssertionFunction(enumTypeName: string) {
+    function visit(node: ts.Node) {
+        if (
+            (ts.isFunctionDeclaration(node) || ts.isArrowFunction(node)) &&
+            node.name !== undefined &&
+            node.name.text === assertFuncName
+        ) {
+            found = true;
+        }
+    }
+
+    let found = false;
+    const assertFuncName = `assert${toUpperCamelCase(
+        mapEnumName(enumTypeName)
+    )}`;
+    ts.forEachChild(sourceFile, visit);
+
+    return found;
 }
 
 async function doGenerateEnumAssertionFunction(node: ts.EnumDeclaration) {
