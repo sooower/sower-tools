@@ -92,6 +92,16 @@ async function doRefactorFunctionParametersToUseObjectParameter(
         return;
     }
 
+    // Do not refactor if the function has only one reference(non-primitive) parameter
+    const firstParameter = node.parameters[0];
+    if (
+        node.parameters.length === 1 &&
+        firstParameter.type !== undefined &&
+        ts.isTypeReferenceNode(firstParameter.type)
+    ) {
+        return;
+    }
+
     /* Generate new params */
 
     const paramNames = node.parameters.map((it) => it.name.getText(sourceFile));
