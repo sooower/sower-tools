@@ -37,3 +37,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -   Generate enum assertion functions.
+
+## [0.0.6] - 2024-06-04
+
+### Added
+
+-   Add typescript code refactor panel actions, you can use it to refactor function parameters or generate assert enum functions.
+
+### Fixed
+
+-   File path error when generate schema file.
+-   May generate enum assertion function duplicated.
+-   May refactor function parameter to object duplicated.

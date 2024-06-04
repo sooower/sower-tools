@@ -35,7 +35,7 @@ const kResolver: TResolvers = {
 };
 
 type TInsertOptions = {
-    {{TInsertOptionsContent}}
+    {{TInsertOptionsContent}} // FIXME do not insert createdAt and updatedAt
 };
 
 async function insert(dbc: DatabaseConnection, options: TInsertOptions) {
@@ -50,7 +50,7 @@ async function insert(dbc: DatabaseConnection, options: TInsertOptions) {
         value: new Date(),
     });
 
-    {{insertContent}}
+    {{insertContent}} // FIXME do not insert createdAt and updatedAt
 
     const { preparedStmt, vars } = generateCreateStatement(
         kFullQualifiedTableName,
@@ -169,7 +169,7 @@ type TSelectManyOptionsSort = {
 
 type TSelectManyOptionsRange = {
     skip: number;
-    limit: number | undefined;
+    limit?: number;
 };
 
 type TSelectManyOptions<T extends EColumn> = {

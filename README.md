@@ -7,6 +7,7 @@
 -   Refactor function parameters to use object parameter.
 -   Auto refactor type name of function options parameter when ts document saved.
 -   Generate enum assertion functions.
+-   Add typescript code refactor panel actions, you can use it to refactor function parameters or generate assert enum functions.
 
 ## Usage
 
