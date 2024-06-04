@@ -1,3 +1,4 @@
+import { subscribeCodeActionProviders } from "./codeActionsProviders";
 import { subscribeDebuggingEnhancement } from "./debuggingEnhancement";
 import { subscribeEnhanceFunction } from "./functionEnhancement";
 import { subscribeGenerateEnumAssertionFunction } from "./generateEnumAssertionFunction";
@@ -21,6 +22,7 @@ export async function activate(context: vscode.ExtensionContext) {
         await subscribeShowDefaultOpenedDocument();
         await subscribeEnhanceFunction();
         await subscribeGenerateEnumAssertionFunction();
+        await subscribeCodeActionProviders();
     } catch (e) {
         console.error(e);
         vscode.window.showErrorMessage(`${e}`);
