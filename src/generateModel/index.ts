@@ -9,7 +9,7 @@ import {
 } from "../shared/init";
 import { ETsType } from "../shared/types";
 import {
-    mapEnumName,
+    mapEnumNameWithoutPrefix,
     toLowerCamelCase,
     toUpperCamelCase,
 } from "../shared/utils";
@@ -398,7 +398,7 @@ function mapAssertMethod({ tsType, nullable, enumType }: TColumnDetail) {
                 if (enumType !== ETsType.Unknown) {
                     return format(
                         `(val) => CommonUtils.assertNullableEnum("%s", { type: %s, val })`,
-                        mapEnumName(enumType),
+                        mapEnumNameWithoutPrefix(enumType),
                         enumType
                     );
                 } else {
@@ -408,7 +408,7 @@ function mapAssertMethod({ tsType, nullable, enumType }: TColumnDetail) {
                 if (enumType !== ETsType.Unknown) {
                     return format(
                         `(val) => CommonUtils.assertEnum("%s", { type: %s, val })`,
-                        mapEnumName(enumType),
+                        mapEnumNameWithoutPrefix(enumType),
                         enumType
                     );
                 } else {
@@ -421,7 +421,7 @@ function mapAssertMethod({ tsType, nullable, enumType }: TColumnDetail) {
                 if (enumType !== ETsType.Unknown) {
                     return format(
                         `(val) => val === null ? undefined : CommonUtils.assertArray(val).map((val) => CommonUtils.assertEnum("%s", { type: %s, val }))`,
-                        mapEnumName(enumType),
+                        mapEnumNameWithoutPrefix(enumType),
                         enumType
                     );
                 } else {
@@ -431,7 +431,7 @@ function mapAssertMethod({ tsType, nullable, enumType }: TColumnDetail) {
                 if (enumType !== ETsType.Unknown) {
                     return format(
                         `(val) => CommonUtils.assertArray(val).map((val) => CommonUtils.assertEnum("%s", { type: %s, val }))`,
-                        mapEnumName(enumType),
+                        mapEnumNameWithoutPrefix(enumType),
                         enumType
                     );
                 } else {

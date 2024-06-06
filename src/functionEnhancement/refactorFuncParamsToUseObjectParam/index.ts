@@ -6,6 +6,7 @@ import { vscode } from "@/src/shared";
 import { extensionCtx, extensionName } from "@/src/shared/init";
 import { ETsType } from "@/src/shared/types";
 import { toUpperCamelCase } from "@/src/shared/utils";
+import { findFuncDeclarationNodeAtPosition } from "@/src/shared/utils/tsUtils";
 
 let activatedEditor: vscode.TextEditor;
 let sourceFile: ts.SourceFile;
@@ -40,8 +41,10 @@ export function subscribeRefactorFuncParametersToUseObjectParameter() {
                         sourceFile,
                         document.offsetAt(activatedEditor.selection.active)
                     );
-                    const functionNode =
-                        findFunctionNodeAtPosition(cursorPosition);
+                    const functionNode = findFuncDeclarationNodeAtPosition(
+                        sourceFile,
+                        cursorPosition
+                    );
                     if (functionNode === undefined) {
                         return;
                     }
@@ -57,26 +60,6 @@ export function subscribeRefactorFuncParametersToUseObjectParameter() {
         );
 
     extensionCtx.subscriptions.push(refactorFuncParametersToUseObjectParameter);
-}
-
-function findFunctionNodeAtPosition(position: ts.LineAndCharacter) {
-    function find(
-        node: ts.Node
-    ): ts.FunctionDeclaration | ts.ArrowFunction | undefined {
-        if (!ts.isFunctionDeclaration(node) && !ts.isArrowFunction(node)) {
-            return ts.forEachChild(node, find);
-        }
-
-        const { line } = sourceFile.getLineAndCharacterOfPosition(
-            node.getStart()
-        );
-
-        if (line === position.line) {
-            return node;
-        }
-    }
-
-    return find(sourceFile);
 }
 
 async function doRefactorFunctionParametersToUseObjectParameter(

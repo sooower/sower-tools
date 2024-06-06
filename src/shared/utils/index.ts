@@ -25,7 +25,7 @@ export function toUpperCamelCase(input: string) {
     return res;
 }
 
-export function mapEnumName(enumTypeName: string) {
+export function mapEnumNameWithoutPrefix(enumTypeName: string) {
     CommonUtils.assert(
         enumTypeName.length >= 2,
         `Name of enumType is too short.`

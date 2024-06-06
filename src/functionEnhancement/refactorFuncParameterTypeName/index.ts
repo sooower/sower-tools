@@ -1,11 +1,13 @@
 import { format } from "node:util";
 
-import ts from "typescript";
+import ts, { ArrowFunction, InterfaceDeclaration } from "typescript";
 
 import { fs, vscode } from "@/src/shared";
 import { extensionCtx } from "@/src/shared/init";
 import { toUpperCamelCase } from "@/src/shared/utils";
 import CommonUtils from "@/src/shared/utils/commonUtils";
+import { findTypeDeclarationNode } from "@/src/shared/utils/tsUtils";
+import { replaceNodeText } from "@/src/shared/utils/vscUtils";
 
 let activatedEditor: vscode.TextEditor;
 let sourceFile: ts.SourceFile;
@@ -62,116 +64,70 @@ function updateFuncParameterTypeName(funcNode: ts.Node) {
     const [parameter] = funcNode.parameters;
 
     if (
-        parameter.type !== undefined &&
-        ts.isTypeReferenceNode(parameter.type)
-    ) {
-        const paramTypeName = parameter.type.typeName.getText();
-
-        if (!paramTypeName.toLowerCase().includes("option")) {
-            return;
-        }
-
-        if (paramTypeName === "TOptions") {
-            return;
-        }
-
-        const expectedParamTypeName = format(
-            `T%sOptions`,
-            toUpperCamelCase(funcNode.name.getText())
-        );
-        if (paramTypeName !== expectedParamTypeName) {
-            const typeDeclarationNode = findTypeDeclarationNode(paramTypeName);
-            CommonUtils.assert(
-                typeDeclarationNode !== undefined,
-                `Cannot find type declaration for ${paramTypeName} in current file.`
-            );
-            void (async () => {
-                await updateTypeDeclarationName(
-                    typeDeclarationNode,
-                    expectedParamTypeName
-                );
-                await updateFuncFirstParameterName(
-                    funcNode,
-                    expectedParamTypeName
-                );
-            })();
-        }
-    }
-}
-
-function findTypeDeclarationNode(typeName: string): ts.Node | undefined {
-    let typeDeclarationNode;
-
-    function visit(node: ts.Node) {
-        if (ts.isTypeAliasDeclaration(node) && node.name.text === typeName) {
-            typeDeclarationNode = node;
-        } else if (
-            ts.isInterfaceDeclaration(node) &&
-            node.name.text === typeName
-        ) {
-            typeDeclarationNode = node;
-        } else if (
-            ts.isClassDeclaration(node) &&
-            node.name?.text === typeName
-        ) {
-            typeDeclarationNode = node;
-        } else {
-            ts.forEachChild(node, visit);
-        }
-    }
-
-    ts.forEachChild(sourceFile, visit);
-
-    return typeDeclarationNode;
-}
-
-async function updateTypeDeclarationName(node: ts.Node, newName: string) {
-    if (
-        !ts.isInterfaceDeclaration(node) &&
-        !ts.isClassDeclaration(node) &&
-        !ts.isTypeAliasDeclaration(node)
+        parameter.type === undefined ||
+        !ts.isTypeReferenceNode(parameter.type)
     ) {
         return;
     }
 
+    const paramTypeName = parameter.type.typeName.getText();
+
+    if (!paramTypeName.toLowerCase().includes("option")) {
+        return;
+    }
+
+    if (paramTypeName === "TOptions") {
+        return;
+    }
+
+    const expectedParamTypeName = format(
+        `T%sOptions`,
+        toUpperCamelCase(funcNode.name.getText())
+    );
+    if (paramTypeName === expectedParamTypeName) {
+        return;
+    }
+
+    const typeDeclarationNode = findTypeDeclarationNode(
+        sourceFile,
+        paramTypeName
+    );
+    CommonUtils.assert(
+        typeDeclarationNode !== undefined,
+        `Cannot find type declaration for ${paramTypeName} in current file.`
+    );
+    void (async () => {
+        await updateTypeDeclarationName(
+            typeDeclarationNode,
+            expectedParamTypeName
+        );
+        await updateFuncFirstParameterName(funcNode, expectedParamTypeName);
+    })();
+}
+
+async function updateTypeDeclarationName(
+    node:
+        | ts.TypeAliasDeclaration
+        | ts.InterfaceDeclaration
+        | ts.ClassDeclaration,
+    newName: string
+) {
     if (node.name === undefined) {
         return;
     }
 
-    const typeDeclarationNameStartPos = ts.getLineAndCharacterOfPosition(
+    await replaceNodeText({
+        activatedEditor,
         sourceFile,
-        node.name.getStart()
-    );
-    const typeDeclarationNameEndPos = ts.getLineAndCharacterOfPosition(
-        sourceFile,
-        node.name.getEnd()
-    );
-
-    await activatedEditor.edit((editBuilder) => {
-        editBuilder.replace(
-            new vscode.Range(
-                new vscode.Position(
-                    typeDeclarationNameStartPos.line,
-                    typeDeclarationNameStartPos.character
-                ),
-                new vscode.Position(
-                    typeDeclarationNameEndPos.line,
-                    typeDeclarationNameEndPos.character
-                )
-            ),
-            newName
-        );
+        node: node.name,
+        newText: newName,
     });
 }
 
 async function updateFuncFirstParameterName(
-    node: ts.Node,
+    node: ts.FunctionDeclaration | ArrowFunction,
     newParamsText: string
 ) {
-    if (!ts.isFunctionDeclaration(node) && !ts.isArrowFunction(node)) {
-        return;
-    }
-
     if (node.name === undefined) {
         return;
     }
@@ -181,26 +137,10 @@ async function updateFuncFirstParameterName(
     }
 
     const [firstParam] = node.parameters;
-    const fistParamType = CommonUtils.mandatory(firstParam.type);
-    const firstParamTypeStartPos = sourceFile.getLineAndCharacterOfPosition(
-        fistParamType.getStart()
-    );
-    const firstParamTypeEndPos = sourceFile.getLineAndCharacterOfPosition(
-        fistParamType.getEnd()
-    );
-    await activatedEditor.edit((editBuilder) => {
-        editBuilder.replace(
-            new vscode.Range(
-                new vscode.Position(
-                    firstParamTypeStartPos.line,
-                    firstParamTypeStartPos.character
-                ),
-                new vscode.Position(
-                    firstParamTypeEndPos.line,
-                    firstParamTypeEndPos.character
-                )
-            ),
-            newParamsText
-        );
+    await replaceNodeText({
+        activatedEditor,
+        sourceFile,
+        node: CommonUtils.mandatory(firstParam.type),
+        newText: newParamsText,
     });
 }
