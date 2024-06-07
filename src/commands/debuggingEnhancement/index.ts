@@ -1,13 +1,13 @@
 import { parse } from "comment-json";
 import path from "path";
 
-import { fs, vscode } from "../shared";
+import { fs, vscode } from "../../shared";
 import {
     extensionCtx,
     extensionName,
     getConfigurationItem,
-} from "../shared/init";
-import CommonUtils from "../shared/utils/commonUtils";
+} from "../../shared/init";
+import CommonUtils from "../../shared/utils/commonUtils";
 
 type TLaunchConfiguration = {
     name: string;
@@ -22,10 +22,10 @@ type TLaunchConfiguration = {
     envFile: string;
 };
 
-export async function subscribeDebuggingEnhancement() {
+export function subscribeDebuggingEnhancement() {
     /* Subscribe command of debug project */
 
-    const debugProject = vscode.commands.registerCommand(
+    const commandDebugProject = vscode.commands.registerCommand(
         `${extensionName}.debugProject`,
         async () => {
             try {
@@ -58,11 +58,11 @@ export async function subscribeDebuggingEnhancement() {
             }
         }
     );
-    extensionCtx.subscriptions.push(debugProject);
+    extensionCtx.subscriptions.push(commandDebugProject);
 
     /* Subscribe command of debug current file */
 
-    const debugCurrentFile = vscode.commands.registerCommand(
+    const commandDebugCurrentFile = vscode.commands.registerCommand(
         `${extensionName}.debugCurrentFile`,
         async () => {
             try {
@@ -95,7 +95,7 @@ export async function subscribeDebuggingEnhancement() {
             }
         }
     );
-    extensionCtx.subscriptions.push(debugCurrentFile);
+    extensionCtx.subscriptions.push(commandDebugCurrentFile);
 }
 
 function getDebuggingConfigurations() {

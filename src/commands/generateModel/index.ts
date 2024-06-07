@@ -1,19 +1,19 @@
 import path from "node:path";
 import { format } from "node:util";
 
-import { fs, vscode } from "../shared";
+import { fs, vscode } from "../../shared";
 import {
     enableOverwriteFile,
     extensionCtx,
     extensionName,
-} from "../shared/init";
-import { ETsType } from "../shared/types";
+} from "../../shared/init";
+import { ETsType } from "../../shared/types";
 import {
     mapEnumNameWithoutPrefix,
     toLowerCamelCase,
     toUpperCamelCase,
-} from "../shared/utils";
-import CommonUtils from "../shared/utils/commonUtils";
+} from "../../shared/utils";
+import CommonUtils from "../../shared/utils/commonUtils";
 
 enum ESqlKeywords {
     Create = "CREATE",
@@ -39,8 +39,8 @@ enum ESqlType {
     Bytea = "BYTEA",
 }
 
-export async function subscribeGenerateModel() {
-    const generateModel = vscode.commands.registerCommand(
+export function subscribeGenerateModel() {
+    const command = vscode.commands.registerCommand(
         `${extensionName}.generateModel`,
         async () => {
             vscode.window.withProgress(
@@ -69,7 +69,7 @@ export async function subscribeGenerateModel() {
         }
     );
 
-    extensionCtx.subscriptions.push(generateModel);
+    extensionCtx.subscriptions.push(command);
 }
 
 async function parseSqlAndGenerateFiles() {

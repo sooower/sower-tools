@@ -1,7 +1,7 @@
 import { vscode } from "../shared";
 import { extensionCtx } from "../shared/init";
 
-export async function subscribeCodeActionProviders() {
+export function subscribeCodeActionProviders() {
     extensionCtx.subscriptions.push(
         vscode.languages.registerCodeActionsProvider(
             "typescript",

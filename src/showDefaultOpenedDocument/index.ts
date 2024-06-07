@@ -4,7 +4,7 @@ import { vscode } from "../shared";
 import { extensionName, getConfigurationItem } from "../shared/init";
 import CommonUtils from "../shared/utils/commonUtils";
 
-export async function subscribeShowDefaultOpenedDocument() {
+export async function showDefaultOpenedDocument() {
     if (vscode.workspace.workspaceFolders === undefined) {
         // Do not show document when no workspace is open
         return;

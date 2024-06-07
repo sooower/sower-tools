@@ -1,9 +1,14 @@
 import ts from "typescript";
 
-export function findTypeDeclarationNode(
-    sourceFile: ts.SourceFile,
-    typeName: string
-) {
+type TFindTypeDeclarationNodeOptions = {
+    sourceFile: ts.SourceFile;
+    typeName: string;
+};
+
+export function findTypeDeclarationNode({
+    sourceFile,
+    typeName,
+}: TFindTypeDeclarationNodeOptions) {
     let typeDeclarationNode:
         | ts.TypeAliasDeclaration
         | ts.InterfaceDeclaration
@@ -14,10 +19,9 @@ export function findTypeDeclarationNode(
 
     function visit(node: ts.Node) {
         if (
-            (ts.isTypeAliasDeclaration(node) ||
-                ts.isInterfaceDeclaration(node) ||
-                ts.isClassDeclaration(node)) &&
-            node.name?.text === typeName
+            ts.isTypeAliasDeclaration(node) &&
+            node.name !== undefined &&
+            node.name.text === typeName
         ) {
             typeDeclarationNode = node;
         } else {
@@ -28,10 +32,15 @@ export function findTypeDeclarationNode(
     return typeDeclarationNode;
 }
 
-export function findFuncDeclarationNode(
-    sourceFile: ts.SourceFile,
-    funcName: string
-) {
+type TFindFuncDeclarationNodeOptions = {
+    sourceFile: ts.SourceFile;
+    funcName: string;
+};
+
+export function findFuncDeclarationNode({
+    sourceFile,
+    funcName,
+}: TFindFuncDeclarationNodeOptions) {
     let funcNode: ts.Node | undefined;
 
     ts.forEachChild(sourceFile, visit);
@@ -49,10 +58,15 @@ export function findFuncDeclarationNode(
     return funcNode;
 }
 
-export function findFuncDeclarationNodeAtPosition(
-    sourceFile: ts.SourceFile,
-    position: ts.LineAndCharacter
-) {
+type TFindFuncDeclarationNodeAtPositionOptions = {
+    sourceFile: ts.SourceFile;
+    position: ts.LineAndCharacter;
+};
+
+export function findFuncDeclarationNodeAtPosition({
+    sourceFile,
+    position,
+}: TFindFuncDeclarationNodeAtPositionOptions) {
     function visit(
         node: ts.Node
     ): ts.FunctionDeclaration | ts.ArrowFunction | undefined {
@@ -71,10 +85,15 @@ export function findFuncDeclarationNodeAtPosition(
     return visit(sourceFile);
 }
 
-export function findEnumDeclarationNodeAtPosition(
-    sourceFile: ts.SourceFile,
-    position: ts.LineAndCharacter
-) {
+type TFindEnumDeclarationNodeAtPositionOptions = {
+    sourceFile: ts.SourceFile;
+    position: ts.LineAndCharacter;
+};
+
+export function findEnumDeclarationNodeAtPosition({
+    sourceFile,
+    position,
+}: TFindEnumDeclarationNodeAtPositionOptions) {
     function find(node: ts.Node): ts.EnumDeclaration | undefined {
         if (!ts.isEnumDeclaration(node)) {
             return ts.forEachChild(node, find);

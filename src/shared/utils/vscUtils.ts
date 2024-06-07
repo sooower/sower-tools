@@ -2,47 +2,65 @@ import ts from "typescript";
 
 import { vscode } from "../";
 
-type TReplaceNodeTextOptions = {
-    activatedEditor: vscode.TextEditor;
+type TReplaceTextOfNodeOptions = {
+    editor: vscode.TextEditor;
     sourceFile: ts.SourceFile;
     node: ts.Node;
     newText: string;
 };
 
-export async function replaceNodeText({
-    activatedEditor,
+export async function replaceTextOfNode({
+    editor,
     sourceFile,
     node,
     newText,
-}: TReplaceNodeTextOptions) {
-    const declarationStartPos = ts.getLineAndCharacterOfPosition(
+}: TReplaceTextOfNodeOptions) {
+    const startPos = ts.getLineAndCharacterOfPosition(
         sourceFile,
         node.getStart()
     );
-    const declarationEndPos = ts.getLineAndCharacterOfPosition(
-        sourceFile,
-        node.getEnd()
-    );
+    const endPos = ts.getLineAndCharacterOfPosition(sourceFile, node.getEnd());
 
-    await activatedEditor.edit((editBuilder) => {
+    await editor.edit((editBuilder) => {
         editBuilder.replace(
             new vscode.Range(
-                new vscode.Position(
-                    declarationStartPos.line,
-                    declarationStartPos.character
-                ),
-                new vscode.Position(
-                    declarationEndPos.line,
-                    declarationEndPos.character
-                )
+                new vscode.Position(startPos.line, startPos.character),
+                new vscode.Position(endPos.line, endPos.character)
             ),
             newText
         );
     });
 }
 
+type TDeleteTextOfNodeOptions = {
+    editor: vscode.TextEditor;
+    sourceFile: ts.SourceFile;
+    node: ts.Node;
+};
+
+export async function deleteTextOfNode({
+    editor,
+    sourceFile,
+    node,
+}: TDeleteTextOfNodeOptions) {
+    const startPos = ts.getLineAndCharacterOfPosition(
+        sourceFile,
+        node.getStart()
+    );
+    const endPos = ts.getLineAndCharacterOfPosition(sourceFile, node.getEnd());
+
+    await editor.edit((editBuilder) => {
+        editBuilder.delete(
+            new vscode.Range(
+                new vscode.Position(startPos.line, startPos.character),
+                new vscode.Position(endPos.line, endPos.character)
+            )
+        );
+    });
+}
+
 type TInsertTextBeforeNodeOptions = {
-    activatedEditor: vscode.TextEditor;
+    editor: vscode.TextEditor;
     sourceFile: ts.SourceFile;
     node: ts.Node;
     text: string;
@@ -50,7 +68,7 @@ type TInsertTextBeforeNodeOptions = {
 };
 
 export async function insertTextBeforeNode({
-    activatedEditor,
+    editor,
     sourceFile,
     node,
     text,
@@ -61,7 +79,7 @@ export async function insertTextBeforeNode({
         fullStart !== undefined ? node.getFullStart() : node.getStart()
     );
 
-    await activatedEditor.edit((editBuilder) => {
+    await editor.edit((editBuilder) => {
         editBuilder.insert(
             new vscode.Position(startPos.line, startPos.character),
             text + "\n\n"
@@ -70,21 +88,21 @@ export async function insertTextBeforeNode({
 }
 
 type TInsertTextAfterNodeOptions = {
-    activatedEditor: vscode.TextEditor;
+    editor: vscode.TextEditor;
     sourceFile: ts.SourceFile;
     node: ts.Node;
     text: string;
 };
 
 export async function insertTextAfterNode({
-    activatedEditor,
+    editor,
     sourceFile,
     node,
     text,
 }: TInsertTextAfterNodeOptions) {
     const endPos = ts.getLineAndCharacterOfPosition(sourceFile, node.getEnd());
 
-    await activatedEditor.edit((editBuilder) => {
+    await editor.edit((editBuilder) => {
         editBuilder.insert(
             new vscode.Position(endPos.line, endPos.character),
             "\n\n" + text

@@ -12,57 +12,56 @@ let activatedEditor: vscode.TextEditor;
 let sourceFile: ts.SourceFile;
 
 export function subscribeRefactorFuncParametersToUseObjectParameter() {
-    const refactorFuncParametersToUseObjectParameter =
-        vscode.commands.registerCommand(
-            `${extensionName}.functionEnhancement.refactorFuncParametersToUseObjectParameter`,
-            async () => {
-                try {
-                    const editor = vscode.window.activeTextEditor;
-                    if (editor === undefined) {
-                        return;
-                    }
-
-                    activatedEditor = editor;
-
-                    const document = activatedEditor.document;
-                    const currentFilePath = activatedEditor.document.fileName;
-                    if (!currentFilePath.endsWith(".ts")) {
-                        return;
-                    }
-
-                    sourceFile = ts.createSourceFile(
-                        document.fileName,
-                        document.getText(),
-                        ts.ScriptTarget.ES2015,
-                        true
-                    );
-
-                    const cursorPosition = ts.getLineAndCharacterOfPosition(
-                        sourceFile,
-                        document.offsetAt(activatedEditor.selection.active)
-                    );
-                    const functionNode = findFuncDeclarationNodeAtPosition(
-                        sourceFile,
-                        cursorPosition
-                    );
-                    if (functionNode === undefined) {
-                        return;
-                    }
-
-                    await doRefactorFunctionParametersToUseObjectParameter(
-                        functionNode
-                    );
-                } catch (e) {
-                    console.error(e);
-                    vscode.window.showErrorMessage(`${e}`);
+    const command = vscode.commands.registerCommand(
+        `${extensionName}.functionEnhancement.refactorFuncParametersToUseObjectParameter`,
+        async () => {
+            try {
+                const editor = vscode.window.activeTextEditor;
+                if (editor === undefined) {
+                    return;
                 }
-            }
-        );
 
-    extensionCtx.subscriptions.push(refactorFuncParametersToUseObjectParameter);
+                activatedEditor = editor;
+
+                const document = activatedEditor.document;
+                const currentFilePath = activatedEditor.document.fileName;
+                if (!currentFilePath.endsWith(".ts")) {
+                    return;
+                }
+
+                sourceFile = ts.createSourceFile(
+                    document.fileName,
+                    document.getText(),
+                    ts.ScriptTarget.ES2015,
+                    true
+                );
+
+                const cursorPosition = ts.getLineAndCharacterOfPosition(
+                    sourceFile,
+                    document.offsetAt(activatedEditor.selection.active)
+                );
+                const functionNode = findFuncDeclarationNodeAtPosition({
+                    sourceFile,
+                    position: cursorPosition,
+                });
+                if (functionNode === undefined) {
+                    return;
+                }
+
+                await refactorFunctionParametersToUseObjectParameter(
+                    functionNode
+                );
+            } catch (e) {
+                console.error(e);
+                vscode.window.showErrorMessage(`${e}`);
+            }
+        }
+    );
+
+    extensionCtx.subscriptions.push(command);
 }
 
-async function doRefactorFunctionParametersToUseObjectParameter(
+async function refactorFunctionParametersToUseObjectParameter(
     node: ts.FunctionDeclaration | ts.ArrowFunction
 ) {
     /* Check node is named function declaration with parameters */
