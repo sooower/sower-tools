@@ -1,5 +1,5 @@
-import { vscode } from "../shared";
-import { extensionCtx } from "../shared/init";
+import { vscode } from "@/src/shared";
+import { extensionCtx } from "@/src/shared/init";
 
 export async function subscribeGitEnhancement() {
     const skipWorkTree = vscode.commands.registerCommand(

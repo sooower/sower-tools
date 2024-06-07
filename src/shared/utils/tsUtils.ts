@@ -58,15 +58,15 @@ export function findFuncDeclarationNode({
     return funcNode;
 }
 
-type TFindFuncDeclarationNodeAtPositionOptions = {
+type TFindFuncDeclarationNodeAtOffsetOptions = {
     sourceFile: ts.SourceFile;
-    position: ts.LineAndCharacter;
+    offset: number;
 };
 
-export function findFuncDeclarationNodeAtPosition({
+export function findFuncDeclarationNodeAtOffset({
     sourceFile,
-    position,
-}: TFindFuncDeclarationNodeAtPositionOptions) {
+    offset,
+}: TFindFuncDeclarationNodeAtOffsetOptions) {
     function visit(
         node: ts.Node
     ): ts.FunctionDeclaration | ts.ArrowFunction | undefined {
@@ -74,10 +74,7 @@ export function findFuncDeclarationNodeAtPosition({
             return ts.forEachChild(node, visit);
         }
 
-        const { line } = sourceFile.getLineAndCharacterOfPosition(
-            node.getStart()
-        );
-        if (line === position.line) {
+        if (node.getStart() <= offset && node.getEnd() >= offset) {
             return node;
         }
     }
@@ -85,28 +82,24 @@ export function findFuncDeclarationNodeAtPosition({
     return visit(sourceFile);
 }
 
-type TFindEnumDeclarationNodeAtPositionOptions = {
+type TFindEnumDeclarationNodeAtOffsetOptions = {
     sourceFile: ts.SourceFile;
-    position: ts.LineAndCharacter;
+    offset: number;
 };
 
-export function findEnumDeclarationNodeAtPosition({
+export function findEnumDeclarationNodeAtOffset({
     sourceFile,
-    position,
-}: TFindEnumDeclarationNodeAtPositionOptions) {
-    function find(node: ts.Node): ts.EnumDeclaration | undefined {
+    offset,
+}: TFindEnumDeclarationNodeAtOffsetOptions) {
+    function visit(node: ts.Node): ts.EnumDeclaration | undefined {
         if (!ts.isEnumDeclaration(node)) {
-            return ts.forEachChild(node, find);
+            return ts.forEachChild(node, visit);
         }
 
-        const { line } = sourceFile.getLineAndCharacterOfPosition(
-            node.getStart()
-        );
-
-        if (line === position.line) {
+        if (node.getStart() <= offset && node.getEnd() >= offset) {
             return node;
         }
     }
 
-    return find(sourceFile);
+    return visit(sourceFile);
 }

@@ -7,7 +7,7 @@ import { vscode } from "../../shared";
 import { extensionCtx, extensionName } from "../../shared/init";
 import { mapEnumNameWithoutPrefix, toLowerCamelCase } from "../../shared/utils";
 import {
-    findEnumDeclarationNodeAtPosition,
+    findEnumDeclarationNodeAtOffset,
     findFuncDeclarationNode,
 } from "../../shared/utils/tsUtils";
 import {
@@ -42,13 +42,9 @@ export function subscribeGenerateEnumAssertionFunction() {
                     true
                 );
 
-                const cursorPosition = ts.getLineAndCharacterOfPosition(
+                const enumNode = findEnumDeclarationNodeAtOffset({
                     sourceFile,
-                    document.offsetAt(activatedEditor.selection.active)
-                );
-                const enumNode = findEnumDeclarationNodeAtPosition({
-                    sourceFile,
-                    position: cursorPosition,
+                    offset: document.offsetAt(activatedEditor.selection.active),
                 });
                 if (enumNode === undefined) {
                     return;
@@ -142,7 +138,12 @@ async function generateEnumAssertionFunction(node: ts.EnumDeclaration) {
         await insertTextAfterNode({
             editor: activatedEditor,
             sourceFile: getSourceFile(),
-            node: CommonUtils.mandatory(assertFuncDeclarationNode),
+            node: CommonUtils.mandatory(
+                findFuncDeclarationNode({
+                    sourceFile: getSourceFile(),
+                    funcName: `assert${enumNameWithoutPrefix}`,
+                })
+            ),
             text: assertOptionalFuncText,
         });
     }
@@ -172,7 +173,12 @@ async function generateEnumAssertionFunction(node: ts.EnumDeclaration) {
         await insertTextAfterNode({
             editor: activatedEditor,
             sourceFile: getSourceFile(),
-            node: CommonUtils.mandatory(assertOptionalFuncDeclarationNode),
+            node: CommonUtils.mandatory(
+                findFuncDeclarationNode({
+                    sourceFile: getSourceFile(),
+                    funcName: `assertOptional${enumNameWithoutPrefix}`,
+                })
+            ),
             text: assertNullableFuncText,
         });
     }

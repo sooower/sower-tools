@@ -6,7 +6,7 @@ import { vscode } from "@/src/shared";
 import { extensionCtx, extensionName } from "@/src/shared/init";
 import { ETsType } from "@/src/shared/types";
 import { toUpperCamelCase } from "@/src/shared/utils";
-import { findFuncDeclarationNodeAtPosition } from "@/src/shared/utils/tsUtils";
+import { findFuncDeclarationNodeAtOffset } from "@/src/shared/utils/tsUtils";
 
 let activatedEditor: vscode.TextEditor;
 let sourceFile: ts.SourceFile;
@@ -36,21 +36,15 @@ export function subscribeRefactorFuncParametersToUseObjectParameter() {
                     true
                 );
 
-                const cursorPosition = ts.getLineAndCharacterOfPosition(
+                const funcNode = findFuncDeclarationNodeAtOffset({
                     sourceFile,
-                    document.offsetAt(activatedEditor.selection.active)
-                );
-                const functionNode = findFuncDeclarationNodeAtPosition({
-                    sourceFile,
-                    position: cursorPosition,
+                    offset: document.offsetAt(activatedEditor.selection.active),
                 });
-                if (functionNode === undefined) {
+                if (funcNode === undefined) {
                     return;
                 }
 
-                await refactorFunctionParametersToUseObjectParameter(
-                    functionNode
-                );
+                await refactorFunctionParametersToUseObjectParameter(funcNode);
             } catch (e) {
                 console.error(e);
                 vscode.window.showErrorMessage(`${e}`);
@@ -97,8 +91,8 @@ async function refactorFunctionParametersToUseObjectParameter(
     });
     const typeName = `T${toUpperCamelCase(node.name.getText())}Options`;
     const typeDeclarationText = format(
-        `\n\ntype ${typeName} = {\n\t%s\n};`,
-        paramTypes.join(";")
+        `\n\ntype ${typeName} = {\n\t%s\n};\n\n`,
+        paramTypes.join(";\n\t")
     );
     const newParamsText = `{ ${paramNames.join(",")} }: ${typeName}`;
 
