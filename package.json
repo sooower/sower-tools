@@ -93,10 +93,15 @@
                     "default": false,
                     "description": "If true, it will replace file content with new generated text."
                 },
-                "sower-tools.GenerateModel.specialWordsMapping": {
+                "sower-tools.GenerateModel.specialUpperCaseWordsMapping": {
                     "type": "array",
                     "default": [],
-                    "description": "Special words mapping, formatting [\"from1:to1\", \"from1:to1\", ...]."
+                    "description": "Special words pairs which will be mapped automatically when to uppercase, default is [\"Id:ID\"]."
+                },
+                "sower-tools.GenerateModel.ignoredInsertionColumns": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Special column names which will be ignored when inserting record, default is [\"createdAt\", \"updatedAt\"]."
                 },
                 "sower-tools.DebuggingEnhancement.debugProjectConfigurationName": {
                     "type": "string",

@@ -2,11 +2,11 @@ import { format } from "node:util";
 
 import ts, { ArrowFunction } from "typescript";
 
-import { vscode } from "@/src/shared";
-import { toUpperCamelCase } from "@/src/shared/utils";
-import CommonUtils from "@/src/shared/utils/commonUtils";
-import { findTypeDeclarationNode } from "@/src/shared/utils/tsUtils";
-import { replaceTextOfNode } from "@/src/shared/utils/vscUtils";
+import { vscode } from "@/shared";
+import { toUpperCamelCase } from "@/shared/utils";
+import CommonUtils from "@/shared/utils/commonUtils";
+import { findTypeDeclarationNode } from "@/shared/utils/tsUtils";
+import { replaceTextOfNode } from "@/shared/utils/vscUtils";
 
 let currEditor: vscode.TextEditor;
 let currSourceFile: ts.SourceFile;

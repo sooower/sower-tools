@@ -2,18 +2,18 @@ import { format } from "node:util";
 
 import ts from "typescript";
 
-import CommonUtils from "@/src/shared/utils/commonUtils";
-import { vscode } from "../../shared";
-import { extensionCtx, extensionName } from "../../shared/init";
-import { mapEnumNameWithoutPrefix, toLowerCamelCase } from "../../shared/utils";
+import { vscode } from "@/shared";
+import { extensionCtx, extensionName } from "@/shared/init";
+import { mapEnumNameWithoutPrefix, toLowerCamelCase } from "@/shared/utils";
+import CommonUtils from "@/shared/utils/commonUtils";
 import {
     findEnumDeclarationNodeAtOffset,
     findFuncDeclarationNode,
-} from "../../shared/utils/tsUtils";
+} from "@/shared/utils/tsUtils";
 import {
     insertTextAfterNode,
     replaceTextOfNode,
-} from "../../shared/utils/vscUtils";
+} from "@/shared/utils/vscUtils";
 
 let activatedEditor: vscode.TextEditor;
 

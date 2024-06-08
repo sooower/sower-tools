@@ -1,6 +1,6 @@
 import { format } from "node:util";
 
-import { vscode } from "@/src/shared";
+import { vscode } from "@/shared";
 
 let statusBarItem: vscode.StatusBarItem;
 

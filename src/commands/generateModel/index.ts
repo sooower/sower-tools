@@ -1,19 +1,20 @@
 import path from "node:path";
 import { format } from "node:util";
 
-import { fs, vscode } from "../../shared";
+import { fs, vscode } from "@/shared";
 import {
     enableOverwriteFile,
     extensionCtx,
     extensionName,
-} from "../../shared/init";
-import { ETsType } from "../../shared/types";
+    ignoredInsertionColumns,
+} from "@/shared/init";
+import { ETsType } from "@/shared/types";
 import {
     mapEnumNameWithoutPrefix,
     toLowerCamelCase,
     toUpperCamelCase,
-} from "../../shared/utils";
-import CommonUtils from "../../shared/utils/commonUtils";
+} from "@/shared/utils";
+import CommonUtils from "@/shared/utils/commonUtils";
 
 enum ESqlKeywords {
     Create = "CREATE",
@@ -54,8 +55,8 @@ export function subscribeGenerateModel() {
                         const generatedFils = await parseSqlAndGenerateFiles();
                         vscode.window.showInformationMessage(
                             format(
-                                `Generate files successfully.\n%s`,
-                                generatedFils.map((it) => `> ${it}`).join("\n")
+                                `Generated files:\n%s`,
+                                generatedFils.join("\n")
                             )
                         );
 
@@ -152,40 +153,42 @@ async function parseSqlAndGenerateFiles() {
                 mapAssertMethod({ tsType, nullable, enumType })
             )
         );
-        insertOptionsContent.push(
-            format(
-                `%s%s: %s;`,
-                column,
-                nullable ? "?" : "",
-                enumType === ETsType.Unknown ? tsType : enumType
-            )
-        );
-        insertContent.push(
-            nullable
-                ? format(
-                      `
-                    if (options.%s !== undefined) {
-                        columnValues.push({
-                            column: EColumn.%s,
-                            value: options.%s,
-                        });
-                    }
-                `,
-                      column,
-                      toUpperCamelCase(column),
-                      column
-                  )
-                : format(
-                      `
-                        columnValues.push({
-                            column: EColumn.%s,
-                            value: options.%s,
-                        });
+        if (!ignoredInsertionColumns.includes(column)) {
+            insertOptionsContent.push(
+                format(
+                    `%s%s: %s;`,
+                    column,
+                    nullable ? "?" : "",
+                    enumType === ETsType.Unknown ? tsType : enumType
+                )
+            );
+            insertContent.push(
+                nullable
+                    ? format(
+                          `
+                        if (options.%s !== undefined) {
+                            columnValues.push({
+                                column: EColumn.%s,
+                                value: options.%s,
+                            });
+                        }
                     `,
-                      toUpperCamelCase(column),
-                      column
-                  )
-        );
+                          column,
+                          toUpperCamelCase(column),
+                          column
+                      )
+                    : format(
+                          `
+                            columnValues.push({
+                                column: EColumn.%s,
+                                value: options.%s,
+                            });
+                        `,
+                          toUpperCamelCase(column),
+                          column
+                      )
+            );
+        }
     }
 
     const modelFileContent = fs
@@ -214,12 +217,6 @@ async function parseSqlAndGenerateFiles() {
 
     return generatedFiles;
 }
-
-type TColumnDetail = {
-    tsType: ETsType;
-    nullable: boolean;
-    enumType: string;
-};
 
 async function parseCreateStmt(text: string) {
     CommonUtils.assert(
@@ -297,8 +294,8 @@ async function parseCreateStmt(text: string) {
             .map((it) => it.trim())
             .filter((it) => it !== "");
         for (const columnStr of columnStrings) {
-            const [columnName, columnType, ...columnConfig] =
-                columnStr.split(" ");
+            const [columnName, columnType, ...restColumnConfigs] =
+                columnStr.split(/\s/g);
             CommonUtils.assert(
                 columnName !== undefined && columnType !== undefined,
                 `Invalid sql text, can not parse columnName or columnType.`
@@ -307,8 +304,8 @@ async function parseCreateStmt(text: string) {
                 toLowerCamelCase(columnName.replace(/[`|"|']/g, "")),
                 {
                     tsType: mapTsType(columnType.toUpperCase()),
-                    nullable: mapNullable(columnConfig),
-                    enumType: mapEnumType(columnConfig) ?? ETsType.Unknown,
+                    nullable: mapNullable(restColumnConfigs),
+                    enumType: mapEnumType(restColumnConfigs) ?? ETsType.Unknown,
                 }
             );
         }
@@ -366,16 +363,22 @@ function mapNullable(columnConfig: string[]) {
     );
 }
 
-function mapEnumType(columnConfig: string[]) {
-    for (let i = 0; i < columnConfig.length; i++) {
+function mapEnumType(columnConfigs: string[]) {
+    for (let i = 0; i < columnConfigs.length; i++) {
         if (
-            columnConfig[i].toUpperCase().includes(ESqlKeywords.Comment) &&
-            i < columnConfig.length - 1
+            columnConfigs[i].toUpperCase().includes(ESqlKeywords.Comment) &&
+            i < columnConfigs.length - 1
         ) {
-            return columnConfig[i + 1].replace(/'/g, "");
+            return columnConfigs[i + 1].replace(/'/g, "");
         }
     }
 }
+
+type TColumnDetail = {
+    tsType: ETsType;
+    nullable: boolean;
+    enumType: string;
+};
 
 function mapAssertMethod({ tsType, nullable, enumType }: TColumnDetail) {
     switch (tsType) {

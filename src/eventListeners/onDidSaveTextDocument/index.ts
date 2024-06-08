@@ -1,7 +1,7 @@
 import ts from "typescript";
 
-import { vscode } from "@/src/shared";
-import { extensionCtx, reloadConfiguration } from "@/src/shared/init";
+import { vscode } from "@/shared";
+import { extensionCtx, reloadConfiguration } from "@/shared/init";
 import { updateFuncParameterTypeName } from "./updateFuncParameterTypeName";
 
 export function subscribeOnDidSaveTextDocumentListener() {

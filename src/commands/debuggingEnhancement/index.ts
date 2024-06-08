@@ -1,13 +1,14 @@
-import { parse } from "comment-json";
-import path from "path";
+import path from "node:path";
 
-import { fs, vscode } from "../../shared";
+import { parse } from "comment-json";
+
+import { fs, vscode } from "@/shared";
 import {
     extensionCtx,
     extensionName,
     getConfigurationItem,
-} from "../../shared/init";
-import CommonUtils from "../../shared/utils/commonUtils";
+} from "@/shared/init";
+import CommonUtils from "@/shared/utils/commonUtils";
 
 type TLaunchConfiguration = {
     name: string;

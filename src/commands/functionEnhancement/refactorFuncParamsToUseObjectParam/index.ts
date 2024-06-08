@@ -2,11 +2,11 @@ import { format } from "node:util";
 
 import ts from "typescript";
 
-import { vscode } from "@/src/shared";
-import { extensionCtx, extensionName } from "@/src/shared/init";
-import { ETsType } from "@/src/shared/types";
-import { toUpperCamelCase } from "@/src/shared/utils";
-import { findFuncDeclarationNodeAtOffset } from "@/src/shared/utils/tsUtils";
+import { vscode } from "@/shared";
+import { extensionCtx, extensionName } from "@/shared/init";
+import { ETsType } from "@/shared/types";
+import { toUpperCamelCase } from "@/shared/utils";
+import { findFuncDeclarationNodeAtOffset } from "@/shared/utils/tsUtils";
 
 let activatedEditor: vscode.TextEditor;
 let sourceFile: ts.SourceFile;

@@ -12,7 +12,7 @@ import {
     generateSelectStatement,
     generateUpdateStatement,
     TColumnValue,
-} from "../..";
+} from "@/models";
 
 const kTable = "{{tableName}}" as const;
 
@@ -35,7 +35,7 @@ const kResolver: TResolvers = {
 };
 
 type TInsertOptions = {
-    {{TInsertOptionsContent}} // FIXME do not insert createdAt and updatedAt
+    {{TInsertOptionsContent}}
 };
 
 async function insert(dbc: DatabaseConnection, options: TInsertOptions) {
@@ -45,12 +45,13 @@ async function insert(dbc: DatabaseConnection, options: TInsertOptions) {
         column: EColumn.CreatedAt,
         value: new Date(),
     });
+
     columnValues.push({
         column: EColumn.UpdatedAt,
         value: new Date(),
     });
 
-    {{insertContent}} // FIXME do not insert createdAt and updatedAt
+    {{insertContent}}
 
     const { preparedStmt, vars } = generateCreateStatement(
         kFullQualifiedTableName,
@@ -193,7 +194,7 @@ type TSelectManyReturn<T extends EColumn> = {
 };
 
 type TSelectManyReturnGeneric<T extends EColumn> = {
-    total: number | undefined;
+    total?: number;
 } & TSelectManyReturn<T>;
 
 async function selectMany<T extends EColumn>(

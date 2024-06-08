@@ -10,6 +10,10 @@ export let extensionName: string;
 /* Generate modal configurations */
 export let enableOverwriteFile: boolean;
 export let specialWordsMap: Map<string, string>;
+export let ignoredInsertionColumns: string[];
+
+const kDefaultSpecialUppercaseWords = ["Id:ID"];
+const kDefaultIgnoredInsertionColumns = ["createdAt", "updatedAt"];
 
 export function init(context: vscode.ExtensionContext) {
     const packageJsonContent = JSON.parse(
@@ -42,21 +46,34 @@ export function reloadConfiguration() {
         )
     );
 
-    const specialWordsArr = CommonUtils.assertArray(
-        getConfigurationItem(
-            `${extensionName}.GenerateModel.specialWordsMapping`
+    const specialUppercaseWordsArr = kDefaultSpecialUppercaseWords
+        .concat(
+            CommonUtils.assertArray(
+                getConfigurationItem(
+                    `${extensionName}.GenerateModel.specialUpperCaseWordsMapping`
+                )
+            ).map((it) => CommonUtils.assertString(it))
         )
-    )
-        .map((it) => CommonUtils.assertString(it))
         .map((it) => {
             const kv = it.split(":");
             CommonUtils.assert(
                 kv.length === 2,
-                `Invalid special words mapping: ${it}, formatting should be "from:to".`
+                `Invalid special uppercase words mapping: ${it}, formatting should be "from:to".`
             );
             return kv;
         });
-    specialWordsMap = new Map(specialWordsArr.map((it) => [it[0], it[1]]));
+
+    specialWordsMap = new Map(
+        specialUppercaseWordsArr.map((it) => [it[0], it[1]])
+    );
+
+    ignoredInsertionColumns = kDefaultIgnoredInsertionColumns.concat(
+        CommonUtils.assertArray(
+            getConfigurationItem(
+                `${extensionName}.GenerateModel.ignoredInsertionColumns`
+            )
+        ).map((it) => CommonUtils.assertString(it))
+    );
 }
 
 export function getConfigurationItem(name: string): unknown {

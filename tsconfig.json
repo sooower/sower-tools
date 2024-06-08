@@ -4,10 +4,10 @@
         "target": "ES2022",
         "lib": ["ES2022"],
         "sourceMap": true,
-        "rootDir": "src",
+        "rootDir": ".",
         "strict": true,
         "paths": {
-            "@/*": ["./*"]
+            "@/*": ["./src/*"]
         }
         /* Additional Checks */
         // "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */

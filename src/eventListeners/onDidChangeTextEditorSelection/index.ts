@@ -1,5 +1,5 @@
-import { vscode } from "@/src/shared";
-import { extensionCtx } from "@/src/shared/init";
+import { vscode } from "@/shared";
+import { extensionCtx } from "@/shared/init";
 import {
     createAndShowStatusItem,
     setSelectedLinesStatusItemText,
