@@ -49,3 +49,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   File path error when generate schema file.
 -   May generate enum assertion function duplicated.
 -   May refactor function parameter to object duplicated.
+
+## [0.1.0] - 2024-06-12
+
+### Fixed
+
+-   Find node logic fix.
+-   Config ignored insertion columns.
+-   EColumn uppercase error.
+-   Schema template file.
+
+### Updated
+
+-   Update parseCreateStmt to V2( parse SQL AST).
+-   Update node contains node rule.
+-   Update path alias.
+-   Update assertFunction if it exists.

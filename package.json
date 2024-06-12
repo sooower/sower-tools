@@ -2,7 +2,7 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "This extension is a collection of tools.",
-    "version": "0.0.6",
+    "version": "0.1.0",
     "publisher": "sower",
     "icon": "/assets/icon.png",
     "repository": {
