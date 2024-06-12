@@ -26,18 +26,18 @@ enum ESqlKeywords {
 }
 
 enum ESqlType {
-    Integer = "INTEGER",
-    IntegerArr = "INTEGER[]",
-    Bigint = "BIGINT",
-    Serial = "SERIAL",
-    Bigserial = "BIGSERIAL",
-    Char = "CHAR",
-    Varchar = "VARCHAR",
-    Text = "TEXT",
-    TextArr = "TEXT[]",
-    Timestamp = "TIMESTAMP",
-    Boolean = "BOOLEAN",
-    Bytea = "BYTEA",
+    Integer = "integer",
+    IntegerArr = "integer[]",
+    Bigint = "bigint",
+    Serial = "serial",
+    Bigserial = "bigserial",
+    Char = "char",
+    Varchar = "varchar",
+    Text = "text",
+    TextArr = "text[]",
+    Timestamp = "timestamp",
+    Boolean = "boolean",
+    Bytea = "bytea",
 }
 
 export function subscribeGenerateModel() {
@@ -83,7 +83,7 @@ async function parseSqlAndGenerateFiles() {
 
     /* Parse SQL statement */
 
-    const { schemaName, tableName, detail } = await parseCreateStmt(
+    const { schemaName, tableName, detail } = await parseCreateStmtV2(
         selectedText
     );
 
@@ -218,6 +218,16 @@ async function parseSqlAndGenerateFiles() {
     return generatedFiles;
 }
 
+type TParsedCreateTableStmt = {
+    schemaName: string;
+    tableName: string;
+    detail: Map<string, TColumnDetail>;
+};
+
+/**
+ * @deprecated
+ * @description Please use method `parseStmt` instead.
+ */
 async function parseCreateStmt(text: string) {
     CommonUtils.assert(
         text
@@ -318,7 +328,108 @@ async function parseCreateStmt(text: string) {
         schemaName: CommonUtils.mandatory(schemaName),
         tableName: CommonUtils.mandatory(tableName),
         detail: sqlDetailMap,
+    } satisfies TParsedCreateTableStmt;
+}
+
+type TStatement = {
+    type: "CreateTableStmt" | "Comment" | "AlterTableStmt";
+    table?: { schemaName: string | null; tableName: string };
+    columnOrConstraints: TColumnOrConstraints[];
+};
+
+type TColumnOrConstraints = {
+    column?: string;
+    type?:
+        | "integer"
+        | "integer[]"
+        | "text"
+        | "text[]"
+        | "serial"
+        | "bigserial"
+        | "boolean"
+        | "timestamp";
+    columnConstraints?: {
+        notNull?: boolean;
+        default?: string;
+        collate?: string;
+    }[];
+    tableConstraint?: {
+        primaryKey?: string[];
+        unique?: string;
     };
+};
+
+async function parseCreateStmtV2(text: string) {
+    const parser = require("@lib/sqlParser");
+
+    let stmts: TStatement[] = [];
+    try {
+        stmts = parser.parse(text.trim());
+    } catch (e: any) {
+        if (e.location !== undefined) {
+            throw new Error(
+                format(
+                    `syntax error at or near: %s. \n%s\nlocation: %s:%s~%s:%s.`,
+                    text
+                        .split("\n")
+                        [e.location.start.line - 1].slice(
+                            e.location.start.column - 1,
+                            -1
+                        ),
+                    e.message,
+                    e.location.start.line,
+                    e.location.start.column,
+                    e.location.end.line,
+                    e.location.end.column
+                )
+            );
+        } else {
+            throw new Error(e);
+        }
+    }
+
+    const createStmt = stmts.find((it) => it.type === "CreateTableStmt");
+    CommonUtils.assert(
+        createStmt !== undefined,
+        `Can not parse create table statements from text "${text}".`
+    );
+    const detailMap = new Map<string, TColumnDetail>();
+    const notNullColumns = createStmt.columnOrConstraints.flatMap((it) => {
+        const cols = [];
+        if (it.tableConstraint?.primaryKey !== undefined) {
+            cols.push(...it.tableConstraint.primaryKey);
+        }
+        if (it.tableConstraint?.unique !== undefined) {
+            cols.push(...it.tableConstraint.unique);
+        }
+
+        return cols;
+    });
+    createStmt.columnOrConstraints.forEach((it) => {
+        const { column, type, columnConstraints } = it;
+        if (column !== undefined) {
+            let nullable = true;
+            if (
+                columnConstraints?.find((it) => it.notNull === true) !==
+                    undefined ||
+                notNullColumns.includes(column)
+            ) {
+                nullable = false;
+            }
+
+            detailMap.set(column, {
+                tsType: mapTsType(CommonUtils.mandatory(type)),
+                nullable,
+                enumType: ETsType.Unknown, // TODO support extract enum type
+            });
+        }
+    });
+
+    return {
+        schemaName: CommonUtils.mandatory(createStmt.table?.schemaName),
+        tableName: CommonUtils.mandatory(createStmt.table?.tableName),
+        detail: detailMap,
+    } satisfies TParsedCreateTableStmt;
 }
 
 function mapTsType(columnType: string) {

@@ -64,7 +64,7 @@
                 {
                     "command": "sower-tools.generateModel",
                     "group": "002_generateModel@001",
-                    "when": "resourceLangId == typescript && editorTextFocus && editorHasSelection"
+                    "when": "editorTextFocus && editorHasSelection"
                 },
                 {
                     "command": "sower-tools.functionEnhancement.refactorFuncParametersToUseObjectParameter",
