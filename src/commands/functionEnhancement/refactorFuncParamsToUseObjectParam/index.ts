@@ -6,7 +6,11 @@ import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
 import { ETsType } from "@/shared/types";
 import { toUpperCamelCase } from "@/shared/utils";
-import { findFuncDeclarationNodeAtOffset } from "@/shared/utils/tsUtils";
+import {
+    findFuncDeclarationNodeAtOffset,
+    findTypeDeclarationNode,
+} from "@/shared/utils/tsUtils";
+import { insertTextBeforeNode } from "@/shared/utils/vscUtils";
 
 let activatedEditor: vscode.TextEditor;
 let sourceFile: ts.SourceFile;
@@ -90,10 +94,6 @@ async function refactorFunctionParametersToUseObjectParameter(
         return format(`%s%s: %s`, paramName, optional ? "?" : "", paramType);
     });
     const typeName = `T${toUpperCamelCase(node.name.getText())}Options`;
-    const typeDeclarationText = format(
-        `\n\ntype ${typeName} = {\n\t%s\n};\n\n`,
-        paramTypes.join(";\n\t")
-    );
     const newParamsText = `{ ${paramNames.join(",")} }: ${typeName}`;
 
     /* Update editor text */
@@ -122,13 +122,21 @@ async function refactorFunctionParametersToUseObjectParameter(
         );
     });
 
-    const funcStartPos = sourceFile.getLineAndCharacterOfPosition(
-        node.getFullStart()
-    );
-    await activatedEditor.edit((editBuilder) => {
-        editBuilder.insert(
-            new vscode.Position(funcStartPos.line, funcStartPos.character),
-            typeDeclarationText
+    if (
+        findTypeDeclarationNode({
+            sourceFile,
+            typeName,
+        }) === undefined
+    ) {
+        const typeDeclarationText = format(
+            `\n\ntype ${typeName} = {\n\t%s\n};\n\n`,
+            paramTypes.join(";\n\t")
         );
-    });
+        await insertTextBeforeNode({
+            editor: activatedEditor,
+            sourceFile,
+            node,
+            text: typeDeclarationText,
+        });
+    }
 }
