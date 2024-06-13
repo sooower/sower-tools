@@ -15,5 +15,11 @@ To use this extension, follow these steps:
 
 1. Install the extension.
 2. Open a project or empty directory in Visual Studio Code.
-3. Open a file in editor and right-click to open the context menu, you will see option: "Sower Tools".
-4. Use the features provided by the extension.
+3. Open a file in editor and right-click to open the context menu, you will see the options:
+    - Debug Current File
+    - Debug Project
+    - Refactor Parameters
+    - Generate Enum Assertion
+4. Select some texts in the editor, and right-click to open the context menu, you will see the options:
+    - Generate Model
+5. Use the features provided by the extension.

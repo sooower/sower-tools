@@ -48,9 +48,7 @@
                 {
                     "group": "navigation",
                     "submenu": "sower-tools"
-                }
-            ],
-            "sower-tools": [
+                },
                 {
                     "command": "sower-tools.debugCurrentFile",
                     "group": "001_debuggingEnhancement@001",
@@ -76,7 +74,8 @@
                     "group": "003_functionEnhancement@002",
                     "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
                 }
-            ]
+            ],
+            "sower-tools": []
         },
         "submenus": [
             {
