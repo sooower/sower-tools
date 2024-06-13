@@ -7,6 +7,8 @@ import { updateFuncParameterTypeName } from "./updateFuncParameterTypeName";
 export function subscribeOnDidSaveTextDocumentListener() {
     const listener = vscode.workspace.onDidSaveTextDocument(async (doc) => {
         try {
+            reloadConfiguration();
+
             /* Pre handle */
 
             const editor = vscode.window.activeTextEditor;
@@ -17,6 +19,8 @@ export function subscribeOnDidSaveTextDocumentListener() {
             if (doc !== editor.document) {
                 return;
             }
+
+            /* Handling for ts file */
 
             const currentFilePath = editor.document.fileName;
             if (!currentFilePath.endsWith(".ts")) {
@@ -29,10 +33,6 @@ export function subscribeOnDidSaveTextDocumentListener() {
                 ts.ScriptTarget.ES2015,
                 true
             );
-
-            /* Add actions */
-
-            reloadConfiguration();
 
             updateFuncParameterTypeName({
                 editor,

@@ -114,26 +114,50 @@
                 },
                 "sower-tools.GenerateModel.specialUpperCaseWordsMapping": {
                     "type": "array",
-                    "default": [],
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "Id:ID"
+                    ],
                     "description": "Special words pairs which will be mapped automatically when to uppercase, default is [\"Id:ID\"]."
                 },
                 "sower-tools.GenerateModel.ignoredInsertionColumns": {
                     "type": "array",
-                    "default": [],
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "createdAt",
+                        "updatedAt"
+                    ],
                     "description": "Special column names which will be ignored when inserting record, default is [\"createdAt\", \"updatedAt\"]."
                 },
-                "sower-tools.DebuggingEnhancement.debugProjectConfigurationName": {
-                    "type": "string",
-                    "default": "Debug Project",
-                    "description": "Configuration name of debugging the current opened project, location is <projectRootDir>/.vscode/launch.json."
+                "sower-tools.DebuggingEnhancement.debugProjectConfigurationNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "Debug Project"
+                    ],
+                    "description": "Configuration names of debugging the current opened project. The priority depends on the array element order, location is <projectRootDir>/.vscode/launch.json."
                 },
-                "sower-tools.DebuggingEnhancement.debugCurrentFileConfigurationName": {
-                    "type": "string",
-                    "default": "Current TS File",
-                    "description": "Configuration name of debugging the current opened file, location is <projectRootDir>/.vscode/launch.json."
+                "sower-tools.DebuggingEnhancement.debugCurrentFileConfigurationNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "Current File"
+                    ],
+                    "description": "Configuration names of debugging the current opened file. The priority depends on the array element order, location is <projectRootDir>/.vscode/launch.json."
                 },
                 "sower-tools.ShowDefaultOpenedDocument.documentNames": {
                     "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
                     "default": [
                         "README.md",
                         "readme.md",

@@ -30,13 +30,14 @@ export function subscribeDebuggingEnhancement() {
         `${extensionName}.debugProject`,
         async () => {
             try {
+                const debugProjectConfigurationNames = CommonUtils.assertArray(
+                    getConfigurationItem(
+                        `${extensionName}.DebuggingEnhancement.debugProjectConfigurationNames`
+                    )
+                ).map((it) => CommonUtils.assertString(it));
                 const debugProjectConfiguration =
-                    getDebuggingConfigurations().find(
-                        (it) =>
-                            it.name ===
-                            getConfigurationItem(
-                                `${extensionName}.DebuggingEnhancement.debugProjectConfigurationName`
-                            )
+                    getDebuggingConfigurations().find((it) =>
+                        debugProjectConfigurationNames.includes(it.name)
                     );
                 CommonUtils.assert(
                     debugProjectConfiguration !== undefined,
@@ -67,13 +68,15 @@ export function subscribeDebuggingEnhancement() {
         `${extensionName}.debugCurrentFile`,
         async () => {
             try {
+                const debugCurrentFileConfigurationNames =
+                    CommonUtils.assertArray(
+                        getConfigurationItem(
+                            `${extensionName}.DebuggingEnhancement.debugCurrentFileConfigurationNames`
+                        )
+                    ).map((it) => CommonUtils.assertString(it));
                 const debugCurrentFileConfiguration =
-                    getDebuggingConfigurations().find(
-                        (it) =>
-                            it.name ===
-                            getConfigurationItem(
-                                `${extensionName}.DebuggingEnhancement.debugCurrentFileConfigurationName`
-                            )
+                    getDebuggingConfigurations().find((it) =>
+                        debugCurrentFileConfigurationNames.includes(it.name)
                     );
                 CommonUtils.assert(
                     debugCurrentFileConfiguration !== undefined,
