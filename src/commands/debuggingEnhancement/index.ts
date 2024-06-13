@@ -153,24 +153,20 @@ function getDebuggingConfigurations() {
 }
 
 function loadLaunchJsonContent(): unknown {
-    try {
-        const [workspaceFolder] = CommonUtils.mandatory(
-            vscode.workspace.workspaceFolders
-        );
+    const [workspaceFolder] = CommonUtils.mandatory(
+        vscode.workspace.workspaceFolders
+    );
 
-        const launchConfigPath = path.join(
-            workspaceFolder.uri.fsPath,
-            ".vscode",
-            "launch.json"
-        );
-        CommonUtils.assert(
-            fs.existsSync(launchConfigPath),
-            `Launch file is not exists.`
-        );
-        const content = fs.readFileSync(launchConfigPath, "utf8");
+    const launchConfigPath = path.join(
+        workspaceFolder.uri.fsPath,
+        ".vscode",
+        "launch.json"
+    );
+    CommonUtils.assert(
+        fs.existsSync(launchConfigPath),
+        `Launch file "./.vscode/launch.json" is not exists.`
+    );
+    const content = fs.readFileSync(launchConfigPath, "utf8");
 
-        return parse(content);
-    } catch (e) {
-        throw new Error(`Parse launch.json failed, error: ${e}`);
-    }
+    return parse(content);
 }

@@ -49,6 +49,18 @@
             {
                 "command": "sower-tools.generateEnumAssertionFunction",
                 "title": "Generate Enum Assertion"
+            },
+            {
+                "command": "sower-tools.gitEnhancement.skipWorkTree",
+                "title": "Skip Work Tree"
+            },
+            {
+                "command": "sower-tools.gitEnhancement.noSkipWorkTree",
+                "title": "No Skip Work Tree"
+            },
+            {
+                "command": "sower-tools.gitEnhancement.listFiles",
+                "title": "List Files"
             }
         ],
         "menus": {
@@ -93,6 +105,20 @@
                     "when": "resourceLangId == typescript",
                     "command": "sower-tools.debugProject",
                     "group": "navigation@002"
+                }
+            ],
+            "explorer/context": [
+                {
+                    "command": "sower-tools.gitEnhancement.skipWorkTree",
+                    "group": "001_gitEnhancement@001"
+                },
+                {
+                    "command": "sower-tools.gitEnhancement.noSkipWorkTree",
+                    "group": "001_gitEnhancement@002"
+                },
+                {
+                    "command": "sower-tools.gitEnhancement.listFiles",
+                    "group": "001_gitEnhancement@003"
                 }
             ],
             "sower-tools": []
