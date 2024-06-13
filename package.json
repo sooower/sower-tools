@@ -3,7 +3,7 @@
     "displayName": "Sower Tools",
     "description": "This extension is a collection of tools.",
     "version": "0.1.0",
-    "publisher": "sower",
+    "publisher": "Sower",
     "icon": "/assets/icon.png",
     "repository": {
         "type": "git",
