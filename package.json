@@ -108,21 +108,22 @@
             "title": "Sower Tools Configuration",
             "properties": {
                 "sower-tools.GenerateModel.enableOverwriteFile": {
+                    "description": "If true, it will replace file content with new generated text.",
                     "type": "boolean",
-                    "default": false,
-                    "description": "If true, it will replace file content with new generated text."
+                    "default": false
                 },
                 "sower-tools.GenerateModel.specialUpperCaseWordsMapping": {
+                    "description": "Special words pairs which will be mapped automatically when to uppercase.",
                     "type": "array",
                     "items": {
                         "type": "string"
                     },
                     "default": [
                         "Id:ID"
-                    ],
-                    "description": "Special words pairs which will be mapped automatically when to uppercase, default is [\"Id:ID\"]."
+                    ]
                 },
                 "sower-tools.GenerateModel.ignoredInsertionColumns": {
+                    "description": "Special column names which will be ignored when inserting record.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -130,30 +131,30 @@
                     "default": [
                         "createdAt",
                         "updatedAt"
-                    ],
-                    "description": "Special column names which will be ignored when inserting record, default is [\"createdAt\", \"updatedAt\"]."
+                    ]
                 },
                 "sower-tools.DebuggingEnhancement.debugProjectConfigurationNames": {
+                    "description": "Configuration names of debugging the current opened project. The priority depends on the array element order, location is <projectRootDir>/.vscode/launch.json.",
                     "type": "array",
                     "items": {
                         "type": "string"
                     },
                     "default": [
                         "Debug Project"
-                    ],
-                    "description": "Configuration names of debugging the current opened project. The priority depends on the array element order, location is <projectRootDir>/.vscode/launch.json."
+                    ]
                 },
                 "sower-tools.DebuggingEnhancement.debugCurrentFileConfigurationNames": {
+                    "description": "Configuration names of debugging the current opened file. The priority depends on the array element order, location is <projectRootDir>/.vscode/launch.json.",
                     "type": "array",
                     "items": {
                         "type": "string"
                     },
                     "default": [
-                        "Current File"
-                    ],
-                    "description": "Configuration names of debugging the current opened file. The priority depends on the array element order, location is <projectRootDir>/.vscode/launch.json."
+                        "Current TS File"
+                    ]
                 },
                 "sower-tools.ShowDefaultOpenedDocument.documentNames": {
+                    "description": "Default opened filenames, priority is by the order you placed in this array, configurations usually are  description or specification file of your project.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -163,8 +164,7 @@
                         "readme.md",
                         "CHANGELOG.md",
                         "changelog.md"
-                    ],
-                    "description": "Default opened filenames, priority is by the order you placed in this array, configurations usually are  description or specification file of your project."
+                    ]
                 }
             }
         }
