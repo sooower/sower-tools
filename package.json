@@ -28,11 +28,19 @@
             },
             {
                 "command": "sower-tools.debugProject",
-                "title": "Debug Project"
+                "title": "Debug Project",
+                "icon": {
+                    "dark": "./assets/debugProject-dark.svg",
+                    "light": "./assets/debugProject-light.svg"
+                }
             },
             {
                 "command": "sower-tools.debugCurrentFile",
-                "title": "Debug Current File"
+                "title": "Debug Current File",
+                "icon": {
+                    "dark": "./assets/debugCurrentFile-dark.svg",
+                    "light": "./assets/debugCurrentFile-light.svg"
+                }
             },
             {
                 "command": "sower-tools.functionEnhancement.refactorFuncParametersToUseObjectParameter",
@@ -73,6 +81,18 @@
                     "command": "sower-tools.generateEnumAssertionFunction",
                     "group": "003_functionEnhancement@002",
                     "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
+                }
+            ],
+            "editor/title": [
+                {
+                    "when": "resourceLangId == typescript",
+                    "command": "sower-tools.debugCurrentFile",
+                    "group": "navigation@001"
+                },
+                {
+                    "when": "resourceLangId == typescript",
+                    "command": "sower-tools.debugProject",
+                    "group": "navigation@002"
                 }
             ],
             "sower-tools": []
