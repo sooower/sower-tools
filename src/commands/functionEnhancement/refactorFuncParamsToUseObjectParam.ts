@@ -12,9 +12,6 @@ import {
 } from "@/shared/utils/tsUtils";
 import { insertTextBeforeNode } from "@/shared/utils/vscUtils";
 
-let activatedEditor: vscode.TextEditor;
-let sourceFile: ts.SourceFile;
-
 export function subscribeRefactorFuncParametersToUseObjectParameter() {
     const command = vscode.commands.registerCommand(
         `${extensionName}.functionEnhancement.refactorFuncParametersToUseObjectParameter`,
@@ -25,15 +22,13 @@ export function subscribeRefactorFuncParametersToUseObjectParameter() {
                     return;
                 }
 
-                activatedEditor = editor;
-
-                const document = activatedEditor.document;
-                const currentFilePath = activatedEditor.document.fileName;
+                const document = editor.document;
+                const currentFilePath = editor.document.fileName;
                 if (!currentFilePath.endsWith(".ts")) {
                     return;
                 }
 
-                sourceFile = ts.createSourceFile(
+                const sourceFile = ts.createSourceFile(
                     document.fileName,
                     document.getText(),
                     ts.ScriptTarget.ES2015,
@@ -42,13 +37,17 @@ export function subscribeRefactorFuncParametersToUseObjectParameter() {
 
                 const funcNode = findFuncDeclarationNodeAtOffset({
                     sourceFile,
-                    offset: document.offsetAt(activatedEditor.selection.active),
+                    offset: document.offsetAt(editor.selection.active),
                 });
                 if (funcNode === undefined) {
                     return;
                 }
 
-                await refactorFunctionParametersToUseObjectParameter(funcNode);
+                await refactorFunctionParametersToUseObjectParameter({
+                    editor,
+                    sourceFile,
+                    node: funcNode,
+                });
             } catch (e) {
                 console.error(e);
                 vscode.window.showErrorMessage(`${e}`);
@@ -59,9 +58,17 @@ export function subscribeRefactorFuncParametersToUseObjectParameter() {
     extensionCtx.subscriptions.push(command);
 }
 
-async function refactorFunctionParametersToUseObjectParameter(
-    node: ts.FunctionDeclaration | ts.ArrowFunction
-) {
+type TRefactorFunctionParametersToUseObjectParameterOptions = {
+    editor: vscode.TextEditor;
+    sourceFile: ts.SourceFile;
+    node: ts.FunctionDeclaration | ts.ArrowFunction;
+};
+
+async function refactorFunctionParametersToUseObjectParameter({
+    editor,
+    sourceFile,
+    node,
+}: TRefactorFunctionParametersToUseObjectParameterOptions) {
     /* Check node is named function declaration with parameters */
 
     if (node.name === undefined) {
@@ -106,7 +113,7 @@ async function refactorFunctionParametersToUseObjectParameter(
     const lastParamEndPos = sourceFile.getLineAndCharacterOfPosition(
         lastParam.getEnd()
     );
-    await activatedEditor.edit((editBuilder) => {
+    await editor.edit((editBuilder) => {
         editBuilder.replace(
             new vscode.Range(
                 new vscode.Position(
@@ -129,11 +136,11 @@ async function refactorFunctionParametersToUseObjectParameter(
         }) === undefined
     ) {
         const typeDeclarationText = format(
-            `\n\ntype ${typeName} = {\n\t%s\n};\n\n`,
+            `\n\ntype ${typeName} = {\n\t%s\n};`,
             paramTypes.join(";\n\t")
         );
         await insertTextBeforeNode({
-            editor: activatedEditor,
+            editor,
             sourceFile,
             node,
             text: typeDeclarationText,

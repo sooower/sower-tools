@@ -11,11 +11,10 @@ import {
     findFuncDeclarationNode,
 } from "@/shared/utils/tsUtils";
 import {
+    getSourceFile,
     insertTextAfterNode,
     replaceTextOfNode,
 } from "@/shared/utils/vscUtils";
-
-let activatedEditor: vscode.TextEditor;
 
 export function subscribeGenerateEnumAssertionFunction() {
     const command = vscode.commands.registerCommand(
@@ -27,10 +26,8 @@ export function subscribeGenerateEnumAssertionFunction() {
                     return;
                 }
 
-                activatedEditor = editor;
-
-                const document = activatedEditor.document;
-                const currentFilePath = activatedEditor.document.fileName;
+                const document = editor.document;
+                const currentFilePath = editor.document.fileName;
                 if (!currentFilePath.endsWith(".ts")) {
                     return;
                 }
@@ -44,13 +41,16 @@ export function subscribeGenerateEnumAssertionFunction() {
 
                 const enumNode = findEnumDeclarationNodeAtOffset({
                     sourceFile,
-                    offset: document.offsetAt(activatedEditor.selection.active),
+                    offset: document.offsetAt(editor.selection.active),
                 });
                 if (enumNode === undefined) {
                     return;
                 }
 
-                await generateEnumAssertionFunction(enumNode);
+                await generateEnumAssertionFunction({
+                    editor,
+                    node: enumNode,
+                });
             } catch (e) {
                 console.error(e);
                 vscode.window.showErrorMessage(`${e}`);
@@ -61,10 +61,18 @@ export function subscribeGenerateEnumAssertionFunction() {
     extensionCtx.subscriptions.push(command);
 }
 
-async function generateEnumAssertionFunction(node: ts.EnumDeclaration) {
+type TGenerateEnumAssertionFunctionOptions = {
+    editor: vscode.TextEditor;
+    node: ts.EnumDeclaration;
+};
+
+async function generateEnumAssertionFunction({
+    editor,
+    node,
+}: TGenerateEnumAssertionFunctionOptions) {
     const nodeName = node.name.text;
     const enumMemberNames = node.members.map((it) =>
-        it.name.getText(getSourceFile())
+        it.name.getText(getSourceFile(editor))
     );
     const enumNameWithoutPrefix = mapEnumNameWithoutPrefix(nodeName);
     const valName = toLowerCamelCase(enumNameWithoutPrefix);
@@ -94,20 +102,20 @@ async function generateEnumAssertionFunction(node: ts.EnumDeclaration) {
         valName
     );
     const assertFuncDeclarationNode = findFuncDeclarationNode({
-        sourceFile: getSourceFile(),
+        sourceFile: getSourceFile(editor),
         funcName: `assert${enumNameWithoutPrefix}`,
     });
     if (assertFuncDeclarationNode !== undefined) {
         await replaceTextOfNode({
-            editor: activatedEditor,
-            sourceFile: getSourceFile(),
+            editor: editor,
+            sourceFile: getSourceFile(editor),
             node: assertFuncDeclarationNode,
             newText: assertFuncText,
         });
     } else {
         await insertTextAfterNode({
-            editor: activatedEditor,
-            sourceFile: getSourceFile(),
+            editor: editor,
+            sourceFile: getSourceFile(editor),
             node: node,
             text: assertFuncText,
         });
@@ -131,16 +139,16 @@ async function generateEnumAssertionFunction(node: ts.EnumDeclaration) {
         valName
     );
     const assertOptionalFuncDeclarationNode = findFuncDeclarationNode({
-        sourceFile: getSourceFile(),
+        sourceFile: getSourceFile(editor),
         funcName: `assertOptional${enumNameWithoutPrefix}`,
     });
     if (assertOptionalFuncDeclarationNode === undefined) {
         await insertTextAfterNode({
-            editor: activatedEditor,
-            sourceFile: getSourceFile(),
+            editor: editor,
+            sourceFile: getSourceFile(editor),
             node: CommonUtils.mandatory(
                 findFuncDeclarationNode({
-                    sourceFile: getSourceFile(),
+                    sourceFile: getSourceFile(editor),
                     funcName: `assert${enumNameWithoutPrefix}`,
                 })
             ),
@@ -166,29 +174,20 @@ async function generateEnumAssertionFunction(node: ts.EnumDeclaration) {
         valName
     );
     const assertNullableFuncDeclarationNode = findFuncDeclarationNode({
-        sourceFile: getSourceFile(),
+        sourceFile: getSourceFile(editor),
         funcName: `assertNullable${enumNameWithoutPrefix}`,
     });
     if (assertNullableFuncDeclarationNode === undefined) {
         await insertTextAfterNode({
-            editor: activatedEditor,
-            sourceFile: getSourceFile(),
+            editor: editor,
+            sourceFile: getSourceFile(editor),
             node: CommonUtils.mandatory(
                 findFuncDeclarationNode({
-                    sourceFile: getSourceFile(),
+                    sourceFile: getSourceFile(editor),
                     funcName: `assertOptional${enumNameWithoutPrefix}`,
                 })
             ),
             text: assertNullableFuncText,
         });
     }
-}
-
-function getSourceFile() {
-    return ts.createSourceFile(
-        activatedEditor.document.fileName,
-        activatedEditor.document.getText(),
-        ts.ScriptTarget.ES2015,
-        true
-    );
 }

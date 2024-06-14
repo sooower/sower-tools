@@ -9,27 +9,17 @@ export function findTypeDeclarationNode({
     sourceFile,
     typeName,
 }: TFindTypeDeclarationNodeOptions) {
-    let typeDeclarationNode:
-        | ts.TypeAliasDeclaration
-        | ts.InterfaceDeclaration
-        | ts.ClassDeclaration
-        | undefined;
+    function visit(node: ts.Node): ts.TypeAliasDeclaration | undefined {
+        if (!ts.isTypeAliasDeclaration(node)) {
+            return ts.forEachChild(node, visit);
+        }
 
-    ts.forEachChild(sourceFile, visit);
-
-    function visit(node: ts.Node) {
-        if (
-            ts.isTypeAliasDeclaration(node) &&
-            node.name !== undefined &&
-            node.name.text === typeName
-        ) {
-            typeDeclarationNode = node;
-        } else {
-            ts.forEachChild(node, visit);
+        if (node.name?.text === typeName) {
+            return node;
         }
     }
 
-    return typeDeclarationNode;
+    return visit(sourceFile);
 }
 
 type TFindFuncDeclarationNodeOptions = {
@@ -41,21 +31,19 @@ export function findFuncDeclarationNode({
     sourceFile,
     funcName,
 }: TFindFuncDeclarationNodeOptions) {
-    let funcNode: ts.Node | undefined;
+    function visit(
+        node: ts.Node
+    ): ts.FunctionDeclaration | ts.ArrowFunction | undefined {
+        if (!ts.isFunctionDeclaration(node) && !ts.isArrowFunction(node)) {
+            return ts.forEachChild(node, visit);
+        }
 
-    ts.forEachChild(sourceFile, visit);
-
-    function visit(node: ts.Node) {
-        if (
-            (ts.isFunctionDeclaration(node) || ts.isArrowFunction(node)) &&
-            node.name !== undefined &&
-            node.name.text === funcName
-        ) {
-            funcNode = node;
+        if (node.name?.text === funcName) {
+            return node;
         }
     }
 
-    return funcNode;
+    return visit(sourceFile);
 }
 
 type TFindFuncDeclarationNodeAtOffsetOptions = {
@@ -82,6 +70,28 @@ export function findFuncDeclarationNodeAtOffset({
     return visit(sourceFile);
 }
 
+type TFindEnumDeclarationNodeOptions = {
+    sourceFile: ts.SourceFile;
+    enumName: string;
+};
+
+export function findEnumDeclarationNode({
+    sourceFile,
+    enumName,
+}: TFindEnumDeclarationNodeOptions) {
+    function visit(node: ts.Node): ts.EnumDeclaration | undefined {
+        if (!ts.isEnumDeclaration(node)) {
+            return ts.forEachChild(node, visit);
+        }
+
+        if (node.name?.text === enumName) {
+            return node;
+        }
+    }
+
+    return visit(sourceFile);
+}
+
 type TFindEnumDeclarationNodeAtOffsetOptions = {
     sourceFile: ts.SourceFile;
     offset: number;
@@ -97,6 +107,28 @@ export function findEnumDeclarationNodeAtOffset({
         }
 
         if (node.getStart() <= offset && node.getEnd() >= offset) {
+            return node;
+        }
+    }
+
+    return visit(sourceFile);
+}
+
+type TFindVariableDeclarationNodeOptions = {
+    sourceFile: ts.Node;
+    varName: string;
+};
+
+export function findVariableDeclarationNode({
+    sourceFile,
+    varName,
+}: TFindVariableDeclarationNodeOptions) {
+    function visit(node: ts.Node): ts.VariableDeclaration | undefined {
+        if (!ts.isVariableDeclaration(node)) {
+            return ts.forEachChild(node, visit);
+        }
+
+        if (node.name.getText() === varName) {
             return node;
         }
     }

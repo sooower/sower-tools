@@ -2,6 +2,10 @@ import { specialWordsMap } from "../init";
 import CommonUtils from "./commonUtils";
 
 export function toLowerCamelCase(input: string) {
+    // Restore special words
+    for (const [k, v] of specialWordsMap) {
+        input = input.replaceAll(v, k);
+    }
     const camelCaseInput = input.replace(/[-_.](.)/g, (_, c) =>
         c.toUpperCase()
     );
@@ -31,4 +35,13 @@ export function mapEnumNameWithoutPrefix(enumTypeName: string) {
     return enumTypeName[0] === "E" && /[A-Z]/.test(enumTypeName[1])
         ? enumTypeName.slice(1)
         : enumTypeName;
+}
+
+export function reverseMap(map: Map<string, string>) {
+    const newMap = new Map<string, string>();
+    for (const [k, v] of map) {
+        map.set(v, k);
+    }
+
+    return newMap;
 }

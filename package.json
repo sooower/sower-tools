@@ -23,11 +23,15 @@
     "contributes": {
         "commands": [
             {
-                "command": "sower-tools.generateModel",
+                "command": "sower-tools.databaseModel.generateModel",
                 "title": "Generate Model"
             },
             {
-                "command": "sower-tools.debugProject",
+                "command": "sower-tools.databaseModel.updateModel",
+                "title": "Update Model"
+            },
+            {
+                "command": "sower-tools.debuggingEnhancement.debugProject",
                 "title": "Debug Project",
                 "icon": {
                     "dark": "./assets/debugProject-dark.svg",
@@ -35,7 +39,7 @@
                 }
             },
             {
-                "command": "sower-tools.debugCurrentFile",
+                "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
                 "title": "Debug Current File",
                 "icon": {
                     "dark": "./assets/debugCurrentFile-dark.svg",
@@ -70,19 +74,24 @@
                     "submenu": "sower-tools"
                 },
                 {
-                    "command": "sower-tools.debugCurrentFile",
+                    "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
                     "group": "001_debuggingEnhancement@001",
                     "when": "resourceLangId == typescript"
                 },
                 {
-                    "command": "sower-tools.debugProject",
+                    "command": "sower-tools.debuggingEnhancement.debugProject",
                     "group": "001_debuggingEnhancement@002",
                     "when": "resourceLangId == typescript"
                 },
                 {
-                    "command": "sower-tools.generateModel",
-                    "group": "002_generateModel@001",
+                    "command": "sower-tools.databaseModel.generateModel",
+                    "group": "002_databaseModel@001",
                     "when": "editorTextFocus && editorHasSelection"
+                },
+                {
+                    "command": "sower-tools.databaseModel.updateModel",
+                    "group": "002_databaseModel@002",
+                    "when": "editorTextFocus"
                 },
                 {
                     "command": "sower-tools.functionEnhancement.refactorFuncParametersToUseObjectParameter",
@@ -97,14 +106,14 @@
             ],
             "editor/title": [
                 {
-                    "when": "resourceLangId == typescript",
-                    "command": "sower-tools.debugCurrentFile",
-                    "group": "navigation@001"
+                    "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
+                    "group": "navigation@001",
+                    "when": "resourceLangId == typescript"
                 },
                 {
-                    "when": "resourceLangId == typescript",
-                    "command": "sower-tools.debugProject",
-                    "group": "navigation@002"
+                    "command": "sower-tools.debuggingEnhancement.debugProject",
+                    "group": "navigation@002",
+                    "when": "resourceLangId == typescript"
                 }
             ],
             "explorer/context": [

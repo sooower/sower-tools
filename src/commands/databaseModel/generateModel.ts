@@ -1,6 +1,7 @@
 import path from "node:path";
 import { format } from "node:util";
 
+import { mapAssertMethod, TColumnDetail } from "@/commands/databaseModel/utils";
 import { fs, vscode } from "@/shared";
 import {
     enableOverwriteFile,
@@ -9,11 +10,7 @@ import {
     ignoredInsertionColumns,
 } from "@/shared/init";
 import { ETsType } from "@/shared/types";
-import {
-    mapEnumNameWithoutPrefix,
-    toLowerCamelCase,
-    toUpperCamelCase,
-} from "@/shared/utils";
+import { toLowerCamelCase, toUpperCamelCase } from "@/shared/utils";
 import CommonUtils from "@/shared/utils/commonUtils";
 
 enum ESqlKeywords {
@@ -42,7 +39,7 @@ enum ESqlType {
 
 export function subscribeGenerateModel() {
     const command = vscode.commands.registerCommand(
-        `${extensionName}.generateModel`,
+        `${extensionName}.databaseModel.generateModel`,
         async () => {
             vscode.window.withProgress(
                 {
@@ -126,19 +123,21 @@ async function parseSqlAndGenerateFiles() {
         tableName,
         "index.ts"
     );
+
     if (!enableOverwriteFile) {
         assertFileNotEmpty(modelFilePath);
     }
 
-    const columnContent: string[] = [];
-    const definitionsContent: string[] = [];
-    const resolverContent: string[] = [];
-    const insertOptionsContent: string[] = [];
-    const insertContent: string[] = [];
+    const enumEColumnContent: string[] = [];
+    const typeTDefinitionsContent: string[] = [];
+    const varkResolverContent: string[] = [];
+    const typeTInsertOptionsContent: string[] = [];
+    const funcInsertContent: string[] = [];
 
     for (const [column, { tsType, nullable, enumType }] of detail) {
-        columnContent.push(`${toUpperCamelCase(column)} = "${column}",`);
-        definitionsContent.push(
+        enumEColumnContent.push(`${toUpperCamelCase(column)} = "${column}",`);
+
+        typeTDefinitionsContent.push(
             format(
                 `[EColumn.%s]%s: %s;`,
                 toUpperCamelCase(column),
@@ -146,15 +145,17 @@ async function parseSqlAndGenerateFiles() {
                 enumType === ETsType.Unknown ? tsType : enumType
             )
         );
-        resolverContent.push(
+
+        varkResolverContent.push(
             format(
                 `[EColumn.%s]: %s,`,
                 toUpperCamelCase(column),
                 mapAssertMethod({ tsType, nullable, enumType })
             )
         );
+
         if (!ignoredInsertionColumns.includes(column)) {
-            insertOptionsContent.push(
+            typeTInsertOptionsContent.push(
                 format(
                     `%s%s: %s;`,
                     column,
@@ -162,16 +163,16 @@ async function parseSqlAndGenerateFiles() {
                     enumType === ETsType.Unknown ? tsType : enumType
                 )
             );
-            insertContent.push(
+            funcInsertContent.push(
                 nullable
                     ? format(
                           `
-                        if (options.%s !== undefined) {
-                            columnValues.push({
-                                column: EColumn.%s,
-                                value: options.%s,
-                            });
-                        }
+                            if (options.%s !== undefined) {
+                                columnValues.push({
+                                    column: EColumn.%s,
+                                    value: options.%s,
+                                });
+                            }
                     `,
                           column,
                           toUpperCamelCase(column),
@@ -190,30 +191,30 @@ async function parseSqlAndGenerateFiles() {
             );
         }
     }
-
     const modelFileContent = fs
         .readFileSync(
             path.join(extensionCtx.extensionPath, "templates", "model.tpl"),
             "utf-8"
         )
-        .replace(/{{EColumnContent}}/g, columnContent.join("\n    "))
-        .replace(/{{TDefinitionsContent}}/g, definitionsContent.join("\n    "))
-        .replace(/{{kResolverContent}}/g, resolverContent.join("\n    "))
+        .replace(/{{EColumnContent}}/g, enumEColumnContent.join("\n"))
+        .replace(/{{TDefinitionsContent}}/g, typeTDefinitionsContent.join("\n"))
+        .replace(/{{kResolverContent}}/g, varkResolverContent.join("\n"))
         .replace(
             /{{TInsertOptionsContent}}/g,
-            insertOptionsContent.join("\n    ")
+            typeTInsertOptionsContent.join("\n")
         )
-        .replace(/{{insertContent}}/g, insertContent.join("\n    "))
+        .replace(/{{insertContent}}/g, funcInsertContent.join("\n"))
         .replace(/{{tableName}}/g, toLowerCamelCase(tableName));
 
     await vscode.workspace.fs.writeFile(
         vscode.Uri.file(modelFilePath),
         Buffer.from(modelFileContent)
     );
-    generatedFiles.push(modelFilePath);
 
     // Open model file in editor
     await vscode.window.showTextDocument(vscode.Uri.file(modelFilePath));
+
+    generatedFiles.push(modelFilePath);
 
     return generatedFiles;
 }
@@ -485,105 +486,10 @@ function mapEnumType(columnConfigs: string[]) {
     }
 }
 
-type TColumnDetail = {
-    tsType: ETsType;
-    nullable: boolean;
-    enumType: string;
-};
-
-function mapAssertMethod({ tsType, nullable, enumType }: TColumnDetail) {
-    switch (tsType) {
-        case ETsType.Number: {
-            if (nullable) {
-                return `(val) => val === null ? undefined : CommonUtils.assertSafeInteger(val)`;
-            } else {
-                return `(val) => CommonUtils.assertSafeInteger(val)`;
-            }
-        }
-        case ETsType.NumberArr: {
-            if (nullable) {
-                return `(val) => val === null ? undefined : CommonUtils.assertArray(val).map((val) => CommonUtils.assertSafeInteger(val))`;
-            } else {
-                return `(val) => CommonUtils.assertArray(val)`;
-            }
-        }
-        case ETsType.String: {
-            if (nullable) {
-                if (enumType !== ETsType.Unknown) {
-                    return format(
-                        `(val) => CommonUtils.assertNullableEnum("%s", { type: %s, val })`,
-                        mapEnumNameWithoutPrefix(enumType),
-                        enumType
-                    );
-                } else {
-                    return `(val) => CommonUtils.assertNullableString(val)`;
-                }
-            } else {
-                if (enumType !== ETsType.Unknown) {
-                    return format(
-                        `(val) => CommonUtils.assertEnum("%s", { type: %s, val })`,
-                        mapEnumNameWithoutPrefix(enumType),
-                        enumType
-                    );
-                } else {
-                    return `(val) => CommonUtils.assertString(val)`;
-                }
-            }
-        }
-        case ETsType.StringArr: {
-            if (nullable) {
-                if (enumType !== ETsType.Unknown) {
-                    return format(
-                        `(val) => val === null ? undefined : CommonUtils.assertArray(val).map((val) => CommonUtils.assertEnum("%s", { type: %s, val }))`,
-                        mapEnumNameWithoutPrefix(enumType),
-                        enumType
-                    );
-                } else {
-                    return `(val) => val === null ? undefined : CommonUtils.assertArray(val).map((val) => CommonUtils.assertString(val))`;
-                }
-            } else {
-                if (enumType !== ETsType.Unknown) {
-                    return format(
-                        `(val) => CommonUtils.assertArray(val).map((val) => CommonUtils.assertEnum("%s", { type: %s, val }))`,
-                        mapEnumNameWithoutPrefix(enumType),
-                        enumType
-                    );
-                } else {
-                    return `(val) => CommonUtils.assertArray(val).map((val) => CommonUtils.assertString(val))`;
-                }
-            }
-        }
-        case ETsType.Boolean: {
-            if (nullable) {
-                return `(val) => CommonUtils.assertNullableBoolean(val)`;
-            } else {
-                return `(val) => CommonUtils.assertBoolean(val)`;
-            }
-        }
-        case ETsType.Date: {
-            if (nullable) {
-                return `(val) => CommonUtils.assertNullableDate(val)`;
-            } else {
-                return `(val) => CommonUtils.assertDate(val)`;
-            }
-        }
-        case ETsType.Buffer: {
-            if (nullable) {
-                return `(val) => val === null ? undefined : CommonUtils.assertBuffer(val)`;
-            } else {
-                return `(val) => CommonUtils.assertBuffer(val)`;
-            }
-        }
-        default: {
-            throw new Error(`Unexpected tsType "${tsType}".`);
-        }
-    }
-}
-
 function assertFileNotEmpty(filePath: string) {
     CommonUtils.assert(
         !fs.existsSync(filePath) ||
             fs.readFileSync(filePath, "utf-8").trim() === "",
-        `File "${filePath}" is not empty.`
+        `File "${filePath}" is not empty, please enable overwrite file settings.`
     );
 }

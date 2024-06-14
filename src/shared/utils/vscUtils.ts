@@ -32,6 +32,30 @@ export async function replaceTextOfNode({
     });
 }
 
+type TReplaceTextRangeOffsetOptions = {
+    editor: vscode.TextEditor;
+    start: number;
+    end: number;
+    newText: string;
+};
+
+export async function replaceTextRangeOffset({
+    editor,
+    start,
+    end,
+    newText,
+}: TReplaceTextRangeOffsetOptions) {
+    await editor.edit((editBuilder) => {
+        editBuilder.replace(
+            new vscode.Range(
+                editor.document.positionAt(start),
+                editor.document.positionAt(end + 1)
+            ),
+            newText
+        );
+    });
+}
+
 type TDeleteTextOfNodeOptions = {
     editor: vscode.TextEditor;
     sourceFile: ts.SourceFile;
@@ -108,4 +132,13 @@ export async function insertTextAfterNode({
             "\n\n" + text
         );
     });
+}
+
+export function getSourceFile(editor: vscode.TextEditor) {
+    return ts.createSourceFile(
+        editor.document.fileName,
+        editor.document.getText(),
+        ts.ScriptTarget.ES2015,
+        true
+    );
 }
