@@ -62,7 +62,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
     });
     CommonUtils.assert(
         typTDefinitionsNode !== undefined,
-        `Can not found type declaration of "TDefinitions", please check your code to generate this first.`
+        `Can not found type declaration of "TDefinitions", please check your code to generate one first.`
     );
 
     const typeMemberMap = extractTypeMemberMap(typTDefinitionsNode);

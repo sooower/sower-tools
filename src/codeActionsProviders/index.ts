@@ -1,5 +1,5 @@
 import { vscode } from "../shared";
-import { extensionCtx } from "../shared/init";
+import { extensionCtx, extensionName } from "../shared/init";
 
 export function subscribeCodeActionProviders() {
     extensionCtx.subscriptions.push(
@@ -23,27 +23,34 @@ class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
         const refactorParametersCodeAction = new vscode.CodeAction(
-            "Refactor Parameters"
+            "Refactor Parameters Style"
         );
         refactorParametersCodeAction.command = {
-            command:
-                "sower-tools.functionEnhancement.refactorFuncParametersToUseObjectParameter",
-            title: "Refactor Parameters",
+            command: `${extensionName}.functionEnhancement.refactorFuncParametersToUseObjectParameter`,
+            title: "",
             arguments: [document, range],
         };
 
         const generateEnumAssertionFunctionCodeAction = new vscode.CodeAction(
-            "Generate Enum Assertion"
+            "Generate/Update Enum Assertion"
         );
         generateEnumAssertionFunctionCodeAction.command = {
-            command: "sower-tools.generateEnumAssertionFunction",
-            title: "Generate Enum Assertion",
+            command: `${extensionName}.generateEnumAssertionFunction`,
+            title: "",
+            arguments: [document, range],
+        };
+
+        const updateModelCodeAction = new vscode.CodeAction("Update Model");
+        updateModelCodeAction.command = {
+            command: `${extensionName}.databaseModel.updateModel`,
+            title: "",
             arguments: [document, range],
         };
 
         return [
             refactorParametersCodeAction,
             generateEnumAssertionFunctionCodeAction,
+            updateModelCodeAction,
         ];
     }
 }

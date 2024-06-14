@@ -43,9 +43,10 @@ export function subscribeGenerateEnumAssertionFunction() {
                     sourceFile,
                     offset: document.offsetAt(editor.selection.active),
                 });
-                if (enumNode === undefined) {
-                    return;
-                }
+                CommonUtils.assert(
+                    enumNode !== undefined,
+                    `Can not found enum declaration, please check your code to generate one first`
+                );
 
                 await generateEnumAssertionFunction({
                     editor,
