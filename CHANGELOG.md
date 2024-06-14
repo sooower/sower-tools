@@ -65,3 +65,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Update node contains node rule.
 -   Update path alias.
 -   Update assertFunction if it exists.
+
+## [0.2.0] - 2024-06-14
+
+### Added
+
+-   Introduce new git enhancement commands: skipWorkTree, noSkipWorkTree, and listFiles.
+-   Add the new commands "Update Model" in context menu and in code action to update model file after updated the type declaration "TDefinitions".
+
+### Updated
+
+-   Refactor context menu item.
+-   Introduce new editor title actions for quick access to these debugging commands.
+-   Update default configuration settings for debugging to accept arrays of configuration names. This change allows users to specify multiple configuration names for both project-level and file-level debugging, enhancing the flexibility of the debugging experience within VS Code.
+-   Improve error messages for command execution failures.
+
+### Fixed
+
+-   Avoid type declaration duplication in refactoring
+-   Window can not show information message
+
+### Breaking Change
+
+-   Configuration names now expect arrays instead of single strings. Users must update their configuration settings accordingly.

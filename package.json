@@ -2,7 +2,7 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "This extension is a collection of tools.",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "publisher": "Sower",
     "icon": "/assets/icon.png",
     "repository": {
@@ -48,11 +48,11 @@
             },
             {
                 "command": "sower-tools.functionEnhancement.refactorFuncParametersToUseObjectParameter",
-                "title": "Refactor Parameters"
+                "title": "Refactor Parameters Style"
             },
             {
                 "command": "sower-tools.generateEnumAssertionFunction",
-                "title": "Generate Enum Assertion"
+                "title": "Generate/Update Enum Assertion"
             },
             {
                 "command": "sower-tools.gitEnhancement.skipWorkTree",

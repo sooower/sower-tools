@@ -8,6 +8,8 @@
 -   Auto refactor type name of function options parameter when ts document saved.
 -   Generate enum assertion functions.
 -   Add typescript code refactor panel actions, you can use it to refactor function parameters or generate assert enum functions.
+-   Introduce new git enhancement commands: skipWorkTree, noSkipWorkTree, and listFiles.
+-   Add the new commands "Update Model" in context menu and in code action to update model file after updated the type declaration "TDefinitions".
 
 ## Usage
 
@@ -18,8 +20,9 @@ To use this extension, follow these steps:
 3. Open a file in editor and right-click to open the context menu, you will see the options:
     - Debug Current File
     - Debug Project
-    - Refactor Parameters
-    - Generate Enum Assertion
+    - Refactor Parameters Style
+    - Generate/Update Enum Assertion
+    - Update Model
 4. Select some texts in the editor, and right-click to open the context menu, you will see the options:
     - Generate Model
 5. Use the features provided by the extension.
