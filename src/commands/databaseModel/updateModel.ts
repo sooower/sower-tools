@@ -35,8 +35,7 @@ export function subscribeUpdateModel() {
                     return;
                 }
 
-                const currentFilePath = editor.document.fileName;
-                if (!currentFilePath.endsWith(".ts")) {
+                if (editor.document.languageId !== "typescript") {
                     return;
                 }
 

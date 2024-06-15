@@ -22,13 +22,12 @@ export function subscribeOnDidSaveTextDocumentListener() {
 
             /* Handling for ts file */
 
-            const currentFilePath = editor.document.fileName;
-            if (!currentFilePath.endsWith(".ts")) {
+            if (editor.document.languageId !== "typescript") {
                 return;
             }
 
             const sourceFile = ts.createSourceFile(
-                currentFilePath,
+                editor.document.fileName,
                 editor.document.getText(),
                 ts.ScriptTarget.ES2015,
                 true

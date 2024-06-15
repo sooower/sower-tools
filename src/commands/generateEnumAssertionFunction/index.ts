@@ -26,22 +26,20 @@ export function subscribeGenerateEnumAssertionFunction() {
                     return;
                 }
 
-                const document = editor.document;
-                const currentFilePath = editor.document.fileName;
-                if (!currentFilePath.endsWith(".ts")) {
+                if (editor.document.languageId !== "typescript") {
                     return;
                 }
 
                 const sourceFile = ts.createSourceFile(
-                    document.fileName,
-                    document.getText(),
+                    editor.document.fileName,
+                    editor.document.getText(),
                     ts.ScriptTarget.ES2015,
                     true
                 );
 
                 const enumNode = findEnumDeclarationNodeAtOffset({
                     sourceFile,
-                    offset: document.offsetAt(editor.selection.active),
+                    offset: editor.document.offsetAt(editor.selection.active),
                 });
                 CommonUtils.assert(
                     enumNode !== undefined,
