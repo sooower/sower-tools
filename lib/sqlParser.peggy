@@ -80,7 +80,6 @@ Constraint
   / "DEFAULT"i _ defaultVal: DefaultVal { return { default: defaultVal }}
   / "COLLATE"i _  rule:CollateRule { return { collate: rule } }
 
-// FIXME parse default
 DefaultVal
   = "nextval("i _ ( "'" IdentifierExt "'" _ "::" _  Identifier _ )? ")" { return text() }
   / "'"? Identifier "'"? _ "::" _  Identifier ( _  "[]" )? { return text() }
