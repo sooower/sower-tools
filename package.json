@@ -65,6 +65,14 @@
             {
                 "command": "sower-tools.gitEnhancement.listFiles",
                 "title": "List Files"
+            },
+            {
+                "command": "sower-tools.timestampTool.covertTimestamp",
+                "title": "Convert Timestamp"
+            },
+            {
+                "command": "sower-tools.timestampTool.insertTimestamp",
+                "title": "Insert Timestamp"
             }
         ],
         "menus": {
@@ -91,7 +99,7 @@
                 {
                     "command": "sower-tools.databaseModel.updateModel",
                     "group": "002_databaseModel@002",
-                    "when": "editorTextFocus"
+                    "when": "editorTextFocus  && !editorHasSelection"
                 },
                 {
                     "command": "sower-tools.functionEnhancement.convertParametersToOptionsObject",
@@ -102,6 +110,16 @@
                     "command": "sower-tools.generateEnumAssertionFunction",
                     "group": "003_functionEnhancement@002",
                     "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
+                },
+                {
+                    "command": "sower-tools.timestampTool.covertTimestamp",
+                    "group": "004_timestampTool@001",
+                    "when": "editorTextFocus && editorHasSelection"
+                },
+                {
+                    "command": "sower-tools.timestampTool.insertTimestamp",
+                    "group": "004_timestampTool@002",
+                    "when": "editorTextFocus && !editorHasSelection"
                 }
             ],
             "editor/title": [
@@ -232,7 +250,8 @@
         "typescript": "^5.4.5"
     },
     "dependencies": {
-        "comment-json": "^4.2.3"
+        "comment-json": "^4.2.3",
+        "dayjs": "^1.11.11"
     },
     "extensionDependencies": [
         "shd101wyy.markdown-preview-enhanced"

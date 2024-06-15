@@ -168,6 +168,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
             start: varResolverNode.parent.getStart(),
             end: varResolverNode.getEnd(),
             newText: varResolverNodeText,
+            endPlusOne: true,
         });
     } else {
         await insertTextAfterNode({

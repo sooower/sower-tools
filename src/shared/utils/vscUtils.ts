@@ -37,6 +37,7 @@ type TReplaceTextRangeOffsetOptions = {
     start: number;
     end: number;
     newText: string;
+    endPlusOne?: boolean;
 };
 
 export async function replaceTextRangeOffset({
@@ -44,12 +45,13 @@ export async function replaceTextRangeOffset({
     start,
     end,
     newText,
+    endPlusOne,
 }: TReplaceTextRangeOffsetOptions) {
     await editor.edit((editBuilder) => {
         editBuilder.replace(
             new vscode.Range(
                 editor.document.positionAt(start),
-                editor.document.positionAt(end + 1)
+                editor.document.positionAt(endPlusOne === true ? end + 1 : end)
             ),
             newText
         );
@@ -131,6 +133,22 @@ export async function insertTextAfterNode({
             new vscode.Position(endPos.line, endPos.character),
             "\n\n" + text
         );
+    });
+}
+
+type TInsertTextAtOffsetOptions = {
+    editor: vscode.TextEditor;
+    offset: number;
+    text: string;
+};
+
+export async function insertTextAtOffset({
+    editor,
+    offset,
+    text,
+}: TInsertTextAtOffsetOptions) {
+    await editor.edit((editBuilder) => {
+        editBuilder.insert(editor.document.positionAt(offset), text);
     });
 }
 

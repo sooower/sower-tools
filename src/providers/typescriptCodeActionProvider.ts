@@ -2,20 +2,21 @@ import { vscode } from "../shared";
 import { extensionCtx, extensionName } from "../shared/init";
 
 export function subscribeCodeActionProviders() {
-    extensionCtx.subscriptions.push(
-        vscode.languages.registerCodeActionsProvider(
-            "typescript",
-            new TypeScriptCodeActionProvider(),
-            {
-                providedCodeActionKinds:
-                    TypeScriptCodeActionProvider.providedCodeActionKinds,
-            }
-        )
+    const provider = vscode.languages.registerCodeActionsProvider(
+        "typescript",
+        new TypeScriptCodeActionProvider(),
+        {
+            providedCodeActionKinds:
+                TypeScriptCodeActionProvider.providedCodeActionKinds,
+        }
     );
+
+    extensionCtx.subscriptions.push(provider);
 }
 
 class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
     public static readonly providedCodeActionKinds = [
+        vscode.CodeActionKind.RefactorRewrite,
         vscode.CodeActionKind.QuickFix,
     ];
 
@@ -56,10 +57,32 @@ class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
             arguments: [document, range],
         };
 
+        const covertTimestampCodeAction = new vscode.CodeAction(
+            "Convert timestamp",
+            vscode.CodeActionKind.RefactorRewrite
+        );
+        covertTimestampCodeAction.command = {
+            command: `${extensionName}.timestampTool.covertTimestamp`,
+            title: "",
+            arguments: [document, range],
+        };
+
+        const insertTimestampCodeAction = new vscode.CodeAction(
+            "Insert timestamp",
+            vscode.CodeActionKind.QuickFix
+        );
+        insertTimestampCodeAction.command = {
+            command: `${extensionName}.timestampTool.insertTimestamp`,
+            title: "",
+            arguments: [document, range],
+        };
+
         return [
             convertParametersToOptionsObject,
             generateEnumAssertionFunctionCodeAction,
             updateModelCodeAction,
+            covertTimestampCodeAction,
+            insertTimestampCodeAction,
         ];
     }
 }

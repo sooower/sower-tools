@@ -1,5 +1,6 @@
-import { subscribeCommandsRegistry } from "./commands";
+import { subscribeCommands } from "./commands";
 import { subscribeEventListeners } from "./eventListeners";
+import { subscribeProviders } from "./providers";
 import { vscode } from "./shared";
 import { init } from "./shared/init";
 import { showDefaultOpenedDocument } from "./showDefaultOpenedDocument";
@@ -10,8 +11,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
         await showDefaultOpenedDocument();
 
-        subscribeCommandsRegistry();
+        subscribeCommands();
         subscribeEventListeners();
+        subscribeProviders();
     } catch (e) {
         console.error(e);
         vscode.window.showErrorMessage(`${e}`);
