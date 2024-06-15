@@ -14,7 +14,9 @@ export function subscribeTimestampHoverProvider() {
                 .unix(Number(word))
                 .format("YYYY-MM-DD HH:mm:ss");
             const content = new vscode.MarkdownString(
-                timestamp !== "Invalid Date" ? `Timestamp: ${timestamp}` : ""
+                timestamp !== "Invalid Date"
+                    ? `Unix: ${word} -> ${timestamp}`
+                    : ""
             );
 
             return new vscode.Hover(content);
