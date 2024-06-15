@@ -12,9 +12,9 @@ import {
 } from "@/shared/utils/tsUtils";
 import { insertTextBeforeNode } from "@/shared/utils/vscUtils";
 
-export function subscribeRefactorFuncParametersToUseObjectParameter() {
+export function subscribeConvertParametersToOptionsObject() {
     const command = vscode.commands.registerCommand(
-        `${extensionName}.functionEnhancement.refactorFuncParametersToUseObjectParameter`,
+        `${extensionName}.functionEnhancement.convertParametersToOptionsObject`,
         async () => {
             try {
                 const editor = vscode.window.activeTextEditor;
@@ -43,7 +43,7 @@ export function subscribeRefactorFuncParametersToUseObjectParameter() {
                     return;
                 }
 
-                await refactorFunctionParametersToUseObjectParameter({
+                await convertParametersToOptionsObject({
                     editor,
                     sourceFile,
                     node: funcNode,
@@ -58,17 +58,17 @@ export function subscribeRefactorFuncParametersToUseObjectParameter() {
     extensionCtx.subscriptions.push(command);
 }
 
-type TRefactorFunctionParametersToUseObjectParameterOptions = {
+type TConvertParametersToOptionsObjectOptions = {
     editor: vscode.TextEditor;
     sourceFile: ts.SourceFile;
     node: ts.FunctionDeclaration | ts.ArrowFunction;
 };
 
-async function refactorFunctionParametersToUseObjectParameter({
+async function convertParametersToOptionsObject({
     editor,
     sourceFile,
     node,
-}: TRefactorFunctionParametersToUseObjectParameterOptions) {
+}: TConvertParametersToOptionsObjectOptions) {
     /* Check node is named function declaration with parameters */
 
     if (node.name === undefined) {
@@ -101,7 +101,7 @@ async function refactorFunctionParametersToUseObjectParameter({
         return format(`%s%s: %s`, paramName, optional ? "?" : "", paramType);
     });
     const typeName = `T${toUpperCamelCase(node.name.getText())}Options`;
-    const newParamsText = `{ ${paramNames.join(",")} }: ${typeName}`;
+    const newParamsText = `{ ${paramNames.join(", ")} }: ${typeName}`;
 
     /* Update editor text */
 
@@ -136,7 +136,7 @@ async function refactorFunctionParametersToUseObjectParameter({
         }) === undefined
     ) {
         const typeDeclarationText = format(
-            `\n\ntype ${typeName} = {\n\t%s\n};`,
+            `type ${typeName} = {\n\t%s\n};`,
             paramTypes.join(";\n\t")
         );
         await insertTextBeforeNode({

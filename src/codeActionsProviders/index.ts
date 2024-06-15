@@ -7,32 +7,38 @@ export function subscribeCodeActionProviders() {
             "typescript",
             new TypeScriptCodeActionProvider(),
             {
-                providedCodeActionKinds: [
-                    vscode.CodeActionKind.RefactorRewrite,
-                ],
+                providedCodeActionKinds:
+                    TypeScriptCodeActionProvider.providedCodeActionKinds,
             }
         )
     );
 }
 
 class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
+    public static readonly providedCodeActionKinds = [
+        vscode.CodeActionKind.QuickFix,
+    ];
+
     provideCodeActions(
         document: vscode.TextDocument,
         range: vscode.Range | vscode.Selection,
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        const refactorParametersCodeAction = new vscode.CodeAction(
-            "Refactor Parameters Style"
+        const convertParametersToOptionsObject = new vscode.CodeAction(
+            "Convert parameters to options object",
+            vscode.CodeActionKind.RefactorRewrite
         );
-        refactorParametersCodeAction.command = {
-            command: `${extensionName}.functionEnhancement.refactorFuncParametersToUseObjectParameter`,
+        convertParametersToOptionsObject.command = {
+            command: `${extensionName}.functionEnhancement.convertParametersToOptionsObject`,
             title: "",
             arguments: [document, range],
         };
+        convertParametersToOptionsObject.isPreferred = true;
 
         const generateEnumAssertionFunctionCodeAction = new vscode.CodeAction(
-            "Generate/Update Enum Assertion"
+            "Generate/update enum assertion",
+            vscode.CodeActionKind.QuickFix
         );
         generateEnumAssertionFunctionCodeAction.command = {
             command: `${extensionName}.generateEnumAssertionFunction`,
@@ -40,7 +46,10 @@ class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
             arguments: [document, range],
         };
 
-        const updateModelCodeAction = new vscode.CodeAction("Update Model");
+        const updateModelCodeAction = new vscode.CodeAction(
+            "Update model",
+            vscode.CodeActionKind.QuickFix
+        );
         updateModelCodeAction.command = {
             command: `${extensionName}.databaseModel.updateModel`,
             title: "",
@@ -48,7 +57,7 @@ class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
         };
 
         return [
-            refactorParametersCodeAction,
+            convertParametersToOptionsObject,
             generateEnumAssertionFunctionCodeAction,
             updateModelCodeAction,
         ];

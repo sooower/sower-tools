@@ -47,8 +47,8 @@
                 }
             },
             {
-                "command": "sower-tools.functionEnhancement.refactorFuncParametersToUseObjectParameter",
-                "title": "Refactor Parameters Style"
+                "command": "sower-tools.functionEnhancement.convertParametersToOptionsObject",
+                "title": "Convert Parameters to Options Object"
             },
             {
                 "command": "sower-tools.generateEnumAssertionFunction",
@@ -94,7 +94,7 @@
                     "when": "editorTextFocus"
                 },
                 {
-                    "command": "sower-tools.functionEnhancement.refactorFuncParametersToUseObjectParameter",
+                    "command": "sower-tools.functionEnhancement.convertParametersToOptionsObject",
                     "group": "003_functionEnhancement@001",
                     "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
                 },

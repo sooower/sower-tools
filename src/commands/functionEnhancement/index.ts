@@ -1,5 +1,5 @@
-import { subscribeRefactorFuncParametersToUseObjectParameter } from "./refactorFuncParamsToUseObjectParam";
+import { subscribeConvertParametersToOptionsObject } from "./convertParametersToOptionsObject";
 
 export function subscribeEnhanceFunction() {
-    subscribeRefactorFuncParametersToUseObjectParameter();
+    subscribeConvertParametersToOptionsObject();
 }
