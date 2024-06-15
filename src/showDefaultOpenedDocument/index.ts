@@ -17,7 +17,7 @@ export async function showDefaultOpenedDocument() {
 
     const defaultOpenedDocumentNames = CommonUtils.assertArray(
         getConfigurationItem(
-            `${extensionName}.ShowDefaultOpenedDocument.documentNames`
+            `${extensionName}.showDefaultOpenedDocument.documentNames`
         )
     ).map((it) => CommonUtils.assertString(it));
 

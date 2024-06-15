@@ -14,7 +14,7 @@ export function subscribeDebugProject() {
             try {
                 const debugProjectConfigurationNames = CommonUtils.assertArray(
                     getConfigurationItem(
-                        `${extensionName}.DebuggingEnhancement.debugProjectConfigurationNames`
+                        `${extensionName}.debuggingEnhancement.debugProjectConfigurationNames`
                     )
                 ).map((it) => CommonUtils.assertString(it));
                 const debugProjectConfiguration =

@@ -39,13 +39,13 @@ export function reloadConfiguration() {
 
     enableOverwriteFile = CommonUtils.assertBoolean(
         getConfigurationItem(
-            `${extensionName}.GenerateModel.enableOverwriteFile`
+            `${extensionName}.databaseModel.enableOverwriteFile`
         )
     );
 
     const specialUppercaseWordsArr = CommonUtils.assertArray(
         getConfigurationItem(
-            `${extensionName}.GenerateModel.specialUpperCaseWordsMapping`
+            `${extensionName}.databaseModel.specialUpperCaseWordsMapping`
         )
     )
         .map((it) => CommonUtils.assertString(it))
@@ -65,7 +65,7 @@ export function reloadConfiguration() {
 
     ignoredInsertionColumns = CommonUtils.assertArray(
         getConfigurationItem(
-            `${extensionName}.GenerateModel.ignoredInsertionColumns`
+            `${extensionName}.databaseModel.ignoredInsertionColumns`
         )
     ).map((it) => CommonUtils.assertString(it));
 }

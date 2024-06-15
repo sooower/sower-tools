@@ -15,7 +15,7 @@ export function subscribeDebugCurrentFile() {
                 const debugCurrentFileConfigurationNames =
                     CommonUtils.assertArray(
                         getConfigurationItem(
-                            `${extensionName}.DebuggingEnhancement.debugCurrentFileConfigurationNames`
+                            `${extensionName}.debuggingEnhancement.debugCurrentFileConfigurationNames`
                         )
                     ).map((it) => CommonUtils.assertString(it));
                 const debugCurrentFileConfiguration =

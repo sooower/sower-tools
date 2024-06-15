@@ -88,3 +88,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking Change
 
 -   Configuration names now expect arrays instead of single strings. Users must update their configuration settings accordingly.
+
+## [0.2.1] - 2024-06-15
+
+### Updated
+
+-   Update usage instructions and context menu options

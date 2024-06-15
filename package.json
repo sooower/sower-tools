@@ -2,9 +2,9 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "This extension is a collection of tools.",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "publisher": "Sower",
-    "icon": "/assets/icon.png",
+    "icon": "./assets/icon.png",
     "repository": {
         "type": "git",
         "url": "http://gitea.sower.fun/vsc-extensions/sower-tools.git"
@@ -140,14 +140,14 @@
         ],
         "configuration": {
             "type": "object",
-            "title": "Sower Tools Configuration",
+            "title": "Sower Tools",
             "properties": {
-                "sower-tools.GenerateModel.enableOverwriteFile": {
+                "sower-tools.databaseModel.enableOverwriteFile": {
                     "description": "If true, it will replace file content with new generated text.",
                     "type": "boolean",
                     "default": false
                 },
-                "sower-tools.GenerateModel.specialUpperCaseWordsMapping": {
+                "sower-tools.databaseModel.specialUpperCaseWordsMapping": {
                     "description": "Special words pairs which will be mapped automatically when to uppercase.",
                     "type": "array",
                     "items": {
@@ -157,7 +157,7 @@
                         "Id:ID"
                     ]
                 },
-                "sower-tools.GenerateModel.ignoredInsertionColumns": {
+                "sower-tools.databaseModel.ignoredInsertionColumns": {
                     "description": "Special column names which will be ignored when inserting record.",
                     "type": "array",
                     "items": {
@@ -168,7 +168,7 @@
                         "updatedAt"
                     ]
                 },
-                "sower-tools.DebuggingEnhancement.debugProjectConfigurationNames": {
+                "sower-tools.debuggingEnhancement.debugProjectConfigurationNames": {
                     "description": "Configuration names of debugging the current opened project. The priority depends on the array element order, location is <projectRootDir>/.vscode/launch.json.",
                     "type": "array",
                     "items": {
@@ -178,7 +178,7 @@
                         "Debug Project"
                     ]
                 },
-                "sower-tools.DebuggingEnhancement.debugCurrentFileConfigurationNames": {
+                "sower-tools.debuggingEnhancement.debugCurrentFileConfigurationNames": {
                     "description": "Configuration names of debugging the current opened file. The priority depends on the array element order, location is <projectRootDir>/.vscode/launch.json.",
                     "type": "array",
                     "items": {
@@ -188,7 +188,7 @@
                         "Current TS File"
                     ]
                 },
-                "sower-tools.ShowDefaultOpenedDocument.documentNames": {
+                "sower-tools.showDefaultOpenedDocument.documentNames": {
                     "description": "Default opened filenames, priority is by the order you placed in this array, configurations usually are  description or specification file of your project.",
                     "type": "array",
                     "items": {
