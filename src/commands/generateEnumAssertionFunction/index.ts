@@ -11,7 +11,7 @@ import {
     findFuncDeclarationNode,
 } from "@/shared/utils/tsUtils";
 import {
-    getSourceFile,
+    getSourceFileByEditor,
     insertTextAfterNode,
     replaceTextOfNode,
 } from "@/shared/utils/vscUtils";
@@ -71,7 +71,7 @@ async function generateEnumAssertionFunction({
 }: TGenerateEnumAssertionFunctionOptions) {
     const nodeName = node.name.text;
     const enumMemberNames = node.members.map((it) =>
-        it.name.getText(getSourceFile(editor))
+        it.name.getText(getSourceFileByEditor(editor))
     );
     const enumNameWithoutPrefix = mapEnumNameWithoutPrefix(nodeName);
     const valName = toLowerCamelCase(enumNameWithoutPrefix);
@@ -101,20 +101,20 @@ async function generateEnumAssertionFunction({
         valName
     );
     const assertFuncDeclarationNode = findFuncDeclarationNode({
-        sourceFile: getSourceFile(editor),
+        sourceFile: getSourceFileByEditor(editor),
         funcName: `assert${enumNameWithoutPrefix}`,
     });
     if (assertFuncDeclarationNode !== undefined) {
         await replaceTextOfNode({
             editor: editor,
-            sourceFile: getSourceFile(editor),
+            sourceFile: getSourceFileByEditor(editor),
             node: assertFuncDeclarationNode,
             newText: assertFuncText,
         });
     } else {
         await insertTextAfterNode({
             editor: editor,
-            sourceFile: getSourceFile(editor),
+            sourceFile: getSourceFileByEditor(editor),
             node: node,
             text: assertFuncText,
         });
@@ -138,16 +138,16 @@ async function generateEnumAssertionFunction({
         valName
     );
     const assertOptionalFuncDeclarationNode = findFuncDeclarationNode({
-        sourceFile: getSourceFile(editor),
+        sourceFile: getSourceFileByEditor(editor),
         funcName: `assertOptional${enumNameWithoutPrefix}`,
     });
     if (assertOptionalFuncDeclarationNode === undefined) {
         await insertTextAfterNode({
             editor: editor,
-            sourceFile: getSourceFile(editor),
+            sourceFile: getSourceFileByEditor(editor),
             node: CommonUtils.mandatory(
                 findFuncDeclarationNode({
-                    sourceFile: getSourceFile(editor),
+                    sourceFile: getSourceFileByEditor(editor),
                     funcName: `assert${enumNameWithoutPrefix}`,
                 })
             ),
@@ -173,16 +173,16 @@ async function generateEnumAssertionFunction({
         valName
     );
     const assertNullableFuncDeclarationNode = findFuncDeclarationNode({
-        sourceFile: getSourceFile(editor),
+        sourceFile: getSourceFileByEditor(editor),
         funcName: `assertNullable${enumNameWithoutPrefix}`,
     });
     if (assertNullableFuncDeclarationNode === undefined) {
         await insertTextAfterNode({
             editor: editor,
-            sourceFile: getSourceFile(editor),
+            sourceFile: getSourceFileByEditor(editor),
             node: CommonUtils.mandatory(
                 findFuncDeclarationNode({
-                    sourceFile: getSourceFile(editor),
+                    sourceFile: getSourceFileByEditor(editor),
                     funcName: `assertOptional${enumNameWithoutPrefix}`,
                 })
             ),

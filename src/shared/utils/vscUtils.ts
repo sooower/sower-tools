@@ -152,7 +152,7 @@ export async function insertTextAtOffset({
     });
 }
 
-export function getSourceFile(editor: vscode.TextEditor) {
+export function getSourceFileByEditor(editor: vscode.TextEditor) {
     return ts.createSourceFile(
         editor.document.fileName,
         editor.document.getText(),

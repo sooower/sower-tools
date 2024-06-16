@@ -19,7 +19,7 @@ import {
     findVariableDeclarationNode,
 } from "@/shared/utils/tsUtils";
 import {
-    getSourceFile,
+    getSourceFileByEditor,
     insertTextAfterNode,
     replaceTextOfNode,
     replaceTextRangeOffset,
@@ -56,7 +56,7 @@ type TUpdateModelOptions = {
 
 export async function updateModel({ editor }: TUpdateModelOptions) {
     const typTDefinitionsNode = findTypeDeclarationNode({
-        sourceFile: getSourceFile(editor),
+        sourceFile: getSourceFileByEditor(editor),
         typeName: "TDefinitions",
     });
     CommonUtils.assert(
@@ -127,23 +127,23 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         }
     `;
     const enumEColumnNode = findEnumDeclarationNode({
-        sourceFile: getSourceFile(editor),
+        sourceFile: getSourceFileByEditor(editor),
         enumName: "EColumn",
     });
     if (enumEColumnNode !== undefined) {
         await replaceTextOfNode({
             editor,
-            sourceFile: getSourceFile(editor),
+            sourceFile: getSourceFileByEditor(editor),
             node: enumEColumnNode,
             newText: enumEColumnNodeText,
         });
     } else {
         await insertTextAfterNode({
             editor,
-            sourceFile: getSourceFile(editor),
+            sourceFile: getSourceFileByEditor(editor),
             node: CommonUtils.mandatory(
                 findVariableDeclarationNode({
-                    sourceFile: getSourceFile(editor),
+                    sourceFile: getSourceFileByEditor(editor),
                     varName: "kFullQualifiedTableName",
                 })
             ),
@@ -159,7 +159,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         };
     `;
     const varResolverNode = findVariableDeclarationNode({
-        sourceFile: getSourceFile(editor),
+        sourceFile: getSourceFileByEditor(editor),
         varName: "kResolver",
     });
     if (varResolverNode !== undefined) {
@@ -173,10 +173,10 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
     } else {
         await insertTextAfterNode({
             editor,
-            sourceFile: getSourceFile(editor),
+            sourceFile: getSourceFileByEditor(editor),
             node: CommonUtils.mandatory(
                 findTypeDeclarationNode({
-                    sourceFile: getSourceFile(editor),
+                    sourceFile: getSourceFileByEditor(editor),
                     typeName: "TResolvers",
                 })
             ),
@@ -192,20 +192,20 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         };
     `;
     const typeInsertOptionsNode = findTypeDeclarationNode({
-        sourceFile: getSourceFile(editor),
+        sourceFile: getSourceFileByEditor(editor),
         typeName: "TInsertOptions",
     });
     if (typeInsertOptionsNode !== undefined) {
         await replaceTextOfNode({
             editor,
-            sourceFile: getSourceFile(editor),
+            sourceFile: getSourceFileByEditor(editor),
             node: typeInsertOptionsNode,
             newText: typeInsertOptionsNodeText,
         });
     } else {
         await insertTextAfterNode({
             editor,
-            sourceFile: getSourceFile(editor),
+            sourceFile: getSourceFileByEditor(editor),
             node: CommonUtils.mandatory(varResolverNode),
             text: typeInsertOptionsNodeText,
         });
@@ -240,20 +240,20 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         }
     `;
     const funcInsertNode = findFuncDeclarationNode({
-        sourceFile: getSourceFile(editor),
+        sourceFile: getSourceFileByEditor(editor),
         funcName: "insert",
     });
     if (funcInsertNode !== undefined) {
         await replaceTextOfNode({
             editor,
-            sourceFile: getSourceFile(editor),
+            sourceFile: getSourceFileByEditor(editor),
             node: funcInsertNode,
             newText: funcInsertNodeText,
         });
     } else {
         await insertTextAfterNode({
             editor,
-            sourceFile: getSourceFile(editor),
+            sourceFile: getSourceFileByEditor(editor),
             node: CommonUtils.mandatory(typeInsertOptionsNode),
             text: funcInsertNodeText,
         });

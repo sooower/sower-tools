@@ -33,10 +33,7 @@ export function subscribeOnDidSaveTextDocumentListener() {
                 true
             );
 
-            updateFuncParameterTypeName({
-                editor,
-                sourceFile,
-            });
+            updateFuncParameterTypeName({ editor, sourceFile });
         } catch (e) {
             console.error(e);
             vscode.window.showErrorMessage(`${e}`);
