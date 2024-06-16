@@ -13,10 +13,9 @@ export async function subscribeGitEnhancement() {
         `${extensionName}.gitEnhancement.skipWorkTree`,
         (uri: vscode.Uri) => {
             try {
-                const command = `git update-index --skip-worktree ${uri.path}`;
-                const output = execCommand(command);
+                execCommand(`git update-index --skip-worktree ${uri.path}`);
                 vscode.window.showInformationMessage(
-                    `Executed command: ${command}.\nOutput: ${output}`
+                    `Skipped work tree for file "${uri.path}".`
                 );
             } catch (e) {
                 console.error(e);
@@ -32,10 +31,9 @@ export async function subscribeGitEnhancement() {
         `${extensionName}.gitEnhancement.noSkipWorkTree`,
         (uri: vscode.Uri) => {
             try {
-                const command = `git update-index --no-skip-worktree ${uri.path}`;
-                const output = execCommand(command);
+                execCommand(`git update-index --no-skip-worktree ${uri.path}`);
                 vscode.window.showInformationMessage(
-                    `Executed command: ${command}.\nOutput: ${output}`
+                    `Recovery to track changes for file "${uri.path}".`
                 );
             } catch (e) {
                 console.error(e);

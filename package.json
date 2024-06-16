@@ -137,11 +137,13 @@
             "explorer/context": [
                 {
                     "command": "sower-tools.gitEnhancement.skipWorkTree",
-                    "group": "001_gitEnhancement@001"
+                    "group": "001_gitEnhancement@001",
+                    "when": "explorerResourceIsFolder == false && resourceLangId != ''"
                 },
                 {
                     "command": "sower-tools.gitEnhancement.noSkipWorkTree",
-                    "group": "001_gitEnhancement@002"
+                    "group": "001_gitEnhancement@002",
+                    "when": "explorerResourceIsFolder == false && resourceLangId != ''"
                 },
                 {
                     "command": "sower-tools.gitEnhancement.listFiles",
