@@ -9,14 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
--   Streamline commands and update messaging
--   Show hover timestamp only when some texts selected
+-   Streamline commands and update messaging.
+-   Show hover timestamp only when some texts selected.
 
 ## [0.3.1] - 2024-06-15
 
 ### Changed
 
--   Add unix to human-readable when timestamp hover
+-   Add unix to human-readable when timestamp hover.
 
 ## [0.3.0] - 2024-06-15
 
@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
--   Update usage instructions and context menu options
+-   Update usage instructions and context menu options.
 
 ## [0.2.0] - 2024-06-14
 
@@ -50,8 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
--   Avoid type declaration duplication in refactoring
--   Window can not show information message
+-   Avoid type declaration duplication in refactoring.
+-   Window can not show information message.
 
 ### Breaking Change
 
