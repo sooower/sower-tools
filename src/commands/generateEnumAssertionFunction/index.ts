@@ -30,15 +30,8 @@ export function subscribeGenerateEnumAssertionFunction() {
                     return;
                 }
 
-                const sourceFile = ts.createSourceFile(
-                    editor.document.fileName,
-                    editor.document.getText(),
-                    ts.ScriptTarget.ES2015,
-                    true
-                );
-
                 const enumNode = findEnumDeclarationNodeAtOffset({
-                    sourceFile,
+                    sourceFile: getSourceFileByEditor(editor),
                     offset: editor.document.offsetAt(editor.selection.active),
                 });
                 CommonUtils.assert(

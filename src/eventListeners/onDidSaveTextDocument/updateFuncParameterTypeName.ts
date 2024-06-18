@@ -25,9 +25,19 @@ export async function updateFuncParameterTypeName({
         await vscode.workspace.applyEdit(edit);
     }
 
-    function doUpdateFuncParameterTypeName(node: ts.Node) {
-        if (!ts.isFunctionDeclaration(node) && !ts.isArrowFunction(node)) {
-            return;
+    function doUpdateFuncParameterTypeName(
+        node: ts.Node
+    ):
+        | ts.FunctionDeclaration
+        | ts.ArrowFunction
+        | ts.MethodDeclaration
+        | undefined {
+        if (
+            !ts.isFunctionDeclaration(node) &&
+            !ts.isArrowFunction(node) &&
+            !ts.isMethodDeclaration(node)
+        ) {
+            return ts.forEachChild(node, doUpdateFuncParameterTypeName);
         }
 
         if (node.name === undefined || node.parameters?.length !== 1) {

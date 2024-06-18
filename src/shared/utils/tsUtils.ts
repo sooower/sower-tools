@@ -33,12 +33,20 @@ export function findFuncDeclarationNode({
 }: TFindFuncDeclarationNodeOptions) {
     function visit(
         node: ts.Node
-    ): ts.FunctionDeclaration | ts.ArrowFunction | undefined {
-        if (!ts.isFunctionDeclaration(node) && !ts.isArrowFunction(node)) {
+    ):
+        | ts.FunctionDeclaration
+        | ts.ArrowFunction
+        | ts.MethodDeclaration
+        | undefined {
+        if (
+            !ts.isFunctionDeclaration(node) &&
+            !ts.isArrowFunction(node) &&
+            !ts.isMethodDeclaration(node)
+        ) {
             return ts.forEachChild(node, visit);
         }
 
-        if (node.name?.text === funcName) {
+        if (node.name?.getText() === funcName) {
             return node;
         }
     }
@@ -57,8 +65,16 @@ export function findFuncDeclarationNodeAtOffset({
 }: TFindFuncDeclarationNodeAtOffsetOptions) {
     function visit(
         node: ts.Node
-    ): ts.FunctionDeclaration | ts.ArrowFunction | undefined {
-        if (!ts.isFunctionDeclaration(node) && !ts.isArrowFunction(node)) {
+    ):
+        | ts.FunctionDeclaration
+        | ts.ArrowFunction
+        | ts.MethodDeclaration
+        | undefined {
+        if (
+            !ts.isFunctionDeclaration(node) &&
+            !ts.isArrowFunction(node) &&
+            !ts.isMethodDeclaration(node)
+        ) {
             return ts.forEachChild(node, visit);
         }
 

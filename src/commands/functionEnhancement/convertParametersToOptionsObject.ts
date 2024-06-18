@@ -10,7 +10,10 @@ import {
     findFuncDeclarationNodeAtOffset,
     findTypeDeclarationNode,
 } from "@/shared/utils/tsUtils";
-import { insertTextBeforeNode } from "@/shared/utils/vscUtils";
+import {
+    getSourceFileByEditor,
+    insertTextBeforeNode,
+} from "@/shared/utils/vscUtils";
 
 export function subscribeConvertParametersToOptionsObject() {
     const command = vscode.commands.registerCommand(
@@ -26,12 +29,7 @@ export function subscribeConvertParametersToOptionsObject() {
                     return;
                 }
 
-                const sourceFile = ts.createSourceFile(
-                    editor.document.fileName,
-                    editor.document.getText(),
-                    ts.ScriptTarget.ES2015,
-                    true
-                );
+                const sourceFile = getSourceFileByEditor(editor);
 
                 const funcNode = findFuncDeclarationNodeAtOffset({
                     sourceFile,
@@ -59,7 +57,7 @@ export function subscribeConvertParametersToOptionsObject() {
 type TConvertParametersToOptionsObjectOptions = {
     editor: vscode.TextEditor;
     sourceFile: ts.SourceFile;
-    node: ts.FunctionDeclaration | ts.ArrowFunction;
+    node: ts.FunctionDeclaration | ts.ArrowFunction | ts.MethodDeclaration;
 };
 
 async function convertParametersToOptionsObject({
@@ -67,24 +65,19 @@ async function convertParametersToOptionsObject({
     sourceFile,
     node,
 }: TConvertParametersToOptionsObjectOptions) {
-    /* Check node is named function declaration with parameters */
-
-    if (node.name === undefined) {
-        return;
-    }
-
-    if (node.parameters.length === 0) {
+    if (node.name === undefined || node.parameters.length === 0) {
         return;
     }
 
     // Do not refactor if the function has only one reference(non-primitive) parameter
-    const firstParameter = node.parameters[0];
-    if (
-        node.parameters.length === 1 &&
-        firstParameter.type !== undefined &&
-        ts.isTypeReferenceNode(firstParameter.type)
-    ) {
-        return;
+    if (node.parameters.length === 1) {
+        const [firstParameter] = node.parameters;
+        if (
+            firstParameter.type !== undefined &&
+            ts.isTypeReferenceNode(firstParameter.type)
+        ) {
+            return;
+        }
     }
 
     /* Generate new params */
@@ -140,7 +133,7 @@ async function convertParametersToOptionsObject({
         await insertTextBeforeNode({
             editor,
             sourceFile,
-            node,
+            node: ts.isMethodDeclaration(node) ? node.parent : node,
             text: typeDeclarationText,
         });
     }
