@@ -1,7 +1,11 @@
 import { vscode } from "@/shared";
-import { extensionCtx, reloadConfiguration } from "@/shared/init";
-import { getSourceFileByEditor } from "@/shared/utils/vscode";
+import {
+    enableUpdateNodeBuiltinImports,
+    extensionCtx,
+    reloadConfiguration,
+} from "@/shared/init";
 import { updateFuncParameterTypeName } from "./updateFuncParameterTypeName";
+import { updateNodeBuiltinImports } from "./updateNodeBuiltinImports";
 
 export function subscribeOnDidSaveTextDocumentListener() {
     const listener = vscode.workspace.onDidSaveTextDocument(async (doc) => {
@@ -25,10 +29,11 @@ export function subscribeOnDidSaveTextDocumentListener() {
                 return;
             }
 
-            await updateFuncParameterTypeName({
-                editor: editor,
-                sourceFile: getSourceFileByEditor(editor),
-            });
+            await updateFuncParameterTypeName({ editor });
+
+            if (enableUpdateNodeBuiltinImports) {
+                await updateNodeBuiltinImports({ editor });
+            }
         } catch (e) {
             console.error(e);
             vscode.window.showErrorMessage(`${e}`);

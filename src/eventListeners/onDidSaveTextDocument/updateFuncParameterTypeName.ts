@@ -6,18 +6,19 @@ import { vscode } from "@/shared";
 import { toUpperCamelCase } from "@/shared/utils";
 import CommonUtils from "@/shared/utils/commonUtils";
 import { findTypeDeclarationNode } from "@/shared/utils/tsUtils";
+import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";
 
 type TUpdateFuncParameterTypeNameOptions = {
     editor: vscode.TextEditor;
-    sourceFile: ts.SourceFile;
 };
 
 export async function updateFuncParameterTypeName({
     editor,
-    sourceFile,
 }: TUpdateFuncParameterTypeNameOptions) {
     const edits: vscode.TextEdit[] = [];
+
+    const sourceFile = getSourceFileByEditor(editor);
     ts.forEachChild(sourceFile, doUpdateFuncParameterTypeName);
 
     if (edits.length > 0) {

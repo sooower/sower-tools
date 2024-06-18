@@ -220,6 +220,59 @@
                         "CHANGELOG.md",
                         "changelog.md"
                     ]
+                },
+                "sower-tools.updateImports.nodeBuiltinModules": {
+                    "description": "Node builtin module names.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "assert",
+                        "async_hooks",
+                        "buffer",
+                        "child_process",
+                        "cluster",
+                        "console",
+                        "constants",
+                        "crypto",
+                        "dgram",
+                        "dns",
+                        "domain",
+                        "events",
+                        "fs",
+                        "http",
+                        "http2",
+                        "https",
+                        "inspector",
+                        "module",
+                        "net",
+                        "os",
+                        "path",
+                        "perf_hooks",
+                        "process",
+                        "punycode",
+                        "querystring",
+                        "readline",
+                        "repl",
+                        "stream",
+                        "string_decoder",
+                        "timers",
+                        "tls",
+                        "trace_events",
+                        "tty",
+                        "url",
+                        "util",
+                        "v8",
+                        "vm",
+                        "worker_threads",
+                        "zlib"
+                    ]
+                },
+                "sower-tools.updateImports.enableUpdateNodeBuiltinImports": {
+                    "description": "If true, it will update node builtin imports with prefix \"node:\" automatically when saving file.",
+                    "type": "boolean",
+                    "default": true
                 }
             }
         }

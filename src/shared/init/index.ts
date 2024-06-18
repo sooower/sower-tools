@@ -3,14 +3,15 @@ import path from "node:path";
 import { fs, vscode } from "../";
 import CommonUtils from "../utils/commonUtils";
 
-/* Extension configurations */
 export let extensionCtx: vscode.ExtensionContext;
 export let extensionName: string;
 
-/* Generate modal configurations */
 export let enableOverwriteFile: boolean;
 export let specialWordsMap: Map<string, string>;
 export let ignoredInsertionColumns: string[];
+
+export let nodeBuiltinModules: string[];
+export let enableUpdateNodeBuiltinImports: boolean;
 
 export function init(context: vscode.ExtensionContext) {
     const packageJsonContent = JSON.parse(
@@ -36,6 +37,8 @@ export function reloadConfiguration() {
         vscode.Uri.file(".vscode/settings.json")
     );
     userConfig = vscode.workspace.getConfiguration();
+
+    /* databaseModel  */
 
     enableOverwriteFile = CommonUtils.assertBoolean(
         getConfigurationItem(
@@ -68,6 +71,19 @@ export function reloadConfiguration() {
             `${extensionName}.databaseModel.ignoredInsertionColumns`
         )
     ).map((it) => CommonUtils.assertString(it));
+
+    /* updateImports */
+
+    nodeBuiltinModules = CommonUtils.assertArray(
+        getConfigurationItem(
+            `${extensionName}.updateImports.nodeBuiltinModules`
+        )
+    ).map((it) => CommonUtils.assertString(it));
+    enableUpdateNodeBuiltinImports = CommonUtils.assertBoolean(
+        getConfigurationItem(
+            `${extensionName}.updateImports.enableUpdateNodeBuiltinImports`
+        )
+    );
 }
 
 export function getConfigurationItem(name: string): unknown {
