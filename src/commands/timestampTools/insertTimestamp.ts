@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
-import { insertTextAtOffset } from "@/shared/utils/vscUtils";
+import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
 export function subscribeInsertTimestamp() {
     const command = vscode.commands.registerCommand(
@@ -14,7 +14,7 @@ export function subscribeInsertTimestamp() {
                     return;
                 }
 
-                await insertTextAtOffset({
+                await TextEditorUtils.insertTextAtOffset({
                     editor,
                     offset: editor.document.offsetAt(editor.selection.active),
                     text: dayjs().format("YYYY-MM-DD HH:mm:ss"),

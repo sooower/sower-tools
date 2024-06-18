@@ -1,8 +1,8 @@
 import path from "node:path";
 
-import { vscode } from "../shared";
-import { extensionName, getConfigurationItem } from "../shared/init";
-import CommonUtils from "../shared/utils/commonUtils";
+import { vscode } from "@/shared";
+import { extensionName, getConfigurationItem } from "@/shared/init";
+import CommonUtils from "@/shared/utils/commonUtils";
 
 export async function showDefaultOpenedDocument() {
     if (vscode.workspace.workspaceFolders === undefined) {

@@ -10,10 +10,8 @@ import {
     findFuncDeclarationNodeAtOffset,
     findTypeDeclarationNode,
 } from "@/shared/utils/tsUtils";
-import {
-    getSourceFileByEditor,
-    insertTextBeforeNode,
-} from "@/shared/utils/vscUtils";
+import { getSourceFileByEditor } from "@/shared/utils/vscode";
+import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
 export function subscribeConvertParametersToOptionsObject() {
     const command = vscode.commands.registerCommand(
@@ -130,7 +128,7 @@ async function convertParametersToOptionsObject({
             `type ${typeName} = {\n\t%s\n};`,
             paramTypes.join(";\n\t")
         );
-        await insertTextBeforeNode({
+        await TextEditorUtils.insertTextBeforeNode({
             editor,
             sourceFile,
             node: ts.isMethodDeclaration(node) ? node.parent : node,

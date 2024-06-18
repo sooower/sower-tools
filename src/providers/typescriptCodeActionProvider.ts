@@ -1,5 +1,5 @@
-import { vscode } from "../shared";
-import { extensionCtx, extensionName } from "../shared/init";
+import { vscode } from "@/shared";
+import { extensionCtx, extensionName } from "@/shared/init";
 
 export function subscribeCodeActionProviders() {
     const provider = vscode.languages.registerCodeActionsProvider(

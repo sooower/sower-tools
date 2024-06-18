@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
 import CommonUtils from "@/shared/utils/commonUtils";
-import { replaceTextRangeOffset } from "@/shared/utils/vscUtils";
+import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
 export function subscribeConvertTimestamp() {
     const command = vscode.commands.registerCommand(
@@ -40,7 +40,7 @@ export function subscribeConvertTimestamp() {
                         selectedText
                     );
                 }
-                await replaceTextRangeOffset({
+                await TextEditorUtils.replaceTextRangeOffset({
                     editor,
                     start: editor.document.offsetAt(editor.selection.start),
                     end: editor.document.offsetAt(editor.selection.end),

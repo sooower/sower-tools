@@ -18,12 +18,8 @@ import {
     findTypeDeclarationNode,
     findVariableDeclarationNode,
 } from "@/shared/utils/tsUtils";
-import {
-    getSourceFileByEditor,
-    insertTextAfterNode,
-    replaceTextOfNode,
-    replaceTextRangeOffset,
-} from "@/shared/utils/vscUtils";
+import { getSourceFileByEditor } from "@/shared/utils/vscode";
+import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
 export function subscribeUpdateModel() {
     const command = vscode.commands.registerCommand(
@@ -131,14 +127,14 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         enumName: "EColumn",
     });
     if (enumEColumnNode !== undefined) {
-        await replaceTextOfNode({
+        await TextEditorUtils.replaceTextOfNode({
             editor,
             sourceFile: getSourceFileByEditor(editor),
             node: enumEColumnNode,
             newText: enumEColumnNodeText,
         });
     } else {
-        await insertTextAfterNode({
+        await TextEditorUtils.insertTextAfterNode({
             editor,
             sourceFile: getSourceFileByEditor(editor),
             node: CommonUtils.mandatory(
@@ -163,7 +159,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         varName: "kResolver",
     });
     if (varResolverNode !== undefined) {
-        await replaceTextRangeOffset({
+        await TextEditorUtils.replaceTextRangeOffset({
             editor,
             start: varResolverNode.parent.getStart(),
             end: varResolverNode.getEnd(),
@@ -171,7 +167,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
             endPlusOne: true,
         });
     } else {
-        await insertTextAfterNode({
+        await TextEditorUtils.insertTextAfterNode({
             editor,
             sourceFile: getSourceFileByEditor(editor),
             node: CommonUtils.mandatory(
@@ -196,14 +192,14 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         typeName: "TInsertOptions",
     });
     if (typeInsertOptionsNode !== undefined) {
-        await replaceTextOfNode({
+        await TextEditorUtils.replaceTextOfNode({
             editor,
             sourceFile: getSourceFileByEditor(editor),
             node: typeInsertOptionsNode,
             newText: typeInsertOptionsNodeText,
         });
     } else {
-        await insertTextAfterNode({
+        await TextEditorUtils.insertTextAfterNode({
             editor,
             sourceFile: getSourceFileByEditor(editor),
             node: CommonUtils.mandatory(varResolverNode),
@@ -244,14 +240,14 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         funcName: "insert",
     });
     if (funcInsertNode !== undefined) {
-        await replaceTextOfNode({
+        await TextEditorUtils.replaceTextOfNode({
             editor,
             sourceFile: getSourceFileByEditor(editor),
             node: funcInsertNode,
             newText: funcInsertNodeText,
         });
     } else {
-        await insertTextAfterNode({
+        await TextEditorUtils.insertTextAfterNode({
             editor,
             sourceFile: getSourceFileByEditor(editor),
             node: CommonUtils.mandatory(typeInsertOptionsNode),

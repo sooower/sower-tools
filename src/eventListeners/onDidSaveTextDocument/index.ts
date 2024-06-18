@@ -1,6 +1,6 @@
 import { vscode } from "@/shared";
 import { extensionCtx, reloadConfiguration } from "@/shared/init";
-import { getSourceFileByEditor } from "@/shared/utils/vscUtils";
+import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { updateFuncParameterTypeName } from "./updateFuncParameterTypeName";
 
 export function subscribeOnDidSaveTextDocumentListener() {

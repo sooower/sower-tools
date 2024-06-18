@@ -6,7 +6,7 @@ import { vscode } from "@/shared";
 import { toUpperCamelCase } from "@/shared/utils";
 import CommonUtils from "@/shared/utils/commonUtils";
 import { findTypeDeclarationNode } from "@/shared/utils/tsUtils";
-import { TextEditUtil } from "@/shared/utils/vscUtils";
+import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";
 
 type TUpdateFuncParameterTypeNameOptions = {
     editor: vscode.TextEditor;
@@ -19,6 +19,7 @@ export async function updateFuncParameterTypeName({
 }: TUpdateFuncParameterTypeNameOptions) {
     const edits: vscode.TextEdit[] = [];
     ts.forEachChild(sourceFile, doUpdateFuncParameterTypeName);
+
     if (edits.length > 0) {
         const edit = new vscode.WorkspaceEdit();
         edit.set(editor.document.uri, edits);
@@ -76,16 +77,16 @@ export async function updateFuncParameterTypeName({
         );
 
         edits.push(
-            TextEditUtil.replaceTextOfNode(
-                editor,
-                typeDeclarationNode.name,
-                expectedParamTypeName
-            ),
-            TextEditUtil.replaceTextOfNode(
-                editor,
-                parameter.type,
-                expectedParamTypeName
-            )
+            TextEditUtils.replaceTextOfNode({
+                editor: editor,
+                node: typeDeclarationNode.name,
+                newText: expectedParamTypeName,
+            }),
+            TextEditUtils.replaceTextOfNode({
+                editor: editor,
+                node: parameter.type,
+                newText: expectedParamTypeName,
+            })
         );
     }
 }

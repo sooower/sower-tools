@@ -10,11 +10,8 @@ import {
     findEnumDeclarationNodeAtOffset,
     findFuncDeclarationNode,
 } from "@/shared/utils/tsUtils";
-import {
-    getSourceFileByEditor,
-    insertTextAfterNode,
-    replaceTextOfNode,
-} from "@/shared/utils/vscUtils";
+import { getSourceFileByEditor } from "@/shared/utils/vscode";
+import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
 export function subscribeGenerateEnumAssertionFunction() {
     const command = vscode.commands.registerCommand(
@@ -98,14 +95,14 @@ async function generateEnumAssertionFunction({
         funcName: `assert${enumNameWithoutPrefix}`,
     });
     if (assertFuncDeclarationNode !== undefined) {
-        await replaceTextOfNode({
+        await TextEditorUtils.replaceTextOfNode({
             editor: editor,
             sourceFile: getSourceFileByEditor(editor),
             node: assertFuncDeclarationNode,
             newText: assertFuncText,
         });
     } else {
-        await insertTextAfterNode({
+        await TextEditorUtils.insertTextAfterNode({
             editor: editor,
             sourceFile: getSourceFileByEditor(editor),
             node: node,
@@ -135,7 +132,7 @@ async function generateEnumAssertionFunction({
         funcName: `assertOptional${enumNameWithoutPrefix}`,
     });
     if (assertOptionalFuncDeclarationNode === undefined) {
-        await insertTextAfterNode({
+        await TextEditorUtils.insertTextAfterNode({
             editor: editor,
             sourceFile: getSourceFileByEditor(editor),
             node: CommonUtils.mandatory(
@@ -170,7 +167,7 @@ async function generateEnumAssertionFunction({
         funcName: `assertNullable${enumNameWithoutPrefix}`,
     });
     if (assertNullableFuncDeclarationNode === undefined) {
-        await insertTextAfterNode({
+        await TextEditorUtils.insertTextAfterNode({
             editor: editor,
             sourceFile: getSourceFileByEditor(editor),
             node: CommonUtils.mandatory(
