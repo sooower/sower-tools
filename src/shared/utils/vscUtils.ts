@@ -160,3 +160,46 @@ export function getSourceFileByEditor(editor: vscode.TextEditor) {
         true
     );
 }
+
+export class TextEditUtil {
+    static replaceTextOfNode(
+        editor: vscode.TextEditor,
+        node: ts.Node,
+        newText: string
+    ) {
+        return vscode.TextEdit.replace(
+            new vscode.Range(
+                editor.document.positionAt(node.getStart()),
+                editor.document.positionAt(node.getEnd())
+            ),
+            newText
+        );
+    }
+
+    static insertTextAfterNode(
+        editor: vscode.TextEditor,
+        node: ts.Node,
+        text: string
+    ) {
+        return vscode.TextEdit.insert(
+            editor.document.positionAt(node.getEnd()),
+            "\n\n" + text
+        );
+    }
+
+    static replaceTextRangeOffset(
+        editor: vscode.TextEditor,
+        start: number,
+        end: number,
+        newText: string,
+        endPlusOne?: boolean
+    ) {
+        return vscode.TextEdit.replace(
+            new vscode.Range(
+                editor.document.positionAt(start),
+                editor.document.positionAt(endPlusOne === true ? end + 1 : end)
+            ),
+            newText
+        );
+    }
+}

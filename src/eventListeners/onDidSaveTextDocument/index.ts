@@ -1,7 +1,6 @@
-import ts from "typescript";
-
 import { vscode } from "@/shared";
 import { extensionCtx, reloadConfiguration } from "@/shared/init";
+import { getSourceFileByEditor } from "@/shared/utils/vscUtils";
 import { updateFuncParameterTypeName } from "./updateFuncParameterTypeName";
 
 export function subscribeOnDidSaveTextDocumentListener() {
@@ -26,14 +25,10 @@ export function subscribeOnDidSaveTextDocumentListener() {
                 return;
             }
 
-            const sourceFile = ts.createSourceFile(
-                editor.document.fileName,
-                editor.document.getText(),
-                ts.ScriptTarget.ES2015,
-                true
-            );
-
-            updateFuncParameterTypeName({ editor, sourceFile });
+            await updateFuncParameterTypeName({
+                editor: editor,
+                sourceFile: getSourceFileByEditor(editor),
+            });
         } catch (e) {
             console.error(e);
             vscode.window.showErrorMessage(`${e}`);

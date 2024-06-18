@@ -4,7 +4,7 @@
     "description": "This extension is a collection of tools.",
     "version": "0.3.2",
     "publisher": "Sower",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/sower.png",
     "repository": {
         "type": "git",
         "url": "http://gitea.sower.fun/vsc-extensions/sower-tools.git"
