@@ -29,6 +29,7 @@ type TInsertTextBeforeNodeOptions = {
     node: ts.Node;
     text: string;
     fullStart?: boolean;
+    lineBreak?: string;
 };
 
 type TInsertTextAfterNodeOptions = {
@@ -36,12 +37,14 @@ type TInsertTextAfterNodeOptions = {
     sourceFile: ts.SourceFile;
     node: ts.Node;
     text: string;
+    lineBreak?: string;
 };
 
 type TInsertTextAtOffsetOptions = {
     editor: vscode.TextEditor;
     offset: number;
     text: string;
+    lineBreak?: string;
 };
 
 export class TextEditorUtils {
@@ -119,6 +122,7 @@ export class TextEditorUtils {
         node,
         text,
         fullStart,
+        lineBreak = "\n\n",
     }: TInsertTextBeforeNodeOptions) {
         const startPos = ts.getLineAndCharacterOfPosition(
             sourceFile,
@@ -127,7 +131,7 @@ export class TextEditorUtils {
         await editor.edit((editBuilder) => {
             editBuilder.insert(
                 new vscode.Position(startPos.line, startPos.character),
-                text + "\n\n"
+                text + lineBreak
             );
         });
     }
@@ -137,6 +141,7 @@ export class TextEditorUtils {
         sourceFile,
         node,
         text,
+        lineBreak = "\n\n",
     }: TInsertTextAfterNodeOptions) {
         const endPos = ts.getLineAndCharacterOfPosition(
             sourceFile,
@@ -145,7 +150,7 @@ export class TextEditorUtils {
         await editor.edit((editBuilder) => {
             editBuilder.insert(
                 new vscode.Position(endPos.line, endPos.character),
-                "\n\n" + text
+                lineBreak + text
             );
         });
     }
@@ -154,9 +159,13 @@ export class TextEditorUtils {
         editor,
         offset,
         text,
+        lineBreak = "\n\n",
     }: TInsertTextAtOffsetOptions) {
         await editor.edit((editBuilder) => {
-            editBuilder.insert(editor.document.positionAt(offset), text);
+            editBuilder.insert(
+                editor.document.positionAt(offset),
+                lineBreak + text
+            );
         });
     }
 }

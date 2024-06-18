@@ -73,6 +73,14 @@
             {
                 "command": "sower-tools.timestampTool.insertTimestamp",
                 "title": "Insert Timestamp"
+            },
+            {
+                "command": "sower-tools.stringTools.base64Encode",
+                "title": "Base64 Encode"
+            },
+            {
+                "command": "sower-tools.stringTools.base64Decode",
+                "title": "Base64 Decode"
             }
         ],
         "menus": {
@@ -120,6 +128,16 @@
                     "command": "sower-tools.timestampTool.insertTimestamp",
                     "group": "004_timestampTool@002",
                     "when": "editorTextFocus && !editorHasSelection"
+                },
+                {
+                    "command": "sower-tools.stringTools.base64Encode",
+                    "group": "005_stringTools@001",
+                    "when": "editorTextFocus && editorHasSelection"
+                },
+                {
+                    "command": "sower-tools.stringTools.base64Decode",
+                    "group": "005_stringTools@002",
+                    "when": "editorTextFocus && editorHasSelection"
                 }
             ],
             "editor/title": [

@@ -1,7 +1,7 @@
 import { subscribeConvertTimestamp } from "./convertTimestamp";
 import { subscribeInsertTimestamp } from "./insertTimestamp";
 
-export function subscribeTimestampTool() {
+export function subscribeTimestampTools() {
     subscribeConvertTimestamp();
     subscribeInsertTimestamp();
 }

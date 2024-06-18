@@ -12,6 +12,7 @@ type TInsertTextAfterNodeOptions = {
     editor: vscode.TextEditor;
     node: ts.Node;
     text: string;
+    lineBreak?: string;
 };
 
 type TReplaceTextRangeOffsetOptions = {
@@ -41,10 +42,11 @@ export class TextEditUtils {
         editor,
         node,
         text,
+        lineBreak = "\n\n",
     }: TInsertTextAfterNodeOptions) {
         return vscode.TextEdit.insert(
             editor.document.positionAt(node.getEnd()),
-            "\n\n" + text
+            lineBreak + text
         );
     }
 

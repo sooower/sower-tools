@@ -3,7 +3,8 @@ import { subscribeDebuggingEnhancement } from "./debuggingEnhancement";
 import { subscribeEnhanceFunction } from "./functionEnhancement";
 import { subscribeGenerateEnumAssertionFunction } from "./generateEnumAssertionFunction";
 import { subscribeGitEnhancement } from "./gitEnhancement";
-import { subscribeTimestampTool } from "./timestampTools";
+import { subscribeStringTools } from "./stringTools";
+import { subscribeTimestampTools } from "./timestampTools";
 
 export function subscribeCommands() {
     subscribeDatabaseModel();
@@ -11,5 +12,6 @@ export function subscribeCommands() {
     subscribeEnhanceFunction();
     subscribeGenerateEnumAssertionFunction();
     subscribeGitEnhancement();
-    subscribeTimestampTool();
+    subscribeTimestampTools();
+    subscribeStringTools();
 }

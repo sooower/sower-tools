@@ -1,20 +1,7 @@
 import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/init";
+import { extensionName } from "@/shared/init";
 
-export function subscribeCodeActionProviders() {
-    const provider = vscode.languages.registerCodeActionsProvider(
-        "typescript",
-        new TypeScriptCodeActionProvider(),
-        {
-            providedCodeActionKinds:
-                TypeScriptCodeActionProvider.providedCodeActionKinds,
-        }
-    );
-
-    extensionCtx.subscriptions.push(provider);
-}
-
-class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
+export class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
     public static readonly providedCodeActionKinds = [
         vscode.CodeActionKind.RefactorRewrite,
         vscode.CodeActionKind.Empty,
@@ -26,6 +13,8 @@ class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
+        /* functionEnhancement */
+
         const convertParametersToOptionsObject = new vscode.CodeAction(
             "Convert parameters to options object",
             vscode.CodeActionKind.RefactorRewrite
@@ -37,6 +26,8 @@ class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
         };
         convertParametersToOptionsObject.isPreferred = true;
 
+        /* generateEnumAssertionFunction */
+
         const generateEnumAssertionFunctionCodeAction = new vscode.CodeAction(
             "Generate/update enum assertion",
             vscode.CodeActionKind.Empty
@@ -46,6 +37,8 @@ class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
             title: "",
             arguments: [document, range],
         };
+
+        /* databaseModel */
 
         const updateModelCodeAction = new vscode.CodeAction(
             "Update model",
@@ -57,32 +50,10 @@ class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
             arguments: [document, range],
         };
 
-        const covertTimestampCodeAction = new vscode.CodeAction(
-            "Convert timestamp",
-            vscode.CodeActionKind.RefactorRewrite
-        );
-        covertTimestampCodeAction.command = {
-            command: `${extensionName}.timestampTool.covertTimestamp`,
-            title: "",
-            arguments: [document, range],
-        };
-
-        const insertTimestampCodeAction = new vscode.CodeAction(
-            "Insert timestamp",
-            vscode.CodeActionKind.Empty
-        );
-        insertTimestampCodeAction.command = {
-            command: `${extensionName}.timestampTool.insertTimestamp`,
-            title: "",
-            arguments: [document, range],
-        };
-
         return [
             convertParametersToOptionsObject,
             generateEnumAssertionFunctionCodeAction,
             updateModelCodeAction,
-            covertTimestampCodeAction,
-            insertTimestampCodeAction,
         ];
     }
 }
