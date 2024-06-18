@@ -17,7 +17,7 @@ export function subscribeCodeActionProviders() {
 class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
     public static readonly providedCodeActionKinds = [
         vscode.CodeActionKind.RefactorRewrite,
-        vscode.CodeActionKind.QuickFix,
+        vscode.CodeActionKind.Empty,
     ];
 
     provideCodeActions(
@@ -39,7 +39,7 @@ class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
 
         const generateEnumAssertionFunctionCodeAction = new vscode.CodeAction(
             "Generate/update enum assertion",
-            vscode.CodeActionKind.QuickFix
+            vscode.CodeActionKind.Empty
         );
         generateEnumAssertionFunctionCodeAction.command = {
             command: `${extensionName}.generateEnumAssertionFunction`,
@@ -49,7 +49,7 @@ class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
 
         const updateModelCodeAction = new vscode.CodeAction(
             "Update model",
-            vscode.CodeActionKind.QuickFix
+            vscode.CodeActionKind.Empty
         );
         updateModelCodeAction.command = {
             command: `${extensionName}.databaseModel.updateModel`,
@@ -69,7 +69,7 @@ class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
 
         const insertTimestampCodeAction = new vscode.CodeAction(
             "Insert timestamp",
-            vscode.CodeActionKind.QuickFix
+            vscode.CodeActionKind.Empty
         );
         insertTimestampCodeAction.command = {
             command: `${extensionName}.timestampTool.insertTimestamp`,
