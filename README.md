@@ -11,6 +11,13 @@
 -   Introduce new git enhancement commands: skipWorkTree, noSkipWorkTree, and listFiles.
 -   Add the new commands "Update Model" in context menu and in code action panel to update model file after you modified type declaration `TDefinitions` in opened file.
 -   Add timestamp conversion and insertion commands and view the timestamp corresponding to the unix timestamp.
+-   Refactor class method parameters to object.
+-   Auto-update feature for Node.js built-in modules.
+-   Base64 string encoding/decoding.
+-   Generating type of zod schema.
+-   Update type member names when any member of type in current file is changed.
+-   Configuration option for text replacement behavior.
+-   Convert anonymous type to options object.
 
 ## Usage
 

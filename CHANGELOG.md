@@ -5,6 +5,26 @@ All notable changes to "sower-tools" will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2024-06-19
+
+### Added
+
+-   Refactor class method parameters to object.
+-   Auto-update feature for Node.js built-in modules.
+-   Base64 string encoding/decoding.
+-   Generating type of zod schema.
+-   Update type member names when any member of type in current file is changed.
+
+### Changed
+
+-   Change code action kind from QuickFix to Empty.
+-   Configuration option for text replacement behavior.
+-   Convert anonymous type to options object.
+
+### Fixed
+
+-   Multi edit update in one time.
+
 ## [0.3.2] - 2024-06-16
 
 ### Changed
