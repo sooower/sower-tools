@@ -5,6 +5,7 @@ import {
     getConfigurationItem,
 } from "@/shared/init";
 import CommonUtils from "@/shared/utils/commonUtils";
+
 import { getDebuggingConfigurations } from "./utils";
 
 export function subscribeDebugCurrentFile() {

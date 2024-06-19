@@ -1,5 +1,6 @@
 import { vscode } from "@/shared";
 import { extensionCtx } from "@/shared/init";
+
 import {
     createAndShowStatusItem,
     setSelectedLinesStatusItemText,
