@@ -33,7 +33,7 @@ export function subscribeGenerateEnumAssertionFunction() {
                 });
                 CommonUtils.assert(
                     enumNode !== undefined,
-                    `Can not found enum declaration, please check your code to generate one first`
+                    `Can not found enum declaration, please check your code to generate one first.`
                 );
 
                 await generateEnumAssertionFunction({

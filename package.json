@@ -55,6 +55,10 @@
                 "title": "Generate/Update Enum Assertion"
             },
             {
+                "command": "sower-tools.generateTypeSchema",
+                "title": "Generate Type of Schema"
+            },
+            {
                 "command": "sower-tools.gitEnhancement.skipWorkTree",
                 "title": "Skip Work Tree"
             },
@@ -117,6 +121,11 @@
                 {
                     "command": "sower-tools.generateEnumAssertionFunction",
                     "group": "003_functionEnhancement@002",
+                    "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
+                },
+                {
+                    "command": "sower-tools.generateTypeSchema",
+                    "group": "003_functionEnhancement@003",
                     "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
                 },
                 {

@@ -38,6 +38,18 @@ export class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
             arguments: [document, range],
         };
 
+        /* generateTypeSchema */
+
+        const generateTypeSchemaCodeAction = new vscode.CodeAction(
+            "Generate Type of Schema",
+            vscode.CodeActionKind.Empty
+        );
+        generateTypeSchemaCodeAction.command = {
+            command: `${extensionName}.generateTypeSchema`,
+            title: "",
+            arguments: [document, range],
+        };
+
         /* databaseModel */
 
         const updateModelCodeAction = new vscode.CodeAction(
@@ -53,6 +65,7 @@ export class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
         return [
             convertParametersToOptionsObject,
             generateEnumAssertionFunctionCodeAction,
+            generateTypeSchemaCodeAction,
             updateModelCodeAction,
         ];
     }

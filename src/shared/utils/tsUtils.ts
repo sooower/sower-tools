@@ -151,3 +151,25 @@ export function findVariableDeclarationNode({
 
     return visit(sourceFile);
 }
+
+type TFindVariableDeclarationNodeAtOffsetOptions = {
+    sourceFile: ts.SourceFile;
+    offset: number;
+};
+
+export function findVariableDeclarationNodeAtOffset({
+    sourceFile,
+    offset,
+}: TFindVariableDeclarationNodeAtOffsetOptions) {
+    function visit(node: ts.Node): ts.VariableDeclaration | undefined {
+        if (!ts.isVariableDeclaration(node)) {
+            return ts.forEachChild(node, visit);
+        }
+
+        if (node.getStart() <= offset && node.getEnd() >= offset) {
+            return node;
+        }
+    }
+
+    return visit(sourceFile);
+}
