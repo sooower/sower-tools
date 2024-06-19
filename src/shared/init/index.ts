@@ -13,6 +13,8 @@ export let ignoredInsertionColumns: string[];
 export let nodeBuiltinModules: string[];
 export let enableUpdateNodeBuiltinImports: boolean;
 
+export let replaceText: boolean;
+
 export function init(context: vscode.ExtensionContext) {
     const packageJsonContent = JSON.parse(
         fs.readFileSync(
@@ -83,6 +85,11 @@ export function reloadConfiguration() {
         getConfigurationItem(
             `${extensionName}.updateImports.enableUpdateNodeBuiltinImports`
         )
+    );
+
+    /* stringTools */
+    replaceText = CommonUtils.assertBoolean(
+        getConfigurationItem(`${extensionName}.stringTools.replaceText`)
     );
 }
 

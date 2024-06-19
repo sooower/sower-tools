@@ -300,6 +300,11 @@
                     "description": "If true, it will update node builtin imports with prefix \"node:\" automatically when saving file.",
                     "type": "boolean",
                     "default": true
+                },
+                "sower-tools.stringTools.replaceText": {
+                    "description": "If true, it will replace the selected text with converted text when encoding/decoding base64 string, otherwise it will insert the converted text after next line.",
+                    "type": "boolean",
+                    "default": true
                 }
             }
         }

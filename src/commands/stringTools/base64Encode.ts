@@ -1,5 +1,5 @@
 import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/init";
+import { extensionCtx, extensionName, replaceText } from "@/shared/init";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
 export function subscribeBase64Encode() {
@@ -41,9 +41,16 @@ async function base64Encode({ editor, text }: TBase64EncodeOptions) {
     }
 
     const encodedText = Buffer.from(text, "utf-8").toString("base64");
-    await TextEditorUtils.insertTextAtOffset({
-        editor: editor,
-        offset: editor.document.offsetAt(editor.selection.end),
-        text: encodedText,
-    });
+    replaceText
+        ? await TextEditorUtils.replaceTextRangeOffset({
+              editor: editor,
+              start: editor.document.offsetAt(editor.selection.start),
+              end: editor.document.offsetAt(editor.selection.end),
+              newText: encodedText,
+          })
+        : await TextEditorUtils.insertTextAtOffset({
+              editor: editor,
+              offset: editor.document.offsetAt(editor.selection.end),
+              text: encodedText,
+          });
 }
