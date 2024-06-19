@@ -26,6 +26,17 @@ export class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
         };
         convertParametersToOptionsObject.isPreferred = true;
 
+        const updateTypeMemberNames = new vscode.CodeAction(
+            "Update member names",
+            vscode.CodeActionKind.RefactorRewrite
+        );
+        updateTypeMemberNames.command = {
+            command: `${extensionName}.functionEnhancement.updateTypeMemberNames`,
+            title: "",
+            arguments: [document, range],
+        };
+        updateTypeMemberNames.isPreferred = true;
+
         /* generateEnumAssertionFunction */
 
         const generateEnumAssertionFunctionCodeAction = new vscode.CodeAction(
@@ -64,6 +75,7 @@ export class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
 
         return [
             convertParametersToOptionsObject,
+            updateTypeMemberNames,
             generateEnumAssertionFunctionCodeAction,
             generateTypeSchemaCodeAction,
             updateModelCodeAction,

@@ -22,6 +22,21 @@ export function findTypeDeclarationNode({
     return visit(sourceFile);
 }
 
+export function findAllTypeDeclarationNode(sourceFile: ts.SourceFile) {
+    const typeDeclarationNodes: ts.TypeAliasDeclaration[] = [];
+    visit(sourceFile);
+
+    function visit(node: ts.Node): ts.TypeAliasDeclaration | undefined {
+        if (!ts.isTypeAliasDeclaration(node)) {
+            return ts.forEachChild(node, visit);
+        }
+
+        typeDeclarationNodes.push(node);
+    }
+
+    return typeDeclarationNodes;
+}
+
 type TFindFuncDeclarationNodeOptions = {
     sourceFile: ts.SourceFile;
     funcName: string;
