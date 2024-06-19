@@ -27,10 +27,8 @@ export function subscribeConvertParametersToOptionsObject() {
                     return;
                 }
 
-                const sourceFile = getSourceFileByEditor(editor);
-
                 const funcNode = findFuncDeclarationNodeAtOffset({
-                    sourceFile,
+                    sourceFile: getSourceFileByEditor(editor),
                     offset: editor.document.offsetAt(editor.selection.active),
                 });
                 if (funcNode === undefined) {
@@ -39,7 +37,6 @@ export function subscribeConvertParametersToOptionsObject() {
 
                 await convertParametersToOptionsObject({
                     editor,
-                    sourceFile,
                     node: funcNode,
                 });
             } catch (e) {
@@ -54,80 +51,100 @@ export function subscribeConvertParametersToOptionsObject() {
 
 type TConvertParametersToOptionsObjectOptions = {
     editor: vscode.TextEditor;
-    sourceFile: ts.SourceFile;
     node: ts.FunctionDeclaration | ts.ArrowFunction | ts.MethodDeclaration;
 };
 
 async function convertParametersToOptionsObject({
     editor,
-    sourceFile,
     node,
 }: TConvertParametersToOptionsObjectOptions) {
     if (node.name === undefined || node.parameters.length === 0) {
         return;
     }
 
-    // Do not refactor if the function has only one reference(non-primitive) parameter
+    const typeName = `T${toUpperCamelCase(node.name.getText())}Options`;
+    let typeDeclarationText: string | undefined;
+
     if (node.parameters.length === 1) {
-        const [firstParameter] = node.parameters;
+        const [parameter] = node.parameters;
         if (
-            firstParameter.type !== undefined &&
-            ts.isTypeReferenceNode(firstParameter.type)
+            parameter.type !== undefined &&
+            ts.isTypeLiteralNode(parameter.type)
         ) {
-            return;
+            const typeMembersText = parameter.type.members.map((it) => {
+                if (ts.isPropertySignature(it)) {
+                    const memberName = it.name.getText();
+                    const memberType = it.type?.getText() ?? ETsType.Unknown;
+                    const optional = it.questionToken !== undefined;
+
+                    return format(
+                        `%s%s: %s;`,
+                        memberName,
+                        optional ? "?" : "",
+                        memberType
+                    );
+                }
+
+                return "";
+            });
+
+            typeDeclarationText = format(
+                `type %s = {\n\t%s\n};`,
+                typeName,
+                typeMembersText.join("\n\t")
+            );
+
+            await TextEditorUtils.replaceTextOfNode({
+                editor,
+                sourceFile: getSourceFileByEditor(editor),
+                node: parameter.type,
+                newText: typeName,
+            });
         }
+    } else {
+        /* Generate new params */
+
+        const paramNames = node.parameters.map((it) => it.name.getText());
+
+        const typeMembersText = node.parameters.map((it) => {
+            const paramName = it.name.getText();
+            const paramType = it.type?.getText() ?? ETsType.Unknown;
+            const optional = it.questionToken !== undefined;
+
+            return format(
+                `%s%s: %s;`,
+                paramName,
+                optional ? "?" : "",
+                paramType
+            );
+        });
+        const newParamsText = `{ ${paramNames.join(", ")} }: ${typeName}`;
+
+        /* Update editor text */
+
+        const firstParam = node.parameters[0];
+        const lastParam = node.parameters[node.parameters.length - 1];
+        await TextEditorUtils.replaceTextRangeOffset({
+            editor,
+            start: firstParam.getStart(),
+            end: lastParam.getEnd(),
+            newText: newParamsText,
+        });
+
+        typeDeclarationText = format(
+            `type ${typeName} = {\n\t%s\n};`,
+            typeMembersText.join("\n\t")
+        );
     }
 
-    /* Generate new params */
-
-    const paramNames = node.parameters.map((it) => it.name.getText(sourceFile));
-
-    const paramTypes = node.parameters.map((it) => {
-        const paramName = it.name.getText(sourceFile);
-        const paramType = it.type?.getText(sourceFile) ?? ETsType.Unknown;
-        const optional = it.questionToken !== undefined;
-
-        return format(`%s%s: %s`, paramName, optional ? "?" : "", paramType);
-    });
-    const typeName = `T${toUpperCamelCase(node.name.getText())}Options`;
-    const newParamsText = `{ ${paramNames.join(", ")} }: ${typeName}`;
-
-    /* Update editor text */
-
-    const firstParam = node.parameters[0];
-    const lastParam = node.parameters[node.parameters.length - 1];
-    const firstParamStartPos = sourceFile.getLineAndCharacterOfPosition(
-        firstParam.getStart()
-    );
-    const lastParamEndPos = sourceFile.getLineAndCharacterOfPosition(
-        lastParam.getEnd()
-    );
-    await editor.edit((editBuilder) => {
-        editBuilder.replace(
-            new vscode.Range(
-                new vscode.Position(
-                    firstParamStartPos.line,
-                    firstParamStartPos.character
-                ),
-                new vscode.Position(
-                    lastParamEndPos.line,
-                    lastParamEndPos.character
-                )
-            ),
-            newParamsText
-        );
-    });
-
+    const sourceFile = getSourceFileByEditor(editor);
     if (
         findTypeDeclarationNode({
             sourceFile,
             typeName,
-        }) === undefined
+        }) === undefined &&
+        typeDeclarationText !== undefined
     ) {
-        const typeDeclarationText = format(
-            `type ${typeName} = {\n\t%s\n};`,
-            paramTypes.join(";\n\t")
-        );
         await TextEditorUtils.insertTextBeforeNode({
             editor,
             sourceFile,
