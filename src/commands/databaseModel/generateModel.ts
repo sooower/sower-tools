@@ -84,11 +84,35 @@ async function parseSqlAndGenerateFiles() {
         selectedText
     );
 
-    /* Generate schema file */
-
     const [workspaceFolder] = CommonUtils.mandatory(
         vscode.workspace.workspaceFolders
     );
+
+    /* Check "src.models.index" file exits */
+
+    const modelFilePath = path.join(
+        workspaceFolder.uri.path,
+        "src",
+        "models",
+        "index.ts"
+    );
+    if (!fs.existsSync(modelFilePath)) {
+        const modelFilePathContent = fs.readFileSync(
+            path.join(
+                extensionCtx.extensionPath,
+                "templates",
+                "src.models.index.ts.tpl"
+            ),
+            "utf-8"
+        );
+        await vscode.workspace.fs.writeFile(
+            vscode.Uri.file(modelFilePath),
+            Buffer.from(modelFilePathContent)
+        );
+    }
+
+    /* Generate "src.models.schema.index.ts" file */
+
     const schemaFilePath = path.join(
         workspaceFolder.uri.path,
         "src",
@@ -102,7 +126,11 @@ async function parseSqlAndGenerateFiles() {
 
     const schemaFileContent = fs
         .readFileSync(
-            path.join(extensionCtx.extensionPath, "templates", "schema.tpl"),
+            path.join(
+                extensionCtx.extensionPath,
+                "templates",
+                "src.models.schema.index.ts.tpl"
+            ),
             "utf-8"
         )
         .replace(/{{schemaName}}/g, toLowerCamelCase(schemaName));
@@ -113,9 +141,9 @@ async function parseSqlAndGenerateFiles() {
     );
     const generatedFiles = [schemaFilePath];
 
-    /* Generate model file */
+    /* Generate "src.models.schema.table.index.ts" file */
 
-    const modelFilePath = path.join(
+    const tableFilePath = path.join(
         workspaceFolder.uri.path,
         "src",
         "models",
@@ -125,7 +153,7 @@ async function parseSqlAndGenerateFiles() {
     );
 
     if (!enableOverwriteFile) {
-        assertFileNotEmpty(modelFilePath);
+        assertFileNotEmpty(tableFilePath);
     }
 
     const enumEColumnContent: string[] = [];
@@ -193,7 +221,11 @@ async function parseSqlAndGenerateFiles() {
     }
     const modelFileContent = fs
         .readFileSync(
-            path.join(extensionCtx.extensionPath, "templates", "model.tpl"),
+            path.join(
+                extensionCtx.extensionPath,
+                "templates",
+                "src.models.schema.table.index.ts.tpl"
+            ),
             "utf-8"
         )
         .replace(/{{EColumnContent}}/g, enumEColumnContent.join("\n"))
@@ -207,14 +239,14 @@ async function parseSqlAndGenerateFiles() {
         .replace(/{{tableName}}/g, toLowerCamelCase(tableName));
 
     await vscode.workspace.fs.writeFile(
-        vscode.Uri.file(modelFilePath),
+        vscode.Uri.file(tableFilePath),
         Buffer.from(modelFileContent)
     );
 
     // Open model file in editor
-    await vscode.window.showTextDocument(vscode.Uri.file(modelFilePath));
+    await vscode.window.showTextDocument(vscode.Uri.file(tableFilePath));
 
-    generatedFiles.push(modelFilePath);
+    generatedFiles.push(tableFilePath);
 
     return generatedFiles;
 }
@@ -421,7 +453,7 @@ async function parseCreateStmtV2(text: string) {
             detailMap.set(column, {
                 tsType: mapTsType(CommonUtils.mandatory(type)),
                 nullable,
-                enumType: ETsType.Unknown, // TODO support extract enum type
+                enumType: ETsType.Unknown,
             });
         }
     });
