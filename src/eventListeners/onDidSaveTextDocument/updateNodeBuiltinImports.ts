@@ -19,6 +19,9 @@ export async function updateNodeBuiltinImports({
         const edit = new vscode.WorkspaceEdit();
         edit.set(editor.document.uri, edits);
         await vscode.workspace.applyEdit(edit);
+
+        vscode.commands.executeCommand("extension.sortImports");
+        vscode.workspace.save(editor.document.uri);
     }
 
     function doUpdateNodeBuiltinImports(node: ts.Node) {

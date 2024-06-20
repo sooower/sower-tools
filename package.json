@@ -51,6 +51,10 @@
                 "title": "Convert Parameters to Options Object"
             },
             {
+                "command": "sower-tools.functionEnhancement.updateTypeMemberNames",
+                "title": "Update Type Member Names"
+            },
+            {
                 "command": "sower-tools.generateEnumAssertionFunction",
                 "title": "Generate/Update Enum Assertion"
             },
@@ -346,6 +350,7 @@
         "dayjs": "^1.11.11"
     },
     "extensionDependencies": [
-        "shd101wyy.markdown-preview-enhanced"
+        "shd101wyy.markdown-preview-enhanced",
+        "mike-co.import-sorter"
     ]
 }
