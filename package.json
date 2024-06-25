@@ -350,7 +350,6 @@
     "dependencies": {
         "comment-json": "^4.2.3",
         "dayjs": "^1.11.11",
-        "remark": "^15.0.1",
         "unist-util-visit": "^5.0.0"
     },
     "extensionDependencies": [
