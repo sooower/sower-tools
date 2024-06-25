@@ -1,73 +1,30 @@
+import path from "node:path";
+
 import { parse } from "comment-json";
-import path from "path";
 
 import { fs, vscode } from "@/shared";
 import CommonUtils from "@/shared/utils/commonUtils";
 
-type TLaunchConfiguration = {
-    name: string;
-    type: string;
-    request: string;
-    args: string[];
-    runtimeArgs: string[];
-    cwd: string;
-    internalConsoleOptions: string;
-    skipFiles: string[];
-    env?: { [key: string]: string };
-    envFile: string;
-};
+export function getDebuggingConfigurations(): any[] {
+    try {
+        const launch = CommonUtils.assertObjectHasKeys(
+            loadLaunchJsonContent(),
+            ["configurations"]
+        );
 
-export function getDebuggingConfigurations() {
-    const launch = CommonUtils.cloneObjectWithKeys(loadLaunchJsonContent(), [
-        "configurations",
-    ]);
-    const configurations: TLaunchConfiguration[] = CommonUtils.assertArray(
-        launch.configurations
-    )
-        .map((it) =>
-            CommonUtils.cloneObjectWithKeys(it, [
-                "name",
-                "type",
-                "request",
-                "args",
-                "runtimeArgs",
-                "cwd",
-                "internalConsoleOptions",
-                "skipFiles",
-                "env",
-                "envFile",
-            ])
-        )
-        .map((it) => ({
-            name: CommonUtils.assertString(it.name),
-            type: CommonUtils.assertString(it.type),
-            request: CommonUtils.assertString(it.request),
-            args: CommonUtils.assertArray(it.args).map((it) =>
-                CommonUtils.assertString(it)
-            ),
-            runtimeArgs: CommonUtils.assertArray(it.runtimeArgs).map((it) =>
-                CommonUtils.assertString(it)
-            ),
-            cwd: CommonUtils.assertString(it.cwd),
-            internalConsoleOptions: CommonUtils.assertString(
-                it.internalConsoleOptions
-            ),
-            skipFiles: CommonUtils.assertArray(it.skipFiles).map((it) =>
-                CommonUtils.assertString(it)
-            ),
-            env: it.env as any,
-            envFile: CommonUtils.assertString(it.envFile),
-        }));
+        const configurations = launch.configurations;
+        CommonUtils.assert(
+            CommonUtils.isArray(configurations) && configurations.length > 0,
+            "launch.json must have at least one configuration."
+        );
 
-    CommonUtils.assert(
-        configurations.length > 0,
-        "launch.json must have at least one configuration."
-    );
-
-    return configurations;
+        return configurations;
+    } catch (e) {
+        throw new Error(`Failed to load launch.json. ${e}`);
+    }
 }
 
-export function loadLaunchJsonContent(): unknown {
+export function loadLaunchJsonContent() {
     const [workspaceFolder] = CommonUtils.mandatory(
         vscode.workspace.workspaceFolders
     );
