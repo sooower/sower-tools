@@ -18,6 +18,7 @@ export function subscribeInsertTimestamp() {
                     editor,
                     offset: editor.document.offsetAt(editor.selection.active),
                     text: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+                    lineBreak: "",
                 });
             } catch (e) {
                 console.error(e);
