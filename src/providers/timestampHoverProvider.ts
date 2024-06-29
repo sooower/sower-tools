@@ -11,7 +11,18 @@ export function subscribeTimestampHoverProvider() {
                 return;
             }
 
-            const word = document.getText(editor.selection);
+            let word: string;
+            const selectedWord = document.getText(editor.selection);
+            if (selectedWord !== "") {
+                word = selectedWord;
+            } else {
+                const wordRange = document.getWordRangeAtPosition(position);
+                if (wordRange === undefined) {
+                    return;
+                }
+
+                word = document.getText(wordRange);
+            }
 
             if (!/^\d+$/.test(word)) {
                 return;
