@@ -10,7 +10,7 @@ import {
     ignoredInsertionColumns,
 } from "@/shared/init";
 import { ETsType } from "@/shared/types";
-import { toLowerCamelCase, toUpperCamelCase } from "@/shared/utils";
+import { reIndent, toLowerCamelCase, toUpperCamelCase } from "@/shared/utils";
 import CommonUtils from "@/shared/utils/commonUtils";
 
 enum ESqlKeywords {
@@ -163,11 +163,13 @@ async function parseSqlAndGenerateFiles() {
     const funcInsertContent: string[] = [];
 
     for (const [column, { tsType, nullable, enumType }] of detail) {
-        enumEColumnContent.push(`${toUpperCamelCase(column)} = "${column}",`);
+        enumEColumnContent.push(
+            reIndent(`${toUpperCamelCase(column)} = "${column}",`, 4)
+        );
 
         typeTDefinitionsContent.push(
             format(
-                `[EColumn.%s]%s: %s;`,
+                reIndent(`[EColumn.%s]%s: %s;`, 4),
                 toUpperCamelCase(column),
                 nullable ? "?" : "",
                 enumType === ETsType.Unknown ? tsType : enumType
@@ -176,7 +178,7 @@ async function parseSqlAndGenerateFiles() {
 
         varkResolverContent.push(
             format(
-                `[EColumn.%s]: %s,`,
+                reIndent(`[EColumn.%s]: %s,`, 4),
                 toUpperCamelCase(column),
                 mapAssertMethod({ tsType, nullable, enumType })
             )
@@ -185,7 +187,7 @@ async function parseSqlAndGenerateFiles() {
         if (!ignoredInsertionColumns.includes(column)) {
             typeTInsertOptionsContent.push(
                 format(
-                    `%s%s: %s;`,
+                    reIndent(`%s%s: %s;`, 4),
                     column,
                     nullable ? "?" : "",
                     enumType === ETsType.Unknown ? tsType : enumType
@@ -194,25 +196,31 @@ async function parseSqlAndGenerateFiles() {
             funcInsertContent.push(
                 nullable
                     ? format(
-                          `
-                            if (options.%s !== undefined) {
-                                columnValues.push({
-                                    column: EColumn.%s,
-                                    value: options.%s,
-                                });
-                            }
-                    `,
+                          reIndent(
+                              `
+                                if (options.%s !== undefined) {
+                                    columnValues.push({
+                                        column: EColumn.%s,
+                                        value: options.%s,
+                                    });
+                                }
+                            `,
+                              4
+                          ),
                           column,
                           toUpperCamelCase(column),
                           column
                       )
                     : format(
-                          `
-                            columnValues.push({
-                                column: EColumn.%s,
-                                value: options.%s,
-                            });
-                        `,
+                          reIndent(
+                              `
+                                columnValues.push({
+                                    column: EColumn.%s,
+                                    value: options.%s,
+                                });
+                            `,
+                              4
+                          ),
                           toUpperCamelCase(column),
                           column
                       )

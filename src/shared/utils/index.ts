@@ -45,3 +45,27 @@ export function reverseMap(map: Map<string, string>) {
 
     return newMap;
 }
+
+
+export function reIndent(str: string, indentNum = 0) {
+    const lines = str.split("\n")
+
+    let minIndent = Infinity
+    for (const line of str.split("\n")) {
+        if (line.trim() === "") {
+            continue
+        }
+
+        // Gets the index of the first non-whitespace character
+        const indent = line.search(/\S/)
+        if (indent < minIndent) {
+            minIndent = indent
+        }
+    }
+
+    return lines
+        .map((line) => {
+            return " ".repeat(indentNum) + line.slice(minIndent)
+        })
+        .join("\n")
+}
