@@ -13,8 +13,6 @@ export function subscribeOnDidSaveTextDocumentListener() {
         try {
             reloadConfiguration();
 
-            /* Pre handle */
-
             const editor = vscode.window.activeTextEditor;
             if (editor === undefined) {
                 return;
@@ -24,17 +22,7 @@ export function subscribeOnDidSaveTextDocumentListener() {
                 return;
             }
 
-            /* Handling for ts file */
-
-            if (editor.document.languageId !== "typescript") {
-                return;
-            }
-
-            await updateFuncParameterTypeName({ editor });
-
-            if (enableUpdateNodeBuiltinImports) {
-                await updateNodeBuiltinImports({ editor });
-            }
+            await handleForTypeScriptFile(editor);
         } catch (e) {
             console.error(e);
             vscode.window.showErrorMessage(`${e}`);
@@ -42,4 +30,16 @@ export function subscribeOnDidSaveTextDocumentListener() {
     });
 
     extensionCtx.subscriptions.push(listener);
+}
+
+async function handleForTypeScriptFile(editor: vscode.TextEditor) {
+    if (editor.document.languageId !== "typescript") {
+        return;
+    }
+
+    await updateFuncParameterTypeName({ editor });
+
+    if (enableUpdateNodeBuiltinImports) {
+        await updateNodeBuiltinImports({ editor });
+    }
 }

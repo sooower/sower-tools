@@ -57,11 +57,24 @@ export class CommonCodeActionProvider implements vscode.CodeActionProvider {
             arguments: [document, range],
         };
 
+        /* syncChangelog */
+
+        const syncChangelogCodeAction = new vscode.CodeAction(
+            "Sync Changelog",
+            vscode.CodeActionKind.Empty
+        );
+        syncChangelogCodeAction.command = {
+            command: `${extensionName}.syncChangelog`,
+            title: "",
+            arguments: [document, range],
+        };
+
         return [
             covertTimestampCodeAction,
             insertTimestampCodeAction,
             base64EncodeCodeAction,
             base64DecodeCodeAction,
+            syncChangelogCodeAction,
         ];
     }
 }

@@ -5,6 +5,7 @@ import { subscribeGenerateEnumAssertionFunction } from "./generateEnumAssertionF
 import { subscribeGenerateTypeSchema } from "./generateSchemaType";
 import { subscribeGitEnhancement } from "./gitEnhancement";
 import { subscribeStringTools } from "./stringTools";
+import { subscribeSyncChangelog } from "./syncChangelog";
 import { subscribeTimestampTools } from "./timestampTools";
 
 export function subscribeCommands() {
@@ -16,4 +17,5 @@ export function subscribeCommands() {
     subscribeGitEnhancement();
     subscribeTimestampTools();
     subscribeStringTools();
+    subscribeSyncChangelog();
 }
