@@ -3,6 +3,7 @@ import path from "node:path";
 import { vscode } from "@/shared";
 import { extensionName, getConfigurationItem } from "@/shared/init";
 import CommonUtils from "@/shared/utils/commonUtils";
+import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 
 export async function showDefaultOpenedDocument() {
     if (vscode.workspace.workspaceFolders === undefined) {
@@ -21,11 +22,10 @@ export async function showDefaultOpenedDocument() {
         )
     ).map((it) => CommonUtils.assertString(it));
 
-    const [workspaceFolder] = vscode.workspace.workspaceFolders;
     for (const docName of defaultOpenedDocumentNames) {
         try {
             const doc = await vscode.workspace.openTextDocument(
-                path.join(workspaceFolder.uri.path, docName)
+                path.join(getWorkspaceFolderPath(), docName)
             );
             await vscode.window.showTextDocument(doc, {
                 preview: true,
@@ -33,7 +33,7 @@ export async function showDefaultOpenedDocument() {
             });
             await vscode.commands.executeCommand(
                 "markdown-preview-enhanced.openPreview",
-                vscode.Uri.file(path.join(workspaceFolder.uri.path, docName))
+                vscode.Uri.file(path.join(getWorkspaceFolderPath(), docName))
             );
 
             return;

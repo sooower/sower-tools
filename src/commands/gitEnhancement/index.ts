@@ -2,7 +2,7 @@ import { execSync } from "node:child_process";
 
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
-import CommonUtils from "@/shared/utils/commonUtils";
+import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 
 const kTerminalName = "Temp";
 
@@ -56,11 +56,7 @@ export async function subscribeGitEnhancement() {
 }
 
 function execCommand(command: string) {
-    const [workspaceFolder] = CommonUtils.mandatory(
-        vscode.workspace.workspaceFolders
-    );
-
-    return execSync(command, { cwd: workspaceFolder.uri.path }).toString();
+    return execSync(command, { cwd: getWorkspaceFolderPath() }).toString();
 }
 
 let terminal: vscode.Terminal;

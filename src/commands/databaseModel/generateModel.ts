@@ -12,6 +12,7 @@ import {
 import { ETsType } from "@/shared/types";
 import { reIndent, toLowerCamelCase, toUpperCamelCase } from "@/shared/utils";
 import CommonUtils from "@/shared/utils/commonUtils";
+import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 
 enum ESqlKeywords {
     Create = "CREATE",
@@ -84,14 +85,10 @@ async function parseSqlAndGenerateFiles() {
         selectedText
     );
 
-    const [workspaceFolder] = CommonUtils.mandatory(
-        vscode.workspace.workspaceFolders
-    );
-
     /* Check "src.models.index" file exits */
 
     const modelFilePath = path.join(
-        workspaceFolder.uri.path,
+        getWorkspaceFolderPath(),
         "src",
         "models",
         "index.ts"
@@ -114,7 +111,7 @@ async function parseSqlAndGenerateFiles() {
     /* Generate "src.models.schema.index.ts" file */
 
     const schemaFilePath = path.join(
-        workspaceFolder.uri.path,
+        getWorkspaceFolderPath(),
         "src",
         "models",
         schemaName,
@@ -144,7 +141,7 @@ async function parseSqlAndGenerateFiles() {
     /* Generate "src.models.schema.table.index.ts" file */
 
     const tableFilePath = path.join(
-        workspaceFolder.uri.path,
+        getWorkspaceFolderPath(),
         "src",
         "models",
         schemaName,

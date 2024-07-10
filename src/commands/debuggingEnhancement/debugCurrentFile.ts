@@ -5,6 +5,7 @@ import {
     getConfigurationItem,
 } from "@/shared/init";
 import CommonUtils from "@/shared/utils/commonUtils";
+import { getWorkspaceFolder } from "@/shared/utils/vscode";
 
 import { getDebuggingConfigurations } from "./utils";
 
@@ -32,10 +33,7 @@ export function subscribeDebugCurrentFile() {
                     vscode.debug.stopDebugging(vscode.debug.activeDebugSession);
                 }
 
-                const [workspaceFolder] = CommonUtils.mandatory(
-                    vscode.workspace.workspaceFolders
-                );
-                await vscode.debug.startDebugging(workspaceFolder, {
+                await vscode.debug.startDebugging(getWorkspaceFolder(), {
                     ...debugCurrentFileConfiguration,
                 });
             } catch (e) {

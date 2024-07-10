@@ -2,8 +2,9 @@ import path from "node:path";
 
 import { parse } from "comment-json";
 
-import { fs, vscode } from "@/shared";
+import { fs } from "@/shared";
 import CommonUtils from "@/shared/utils/commonUtils";
+import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 
 export function getDebuggingConfigurations(): any[] {
     try {
@@ -25,12 +26,8 @@ export function getDebuggingConfigurations(): any[] {
 }
 
 export function loadLaunchJsonContent() {
-    const [workspaceFolder] = CommonUtils.mandatory(
-        vscode.workspace.workspaceFolders
-    );
-
     const launchConfigPath = path.join(
-        workspaceFolder.uri.fsPath,
+        getWorkspaceFolderPath(),
         ".vscode",
         "launch.json"
     );
