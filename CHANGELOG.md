@@ -5,7 +5,22 @@ All notable changes to "sower-tools" will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.0] - 2024-06-19
+## [0.9.0] - 2024-07-10
+
+### Added
+
+-   Add command `updateTypeMemberNames`.
+-   Show timestamp from selected word or from ranged word.
+-   Add command 'syncChangelog' and associated code actions.
+
+### Fixed
+
+-   Save document after update node builtin imports.
+-   Fix debug error.
+-   Remove unused project dependency.
+-   Remove unnecessary line break in command `insertTimestamp`.
+
+## [0.8.0] - 2024-06-19
 
 ### Added
 
@@ -25,20 +40,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Multi edit update in one time.
 
-## [0.3.2] - 2024-06-16
+## [0.7.2] - 2024-06-16
 
 ### Changed
 
 -   Streamline commands and update messaging.
 -   Show hover timestamp only when some texts selected.
 
-## [0.3.1] - 2024-06-15
+## [0.7.1] - 2024-06-15
 
 ### Changed
 
 -   Add unix to human-readable when timestamp hover.
 
-## [0.3.0] - 2024-06-15
+## [0.7.0] - 2024-06-15
 
 ### Added
 
@@ -48,13 +63,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Update usage instructions and context menu options.
 
-## [0.2.1] - 2024-06-15
+## [0.6.1] - 2024-06-15
 
 ### Changed
 
 -   Update usage instructions and context menu options.
 
-## [0.2.0] - 2024-06-14
+## [0.6.0] - 2024-06-14
 
 ### Added
 
@@ -77,7 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Configuration names now expect arrays instead of single strings. Users must update their configuration settings accordingly.
 
-## [0.1.0] - 2024-06-12
+## [0.5.1] - 2024-06-12
 
 ### Fixed
 
@@ -93,7 +108,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Update path alias.
 -   Update assertFunction if it exists.
 
-## [0.0.6] - 2024-06-04
+## [0.5.0] - 2024-06-04
 
 ### Added
 
@@ -105,33 +120,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   May generate enum assertion function duplicated.
 -   May refactor function parameter to object duplicated.
 
-## [0.0.5] - 2024-06-02
+## [0.4.0] - 2024-06-02
 
 ### Added
 
 -   Generate enum assertion functions.
 
-## [0.0.4] - 2024-06-02
+## [0.3.1] - 2024-06-02
 
 ### Changed
 
 -   Auto refactor type name of function options parameter when ts document saved.
 
-## [0.0.3] - 2024-06-01
+## [0.3.0] - 2024-06-01
 
 ### Added
 
 -   Validate type name of function options parameter when ts document saved.
 -   Refactor function parameters to use object parameter.
 
-## [0.0.2] - 2024-05-31
+## [0.2.0] - 2024-05-31
 
 ### Added
 
 -   Debug current file or project in editor context enum.
 -   Show default opened document when there has no document opened in workspace, like README.md, CHANGELOG.md, etc.
 
-## [0.0.1] - 2024-05-30
+## [0.1.0] - 2024-05-30
 
 ### Added
 

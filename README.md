@@ -18,6 +18,9 @@
 -   Update type member names when any member of type in current file is changed.
 -   Configuration option for text replacement behavior.
 -   Convert anonymous type to options object.
+-   Add command `updateTypeMemberNames`.
+-   Show timestamp from selected word or from ranged word.
+-   Add command 'syncChangelog' and associated code actions.
 
 ## Usage
 

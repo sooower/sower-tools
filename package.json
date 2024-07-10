@@ -2,9 +2,9 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "This extension is a collection of tools.",
-    "version": "0.4.0",
+    "version": "0.9.0",
     "publisher": "Sower",
-    "icon": "./assets/sower.png",
+    "icon": "./assets/icon.png",
     "repository": {
         "type": "git",
         "url": "http://gitea.sower.fun/vsc-extensions/sower-tools.git"
@@ -89,14 +89,54 @@
             {
                 "command": "sower-tools.stringTools.base64Decode",
                 "title": "Base64 Decode"
+            },
+            {
+                "command": "sower-tools.syncChangelog",
+                "title": "Sync Changelog"
+            }
+        ],
+        "submenus": [
+            {
+                "id": "editor/context/sowerTools",
+                "label": "Sower Tools"
             }
         ],
         "menus": {
             "editor/context": [
                 {
-                    "group": "navigation",
-                    "submenu": "sower-tools"
+                    "group": "001_sowerTools@001",
+                    "submenu": "editor/context/sowerTools"
+                }
+            ],
+            "editor/title": [
+                {
+                    "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
+                    "group": "navigation@001",
+                    "when": "resourceLangId == typescript"
                 },
+                {
+                    "command": "sower-tools.debuggingEnhancement.debugProject",
+                    "group": "navigation@002",
+                    "when": "resourceLangId == typescript"
+                }
+            ],
+            "explorer/context": [
+                {
+                    "command": "sower-tools.gitEnhancement.skipWorkTree",
+                    "group": "001_gitEnhancement@001",
+                    "when": "explorerResourceIsFolder == false && resourceLangId != ''"
+                },
+                {
+                    "command": "sower-tools.gitEnhancement.noSkipWorkTree",
+                    "group": "001_gitEnhancement@002",
+                    "when": "explorerResourceIsFolder == false && resourceLangId != ''"
+                },
+                {
+                    "command": "sower-tools.gitEnhancement.listFiles",
+                    "group": "001_gitEnhancement@003"
+                }
+            ],
+            "editor/context/sowerTools": [
                 {
                     "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
                     "group": "001_debuggingEnhancement@001",
@@ -115,7 +155,7 @@
                 {
                     "command": "sower-tools.databaseModel.updateModel",
                     "group": "002_databaseModel@002",
-                    "when": "editorTextFocus  && !editorHasSelection"
+                    "when": "resourceLangId == typescript && editorTextFocus  && !editorHasSelection"
                 },
                 {
                     "command": "sower-tools.functionEnhancement.convertParametersToOptionsObject",
@@ -156,44 +196,14 @@
                     "command": "sower-tools.stringTools.base64Decode",
                     "group": "005_stringTools@002",
                     "when": "editorTextFocus && editorHasSelection"
-                }
-            ],
-            "editor/title": [
-                {
-                    "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
-                    "group": "navigation@001",
-                    "when": "resourceLangId == typescript"
                 },
                 {
-                    "command": "sower-tools.debuggingEnhancement.debugProject",
-                    "group": "navigation@002",
-                    "when": "resourceLangId == typescript"
+                    "command": "sower-tools.syncChangelog",
+                    "group": "006_changelog@001",
+                    "when": "resourceLangId == markdown && editorTextFocus"
                 }
-            ],
-            "explorer/context": [
-                {
-                    "command": "sower-tools.gitEnhancement.skipWorkTree",
-                    "group": "001_gitEnhancement@001",
-                    "when": "explorerResourceIsFolder == false && resourceLangId != ''"
-                },
-                {
-                    "command": "sower-tools.gitEnhancement.noSkipWorkTree",
-                    "group": "001_gitEnhancement@002",
-                    "when": "explorerResourceIsFolder == false && resourceLangId != ''"
-                },
-                {
-                    "command": "sower-tools.gitEnhancement.listFiles",
-                    "group": "001_gitEnhancement@003"
-                }
-            ],
-            "sower-tools": []
+            ]
         },
-        "submenus": [
-            {
-                "id": "sower-tools",
-                "label": "Sower Tools"
-            }
-        ],
         "configuration": {
             "type": "object",
             "title": "Sower Tools",
@@ -333,6 +343,7 @@
         "test": "vscode-test"
     },
     "devDependencies": {
+        "@types/markdown-it": "^14.1.1",
         "@types/mocha": "^10.0.6",
         "@types/node": "18.x",
         "@types/vscode": "^1.89.0",
@@ -350,6 +361,8 @@
     "dependencies": {
         "comment-json": "^4.2.3",
         "dayjs": "^1.11.11",
+        "markdown-it": "^14.1.0",
+        "remark-parse": "^11.0.0",
         "unist-util-visit": "^5.0.0"
     },
     "extensionDependencies": [
