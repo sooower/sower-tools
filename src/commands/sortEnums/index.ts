@@ -30,12 +30,13 @@ export function subscribeSortEnums() {
 
 async function sortEnums(editor: vscode.TextEditor) {
     const enumNodes = findEnumDeclarationNodes(getSourceFileByEditor(editor));
-    const sortedEnumTexts = enumNodes
-        .sort((a, b) => {
-            return a.name.text.localeCompare(b.name.text);
-        })
-        .map((node) => node.getText())
-        .join("\n\n");
+    const sortedEnumTexts =
+        enumNodes
+            .sort((a, b) => {
+                return a.name.text.localeCompare(b.name.text);
+            })
+            .map((node) => node.getText())
+            .join("\n\n") + "\n";
 
     fs.writeFileSync(editor.document.fileName, sortedEnumTexts);
 }

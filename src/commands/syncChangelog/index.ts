@@ -70,7 +70,7 @@ async function findLastVersionAndAddItems(changelogFilename = "CHANGELOG.md") {
                 const nextToken = tokens[tokens.indexOf(token) + 1];
                 if (nextToken !== undefined && nextToken.type === "inline") {
                     const matchedVersion =
-                        nextToken.content.match(/^\[(\d\.\d\.\d)\]/);
+                        nextToken.content.match(/^\[(\d+\.\d+\.\d+)\]/);
                     if (matchedVersion !== null) {
                         lastVersion = matchedVersion[1];
 
