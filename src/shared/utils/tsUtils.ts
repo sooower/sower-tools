@@ -101,6 +101,30 @@ export function findFuncDeclarationNodeAtOffset({
     return visit(sourceFile);
 }
 
+export function findEnumDeclarationNodes(sourceFile: ts.SourceFile) {
+    const enumNodes: ts.EnumDeclaration[] = [];
+
+    sourceFile.forEachChild((node) => {
+        if (node.getText().trim() === "") {
+            return;
+        }
+
+        if (!ts.isEnumDeclaration(node)) {
+            const { line } = ts.getLineAndCharacterOfPosition(
+                sourceFile,
+                node.getStart()
+            );
+            throw new Error(
+                `Current file include non-enums node, line at: ${line + 1}.`
+            );
+        }
+
+        enumNodes.push(node);
+    });
+
+    return enumNodes;
+}
+
 type TFindEnumDeclarationNodeOptions = {
     sourceFile: ts.SourceFile;
     enumName: string;

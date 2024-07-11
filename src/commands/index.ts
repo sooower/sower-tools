@@ -4,6 +4,7 @@ import { subscribeEnhanceFunction } from "./functionEnhancement";
 import { subscribeGenerateEnumAssertionFunction } from "./generateEnumAssertionFunction";
 import { subscribeGenerateTypeSchema } from "./generateSchemaType";
 import { subscribeGitEnhancement } from "./gitEnhancement";
+import { subscribeSortEnums } from "./sortEnums";
 import { subscribeStringTools } from "./stringTools";
 import { subscribeSyncChangelog } from "./syncChangelog";
 import { subscribeTimestampTools } from "./timestampTools";
@@ -18,4 +19,5 @@ export function subscribeCommands() {
     subscribeTimestampTools();
     subscribeStringTools();
     subscribeSyncChangelog();
+    subscribeSortEnums();
 }

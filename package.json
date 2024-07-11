@@ -2,7 +2,7 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "This extension is a collection of tools.",
-    "version": "0.9.1",
+    "version": "0.10.0",
     "publisher": "Sower",
     "icon": "./assets/icon.png",
     "repository": {
@@ -93,6 +93,10 @@
             {
                 "command": "sower-tools.syncChangelog",
                 "title": "Sync Changelog"
+            },
+            {
+                "command": "sower-tools.sortEnums",
+                "title": "Sort Enums"
             }
         ],
         "submenus": [
@@ -177,6 +181,11 @@
                     "command": "sower-tools.syncChangelog",
                     "group": "006_changelog@001",
                     "when": "resourceLangId == markdown && editorTextFocus"
+                },
+                {
+                    "command": "sower-tools.sortEnums",
+                    "group": "007_sortEnums@001",
+                    "when": "resourceLangId == typescript && editorTextFocus"
                 }
             ],
             "editor/title": [

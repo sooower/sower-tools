@@ -73,12 +73,25 @@ export class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
             arguments: [document, range],
         };
 
+        /* sortEnums */
+
+        const sortEnumsCodeAction = new vscode.CodeAction(
+            "Sort enums",
+            vscode.CodeActionKind.Empty
+        );
+        sortEnumsCodeAction.command = {
+            command: `${extensionName}.sortEnums`,
+            title: "",
+            arguments: [document, range],
+        };
+
         return [
             convertParametersToOptionsObject,
             updateTypeMemberNames,
             generateEnumAssertionFunctionCodeAction,
             generateTypeSchemaCodeAction,
             updateModelCodeAction,
+            sortEnumsCodeAction,
         ];
     }
 }

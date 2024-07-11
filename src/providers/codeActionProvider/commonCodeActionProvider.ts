@@ -38,7 +38,7 @@ export class CommonCodeActionProvider implements vscode.CodeActionProvider {
         /* stringTools */
 
         const base64EncodeCodeAction = new vscode.CodeAction(
-            "Base64 Encode",
+            "Base64 encode",
             vscode.CodeActionKind.Empty
         );
         base64EncodeCodeAction.command = {
@@ -48,7 +48,7 @@ export class CommonCodeActionProvider implements vscode.CodeActionProvider {
         };
 
         const base64DecodeCodeAction = new vscode.CodeAction(
-            "Base64 Decode",
+            "Base64 decode",
             vscode.CodeActionKind.Empty
         );
         base64DecodeCodeAction.command = {
@@ -60,7 +60,7 @@ export class CommonCodeActionProvider implements vscode.CodeActionProvider {
         /* syncChangelog */
 
         const syncChangelogCodeAction = new vscode.CodeAction(
-            "Sync Changelog",
+            "Sync changelog",
             vscode.CodeActionKind.Empty
         );
         syncChangelogCodeAction.command = {

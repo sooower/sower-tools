@@ -21,6 +21,7 @@
 -   Add command `updateTypeMemberNames`.
 -   Show timestamp from selected word or from ranged word.
 -   Add command 'syncChangelog' and associated code actions.
+-   Add command 'sortEnums' and associated code actions.
 
 ## Usage
 
