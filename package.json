@@ -2,7 +2,7 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "This extension is a collection of tools.",
-    "version": "0.9.0",
+    "version": "0.9.1",
     "publisher": "Sower",
     "icon": "./assets/icon.png",
     "repository": {
@@ -99,6 +99,10 @@
             {
                 "id": "editor/context/sowerTools",
                 "label": "Sower Tools"
+            },
+            {
+                "id": "explorer/context/sowerTools",
+                "label": "Sower Tools"
             }
         ],
         "menus": {
@@ -106,34 +110,6 @@
                 {
                     "group": "001_sowerTools@001",
                     "submenu": "editor/context/sowerTools"
-                }
-            ],
-            "editor/title": [
-                {
-                    "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
-                    "group": "navigation@001",
-                    "when": "resourceLangId == typescript"
-                },
-                {
-                    "command": "sower-tools.debuggingEnhancement.debugProject",
-                    "group": "navigation@002",
-                    "when": "resourceLangId == typescript"
-                }
-            ],
-            "explorer/context": [
-                {
-                    "command": "sower-tools.gitEnhancement.skipWorkTree",
-                    "group": "001_gitEnhancement@001",
-                    "when": "explorerResourceIsFolder == false && resourceLangId != ''"
-                },
-                {
-                    "command": "sower-tools.gitEnhancement.noSkipWorkTree",
-                    "group": "001_gitEnhancement@002",
-                    "when": "explorerResourceIsFolder == false && resourceLangId != ''"
-                },
-                {
-                    "command": "sower-tools.gitEnhancement.listFiles",
-                    "group": "001_gitEnhancement@003"
                 }
             ],
             "editor/context/sowerTools": [
@@ -201,6 +177,40 @@
                     "command": "sower-tools.syncChangelog",
                     "group": "006_changelog@001",
                     "when": "resourceLangId == markdown && editorTextFocus"
+                }
+            ],
+            "editor/title": [
+                {
+                    "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
+                    "group": "navigation@001",
+                    "when": "resourceLangId == typescript"
+                },
+                {
+                    "command": "sower-tools.debuggingEnhancement.debugProject",
+                    "group": "navigation@002",
+                    "when": "resourceLangId == typescript"
+                }
+            ],
+            "explorer/context": [
+                {
+                    "group": "001_sowerTools@001",
+                    "submenu": "explorer/context/sowerTools"
+                }
+            ],
+            "explorer/context/sowerTools": [
+                {
+                    "command": "sower-tools.gitEnhancement.skipWorkTree",
+                    "group": "001_gitEnhancement@001",
+                    "when": "explorerResourceIsFolder == false && resourceLangId != ''"
+                },
+                {
+                    "command": "sower-tools.gitEnhancement.noSkipWorkTree",
+                    "group": "001_gitEnhancement@002",
+                    "when": "explorerResourceIsFolder == false && resourceLangId != ''"
+                },
+                {
+                    "command": "sower-tools.gitEnhancement.listFiles",
+                    "group": "001_gitEnhancement@003"
                 }
             ]
         },
