@@ -132,7 +132,7 @@ async function updatePackageFile(
     // Update version
 
     content.version = lastVersion;
-    fs.writeFileSync(packageFilePath, JSON.stringify(content, null, 4));
+    fs.writeFileSync(packageFilePath, JSON.stringify(content, null, 4) + "\n");
 
     vscode.window.showInformationMessage(
         `Updated file "${path.basename(packageFilePath)}".`
