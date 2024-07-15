@@ -135,7 +135,6 @@ async function selectExistsByID(
     dbc: DatabaseConnection,
     id: string
 ): Promise<boolean> {
-    // Index: order_pkey
     const existResults = await dbc.query(
         `
             SELECT
