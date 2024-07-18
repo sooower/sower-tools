@@ -17,6 +17,8 @@ export function subscribeSortEnums() {
                     return;
                 }
 
+                await vscode.workspace.save(editor.document.uri);
+
                 await sortEnums(editor);
             } catch (e) {
                 console.error(e);
