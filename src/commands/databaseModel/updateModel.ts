@@ -63,14 +63,14 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
     const typeMemberMap = extractTypeMemberMap(typTDefinitionsNode);
 
     const enumEColumnContent: string[] = [];
-    const varkResolverContent: string[] = [];
+    const varKResolverContent: string[] = [];
     const typeTInsertOptionsContent: string[] = [];
     const funcInsertContent: string[] = [];
 
     for (const [field, { type, optional }] of typeMemberMap) {
         enumEColumnContent.push(`${toUpperCamelCase(field)} = "${field}",`);
 
-        varkResolverContent.push(
+        varKResolverContent.push(
             format(
                 `[EColumn.%s]: %s,`,
                 toUpperCamelCase(field),
@@ -151,7 +151,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
 
     const varResolverNodeText = `
         const kResolver: TResolvers = {
-            ${varkResolverContent.join("\n    ")}
+            ${varKResolverContent.join("\n    ")}
         };
     `;
     const varResolverNode = findVariableDeclarationNode({

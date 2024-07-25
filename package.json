@@ -233,7 +233,7 @@
                     "default": false
                 },
                 "sower-tools.databaseModel.specialUpperCaseWordsMapping": {
-                    "description": "Special words pairs which will be mapped automatically when to uppercase.",
+                    "description": "Special words pairs which will be mapped automatically when to uppercase, format: <originalWord>:<mappedWord>.",
                     "type": "array",
                     "items": {
                         "type": "string"
