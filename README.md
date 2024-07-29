@@ -22,6 +22,7 @@
 -   Show timestamp from selected word or from ranged word.
 -   Add command 'syncChangelog' and associated code actions.
 -   Add command 'sortEnums' and associated code actions.
+-   Show now timestamp in status bar.
 
 ## Usage
 
