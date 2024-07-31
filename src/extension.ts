@@ -1,23 +1,22 @@
 import { subscribeCommands } from "./commands";
 import { subscribeEventListeners } from "./eventListeners";
+import { executeOnExtensionActive } from "./executeOnExtensionActive";
+import { executeOnExtensionDeactive } from "./executeOnExtensionDeactive";
 import { subscribeProviders } from "./providers";
 import { vscode } from "./shared";
-import { init } from "./shared/init";
-import { showDefaultOpenedDocument } from "./showDefaultOpenedDocument";
-import { showNowTimestamp } from "./showTimestamp";
-
-let timestampStatusBarItemTimer: NodeJS.Timeout | undefined;
+import { extensionName, init } from "./shared/init";
 
 export async function activate(context: vscode.ExtensionContext) {
     try {
         init(context);
 
-        await showDefaultOpenedDocument();
-        timestampStatusBarItemTimer = await showNowTimestamp();
+        executeOnExtensionActive();
 
         subscribeCommands();
         subscribeEventListeners();
         subscribeProviders();
+
+        console.log(`${extensionName} is now active!`);
     } catch (e) {
         console.error(e);
         vscode.window.showErrorMessage(`${e}`);
@@ -25,6 +24,7 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-    clearInterval(timestampStatusBarItemTimer);
-    console.log(`Timer "timestampStatusBarItemTimer" has clear.`);
+    executeOnExtensionDeactive();
+
+    console.log(`${extensionName} is now deactive!`);
 }

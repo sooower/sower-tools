@@ -273,6 +273,11 @@
                         "Current TS File"
                     ]
                 },
+                "sower-tools.showDefaultOpenedDocument.enable": {
+                    "description": "If true, it will show default opened document when open workspace.",
+                    "type": "boolean",
+                    "default": true
+                },
                 "sower-tools.showDefaultOpenedDocument.documentNames": {
                     "description": "Default opened filenames, priority is by the order you placed in this array, configurations usually are  description or specification file of your project.",
                     "type": "array",
@@ -339,7 +344,7 @@
                     "type": "boolean",
                     "default": true
                 },
-                "sower-tools.stringTools.replaceText": {
+                "sower-tools.stringTools.enableReplaceText": {
                     "description": "If true, it will replace the selected text with converted text when encoding/decoding base64 string, otherwise it will insert the converted text after next line.",
                     "type": "boolean",
                     "default": true

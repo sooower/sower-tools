@@ -1,26 +1,23 @@
 import path from "node:path";
 
 import { vscode } from "@/shared";
-import { extensionName, getConfigurationItem } from "@/shared/init";
-import CommonUtils from "@/shared/utils/commonUtils";
+import { defaultOpenedDocumentNames } from "@/shared/init";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 
 export async function showDefaultOpenedDocument() {
     if (vscode.workspace.workspaceFolders === undefined) {
-        // Do not show document when no workspace is open
         return;
     }
 
-    if (vscode.window.activeTextEditor !== undefined) {
-        // Do not show default opened document since has one opened
+    if (vscode.window.visibleTextEditors !== undefined) {
         return;
     }
 
-    const defaultOpenedDocumentNames = CommonUtils.assertArray(
-        getConfigurationItem(
-            `${extensionName}.showDefaultOpenedDocument.documentNames`
-        )
-    ).map((it) => CommonUtils.assertString(it));
+    if (defaultOpenedDocumentNames.length === 0) {
+        console.warn(`No default opened document found.`);
+
+        return;
+    }
 
     for (const docName of defaultOpenedDocumentNames) {
         try {
@@ -41,6 +38,4 @@ export async function showDefaultOpenedDocument() {
             continue;
         }
     }
-
-    console.warn(`No default opened document found.`);
 }

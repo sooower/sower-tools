@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 
 import { vscode } from "@/shared";
 
-export async function showNowTimestamp() {
+export function showNowTimestamp() {
     const timestampStatusBarItem = vscode.window.createStatusBarItem(
         vscode.StatusBarAlignment.Right,
         -100

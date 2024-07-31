@@ -13,7 +13,10 @@ export let ignoredInsertionColumns: string[];
 export let nodeBuiltinModules: string[];
 export let enableUpdateNodeBuiltinImports: boolean;
 
-export let replaceText: boolean;
+export let enableReplaceText: boolean;
+
+export let enableShowDefaultOpenedDocument: boolean;
+export let defaultOpenedDocumentNames: string[];
 
 export function init(context: vscode.ExtensionContext) {
     const packageJsonContent = JSON.parse(
@@ -26,8 +29,6 @@ export function init(context: vscode.ExtensionContext) {
     extensionName = CommonUtils.mandatory(packageJsonContent.name);
 
     reloadConfiguration();
-
-    console.log(`${extensionName} is now active!`);
 }
 
 let workspaceConfig: vscode.WorkspaceConfiguration;
@@ -88,9 +89,23 @@ export function reloadConfiguration() {
     );
 
     /* stringTools */
-    replaceText = CommonUtils.assertBoolean(
-        getConfigurationItem(`${extensionName}.stringTools.replaceText`)
+
+    enableReplaceText = CommonUtils.assertBoolean(
+        getConfigurationItem(`${extensionName}.stringTools.enableReplaceText`)
     );
+
+    /* showDefaultOpenedDocuments */
+
+    enableShowDefaultOpenedDocument = CommonUtils.assertBoolean(
+        getConfigurationItem(
+            `${extensionName}.showDefaultOpenedDocument.enable`
+        )
+    );
+    defaultOpenedDocumentNames = CommonUtils.assertArray(
+        getConfigurationItem(
+            `${extensionName}.showDefaultOpenedDocument.documentNames`
+        )
+    ).map((it) => CommonUtils.assertString(it));
 }
 
 export function getConfigurationItem(name: string): unknown {
