@@ -5,6 +5,13 @@ All notable changes to "sower-tools" will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.1] - 2024-07-31
+
+### Fixed
+
+-   Show default opened document only when no visibleTextEditors.
+-   Add configuration item of whether enable show default opened document.
+
 ## [0.11.0] - 2024-07-29
 
 ### Added
