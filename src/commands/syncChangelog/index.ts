@@ -72,7 +72,7 @@ async function findLastVersionAndAddItems(changelogFilename = "CHANGELOG.md") {
                     const matchedVersion =
                         nextToken.content.match(/^\[(\d+\.\d+\.\d+)\]/);
                     if (matchedVersion !== null) {
-                        lastVersion = matchedVersion[1];
+                        [, lastVersion] = matchedVersion;
 
                         foundLastVersion = true;
                     }
@@ -188,9 +188,9 @@ async function updateReadmeFile(
 
     // Append new items to features
 
-    const readmeContentArr = readmeContent.split(/\r?\n/);
+    const readmeContentLines = readmeContent.split(/\r?\n/);
 
-    const existsFeatures = readmeContentArr.slice(
+    const existsFeatures = readmeContentLines.slice(
         featureStartIndex,
         featureEndIndex
     );
@@ -203,8 +203,8 @@ async function updateReadmeFile(
         return;
     }
 
-    readmeContentArr.splice(featureEndIndex - 1, 0, ...appendedFeatures);
-    fs.writeFileSync(readmeFilePath, readmeContentArr.join("\n"));
+    readmeContentLines.splice(featureEndIndex - 1, 0, ...appendedFeatures);
+    fs.writeFileSync(readmeFilePath, readmeContentLines.join("\n"));
 
     vscode.window.showInformationMessage(
         `Updated file "${path.basename(readmeFilePath)}".`
