@@ -241,7 +241,7 @@ async function parseSqlAndGenerateFiles() {
             typeTInsertOptionsContent.join("\n")
         )
         .replace(/{{insertContent}}/g, funcInsertContent.join("\n"))
-        .replace(/{{tableName}}/g, toLowerCamelCase(tableName));
+        .replace(/{{tableName}}/g, tableName);
 
     await vscode.workspace.fs.writeFile(
         vscode.Uri.file(tableFilePath),

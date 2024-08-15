@@ -16,6 +16,7 @@ Stmts
 Stmt
   = CommentStmt
   / CreateTableStmt
+  / AlterTableStmt
 
 CreateTableStmt
   ="CREATE TABLE"i _ "IF NOT EXISTS"i? _ table:Table _ "(" _ columnOrConstraints:ColumnOrConstraints _ ")" _ ("TABLESPACE"i _ Identifier _ )? _ ";" {
@@ -29,6 +30,7 @@ CreateTableStmt
 Table
   = schemaName:SchemaIdentifier '."' tableName:Identifier '"' { return { schemaName, tableName } }
   / '"' schemaName:SchemaIdentifier '".' tableName:Identifier { return { schemaName, tableName } }
+  / '"' schemaName:SchemaIdentifier '"."' tableName:Identifier '"' { return { schemaName, tableName } }
   / schemaName:SchemaIdentifier '.' tableName:Identifier { return { schemaName, tableName } }
 
 SchemaIdentifier
@@ -109,3 +111,6 @@ _ "whitespace"
 CommentStmt
   = "--" (![\n] .)* "\n" { return { type: "CommentStmt" } }
   / "/*" (!("*/") .)* "*/" { return { type: "CommentStmt" } }
+
+AlterTableStmt
+  = "ALTER TABLE"i _ "IF EXISTS"i? _ table:Table _  "OWNER to"i _ user:Identifier _ ";"  { return { type: "AlterTableStmt" } }
