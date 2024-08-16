@@ -36,6 +36,7 @@ type TInsertTextAfterNodeOptions = {
     editor: vscode.TextEditor;
     sourceFile: ts.SourceFile;
     node: ts.Node;
+    nodeEndPosPlusOne?: boolean;
     text: string;
     lineBreak?: string;
 };
@@ -140,6 +141,7 @@ export class TextEditorUtils {
         editor,
         sourceFile,
         node,
+        nodeEndPosPlusOne,
         text,
         lineBreak = "\n\n",
     }: TInsertTextAfterNodeOptions) {
@@ -149,7 +151,12 @@ export class TextEditorUtils {
         );
         await editor.edit((editBuilder) => {
             editBuilder.insert(
-                new vscode.Position(endPos.line, endPos.character),
+                new vscode.Position(
+                    endPos.line,
+                    nodeEndPosPlusOne === true
+                        ? endPos.character + 1
+                        : endPos.character
+                ),
                 lineBreak + text
             );
         });

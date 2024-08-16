@@ -68,8 +68,9 @@ async function generateTypeSchema({
     );
     const typeText = format(
         `
-            type %s = z.infer<typeof %s>
+            %s type %s = z.infer<typeof %s>;
         `,
+        node.parent.parent.getText().startsWith("export") ? "export" : "",
         typeName,
         schemaName
     );
@@ -91,6 +92,7 @@ async function generateTypeSchema({
             editor,
             sourceFile,
             node,
+            nodeEndPosPlusOne: true,
             text: typeText,
         });
     }
