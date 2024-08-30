@@ -23,6 +23,7 @@
 -   Add command 'syncChangelog' and associated code actions.
 -   Add command 'sortEnums' and associated code actions.
 -   Show now timestamp in status bar.
+-   Add support config enable showNowTimestamp.
 
 ## Usage
 
