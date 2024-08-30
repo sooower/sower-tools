@@ -18,6 +18,8 @@ export let enableReplaceText: boolean;
 export let enableShowDefaultOpenedDocument: boolean;
 export let defaultOpenedDocumentNames: string[];
 
+export let enableShowNowTimestamp: boolean;
+
 export function init(context: vscode.ExtensionContext) {
     const packageJsonContent = JSON.parse(
         fs.readFileSync(
@@ -106,6 +108,11 @@ export function reloadConfiguration() {
             `${extensionName}.showDefaultOpenedDocument.documentNames`
         )
     ).map((it) => CommonUtils.assertString(it));
+
+    /* showNowTimestamp */
+    enableShowNowTimestamp = CommonUtils.assertBoolean(
+        getConfigurationItem(`${extensionName}.showNowTimestamp.enable`)
+    );
 }
 
 export function getConfigurationItem(name: string): unknown {
