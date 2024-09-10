@@ -5,9 +5,9 @@ import ts from "typescript";
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
 import { ETsType } from "@/shared/types";
-import { toUpperCamelCase } from "@/shared/utils";
+import CommonUtils from "@/shared/utils/commonUtils";
 import {
-    findFuncDeclarationNodeAtOffset,
+    findFuncOrCtorDeclarationNodeAtOffset,
     findTypeDeclarationNode,
 } from "@/shared/utils/tsUtils";
 import { getSourceFileByEditor } from "@/shared/utils/vscode";
@@ -27,17 +27,17 @@ export function subscribeConvertParametersToOptionsObject() {
                     return;
                 }
 
-                const funcNode = findFuncDeclarationNodeAtOffset({
+                const node = findFuncOrCtorDeclarationNodeAtOffset({
                     sourceFile: getSourceFileByEditor(editor),
                     offset: editor.document.offsetAt(editor.selection.active),
                 });
-                if (funcNode === undefined) {
+                if (node === undefined) {
                     return;
                 }
 
                 await convertParametersToOptionsObject({
                     editor,
-                    node: funcNode,
+                    node,
                 });
             } catch (e) {
                 console.error(e);
@@ -51,18 +51,34 @@ export function subscribeConvertParametersToOptionsObject() {
 
 type TConvertParametersToOptionsObjectOptions = {
     editor: vscode.TextEditor;
-    node: ts.FunctionDeclaration | ts.ArrowFunction | ts.MethodDeclaration;
+    node:
+        | ts.FunctionDeclaration
+        | ts.ArrowFunction
+        | ts.MethodDeclaration
+        | ts.ConstructorDeclaration;
 };
 
 async function convertParametersToOptionsObject({
     editor,
     node,
 }: TConvertParametersToOptionsObjectOptions) {
-    if (node.name === undefined || node.parameters.length === 0) {
+    if (node.parameters.length === 0) {
         return;
     }
 
-    const typeName = `T${toUpperCamelCase(node.name.getText())}Options`;
+    if (!ts.isConstructorDeclaration(node) && node.name === undefined) {
+        return;
+    }
+
+    // Build new typeDeclarationText
+
+    const typeName = format(
+        `T%sOptions`,
+        ts.isConstructorDeclaration(node)
+            ? CommonUtils.mandatory(node.parent.name).getText() + "Ctor"
+            : CommonUtils.mandatory(node.name).getText()
+    );
+
     let typeDeclarationText: string | undefined;
 
     if (node.parameters.length === 1) {
@@ -102,8 +118,6 @@ async function convertParametersToOptionsObject({
             });
         }
     } else {
-        /* Generate new params */
-
         const paramNames = node.parameters.map((it) => it.name.getText());
 
         const typeMembersText = node.parameters.map((it) => {
@@ -120,8 +134,6 @@ async function convertParametersToOptionsObject({
         });
         const newParamsText = `{ ${paramNames.join(", ")} }: ${typeName}`;
 
-        /* Update editor text */
-
         const firstParam = node.parameters[0];
         const lastParam = node.parameters[node.parameters.length - 1];
         await TextEditorUtils.replaceTextRangeOffset({
@@ -137,6 +149,8 @@ async function convertParametersToOptionsObject({
         );
     }
 
+    // Insert new typeDeclarationText
+
     const sourceFile = getSourceFileByEditor(editor);
     if (
         findTypeDeclarationNode({
@@ -148,7 +162,11 @@ async function convertParametersToOptionsObject({
         await TextEditorUtils.insertTextBeforeNode({
             editor,
             sourceFile,
-            node: ts.isMethodDeclaration(node) ? node.parent : node,
+            node:
+                ts.isMethodDeclaration(node) ||
+                ts.isConstructorDeclaration(node)
+                    ? node.parent
+                    : node,
             text: typeDeclarationText,
         });
     }

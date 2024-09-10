@@ -69,26 +69,28 @@ export function findFuncDeclarationNode({
     return visit(sourceFile);
 }
 
-type TFindFuncDeclarationNodeAtOffsetOptions = {
+type TFindFuncOrCtorDeclarationNodeAtOffsetOptions = {
     sourceFile: ts.SourceFile;
     offset: number;
 };
 
-export function findFuncDeclarationNodeAtOffset({
+export function findFuncOrCtorDeclarationNodeAtOffset({
     sourceFile,
     offset,
-}: TFindFuncDeclarationNodeAtOffsetOptions) {
+}: TFindFuncOrCtorDeclarationNodeAtOffsetOptions) {
     function visit(
         node: ts.Node
     ):
         | ts.FunctionDeclaration
         | ts.ArrowFunction
         | ts.MethodDeclaration
+        | ts.ConstructorDeclaration
         | undefined {
         if (
             !ts.isFunctionDeclaration(node) &&
             !ts.isArrowFunction(node) &&
-            !ts.isMethodDeclaration(node)
+            !ts.isMethodDeclaration(node) &&
+            !ts.isConstructorDeclaration(node)
         ) {
             return ts.forEachChild(node, visit);
         }
