@@ -11,8 +11,8 @@ import {
 } from "@/shared/init";
 import { ETsType } from "@/shared/types";
 import { reIndent, toLowerCamelCase, toUpperCamelCase } from "@/shared/utils";
-import CommonUtils from "@/shared/utils/commonUtils";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
+import { CommonUtils } from "@utils/common";
 
 enum ESqlKeywords {
     Create = "CREATE",

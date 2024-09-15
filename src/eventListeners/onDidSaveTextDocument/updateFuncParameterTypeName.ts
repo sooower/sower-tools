@@ -4,10 +4,10 @@ import ts from "typescript";
 
 import { vscode } from "@/shared";
 import { toUpperCamelCase } from "@/shared/utils";
-import CommonUtils from "@/shared/utils/commonUtils";
 import { findTypeDeclarationNode } from "@/shared/utils/tsUtils";
 import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";
+import { CommonUtils } from "@utils/common";
 
 type TUpdateFuncParameterTypeNameOptions = {
     editor: vscode.TextEditor;

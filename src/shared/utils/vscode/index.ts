@@ -1,8 +1,7 @@
 import ts from "typescript";
 
 import { vscode } from "@/shared";
-
-import CommonUtils from "../commonUtils";
+import { CommonUtils } from "@utils/common";
 
 export function getSourceFileByEditor(editor: vscode.TextEditor) {
     return ts.createSourceFile(

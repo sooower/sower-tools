@@ -5,13 +5,13 @@ import ts from "typescript";
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
 import { mapEnumNameWithoutPrefix, toLowerCamelCase } from "@/shared/utils";
-import CommonUtils from "@/shared/utils/commonUtils";
 import {
     findEnumDeclarationNodeAtOffset,
     findFuncDeclarationNode,
 } from "@/shared/utils/tsUtils";
 import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
+import { CommonUtils } from "@utils/common";
 
 export function subscribeGenerateEnumAssertionFunction() {
     const command = vscode.commands.registerCommand(

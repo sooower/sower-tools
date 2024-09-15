@@ -4,10 +4,10 @@ import ts from "typescript";
 
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
-import CommonUtils from "@/shared/utils/commonUtils";
 import { findAllTypeDeclarationNode } from "@/shared/utils/tsUtils";
 import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";
+import { CommonUtils } from "@utils/common";
 
 export function subscribeUpdateTypeMemberNames() {
     const command = vscode.commands.registerCommand(

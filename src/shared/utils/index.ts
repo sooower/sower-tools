@@ -1,5 +1,6 @@
+import { CommonUtils } from "@utils/common";
+
 import { specialWordsMap } from "../init";
-import CommonUtils from "./commonUtils";
 
 export function toLowerCamelCase(input: string) {
     // Restore special words

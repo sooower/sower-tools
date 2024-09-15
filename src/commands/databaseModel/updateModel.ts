@@ -11,7 +11,6 @@ import {
 } from "@/shared/init";
 import { ETsType } from "@/shared/types";
 import { toLowerCamelCase, toUpperCamelCase } from "@/shared/utils";
-import CommonUtils from "@/shared/utils/commonUtils";
 import {
     findEnumDeclarationNode,
     findFuncDeclarationNode,
@@ -20,6 +19,7 @@ import {
 } from "@/shared/utils/tsUtils";
 import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
+import { CommonUtils } from "@utils/common";
 
 export function subscribeUpdateModel() {
     const command = vscode.commands.registerCommand(

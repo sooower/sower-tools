@@ -4,8 +4,8 @@ import dayjs from "dayjs";
 
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
-import CommonUtils from "@/shared/utils/commonUtils";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
+import { CommonUtils } from "@utils/common";
 
 export function subscribeConvertTimestamp() {
     const command = vscode.commands.registerCommand(

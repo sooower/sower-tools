@@ -4,8 +4,8 @@ import {
     extensionName,
     getConfigurationItem,
 } from "@/shared/init";
-import CommonUtils from "@/shared/utils/commonUtils";
 import { getWorkspaceFolder } from "@/shared/utils/vscode";
+import { CommonUtils } from "@utils/common";
 
 import { getDebuggingConfigurations } from "./utils";
 

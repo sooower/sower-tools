@@ -1,7 +1,8 @@
 import path from "node:path";
 
+import { CommonUtils } from "@utils/common";
+
 import { fs, vscode } from "../";
-import CommonUtils from "../utils/commonUtils";
 
 export let extensionCtx: vscode.ExtensionContext;
 export let extensionName: string;

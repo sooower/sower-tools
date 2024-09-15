@@ -5,13 +5,13 @@ import ts from "typescript";
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
 import { ETsType } from "@/shared/types";
-import CommonUtils from "@/shared/utils/commonUtils";
 import {
     findFuncOrCtorDeclarationNodeAtOffset,
     findTypeDeclarationNode,
 } from "@/shared/utils/tsUtils";
 import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
+import { CommonUtils } from "@utils/common";
 
 export function subscribeConvertParametersToOptionsObject() {
     const command = vscode.commands.registerCommand(

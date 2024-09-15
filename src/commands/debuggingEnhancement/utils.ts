@@ -3,8 +3,8 @@ import path from "node:path";
 import { parse } from "comment-json";
 
 import { fs } from "@/shared";
-import CommonUtils from "@/shared/utils/commonUtils";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
+import { CommonUtils } from "@utils/common";
 
 export function getDebuggingConfigurations(): any[] {
     try {
