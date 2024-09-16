@@ -5,6 +5,7 @@ import ts from "typescript";
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
 import { ETsType } from "@/shared/types";
+import { toUpperCamelCase } from "@/shared/utils";
 import {
     findFuncOrCtorDeclarationNodeAtOffset,
     findTypeDeclarationNode,
@@ -76,7 +77,7 @@ async function convertParametersToOptionsObject({
         `T%sOptions`,
         ts.isConstructorDeclaration(node)
             ? CommonUtils.mandatory(node.parent.name).getText() + "Ctor"
-            : CommonUtils.mandatory(node.name).getText()
+            : toUpperCamelCase(CommonUtils.mandatory(node.name).getText())
     );
 
     let typeDeclarationText: string | undefined;
