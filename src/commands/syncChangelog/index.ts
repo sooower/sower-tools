@@ -35,33 +35,34 @@ export function subscribeSyncChangelog() {
 }
 
 export async function syncChangelog() {
-    const { lastVersion, lastAddedItems } = await findLastVersionAndAddItems();
+    const { newVersion, newAddedItems } = await findNewVersionAndAddItems();
 
-    if (lastVersion !== undefined) {
-        await updatePackageFile(lastVersion);
+    if (newVersion !== undefined) {
+        await updatePackageFile(newVersion);
+        await updatePm2ConfigFile(newVersion);
     }
-    if (lastAddedItems !== undefined) {
-        await updateReadmeFile(lastAddedItems);
+    if (newAddedItems !== undefined) {
+        await updateReadmeFile(newAddedItems);
     }
 }
 
-async function findLastVersionAndAddItems(changelogFilename = "CHANGELOG.md") {
+async function findNewVersionAndAddItems(changelogFilename = "CHANGELOG.md") {
     const changelogContent = fs.readFileSync(
         path.join(getWorkspaceFolderPath(), changelogFilename),
         "utf-8"
     );
     const tokens = markdownIt().parse(changelogContent, {});
 
-    let lastVersion: string | undefined;
-    let lastAddedItems: string[] | undefined;
+    let newVersion: string | undefined;
+    let newAddedItems: string[] | undefined;
 
-    let foundLastVersion = false;
-    let foundLastAddTitle = false;
-    let foundLastAddItems = false;
+    let foundNewVersion = false;
+    let foundNewAddTitle = false;
+    let foundNewAddItems = false;
     for (const token of tokens) {
-        // Find last version
+        // Find new version
 
-        if (!foundLastVersion) {
+        if (!foundNewVersion) {
             if (
                 token.type === "heading_open" &&
                 token.tag === "h2" &&
@@ -72,15 +73,15 @@ async function findLastVersionAndAddItems(changelogFilename = "CHANGELOG.md") {
                     const matchedVersion =
                         nextToken.content.match(/^\[(\d+\.\d+\.\d+)\]/);
                     if (matchedVersion !== null) {
-                        [, lastVersion] = matchedVersion;
+                        [, newVersion] = matchedVersion;
 
-                        foundLastVersion = true;
+                        foundNewVersion = true;
                     }
                 }
             }
         }
 
-        // Find last added items
+        // Find new added items
 
         if (
             token.type === "heading_open" &&
@@ -93,25 +94,25 @@ async function findLastVersionAndAddItems(changelogFilename = "CHANGELOG.md") {
                 nextToken.type === "inline" &&
                 nextToken.content.trim() === "Added"
             ) {
-                foundLastAddTitle = true;
+                foundNewAddTitle = true;
             }
         }
 
-        if (foundLastAddTitle && !foundLastAddItems) {
+        if (foundNewAddTitle && !foundNewAddItems) {
             if (token.type === "bullet_list_open" && token.map !== null) {
                 const [listStartIndex, listEndIndex] = token.map;
-                lastAddedItems = changelogContent
+                newAddedItems = changelogContent
                     .split(/\r?\n/)
                     .slice(listStartIndex, listEndIndex);
 
-                foundLastAddItems = true;
+                foundNewAddItems = true;
             }
         }
     }
 
     return {
-        lastVersion,
-        lastAddedItems,
+        newVersion,
+        newAddedItems,
     };
 }
 
@@ -139,8 +140,41 @@ async function updatePackageFile(
     );
 }
 
+async function updatePm2ConfigFile(
+    newVersion: string,
+    filename = "pm2.config.json"
+) {
+    const pm2ConfigFilePath = path.join(getWorkspaceFolderPath(), filename);
+    if (!fs.existsSync(pm2ConfigFilePath)) {
+        return;
+    }
+
+    const content = JSON.parse(fs.readFileSync(pm2ConfigFilePath, "utf8"));
+
+    if (content.apps.length === 0) {
+        return;
+    }
+
+    // Update version
+
+    const [appName, currVersion] = content.apps[0].name.split(":");
+    if (currVersion === newVersion) {
+        return;
+    }
+
+    content.apps[0].name = `${appName}:${newVersion}`;
+    fs.writeFileSync(
+        pm2ConfigFilePath,
+        JSON.stringify(content, null, 4) + "\n"
+    );
+
+    vscode.window.showInformationMessage(
+        `Updated file "${path.basename(pm2ConfigFilePath)}".`
+    );
+}
+
 async function updateReadmeFile(
-    lastAddedItems: string[],
+    newAddedItems: string[],
     filename = "README.md"
 ) {
     const readmeFilePath = path.join(getWorkspaceFolderPath(), filename);
@@ -194,7 +228,7 @@ async function updateReadmeFile(
         featureStartIndex,
         featureEndIndex
     );
-    const appendedFeatures = lastAddedItems
+    const appendedFeatures = newAddedItems
         .filter((it) => it.trim() !== "")
         .map((it) => (it.trim() === "" ? it : it.endsWith(".") ? it : it + "."))
         .filter((it) => !existsFeatures.includes(it));
