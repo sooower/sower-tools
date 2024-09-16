@@ -83,9 +83,5 @@ export function setSelectedLinesStatusItemText({
     lines?: number;
     code?: number;
 }) {
-    statusBarItem.text = format(
-        `Selected Lines:%s, Code:%s`,
-        lines ?? 0,
-        code ?? 0
-    );
+    statusBarItem.text = format(`Sel. Ln. %s, Co. %s`, lines ?? 0, code ?? 0);
 }
