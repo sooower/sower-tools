@@ -82,6 +82,7 @@ async function convertParametersToOptionsObject({
 
     let typeDeclarationText: string | undefined;
 
+    // Refactor literal type parameter to named type parameter
     if (node.parameters.length === 1) {
         const [parameter] = node.parameters;
         if (
@@ -119,12 +120,18 @@ async function convertParametersToOptionsObject({
             });
         }
     } else {
-        const paramNames = node.parameters.map((it) => it.name.getText());
+        // Refactor multiple parameters to named type parameter
+
+        const paramNames = node.parameters.map((it) =>
+            it.getText().includes("=") ? it.getText() : it.name.getText()
+        );
 
         const typeMembersText = node.parameters.map((it) => {
             const paramName = it.name.getText();
-            const paramType = it.type?.getText() ?? ETsType.Unknown;
-            const optional = it.questionToken !== undefined;
+            const paramType = it.type?.getText() ?? mapTsType(it);
+            const optional =
+                it.questionToken !== undefined || // param is optional
+                it.getText().includes("="); //param have default value
 
             return format(
                 `%s%s: %s;`,
@@ -171,4 +178,22 @@ async function convertParametersToOptionsObject({
             text: typeDeclarationText,
         });
     }
+}
+
+function mapTsType(node: ts.Node) {
+    const varDefaultValue = node.getText().split("=")[1].trim();
+
+    if (/^[`'"].*[`'"]$/.test(varDefaultValue)) {
+        return ETsType.String;
+    }
+
+    if (/^\d+$/.test(varDefaultValue)) {
+        return ETsType.Number;
+    }
+
+    if (/true|false/.test(varDefaultValue)) {
+        return ETsType.Boolean;
+    }
+
+    return ETsType.Unknown;
 }
