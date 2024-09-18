@@ -54,7 +54,7 @@ export function subscribeGenerateModel() {
                         vscode.window.showInformationMessage(
                             format(
                                 `Generated files:\n%s`,
-                                generatedFils.join("\n")
+                                generatedFils.map((it) => `'${it}'`).join(", ")
                             )
                         );
 
@@ -81,7 +81,7 @@ async function parseSqlAndGenerateFiles() {
 
     /* Parse SQL statement */
 
-    const { schemaName, tableName, detail } = await parseCreateStmtV2(
+    const { schemaName, tableName, detail } = await parseCreateStmt(
         selectedText
     );
 
@@ -89,16 +89,13 @@ async function parseSqlAndGenerateFiles() {
 
     const modelFilePath = path.join(
         getWorkspaceFolderPath(),
-        "src",
-        "models",
-        "index.ts"
+        "src/models/index.ts"
     );
     if (!fs.existsSync(modelFilePath)) {
         const modelFilePathContent = fs.readFileSync(
             path.join(
                 extensionCtx.extensionPath,
-                "templates",
-                "src.models.index.ts.tpl"
+                "templates/src.models.index.ts.tpl"
             ),
             "utf-8"
         );
@@ -112,8 +109,7 @@ async function parseSqlAndGenerateFiles() {
 
     const schemaFilePath = path.join(
         getWorkspaceFolderPath(),
-        "src",
-        "models",
+        "src/models",
         schemaName,
         "index.ts"
     );
@@ -125,8 +121,7 @@ async function parseSqlAndGenerateFiles() {
         .readFileSync(
             path.join(
                 extensionCtx.extensionPath,
-                "templates",
-                "src.models.schema.index.ts.tpl"
+                "templates/src.models.schema.index.ts.tpl"
             ),
             "utf-8"
         )
@@ -136,14 +131,15 @@ async function parseSqlAndGenerateFiles() {
         vscode.Uri.file(schemaFilePath),
         Buffer.from(schemaFileContent)
     );
-    const generatedFiles = [schemaFilePath];
+    const generatedFiles = [
+        path.relative(getWorkspaceFolderPath(), schemaFilePath),
+    ];
 
     /* Generate "src.models.schema.table.index.ts" file */
 
     const tableFilePath = path.join(
         getWorkspaceFolderPath(),
-        "src",
-        "models",
+        "src/models",
         schemaName,
         tableName,
         "index.ts"
@@ -228,8 +224,7 @@ async function parseSqlAndGenerateFiles() {
         .readFileSync(
             path.join(
                 extensionCtx.extensionPath,
-                "templates",
-                "src.models.schema.table.index.ts.tpl"
+                "templates/src.models.schema.table.index.ts.tpl"
             ),
             "utf-8"
         )
@@ -241,7 +236,8 @@ async function parseSqlAndGenerateFiles() {
             typeTInsertOptionsContent.join("\n")
         )
         .replace(/{{insertContent}}/g, funcInsertContent.join("\n"))
-        .replace(/{{tableName}}/g, tableName);
+        .replace(/{{tableName}}/g, tableName)
+        .replace(/{{modelName}}/g, toLowerCamelCase(tableName));
 
     await vscode.workspace.fs.writeFile(
         vscode.Uri.file(tableFilePath),
@@ -251,7 +247,7 @@ async function parseSqlAndGenerateFiles() {
     // Open model file in editor
     await vscode.window.showTextDocument(vscode.Uri.file(tableFilePath));
 
-    generatedFiles.push(tableFilePath);
+    generatedFiles.push(path.relative(getWorkspaceFolderPath(), tableFilePath));
 
     return generatedFiles;
 }
@@ -261,113 +257,6 @@ type TParsedCreateTableStmt = {
     tableName: string;
     detail: Map<string, TColumnDetail>;
 };
-
-/**
- * @deprecated
- * @description Please use method `parseStmt` instead.
- */
-async function parseCreateStmt(text: string) {
-    CommonUtils.assert(
-        text
-            .toUpperCase()
-            .includes(`${ESqlKeywords.Create} ${ESqlKeywords.Table}`),
-        `Create statement not included, sql: ${text}.`
-    );
-
-    CommonUtils.assert(
-        text.includes("\n"),
-        `Not support multiple line, sql: ${text}.`
-    );
-
-    const stmts = text
-        .split("\n")
-        .map((it) => it.trim())
-        .filter((it) => !it.toUpperCase().startsWith(ESqlKeywords.Constraint))
-        .filter((it) => !it.toUpperCase().startsWith(ESqlKeywords.PrimaryKey))
-        .filter((it) => it !== "")
-        .filter((it) => !it.startsWith("--"))
-        .join(" ")
-        .split(";")
-        .filter((it) => it !== "")
-        .map((it) =>
-            it
-                .split(" ")
-                .filter((it) => it !== "")
-                .join(" ")
-        );
-
-    let schemaName: string | undefined;
-    let tableName: string | undefined;
-    const sqlDetailMap = new Map<string, TColumnDetail>();
-
-    for (const stmt of stmts) {
-        if (
-            !stmt
-                .toUpperCase()
-                .includes(`${ESqlKeywords.Create} ${ESqlKeywords.Table}`)
-        ) {
-            continue;
-        }
-
-        /* Parse schema and table name */
-
-        const str1 = stmt.slice(0, stmt.indexOf("("));
-        const [schemaNameAndTableName] = str1
-            .trim()
-            .replaceAll('"', "")
-            .split(" ")
-            .slice(-1);
-
-        CommonUtils.assert(
-            schemaNameAndTableName.split(".").length >= 2,
-            `Invalid schema or table name, maybe you used a default schema(public), only support format schemaName."tableName" by now.`
-        );
-
-        const splitIndex = schemaNameAndTableName.indexOf(".");
-        schemaName = toLowerCamelCase(
-            schemaNameAndTableName.slice(0, splitIndex)
-        );
-        tableName = toLowerCamelCase(
-            schemaNameAndTableName.slice(
-                splitIndex + 1,
-                schemaNameAndTableName.length
-            )
-        );
-
-        /* Parse columns */
-
-        const str2 = stmt.slice(stmt.indexOf("(") + 1, stmt.indexOf(")"));
-        const columnStrings = str2
-            .split(",")
-            .map((it) => it.trim())
-            .filter((it) => it !== "");
-        for (const columnStr of columnStrings) {
-            const [columnName, columnType, ...restColumnConfigs] =
-                columnStr.split(/\s/g);
-            CommonUtils.assert(
-                columnName !== undefined && columnType !== undefined,
-                `Invalid sql text, can not parse columnName or columnType.`
-            );
-            sqlDetailMap.set(
-                toLowerCamelCase(columnName.replace(/[`|"|']/g, "")),
-                {
-                    tsType: mapTsType(columnType.toUpperCase()),
-                    nullable: mapNullable(restColumnConfigs),
-                    enumType: mapEnumType(restColumnConfigs) ?? ETsType.Unknown,
-                }
-            );
-        }
-
-        // Just handle first create table statement
-        break;
-    }
-
-    return {
-        schemaName: CommonUtils.mandatory(schemaName),
-        tableName: CommonUtils.mandatory(tableName),
-        detail: sqlDetailMap,
-    } satisfies TParsedCreateTableStmt;
-}
 
 type TStatement = {
     type: "CreateTableStmt" | "Comment" | "AlterTableStmt";
@@ -397,7 +286,7 @@ type TColumnOrConstraints = {
     };
 };
 
-async function parseCreateStmtV2(text: string) {
+async function parseCreateStmt(text: string) {
     const parser = require("@lib/sqlParser");
 
     let stmts: TStatement[] = [];

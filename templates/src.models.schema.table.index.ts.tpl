@@ -364,7 +364,7 @@ async function selectMany<T extends EColumn>(
     };
 }
 
-export const {{tableName}}Dao = {
+export const {{modelName}}Dao = {
     EColumn,
     insert,
     update,
