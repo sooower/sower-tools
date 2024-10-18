@@ -1,7 +1,7 @@
 ## Features
 
--   Generate schema and model file in default location for any selected sql text.
--   Show selected lines and code in status bar for any language.
+-   Generate schema and model file in default location for selected sql text.
+-   Show selected lines and code in status bar.
 -   Debug current file or project in editor context menu or in editor title menu.
 -   Show default opened document when there has no document opened in workspace, like README.md, CHANGELOG.md, etc.
 -   Refactor function parameters to use object parameter.
@@ -9,7 +9,7 @@
 -   Generate enum assertion functions.
 -   Add typescript code refactor panel actions, you can use it to refactor function parameters or generate/update assert enum functions.
 -   Introduce new git enhancement commands: skipWorkTree, noSkipWorkTree, and listFiles.
--   Add the new commands "Update Model" in context menu and in code action panel to update model file after you modified type declaration `TDefinitions` in opened file.
+-   Add the new commands "Update Model" in context menu and in code action panel to update model file after you modified type declaration 'TDefinitions' in opened file.
 -   Add timestamp conversion and insertion commands and view the timestamp corresponding to the unix timestamp.
 -   Refactor class method parameters to object.
 -   Auto-update feature for Node.js built-in modules.
@@ -18,7 +18,7 @@
 -   Update type member names when any member of type in current file is changed.
 -   Configuration option for text replacement behavior.
 -   Convert anonymous type to options object.
--   Add command `updateTypeMemberNames`.
+-   Add command 'updateTypeMemberNames' to update type member names.
 -   Show timestamp from selected word or from ranged word.
 -   Add command 'syncChangelog' and associated code actions.
 -   Add command 'sortEnums' and associated code actions.
@@ -35,7 +35,7 @@ To use this extension, follow these steps:
 
 **Show Selected Lines**
 
--   If you open a file and selected some texts, you will see the text "Selected Lines: x, Code: x" in the status bar.
+-   If you open a file and selected some texts, you will see the text "Sel. Ln. x, Co. x" in the status bar.
 
 **Setting Default Opened Document**
 
