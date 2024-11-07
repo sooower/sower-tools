@@ -41,7 +41,13 @@ ColumnOrConstraints
   / first:ColumnOrConstraint { return [first] }
 
 ColumnOrConstraint
-  = column:ColumnNameIdentifier _ type:DataType _ constraints:Constraints? {
+  = "PRIMARY KEY"i _ "(" _ constraintColumns:ConstraintColumns _ ")" {
+      return {
+        primaryKey: true,
+        columns: constraintColumns,
+      }
+    }
+  / column:ColumnNameIdentifier _ type:DataType _ constraints:Constraints? {
       return {
         column,
         type,
@@ -98,6 +104,8 @@ DataType
   / "bigserial"i { return "bigserial" }
   / "boolean"i { return "boolean" }
   / "timestamp"i ( _ "with time zone"i _ )? { return "timestamp" }
+  / "smallint"i { return "smallint" }
+  / "bytea"i { return "bytea" }
 
 Identifier
   = [a-zA-Z_][a-zA-Z0-9_\.]* { return text() }

@@ -36,6 +36,7 @@ enum ESqlType {
     Timestamp = "timestamp",
     Boolean = "boolean",
     Bytea = "bytea",
+    Smallint = "smallint",
 }
 
 export function subscribeGenerateModel() {
@@ -274,7 +275,8 @@ type TColumnOrConstraints = {
         | "serial"
         | "bigserial"
         | "boolean"
-        | "timestamp";
+        | "timestamp"
+        | "smallint";
     columnConstraints?: {
         notNull?: boolean;
         default?: string;
@@ -361,7 +363,8 @@ async function parseCreateStmt(text: string) {
 
 function mapTsType(columnType: string) {
     switch (columnType) {
-        case ESqlType.Integer: {
+        case ESqlType.Integer:
+        case ESqlType.Smallint: {
             return ETsType.Number;
         }
         case ESqlType.IntegerArr: {

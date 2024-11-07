@@ -13,9 +13,12 @@ export function getSourceFileByEditor(editor: vscode.TextEditor) {
 }
 
 export function getWorkspaceFolder() {
-    const [workspaceFolder] = CommonUtils.mandatory(
-        vscode.workspace.workspaceFolders
+    CommonUtils.assert(
+        vscode.workspace.workspaceFolders !== undefined,
+        `No workspace folder found.`
     );
+
+    const [workspaceFolder] = vscode.workspace.workspaceFolders;
 
     return workspaceFolder;
 }
