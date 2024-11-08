@@ -12,8 +12,6 @@ export function subscribeOnDidChangeTextEditorSelectionListener() {
 
     const listener = vscode.window.onDidChangeTextEditorSelection((event) => {
         try {
-            /* Pre handle */
-
             const editor = vscode.window.activeTextEditor;
             if (editor === undefined) {
                 return;
@@ -23,8 +21,6 @@ export function subscribeOnDidChangeTextEditorSelectionListener() {
             if (selection.isEmpty) {
                 return setSelectedLinesStatusItemText({});
             }
-
-            /* Add actions */
 
             showSelectedLines({ editor, selection });
         } catch (e) {

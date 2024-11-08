@@ -1,9 +1,5 @@
 import { vscode } from "@/shared";
-import {
-    enableUpdateNodeBuiltinImports,
-    extensionCtx,
-    reloadConfiguration,
-} from "@/shared/init";
+import { enableUpdateNodeBuiltinImports, extensionCtx } from "@/shared/init";
 
 import { updateFuncParameterTypeName } from "./updateFuncParameterTypeName";
 import { updateNodeBuiltinImports } from "./updateNodeBuiltinImports";
@@ -11,8 +7,6 @@ import { updateNodeBuiltinImports } from "./updateNodeBuiltinImports";
 export function subscribeOnDidSaveTextDocumentListener() {
     const listener = vscode.workspace.onDidSaveTextDocument(async (doc) => {
         try {
-            reloadConfiguration();
-
             const editor = vscode.window.activeTextEditor;
             if (editor === undefined) {
                 return;
