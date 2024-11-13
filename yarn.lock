@@ -323,6 +323,11 @@
   dependencies:
     undici-types "~5.26.4"
 
+"@types/prettier@2.7.1":
+  version "2.7.1"
+  resolved "https://registry.npmmirror.com/@types/prettier/-/prettier-2.7.1.tgz#dfd20e2dc35f027cdd6c1908e80a5ddc7499670e"
+  integrity sha512-ri0UmynRRvZiiUJdiz38MmIblKK+oH30MztdBVR95dv/Ubw6neWSb8u1XpRb72L4qsZOhz+L+z9JD40SJmfWow==
+
 "@types/unist@*", "@types/unist@^3.0.0":
   version "3.0.3"
   resolved "https://registry.npmmirror.com/@types/unist/-/unist-3.0.3.tgz#acaab0f919ce69cce629c2d4ed2eb4adc1b6c20c"
@@ -419,11 +424,20 @@
   resolved "https://registry.npmmirror.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@utils/common@^0.2.0":
-  version "0.2.0"
-  resolved "http://verdaccio.sower.fun/@utils/common/-/common-0.2.0.tgz#4896c0d4b62b7e9299d9d257ffd1e407d1a69750"
-  integrity sha512-q/EtMIbUZIPqG+0wcgggXtckCLjby3PVwzSuqXuMDiATKorCjbe8AhRIp3QvvodZq8vz2xDx6WKKpSEP29G70g==
+"@utils/common@^0.2.3", "@utils/common@^0.2.4":
+  version "0.2.4"
+  resolved "http://verdaccio.sower.fun/@utils/common/-/common-0.2.4.tgz#48f5b53f6e4ee1ddf3b34ae10136e614912aa958"
+  integrity sha512-mlwXBRPwYh6nZ1hQ+s/ULO2PN7YOLa/grUPmk0/RdQpNKJcGxQtQXLR6EvXohzvYbH6k/9uUrU+D2re/R9RrvA==
   dependencies:
+    "@utils/json" "^0.3.0"
+    tsconfig-paths "^4.2.0"
+
+"@utils/json@^0.3.0":
+  version "0.3.3"
+  resolved "http://verdaccio.sower.fun/@utils/json/-/json-0.3.3.tgz#324b0f8645edf3a0580fe086075e3b827068e3a0"
+  integrity sha512-2iuvXNS1kQxoUJIAff5fhU/+L3Z6kkpy9mP8E/WLgIBDA9FfhxS6s2gckzWlMrEfFXgaif8YvzoppKsWDh7NQQ==
+  dependencies:
+    "@utils/common" "^0.2.3"
     tsconfig-paths "^4.2.0"
 
 "@vscode/test-cli@^0.0.9":
@@ -2448,6 +2462,11 @@ prelude-ls@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmmirror.com/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
+
+prettier@2.8.8:
+  version "2.8.8"
+  resolved "https://registry.npmmirror.com/prettier/-/prettier-2.8.8.tgz#e8c5d7e98a4305ffe3de2e1fc4aca1a71c28b1da"
+  integrity sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
