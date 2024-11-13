@@ -4,7 +4,7 @@ import ts from "typescript";
 
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
-import { toUpperCamelCase } from "@/shared/utils";
+import { prettierFormatFile, toUpperCamelCase } from "@/shared/utils";
 import {
     findTypeDeclarationNode,
     findVariableDeclarationNodeAtOffset,
@@ -96,4 +96,6 @@ async function generateTypeSchema({
             text: typeText,
         });
     }
+
+    prettierFormatFile(getSourceFileByEditor(editor).fileName);
 }
