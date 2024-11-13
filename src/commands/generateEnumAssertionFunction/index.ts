@@ -4,7 +4,11 @@ import ts from "typescript";
 
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
-import { mapEnumNameWithoutPrefix, toLowerCamelCase } from "@/shared/utils";
+import {
+    mapEnumNameWithoutPrefix,
+    prettierFormatFile,
+    toLowerCamelCase,
+} from "@/shared/utils";
 import {
     findEnumDeclarationNodeAtOffset,
     findFuncDeclarationNode,
@@ -179,4 +183,6 @@ async function generateEnumAssertionFunction({
             text: assertNullableFuncText,
         });
     }
+
+    prettierFormatFile(getSourceFileByEditor(editor).fileName);
 }
