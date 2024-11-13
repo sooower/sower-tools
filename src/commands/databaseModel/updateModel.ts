@@ -10,7 +10,7 @@ import {
     ignoredInsertionColumns,
 } from "@/shared/init";
 import { ETsType } from "@/shared/types";
-import { toLowerCamelCase, toUpperCamelCase } from "@/shared/utils";
+import { prettierFormatFile, toLowerCamelCase, toUpperCamelCase } from "@/shared/utils";
 import {
     findEnumDeclarationNode,
     findFuncDeclarationNode,
@@ -119,7 +119,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
 
     const enumEColumnNodeText = `
         enum EColumn {
-            ${enumEColumnContent.join("\n    ")}
+            ${enumEColumnContent.join("\n")}
         }
     `;
     const enumEColumnNode = findEnumDeclarationNode({
@@ -151,7 +151,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
 
     const varResolverNodeText = `
         const kResolver: TResolvers = {
-            ${varKResolverContent.join("\n    ")}
+            ${varKResolverContent.join("\n")}
         };
     `;
     const varResolverNode = findVariableDeclarationNode({
@@ -184,7 +184,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
 
     const typeInsertOptionsNodeText = `
         type TInsertOptions = {
-            ${typeTInsertOptionsContent.join("\n    ")}
+            ${typeTInsertOptionsContent.join("\n")}
         };
     `;
     const typeInsertOptionsNode = findTypeDeclarationNode({
@@ -223,7 +223,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
                 value: new Date(),
             });
 
-            ${funcInsertContent.join("\n\n    ")}
+            ${funcInsertContent.join("\n\n")}
 
             const { preparedStmt, vars } = generateCreateStatement(
                 kFullQualifiedTableName,
@@ -254,6 +254,8 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
             text: funcInsertNodeText,
         });
     }
+
+    prettierFormatFile(getSourceFileByEditor(editor).fileName);
 }
 
 function extractTypeMemberMap(node: ts.TypeAliasDeclaration) {

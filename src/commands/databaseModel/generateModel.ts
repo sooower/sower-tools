@@ -12,7 +12,11 @@ import {
     ignoredInsertionColumns,
 } from "@/shared/init";
 import { ETsType } from "@/shared/types";
-import { reIndent, toLowerCamelCase, toUpperCamelCase } from "@/shared/utils";
+import {
+    prettierFormatText,
+    toLowerCamelCase,
+    toUpperCamelCase,
+} from "@/shared/utils";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
@@ -159,13 +163,11 @@ async function parseSqlAndGenerateFiles() {
     const funcInsertContent: string[] = [];
 
     for (const [column, { tsType, nullable, enumType }] of detail) {
-        enumEColumnContent.push(
-            reIndent(`${toUpperCamelCase(column)} = "${column}",`, 4)
-        );
+        enumEColumnContent.push(`${toUpperCamelCase(column)} = "${column}",`);
 
         typeTDefinitionsContent.push(
             format(
-                reIndent(`[EColumn.%s]%s: %s;`, 4),
+                `[EColumn.%s]%s: %s;`,
                 toUpperCamelCase(column),
                 nullable ? "?" : "",
                 enumType === ETsType.Unknown ? tsType : enumType
@@ -174,7 +176,7 @@ async function parseSqlAndGenerateFiles() {
 
         varkResolverContent.push(
             format(
-                reIndent(`[EColumn.%s]: %s,`, 4),
+                `[EColumn.%s]: %s,`,
                 toUpperCamelCase(column),
                 mapAssertMethod({ tsType, nullable, enumType })
             )
@@ -183,7 +185,7 @@ async function parseSqlAndGenerateFiles() {
         if (!ignoredInsertionColumns.includes(column)) {
             typeTInsertOptionsContent.push(
                 format(
-                    reIndent(`%s%s: %s;`, 4),
+                    `%s%s: %s;`,
                     column,
                     nullable ? "?" : "",
                     enumType === ETsType.Unknown ? tsType : enumType
@@ -192,8 +194,7 @@ async function parseSqlAndGenerateFiles() {
             funcInsertContent.push(
                 nullable
                     ? format(
-                          reIndent(
-                              `
+                          `
                                 if (options.%s !== undefined) {
                                     columnValues.push({
                                         column: EColumn.%s,
@@ -201,22 +202,17 @@ async function parseSqlAndGenerateFiles() {
                                     });
                                 }
                             `,
-                              4
-                          ),
                           column,
                           toUpperCamelCase(column),
                           column
                       )
                     : format(
-                          reIndent(
-                              `
+                          `
                                 columnValues.push({
                                     column: EColumn.%s,
                                     value: options.%s,
                                 });
                             `,
-                              4
-                          ),
                           toUpperCamelCase(column),
                           column
                       )
@@ -244,12 +240,7 @@ async function parseSqlAndGenerateFiles() {
 
     await vscode.workspace.fs.writeFile(
         vscode.Uri.file(tableFilePath),
-        Buffer.from(
-            prettier.format(modelFileContent, {
-                parser: "typescript",
-                tabWidth: 4,
-            })
-        )
+        Buffer.from(prettierFormatText(modelFileContent))
     );
 
     // Open model file in editor
