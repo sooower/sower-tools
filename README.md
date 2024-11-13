@@ -25,6 +25,7 @@
 -   Show now timestamp in status bar.
 -   Add support config enable showNowTimestamp.
 -   Enhanced pg sql parser for parsing primary key and field type 'smallint' and 'bytea'.
+-   Add prettier to format models.
 
 ## Usage
 
