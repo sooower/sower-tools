@@ -2,7 +2,7 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "A collection of commonly used tools for VSCode.",
-    "version": "0.12.11",
+    "version": "0.12.12",
     "publisher": "Sower",
     "icon": "./assets/icon.png",
     "repository": {
@@ -375,6 +375,7 @@
         "@types/markdown-it": "^14.1.1",
         "@types/mocha": "^10.0.6",
         "@types/node": "18.x",
+        "@types/prettier": "2.7.1",
         "@types/vscode": "^1.89.0",
         "@typescript-eslint/eslint-plugin": "^7.7.1",
         "@typescript-eslint/parser": "^7.7.1",
@@ -388,10 +389,11 @@
         "typescript": "^5.4.5"
     },
     "dependencies": {
-        "@utils/common": "^0.2.0",
+        "@utils/common": "^0.2.4",
         "comment-json": "^4.2.3",
         "dayjs": "^1.11.11",
         "markdown-it": "^14.1.0",
+        "prettier": "2.8.8",
         "remark-parse": "^11.0.0",
         "unist-util-visit": "^5.0.0"
     },

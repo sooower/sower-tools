@@ -1,3 +1,5 @@
+import * as prettier from "prettier";
+
 import path from "node:path";
 import { format } from "node:util";
 
@@ -242,7 +244,12 @@ async function parseSqlAndGenerateFiles() {
 
     await vscode.workspace.fs.writeFile(
         vscode.Uri.file(tableFilePath),
-        Buffer.from(modelFileContent)
+        Buffer.from(
+            prettier.format(modelFileContent, {
+                parser: "typescript",
+                tabWidth: 4,
+            })
+        )
     );
 
     // Open model file in editor
