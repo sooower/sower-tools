@@ -9,7 +9,7 @@ export async function showDefaultOpenedDocument() {
         return;
     }
 
-    if (vscode.window.visibleTextEditors !== undefined) {
+    if (vscode.window.activeTextEditor !== undefined) {
         return;
     }
 
