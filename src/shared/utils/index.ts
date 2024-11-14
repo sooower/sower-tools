@@ -1,5 +1,7 @@
 import * as prettier from "prettier";
 
+import { nextTick } from "node:process";
+
 import { CommonUtils } from "@utils/common";
 
 import { specialWordsMap } from "../init";
@@ -74,13 +76,19 @@ export function reIndent(str: string, indentNum = 0) {
 }
 
 export async function prettierFormatFile(filePath: string) {
-    const originalData = await fs.promises.readFile(filePath, {
-        encoding: "utf8",
-    });
+    return await new Promise((resolve: (text: string) => void) => {
+        nextTick(async () => {
+            const originalData = await fs.promises.readFile(filePath, {
+                encoding: "utf8",
+            });
 
-    return prettier.format(originalData, {
-        parser: "typescript",
-        tabWidth: 4,
+            resolve(
+                prettier.format(originalData, {
+                    parser: "typescript",
+                    tabWidth: 4,
+                })
+            );
+        });
     });
 }
 
