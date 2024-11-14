@@ -243,12 +243,24 @@
                     ]
                 },
                 "sower-tools.databaseModel.ignoredInsertionColumns": {
-                    "description": "Special column names which will be ignored when inserting record.",
+                    "description": "Special column names which will be ignored when inserting insertion record.",
                     "type": "array",
                     "items": {
                         "type": "string"
                     },
                     "default": [
+                        "createdAt",
+                        "updatedAt"
+                    ]
+                },
+                "sower-tools.databaseModel.ignoredUpdatingColumns": {
+                    "description": "Special column names which will be ignored when inserting updating record.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "id",
                         "createdAt",
                         "updatedAt"
                     ]
