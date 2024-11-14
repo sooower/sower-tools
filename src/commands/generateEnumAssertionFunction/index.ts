@@ -184,7 +184,7 @@ async function generateEnumAssertionFunction({
         });
     }
 
-    await TextEditorUtils.replaceAllTextOfNode({
+    await TextEditorUtils.replaceTextOfSourceFile({
         editor,
         sourceFile: getSourceFileByEditor(editor),
         newText: await prettierFormatFile(

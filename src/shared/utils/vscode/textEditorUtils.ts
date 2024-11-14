@@ -2,7 +2,7 @@ import ts from "typescript";
 
 import { vscode } from "@/shared";
 
-type TReplaceAllTextOfNodeOptions = {
+type TReplaceTextOfSourceFileOptions = {
     editor: vscode.TextEditor;
     sourceFile: ts.SourceFile;
     newText: string;
@@ -100,11 +100,11 @@ export class TextEditorUtils {
         });
     }
 
-    static async replaceAllTextOfNode({
+    static async replaceTextOfSourceFile({
         editor,
         sourceFile,
         newText,
-    }: TReplaceAllTextOfNodeOptions) {
+    }: TReplaceTextOfSourceFileOptions) {
         const startPos = ts.getLineAndCharacterOfPosition(sourceFile, 0);
         const endPos = ts.getLineAndCharacterOfPosition(
             sourceFile,

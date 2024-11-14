@@ -13,7 +13,7 @@ import { ETsType } from "@/shared/types";
 import {
     prettierFormatFile,
     toLowerCamelCase,
-    toUpperCamelCase
+    toUpperCamelCase,
 } from "@/shared/utils";
 import {
     findEnumDeclarationNode,
@@ -259,7 +259,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         });
     }
 
-    await TextEditorUtils.replaceAllTextOfNode({
+    await TextEditorUtils.replaceTextOfSourceFile({
         editor,
         sourceFile: getSourceFileByEditor(editor),
         newText: await prettierFormatFile(

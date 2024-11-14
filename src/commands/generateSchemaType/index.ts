@@ -97,7 +97,7 @@ async function generateTypeSchema({
         });
     }
 
-    await TextEditorUtils.replaceAllTextOfNode({
+    await TextEditorUtils.replaceTextOfSourceFile({
         editor,
         sourceFile: getSourceFileByEditor(editor),
         newText: await prettierFormatFile(
