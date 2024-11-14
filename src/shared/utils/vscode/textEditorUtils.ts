@@ -2,6 +2,12 @@ import ts from "typescript";
 
 import { vscode } from "@/shared";
 
+type TReplaceAllTextOfNodeOptions = {
+    editor: vscode.TextEditor;
+    sourceFile: ts.SourceFile;
+    newText: string;
+};
+
 type TReplaceTextOfNodeOptions = {
     editor: vscode.TextEditor;
     sourceFile: ts.SourceFile;
@@ -88,6 +94,27 @@ export class TextEditorUtils {
                     editor.document.positionAt(
                         endPlusOne === true ? end + 1 : end
                     )
+                ),
+                newText
+            );
+        });
+    }
+
+    static async replaceAllTextOfNode({
+        editor,
+        sourceFile,
+        newText,
+    }: TReplaceAllTextOfNodeOptions) {
+        const startPos = ts.getLineAndCharacterOfPosition(sourceFile, 0);
+        const endPos = ts.getLineAndCharacterOfPosition(
+            sourceFile,
+            Number.MAX_VALUE
+        );
+        await editor.edit((editBuilder) => {
+            editBuilder.replace(
+                new vscode.Range(
+                    new vscode.Position(startPos.line, startPos.character),
+                    new vscode.Position(endPos.line, endPos.character)
                 ),
                 newText
             );

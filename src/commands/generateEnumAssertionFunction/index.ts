@@ -184,5 +184,11 @@ async function generateEnumAssertionFunction({
         });
     }
 
-    prettierFormatFile(getSourceFileByEditor(editor).fileName);
+    await TextEditorUtils.replaceAllTextOfNode({
+        editor,
+        sourceFile: getSourceFileByEditor(editor),
+        newText: await prettierFormatFile(
+            getSourceFileByEditor(editor).fileName
+        ),
+    });
 }

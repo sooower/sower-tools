@@ -73,20 +73,14 @@ export function reIndent(str: string, indentNum = 0) {
         .join("\n");
 }
 
-export function prettierFormatFile(filePath: string) {
-    process.nextTick(async () => {
-        const originalData = await fs.promises.readFile(filePath, {
-            encoding: "utf8",
-        });
+export async function prettierFormatFile(filePath: string) {
+    const originalData = await fs.promises.readFile(filePath, {
+        encoding: "utf8",
+    });
 
-        const formattedData = prettier.format(originalData, {
-            parser: "typescript",
-            tabWidth: 4,
-        });
-
-        await fs.promises.writeFile(filePath, formattedData, {
-            encoding: "utf8",
-        });
+    return prettier.format(originalData, {
+        parser: "typescript",
+        tabWidth: 4,
     });
 }
 

@@ -10,7 +10,11 @@ import {
     ignoredInsertionColumns,
 } from "@/shared/init";
 import { ETsType } from "@/shared/types";
-import { prettierFormatFile, toLowerCamelCase, toUpperCamelCase } from "@/shared/utils";
+import {
+    prettierFormatFile,
+    toLowerCamelCase,
+    toUpperCamelCase
+} from "@/shared/utils";
 import {
     findEnumDeclarationNode,
     findFuncDeclarationNode,
@@ -255,7 +259,13 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         });
     }
 
-    prettierFormatFile(getSourceFileByEditor(editor).fileName);
+    await TextEditorUtils.replaceAllTextOfNode({
+        editor,
+        sourceFile: getSourceFileByEditor(editor),
+        newText: await prettierFormatFile(
+            getSourceFileByEditor(editor).fileName
+        ),
+    });
 }
 
 function extractTypeMemberMap(node: ts.TypeAliasDeclaration) {
