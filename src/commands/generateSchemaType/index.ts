@@ -97,6 +97,8 @@ async function generateTypeSchema({
         });
     }
 
+    await vscode.workspace.save(editor.document.uri);
+
     await TextEditorUtils.replaceTextOfSourceFile({
         editor,
         sourceFile: getSourceFileByEditor(editor),

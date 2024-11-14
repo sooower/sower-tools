@@ -184,6 +184,8 @@ async function generateEnumAssertionFunction({
         });
     }
 
+    await vscode.workspace.save(editor.document.uri);
+
     await TextEditorUtils.replaceTextOfSourceFile({
         editor,
         sourceFile: getSourceFileByEditor(editor),

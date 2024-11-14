@@ -259,6 +259,8 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         });
     }
 
+    await vscode.workspace.save(editor.document.uri);
+
     await TextEditorUtils.replaceTextOfSourceFile({
         editor,
         sourceFile: getSourceFileByEditor(editor),
