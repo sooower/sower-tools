@@ -97,5 +97,13 @@ async function generateTypeSchema({
         });
     }
 
-    prettierFormatFile(getSourceFileByEditor(editor).fileName);
+    await vscode.workspace.save(editor.document.uri);
+
+    await TextEditorUtils.replaceTextOfSourceFile({
+        editor,
+        sourceFile: getSourceFileByEditor(editor),
+        newText: await prettierFormatFile(
+            getSourceFileByEditor(editor).fileName
+        ),
+    });
 }
