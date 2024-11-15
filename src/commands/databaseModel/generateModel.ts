@@ -225,9 +225,8 @@ async function parseSqlAndGenerateFiles() {
         if (!ignoredUpdatingColumns.includes(column)) {
             typeTUpdateOptionsContent.push(
                 format(
-                    `%s%s: %s;`,
+                    `%s: %s;`,
                     column,
-                    nullable ? "?" : "",
                     enumType === ETsType.Unknown ? tsType : enumType
                 )
             );
