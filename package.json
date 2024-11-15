@@ -2,7 +2,7 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "A collection of commonly used tools for VSCode.",
-    "version": "0.12.12",
+    "version": "0.12.13",
     "publisher": "Sower",
     "icon": "./assets/icon.png",
     "repository": {
@@ -243,12 +243,24 @@
                     ]
                 },
                 "sower-tools.databaseModel.ignoredInsertionColumns": {
-                    "description": "Special column names which will be ignored when inserting record.",
+                    "description": "Special column names which will be ignored when inserting insertion record.",
                     "type": "array",
                     "items": {
                         "type": "string"
                     },
                     "default": [
+                        "createdAt",
+                        "updatedAt"
+                    ]
+                },
+                "sower-tools.databaseModel.ignoredUpdatingColumns": {
+                    "description": "Special column names which will be ignored when inserting updating record.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "id",
                         "createdAt",
                         "updatedAt"
                     ]

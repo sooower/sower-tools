@@ -65,7 +65,7 @@ async function insert(dbc: DatabaseConnection, options: TInsertOptions) {
 }
 
 type TUpdateOptions = Partial<{
-
+    {{TUpdateOptionsContent}}
 }>;
 
 async function update(
@@ -79,6 +79,8 @@ async function update(
         column: EColumn.UpdatedAt,
         value: new Date(),
     });
+
+    {{updateContent}}
 
     const { preparedStmt, vars } = generateUpdateStatement(
         kFullQualifiedTableName,

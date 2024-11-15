@@ -10,6 +10,7 @@ import {
     extensionCtx,
     extensionName,
     ignoredInsertionColumns,
+    ignoredUpdatingColumns,
 } from "@/shared/init";
 import { ETsType } from "@/shared/types";
 import {
@@ -161,6 +162,8 @@ async function parseSqlAndGenerateFiles() {
     const varkResolverContent: string[] = [];
     const typeTInsertOptionsContent: string[] = [];
     const funcInsertContent: string[] = [];
+    const typeTUpdateOptionsContent: string[] = [];
+    const funcUpdateContent: string[] = [];
 
     for (const [column, { tsType, nullable, enumType }] of detail) {
         enumEColumnContent.push(`${toUpperCamelCase(column)} = "${column}",`);
@@ -218,6 +221,31 @@ async function parseSqlAndGenerateFiles() {
                       )
             );
         }
+
+        if (!ignoredUpdatingColumns.includes(column)) {
+            typeTUpdateOptionsContent.push(
+                format(
+                    `%s: %s;`,
+                    column,
+                    enumType === ETsType.Unknown ? tsType : enumType
+                )
+            );
+            funcUpdateContent.push(
+                format(
+                    `
+                        if (options.%s !== undefined) {
+                            columnValues.push({
+                                column: EColumn.%s,
+                                value: options.%s,
+                            });
+                        }
+                    `,
+                    column,
+                    toUpperCamelCase(column),
+                    column
+                )
+            );
+        }
     }
     const modelFileContent = fs
         .readFileSync(
@@ -235,6 +263,11 @@ async function parseSqlAndGenerateFiles() {
             typeTInsertOptionsContent.join("\n")
         )
         .replace(/{{insertContent}}/g, funcInsertContent.join("\n"))
+        .replace(
+            /{{TUpdateOptionsContent}}/g,
+            typeTUpdateOptionsContent.join("\n")
+        )
+        .replace(/{{updateContent}}/g, funcUpdateContent.join("\n"))
         .replace(/{{tableName}}/g, tableName)
         .replace(/{{modelName}}/g, toLowerCamelCase(tableName));
 

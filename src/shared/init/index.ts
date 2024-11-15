@@ -10,6 +10,7 @@ export let extensionName: string;
 export let enableOverwriteFile: boolean;
 export let specialWordsMap: Map<string, string>;
 export let ignoredInsertionColumns: string[];
+export let ignoredUpdatingColumns: string[];
 
 export let nodeBuiltinModules: string[];
 export let enableUpdateNodeBuiltinImports: boolean;
@@ -75,6 +76,12 @@ export function reloadConfiguration() {
     ignoredInsertionColumns = CommonUtils.assertArray(
         getConfigurationItem(
             `${extensionName}.databaseModel.ignoredInsertionColumns`
+        )
+    ).map((it) => CommonUtils.assertString(it));
+
+    ignoredUpdatingColumns = CommonUtils.assertArray(
+        getConfigurationItem(
+            `${extensionName}.databaseModel.ignoredUpdatingColumns`
         )
     ).map((it) => CommonUtils.assertString(it));
 

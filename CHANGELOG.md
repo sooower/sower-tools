@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 -   Add prettier to format code.
+-   Fill function 'update' content when generate model.
 
 ## [0.12.12] - 2024-11-13
 
