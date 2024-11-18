@@ -8,6 +8,7 @@ import {
     extensionCtx,
     extensionName,
     ignoredInsertionColumns,
+    ignoredUpdatingColumns,
 } from "@/shared/init";
 import { ETsType } from "@/shared/types";
 import {
@@ -70,6 +71,8 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
     const varKResolverContent: string[] = [];
     const typeTInsertOptionsContent: string[] = [];
     const funcInsertContent: string[] = [];
+    const typeTUpdateOptionsContent: string[] = [];
+    const funcUpdateContent: string[] = [];
 
     for (const [field, { type, optional }] of typeMemberMap) {
         enumEColumnContent.push(`${toUpperCamelCase(field)} = "${field}",`);
@@ -94,27 +97,46 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
                 optional
                     ? format(
                           `
-                    if (options.%s !== undefined) {
-                        columnValues.push({
-                            column: EColumn.%s,
-                            value: options.%s,
-                        });
-                    }
-                `,
+                              if (options.%s !== undefined) {
+                                  columnValues.push({
+                                      column: EColumn.%s,
+                                      value: options.%s,
+                                  });
+                              }
+                          `,
                           field,
                           toUpperCamelCase(field),
                           field
                       )
                     : format(
                           `
-                        columnValues.push({
-                            column: EColumn.%s,
-                            value: options.%s,
-                        });
-                    `,
+                              columnValues.push({
+                                  column: EColumn.%s,
+                                  value: options.%s,
+                              });
+                          `,
                           toUpperCamelCase(field),
                           field
                       )
+            );
+        }
+
+        if (!ignoredUpdatingColumns.includes(field)) {
+            typeTUpdateOptionsContent.push(format(`%s: %s;`, field, type));
+            funcUpdateContent.push(
+                format(
+                    `
+                        if (options.%s !== undefined) {
+                            columnValues.push({
+                                column: EColumn.%s,
+                                value: options.%s,
+                            });
+                        }
+                    `,
+                    field,
+                    toUpperCamelCase(field),
+                    field
+                )
             );
         }
     }
@@ -256,6 +278,77 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
             sourceFile: getSourceFileByEditor(editor),
             node: CommonUtils.mandatory(typeInsertOptionsNode),
             text: funcInsertNodeText,
+        });
+    }
+
+    /* Update or insert type TUpdateOptions node */
+
+    const typeUpdateOptionsNodeText = `
+        type TUpdateOptions = Partial<{
+            ${typeTUpdateOptionsContent.join("\n")}
+        }>;
+    `;
+    const typeUpdateOptionsNode = findTypeDeclarationNode({
+        sourceFile: getSourceFileByEditor(editor),
+        typeName: "TUpdateOptions",
+    });
+    if (typeUpdateOptionsNode !== undefined) {
+        await TextEditorUtils.replaceTextOfNode({
+            editor,
+            sourceFile: getSourceFileByEditor(editor),
+            node: typeUpdateOptionsNode,
+            newText: typeUpdateOptionsNodeText,
+        });
+    } else {
+        await TextEditorUtils.insertTextAfterNode({
+            editor,
+            sourceFile: getSourceFileByEditor(editor),
+            node: CommonUtils.mandatory(varResolverNode),
+            text: typeUpdateOptionsNodeText,
+        });
+    }
+
+    /* Update or insert function update node */
+
+    const funcUpdateNodeText = `
+        async function update(dbc: DatabaseConnection, id: string, options: TUpdateOptions) {
+            const columnValues: TColumnValue[] = [];
+
+            columnValues.push({
+                column: EColumn.UpdatedAt,
+                value: new Date(),
+            });
+
+            ${funcUpdateContent.join("\n\n")}
+
+            const { preparedStmt, vars } = generateUpdateStatement(
+                kFullQualifiedTableName,
+                {
+                    id: id,
+                    updates: columnValues,
+                }
+            );
+
+            return await dbc.query(preparedStmt, vars);
+        }
+    `;
+    const funcUpdateNode = findFuncDeclarationNode({
+        sourceFile: getSourceFileByEditor(editor),
+        funcName: "update",
+    });
+    if (funcUpdateNode !== undefined) {
+        await TextEditorUtils.replaceTextOfNode({
+            editor,
+            sourceFile: getSourceFileByEditor(editor),
+            node: funcUpdateNode,
+            newText: funcUpdateNodeText,
+        });
+    } else {
+        await TextEditorUtils.insertTextAfterNode({
+            editor,
+            sourceFile: getSourceFileByEditor(editor),
+            node: CommonUtils.mandatory(typeUpdateOptionsNode),
+            text: funcUpdateNodeText,
         });
     }
 
