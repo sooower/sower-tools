@@ -2,7 +2,7 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "A collection of commonly used tools for VSCode.",
-    "version": "0.12.14",
+    "version": "0.13.0",
     "publisher": "Sower",
     "icon": "./assets/icon.png",
     "repository": {
@@ -97,6 +97,14 @@
             {
                 "command": "sower-tools.sortEnums",
                 "title": "Sort Enums"
+            },
+            {
+                "command": "sower-tools.keyCryptoTools.keyEncrypt",
+                "title": "Encrypt Text"
+            },
+            {
+                "command": "sower-tools.keyCryptoTools.keyDecrypt",
+                "title": "Decrypt Text"
             }
         ],
         "submenus": [
@@ -186,6 +194,16 @@
                     "command": "sower-tools.sortEnums",
                     "group": "007_sortEnums@001",
                     "when": "resourceLangId == typescript && editorTextFocus"
+                },
+                {
+                    "command": "sower-tools.keyCryptoTools.keyEncrypt",
+                    "group": "008_keyCryptoTools@001",
+                    "when": "editorTextFocus && editorHasSelection"
+                },
+                {
+                    "command": "sower-tools.keyCryptoTools.keyDecrypt",
+                    "group": "008_keyCryptoTools@002",
+                    "when": "editorTextFocus && editorHasSelection"
                 }
             ],
             "editor/title": [
@@ -365,6 +383,11 @@
                     "description": "If true, it will show current timestamp in status bar.",
                     "type": "boolean",
                     "default": false
+                },
+                "sower-tools.keyCryptoTools.key": {
+                    "description": "The default key for encrypt/decrypt text.",
+                    "type": "string",
+                    "default": ""
                 }
             }
         }
@@ -412,5 +435,6 @@
     "extensionDependencies": [
         "shd101wyy.markdown-preview-enhanced",
         "mike-co.import-sorter"
-    ]
+    ],
+    "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }
