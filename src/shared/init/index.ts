@@ -21,6 +21,7 @@ export let enableShowDefaultOpenedDocument: boolean;
 export let defaultOpenedDocumentNames: string[];
 
 export let enableShowNowTimestamp: boolean;
+export let keyCryptoToolsKey: string;
 
 export function init(context: vscode.ExtensionContext) {
     const packageJsonContent = JSON.parse(
@@ -120,6 +121,11 @@ export function reloadConfiguration() {
     /* showNowTimestamp */
     enableShowNowTimestamp = CommonUtils.assertBoolean(
         getConfigurationItem(`${extensionName}.showNowTimestamp.enable`)
+    );
+
+    /* KeyCryptoToolsKey */
+    keyCryptoToolsKey = CommonUtils.assertString(
+        getConfigurationItem(`${extensionName}.keyCryptoTools.key`)
     );
 }
 

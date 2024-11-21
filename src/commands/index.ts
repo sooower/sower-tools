@@ -5,6 +5,7 @@ import { subscribeEnhanceFunction } from "./functionEnhancement";
 import { subscribeGenerateEnumAssertionFunction } from "./generateEnumAssertionFunction";
 import { subscribeGenerateTypeSchema } from "./generateSchemaType";
 import { subscribeGitEnhancement } from "./gitEnhancement";
+import { subscribeKeyCryptoTools } from "./keyCryptoTools";
 import { subscribeSortEnums } from "./sortEnums";
 import { subscribeStringTools } from "./stringTools";
 import { subscribeSyncChangelog } from "./syncChangelog";
@@ -22,4 +23,5 @@ export function subscribeCommands() {
     subscribeSyncChangelog();
     subscribeSortEnums();
     subscribeAPIResources();
+    subscribeKeyCryptoTools();
 }
