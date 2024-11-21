@@ -1,10 +1,10 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName, keyCryptoToolsKey } from "@/shared/init";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
-import KeyCrypto from "./KeyCrypto";
+import { KeyCrypto } from "./utils";
 
 export function subscribeKeyEncrypt() {
     const command = vscode.commands.registerCommand(

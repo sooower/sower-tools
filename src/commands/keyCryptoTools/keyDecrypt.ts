@@ -2,7 +2,7 @@ import { vscode } from "@/shared";
 import { extensionCtx, extensionName, keyCryptoToolsKey } from "@/shared/init";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
-import KeyCrypto from "./KeyCrypto";
+import { KeyCrypto } from "./utils";
 
 export function subscribeKeyDecrypt() {
     const command = vscode.commands.registerCommand(

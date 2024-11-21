@@ -1,4 +1,5 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
+
 import { CommonUtils } from "@utils/common";
 
 const kAuthTagLength = 16;
@@ -15,7 +16,7 @@ export type TKeyDecryptReturn = {
     plaintext: Buffer;
 };
 
-export default class KeyCrypto {
+export class KeyCrypto {
     private dataAesKey256: Buffer | undefined;
 
     constructor(options: TKeyDecryptConstructorOptions) {
