@@ -5,6 +5,24 @@ All notable changes to "sower-tools" will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.0] - 2024-11-21
+
+### Added
+
+-   Add generating API resources functionality.
+
+## [0.14.1] - 2024-11-21
+
+### Fixed
+
+-   Show opened files count.
+
+## [0.14.0] - 2024-11-21
+
+### Added
+
+-   Add 'Open All Files' functionality.
+
 ## [0.13.0] - 2024-11-21
 
 ### Added

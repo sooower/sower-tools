@@ -27,7 +27,9 @@
 -   Enhanced pg sql parser for parsing primary key and field type 'smallint' and 'bytea'.
 -   Add prettier to format code.
 -   Add encrypt/decrypt text.
--   Add configuration for encrypted/decrypted password.
+-   Add configuration for encrypted/decrypted text.
+-   Add 'Open All Files' functionality.
+-   Add generating API resources functionality.
 
 ## Usage
 
