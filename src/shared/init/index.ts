@@ -21,7 +21,10 @@ export let enableShowDefaultOpenedDocument: boolean;
 export let defaultOpenedDocumentNames: string[];
 
 export let enableShowNowTimestamp: boolean;
+
 export let keyCryptoToolsKey: string;
+
+export let skippedShowFilenames: string[];
 
 export function init(context: vscode.ExtensionContext) {
     const packageJsonContent = JSON.parse(
@@ -123,10 +126,18 @@ export function reloadConfiguration() {
         getConfigurationItem(`${extensionName}.showNowTimestamp.enable`)
     );
 
-    /* KeyCryptoToolsKey */
+    /* keyCryptoToolsKey */
     keyCryptoToolsKey = CommonUtils.assertString(
         getConfigurationItem(`${extensionName}.keyCryptoTools.key`)
     );
+
+    /* openFilesInDir */
+
+    skippedShowFilenames = CommonUtils.assertArray(
+        getConfigurationItem(
+            `${extensionName}.dirEnhancement.skippedShowFilenames`
+        )
+    ).map((it) => CommonUtils.assertString(it));
 }
 
 export function getConfigurationItem(name: string): unknown {

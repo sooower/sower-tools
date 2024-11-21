@@ -1,5 +1,3 @@
-import * as prettier from "prettier";
-
 import path from "node:path";
 import { format } from "node:util";
 

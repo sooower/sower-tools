@@ -2,7 +2,7 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "A collection of commonly used tools for VSCode.",
-    "version": "0.13.0",
+    "version": "0.14.0",
     "publisher": "Sower",
     "icon": "./assets/icon.png",
     "repository": {
@@ -105,6 +105,10 @@
             {
                 "command": "sower-tools.keyCryptoTools.keyDecrypt",
                 "title": "Decrypt Text"
+            },
+            {
+                "command": "sower-tools.dirEnhancement.openFilesInDir",
+                "title": "Open All Files"
             }
         ],
         "submenus": [
@@ -115,6 +119,10 @@
             {
                 "id": "explorer/context/sowerTools",
                 "label": "Sower Tools"
+            },
+            {
+                "id": "explorer/context/sowerTools/Git",
+                "label": "Git"
             }
         ],
         "menus": {
@@ -225,6 +233,17 @@
                 }
             ],
             "explorer/context/sowerTools": [
+                {
+                    "group": "001_Git@001",
+                    "submenu": "explorer/context/sowerTools/Git"
+                },
+                {
+                    "command": "sower-tools.dirEnhancement.openFilesInDir",
+                    "group": "001_dirEnhancement@001",
+                    "when": "explorerResourceIsFolder == true"
+                }
+            ],
+            "explorer/context/sowerTools/Git": [
                 {
                     "command": "sower-tools.gitEnhancement.skipWorkTree",
                     "group": "001_gitEnhancement@001",
@@ -388,6 +407,16 @@
                     "description": "The default key for encrypt/decrypt text.",
                     "type": "string",
                     "default": ""
+                },
+                "sower-tools.dirEnhancement.skippedShowFilenames": {
+                    "description": "The filenames of files that will be skipped when opening all files in a directory.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        ".DS_Store"
+                    ]
                 }
             }
         }

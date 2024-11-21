@@ -1,5 +1,6 @@
 import { subscribeDatabaseModel } from "./databaseModel";
 import { subscribeDebuggingEnhancement } from "./debuggingEnhancement";
+import { subscribeOpenFilesInDir } from "./dirEnhancement/openFilesInDir";
 import { subscribeEnhanceFunction } from "./functionEnhancement";
 import { subscribeGenerateEnumAssertionFunction } from "./generateEnumAssertionFunction";
 import { subscribeGenerateTypeSchema } from "./generateSchemaType";
@@ -22,4 +23,5 @@ export function subscribeCommands() {
     subscribeSyncChangelog();
     subscribeSortEnums();
     subscribeKeyCryptoTools();
+    subscribeOpenFilesInDir();
 }

@@ -1,11 +1,11 @@
-import * as prettier from "prettier";
-
 import { nextTick } from "node:process";
+
+import * as prettier from "prettier";
 
 import { CommonUtils } from "@utils/common";
 
+import { fs } from "../";
 import { specialWordsMap } from "../init";
-import { fs } from "..";
 
 export function toLowerCamelCase(input: string) {
     // Restore special words
