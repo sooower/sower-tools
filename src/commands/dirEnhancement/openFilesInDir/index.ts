@@ -24,7 +24,7 @@ export async function subscribeOpenFilesInDir() {
                     uri.path
                 );
 
-                let openedFilesCount = 1;
+                let openedFilesCount = 0;
                 await vscode.window.withProgress(
                     {
                         location: vscode.ProgressLocation.Notification,
@@ -42,7 +42,7 @@ export async function subscribeOpenFilesInDir() {
                                     increment: (1 / files.length) * 100,
                                     message: format(
                                         `[%d/%d] files in dir '${relativePath}' were opened.`,
-                                        openedFilesCount++,
+                                        ++openedFilesCount,
                                         files.length
                                     ),
                                 });
