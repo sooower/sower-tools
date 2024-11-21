@@ -97,6 +97,10 @@
             {
                 "command": "sower-tools.sortEnums",
                 "title": "Sort Enums"
+            },
+            {
+                "command": "sower-tools.APIResources.generateAPIResources",
+                "title": "Generate API Resources"
             }
         ],
         "submenus": [
@@ -220,6 +224,11 @@
                 {
                     "command": "sower-tools.gitEnhancement.listFiles",
                     "group": "001_gitEnhancement@003"
+                },
+                {
+                    "command": "sower-tools.APIResources.generateAPIResources",
+                    "group": "001_APIResources@001",
+                    "when": "explorerResourceIsFolder == true"
                 }
             ]
         },
@@ -387,6 +396,7 @@
         "@types/markdown-it": "^14.1.1",
         "@types/mocha": "^10.0.6",
         "@types/node": "18.x",
+        "@types/pluralize": "^0.0.33",
         "@types/prettier": "2.7.1",
         "@types/vscode": "^1.89.0",
         "@typescript-eslint/eslint-plugin": "^7.7.1",
@@ -405,6 +415,7 @@
         "comment-json": "^4.2.3",
         "dayjs": "^1.11.11",
         "markdown-it": "^14.1.0",
+        "pluralize": "^8.0.0",
         "prettier": "2.8.8",
         "remark-parse": "^11.0.0",
         "unist-util-visit": "^5.0.0"

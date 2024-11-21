@@ -103,7 +103,7 @@ async function parseSqlAndGenerateFiles() {
         const modelFilePathContent = fs.readFileSync(
             path.join(
                 extensionCtx.extensionPath,
-                "templates/src.models.index.ts.tpl"
+                "templates/models/src.models.index.ts.tpl"
             ),
             "utf-8"
         );
@@ -129,7 +129,7 @@ async function parseSqlAndGenerateFiles() {
         .readFileSync(
             path.join(
                 extensionCtx.extensionPath,
-                "templates/src.models.schema.index.ts.tpl"
+                "templates/models/src.models.schema.index.ts.tpl"
             ),
             "utf-8"
         )
@@ -251,7 +251,7 @@ async function parseSqlAndGenerateFiles() {
         .readFileSync(
             path.join(
                 extensionCtx.extensionPath,
-                "templates/src.models.schema.table.index.ts.tpl"
+                "templates/models/src.models.schema.table.index.ts.tpl"
             ),
             "utf-8"
         )

@@ -1,3 +1,4 @@
+import { subscribeAPIResources } from "./apiResources";
 import { subscribeDatabaseModel } from "./databaseModel";
 import { subscribeDebuggingEnhancement } from "./debuggingEnhancement";
 import { subscribeEnhanceFunction } from "./functionEnhancement";
@@ -20,4 +21,5 @@ export function subscribeCommands() {
     subscribeStringTools();
     subscribeSyncChangelog();
     subscribeSortEnums();
+    subscribeAPIResources();
 }
