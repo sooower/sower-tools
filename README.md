@@ -30,6 +30,7 @@
 -   Add configuration for encrypted/decrypted text.
 -   Add 'Open All Files' functionality.
 -   Add generating API resources functionality.
+-   add multiple API templates.
 
 ## Usage
 

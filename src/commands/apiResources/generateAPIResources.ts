@@ -1,4 +1,5 @@
 import pluralize from "pluralize";
+import { z } from "zod";
 
 import path from "node:path";
 import { format } from "node:util";
@@ -8,11 +9,24 @@ import { extensionCtx, extensionName } from "@/shared/init";
 import { toUpperCamelCase } from "@/shared/utils";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 
+interface TemplateData {
+    external: {
+        fileName: string;
+        templateName: string;
+        dynamicFileName?: boolean | undefined;
+    }[];
+    internal: {
+        fileName: string;
+        templateName: string;
+        dynamicFileName?: boolean | undefined;
+        prefix?: string | undefined;
+    }[];
+}
+
 export function subscribeGenerateAPIResources() {
     const command = vscode.commands.registerCommand(
         `${extensionName}.APIResources.generateAPIResources`,
         async (uri: vscode.Uri) => {
-            console.log(uri.fsPath);
             vscode.window.withProgress(
                 {
                     location: vscode.ProgressLocation.Notification,
@@ -21,17 +35,80 @@ export function subscribeGenerateAPIResources() {
                 },
                 async (progress, token) => {
                     try {
+                        const configFilePath = path.join(
+                            extensionCtx.extensionPath,
+                            "configs/templates.json"
+                        );
+
+                        const configText = fs.readFileSync(
+                            configFilePath,
+                            "utf-8"
+                        );
+
+                        const config = z
+                            .object({
+                                templateRoot: z.string(),
+                                templates: z.record(
+                                    z.string(),
+                                    z.object({
+                                        external: z.array(
+                                            z.object({
+                                                fileName: z.string(),
+                                                templateName: z.string(),
+                                                dynamicFileName: z
+                                                    .boolean()
+                                                    .optional(),
+                                            })
+                                        ),
+                                        internal: z.array(
+                                            z.object({
+                                                fileName: z.string(),
+                                                templateName: z.string(),
+                                                dynamicFileName: z
+                                                    .boolean()
+                                                    .optional(),
+                                                prefix: z.string().optional(),
+                                            })
+                                        ),
+                                    })
+                                ),
+                            })
+                            .parse(JSON.parse(configText));
+
+                        const templateBasePath = path.join(
+                            extensionCtx.extensionPath,
+                            config.templateRoot
+                        );
+
+                        const templatesNames = Object.keys(config.templates);
+
+                        const templateType = await vscode.window.showQuickPick(
+                            templatesNames,
+                            {
+                                title: "Select a template please",
+                                placeHolder: "Select a template please?",
+                            }
+                        );
+                        if (templateType === undefined) {
+                            return;
+                        }
+
                         const input = await vscode.window.showInputBox({
                             prompt: "Input API Name please",
                             placeHolder: "API Name",
                         });
-                        if (!input) {
+                        if (input === undefined) {
                             return;
                         }
+
                         const generatedAPIResources =
-                            await generateAPIResources(
-                                path.join(uri.fsPath, input)
-                            );
+                            await generateAPIResources({
+                                templateBasePath,
+                                templateType,
+                                templateData: config.templates[templateType],
+                                directoryPath: path.join(uri.fsPath, input),
+                            });
+
                         vscode.window.showInformationMessage(
                             format(
                                 `Generated API Resources:\n%s`,
@@ -54,44 +131,52 @@ export function subscribeGenerateAPIResources() {
     extensionCtx.subscriptions.push(command);
 }
 
-async function generateAPIResources(directoryPath: string) {
+async function generateAPIResources({
+    templateBasePath,
+    templateType,
+    templateData,
+    directoryPath,
+}: {
+    templateBasePath: string;
+    templateType: string;
+    templateData: TemplateData;
+    directoryPath: string;
+}) {
     const apiName = path.basename(directoryPath);
-    const fileTemplateData = [
-        {
-            filePath: "index.ts",
-            templatePath: "templates/api/src.api.index.ts.tpl",
-        },
-        {
-            filePath: `${pluralize.singular(apiName)}ListGet.ts`,
-            templatePath: "templates/api/src.api.list.ts.tpl",
-        },
-        {
-            filePath: `${pluralize.singular(apiName)}Create.ts`,
-            templatePath: "templates/api/src.api.create.ts.tpl",
-        },
-        {
-            filePath: `@id/index.ts`,
-            templatePath: "templates/api/@id/src.api.index.ts.tpl",
-        },
-        {
-            filePath: `@id/${pluralize.singular(apiName)}Get.ts`,
-            templatePath: "templates/api/@id/src.api.get.ts.tpl",
-        },
-        {
-            filePath: `@id/${pluralize.singular(apiName)}Update.ts`,
-            templatePath: "templates/api/@id/src.api.update.ts.tpl",
-        },
-        {
-            filePath: `@id/${pluralize.singular(apiName)}Delete.ts`,
-            templatePath: "templates/api/@id/src.api.delete.ts.tpl",
-        },
-    ];
-
     const generatedFiles: string[] = [];
+    const gen = generate({
+        apiName,
+        directoryPath,
+        templateBasePath,
+        templateType,
+        generatedFiles,
+    });
 
-    const gen = generate({ apiName, directoryPath, generatedFiles });
-    for (const { filePath, templatePath } of fileTemplateData) {
-        await gen({ filePath, templatePath });
+    for (const {
+        fileName,
+        templateName,
+        dynamicFileName,
+    } of templateData.external) {
+        await gen({
+            fileName,
+            templateName,
+            dynamicFileName,
+        });
+    }
+
+    for (const {
+        fileName,
+        templateName,
+        dynamicFileName,
+        prefix,
+    } of templateData.internal) {
+        await gen({
+            fileName,
+            templateName,
+            dynamicFileName,
+            prefix,
+            isInternal: true,
+        });
     }
 
     return generatedFiles;
@@ -100,24 +185,41 @@ async function generateAPIResources(directoryPath: string) {
 function generate({
     apiName,
     directoryPath,
+    templateBasePath,
+    templateType,
     generatedFiles,
 }: {
     apiName: string;
     directoryPath: string;
+    templateBasePath: string;
+    templateType: string;
     generatedFiles: string[];
 }) {
     return async function ({
-        filePath,
-        templatePath,
+        fileName,
+        templateName,
+        dynamicFileName,
+        prefix,
+        isInternal,
     }: {
-        filePath: string;
-        templatePath: string;
+        fileName: string;
+        templateName: string;
+        dynamicFileName?: boolean | undefined;
+        prefix?: string | undefined;
+        isInternal?: boolean | undefined;
     }) {
-        const absoluteFilePath = path.join(directoryPath, filePath);
+        let finalFileName = dynamicFileName
+            ? `${pluralize.singular(apiName)}${fileName}`
+            : fileName;
+        if (isInternal) {
+            prefix = prefix ?? `@${pluralize.singular(apiName)}Id`;
+            finalFileName = path.join(prefix, finalFileName);
+        }
+        const absoluteFilePath = path.join(directoryPath, finalFileName);
         if (!fs.existsSync(absoluteFilePath)) {
             const fileContent = fs
                 .readFileSync(
-                    path.join(extensionCtx.extensionPath, templatePath),
+                    path.join(templateBasePath, templateType, templateName),
                     "utf-8"
                 )
                 .replace(/{{apiName}}/g, pluralize.singular(apiName))

@@ -1,0 +1,120 @@
+{
+    "templateRoot": "templates/api",
+    "templates": {
+        "api.fomoremit.net": {
+            "external": [
+                {
+                    "fileName": "index.ts",
+                    "templateName": "src.api.index.ts.tpl"
+                },
+                {
+                    "fileName": "ListGet.ts",
+                    "dynamicFileName": true,
+                    "templateName": "src.api.list.ts.tpl"
+                },
+                {
+                    "fileName": "Create.ts",
+                    "dynamicFileName": true,
+                    "templateName": "src.api.create.ts.tpl"
+                }
+            ],
+            "internal": [
+                {
+                    "fileName": "index.ts",
+                    "prefix": "@id",
+                    "templateName": "@id/src.api.index.ts.tpl"
+                },
+                {
+                    "fileName": "Get.ts",
+                    "dynamicFileName": true,
+                    "prefix": "@id",
+                    "templateName": "@id/src.api.get.ts.tpl"
+                },
+                {
+                    "fileName": "Update.ts",
+                    "dynamicFileName": true,
+                    "prefix": "@id",
+                    "templateName": "@id/src.api.update.ts.tpl"
+                },
+                {
+                    "fileName": "Delete.ts",
+                    "dynamicFileName": true,
+                    "prefix": "@id",
+                    "templateName": "@id/src.api.delete.ts.tpl"
+                }
+            ]
+        },
+        "ibanking.fomopay.com": {
+            "external": [
+                {
+                    "fileName": "index.ts",
+                    "templateName": "src.api.index.ts.tpl"
+                },
+                {
+                    "fileName": "txnGet.ts",
+                    "templateName": "src.api.list.ts.tpl"
+                },
+                {
+                    "fileName": "txnPost.ts",
+                    "templateName": "src.api.create.ts.tpl"
+                }
+            ],
+            "internal": [
+                {
+                    "fileName": "index.ts",
+                    "templateName": "@id/src.api.index.ts.tpl"
+                },
+                {
+                    "fileName": "txnGet.ts",
+                    "templateName": "@id/src.api.get.ts.tpl"
+                },
+                {
+                    "fileName": "txnPatch.ts",
+                    "templateName": "@id/src.api.update.ts.tpl"
+                },
+                {
+                    "fileName": "txnDelete.ts",
+                    "templateName": "@id/src.api.delete.ts.tpl"
+                }
+            ]
+        },
+        "console.ibanking.fomopay.com": {
+            "external": [
+                {
+                    "fileName": "index.ts",
+                    "templateName": "src.api.index.ts.tpl"
+                },
+                {
+                    "fileName": "txnGet.ts",
+                    "templateName": "src.api.list.ts.tpl"
+                },
+                {
+                    "fileName": "txnPost.ts",
+                    "templateName": "src.api.create.ts.tpl"
+                }
+            ],
+            "internal": [
+                {
+                    "fileName": "index.ts",
+                    "prefix": "@id",
+                    "templateName": "@id/src.api.index.ts.tpl"
+                },
+                {
+                    "fileName": "txnGet.ts",
+                    "prefix": "@id",
+                    "templateName": "@id/src.api.get.ts.tpl"
+                },
+                {
+                    "fileName": "txnPatch.ts",
+                    "prefix": "@id",
+                    "templateName": "@id/src.api.update.ts.tpl"
+                },
+                {
+                    "fileName": "txnDelete.ts",
+                    "prefix": "@id",
+                    "templateName": "@id/src.api.delete.ts.tpl"
+                }
+            ]
+        }
+    }
+}
