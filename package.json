@@ -99,12 +99,16 @@
                 "title": "Sort Enums"
             },
             {
-                "command": "sower-tools.APIResources.generateAPIResources",
-                "title": "Generate API Resources"
+                "command": "sower-tools.keyCryptoTools.keyEncrypt",
+                "title": "Encrypt Text"
             },
             {
                 "command": "sower-tools.keyCryptoTools.keyDecrypt",
                 "title": "Decrypt Text"
+            },
+            {
+                "command": "sower-tools.APIResources.generateAPIResources",
+                "title": "Generate API Resources"
             },
             {
                 "command": "sower-tools.dirEnhancement.openFilesInDir",
@@ -238,6 +242,11 @@
                     "submenu": "explorer/context/sowerTools/Git"
                 },
                 {
+                    "command": "sower-tools.APIResources.generateAPIResources",
+                    "group": "001_APIResources@001",
+                    "when": "explorerResourceIsFolder == true"
+                },
+                {
                     "command": "sower-tools.dirEnhancement.openFilesInDir",
                     "group": "001_dirEnhancement@001",
                     "when": "explorerResourceIsFolder == true"
@@ -257,11 +266,6 @@
                 {
                     "command": "sower-tools.gitEnhancement.listFiles",
                     "group": "001_gitEnhancement@003"
-                },
-                {
-                    "command": "sower-tools.APIResources.generateAPIResources",
-                    "group": "001_APIResources@001",
-                    "when": "explorerResourceIsFolder == true"
                 }
             ]
         },
