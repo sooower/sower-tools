@@ -1,7 +1,7 @@
-import pluralize from "pluralize";
-
 import path from "node:path";
 import { format } from "node:util";
+
+import pluralize from "pluralize";
 
 import { fs, vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
@@ -25,9 +25,10 @@ export function subscribeGenerateAPIResources() {
                             prompt: "Input API Name please",
                             placeHolder: "API Name",
                         });
-                        if (!input) {
+                        if (input === undefined) {
                             return;
                         }
+
                         const generatedAPIResources =
                             await generateAPIResources(
                                 path.join(uri.fsPath, input)
@@ -56,7 +57,7 @@ export function subscribeGenerateAPIResources() {
 
 async function generateAPIResources(directoryPath: string) {
     const apiName = path.basename(directoryPath);
-    const fileTemplateData = [
+    const fileTemplateData: { filePath: string; templatePath: string }[] = [
         {
             filePath: "index.ts",
             templatePath: "templates/api/src.api.index.ts.tpl",
