@@ -29,6 +29,7 @@
 -   Add encrypt/decrypt text.
 -   Add configuration for encrypted/decrypted text.
 -   Add 'Open All Files' functionality.
+-   Add generating API resources functionality.
 
 ## Usage
 

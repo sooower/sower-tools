@@ -1,3 +1,4 @@
+import { subscribeAPIResources } from "./apiResources";
 import { subscribeDatabaseModel } from "./databaseModel";
 import { subscribeDebuggingEnhancement } from "./debuggingEnhancement";
 import { subscribeOpenFilesInDir } from "./dirEnhancement/openFilesInDir";
@@ -22,6 +23,7 @@ export function subscribeCommands() {
     subscribeStringTools();
     subscribeSyncChangelog();
     subscribeSortEnums();
+    subscribeAPIResources();
     subscribeKeyCryptoTools();
     subscribeOpenFilesInDir();
 }
