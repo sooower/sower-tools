@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   add multiple API templates
 
-## [0.15.0] - 2024-11-21
+## [0.15.0] - 2024-11-22
 
 ### Added
 
