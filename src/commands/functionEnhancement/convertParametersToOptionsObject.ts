@@ -123,7 +123,9 @@ async function convertParametersToOptionsObject({
         // Refactor multiple parameters to named type parameter
 
         const paramNames = node.parameters.map((it) =>
-            it.getText().includes("=") ? it.getText() : it.name.getText()
+            !it.getText().includes("=>") && it.getText().includes("=")
+                ? it.getText()
+                : it.name.getText()
         );
 
         const typeMembersText = node.parameters.map((it) => {
