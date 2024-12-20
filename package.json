@@ -2,7 +2,7 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "A collection of commonly used tools for VSCode.",
-    "version": "0.15.1",
+    "version": "0.15.2",
     "publisher": "Sower",
     "icon": "./assets/icon.png",
     "repository": {
@@ -473,8 +473,7 @@
         "unist-util-visit": "^5.0.0"
     },
     "extensionDependencies": [
-        "shd101wyy.markdown-preview-enhanced",
-        "mike-co.import-sorter"
+        "shd101wyy.markdown-preview-enhanced"
     ],
     "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

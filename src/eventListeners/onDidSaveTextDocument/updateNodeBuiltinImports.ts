@@ -20,7 +20,6 @@ export async function updateNodeBuiltinImports({
         edit.set(editor.document.uri, edits);
         await vscode.workspace.applyEdit(edit);
 
-        vscode.commands.executeCommand("extension.sortImports");
         vscode.workspace.save(editor.document.uri);
     }
 
