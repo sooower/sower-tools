@@ -19,15 +19,6 @@ import {
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
-enum ESqlKeywords {
-    Create = "CREATE",
-    Table = "TABLE",
-    Constraint = "CONSTRAINT",
-    PrimaryKey = "PRIMARY KEY",
-    Comment = "COMMENT",
-    NotNull = "NOT NULL",
-}
-
 enum ESqlType {
     Integer = "integer",
     IntegerArr = "integer[]",
@@ -54,7 +45,7 @@ export function subscribeGenerateModel() {
                     title: "Generating files",
                     cancellable: false,
                 },
-                async (progress, token) => {
+                async (_progress, _token) => {
                     try {
                         const generatedFils = await parseSqlAndGenerateFiles();
                         vscode.window.showInformationMessage(
@@ -421,25 +412,6 @@ function mapTsType(columnType: string) {
         }
         default: {
             throw new Error(`Unexpected columnType "${columnType}".`);
-        }
-    }
-}
-
-function mapNullable(columnConfig: string[]) {
-    const config = columnConfig.map((it) => it.toUpperCase()).join(" ");
-    return !(
-        config.includes(ESqlKeywords.NotNull) ||
-        config.includes(ESqlKeywords.PrimaryKey)
-    );
-}
-
-function mapEnumType(columnConfigs: string[]) {
-    for (let i = 0; i < columnConfigs.length; i++) {
-        if (
-            columnConfigs[i].toUpperCase().includes(ESqlKeywords.Comment) &&
-            i < columnConfigs.length - 1
-        ) {
-            return columnConfigs[i + 1].replace(/'/g, "");
         }
     }
 }

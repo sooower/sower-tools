@@ -1,11 +1,11 @@
 import { format } from "node:util";
 
 import dayjs from "dayjs";
+import { window } from "vscode";
 
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
-import { CommonUtils } from "@utils/common";
 
 export function subscribeConvertTimestamp() {
     const command = vscode.commands.registerCommand(
@@ -27,18 +27,22 @@ export function subscribeConvertTimestamp() {
                         .unix(Number(selectedText))
                         .format("YYYY-MM-DD HH:mm:ss");
 
-                    CommonUtils.assert(
-                        timestamp !== "Invalid Date",
-                        `Invalid timestamp: "%s".`,
-                        selectedText
-                    );
+                    if (timestamp === "Invalid Date") {
+                        window.showWarningMessage(
+                            format(`Invalid timestamp: "%s".`, selectedText)
+                        );
+
+                        return;
+                    }
                 } else {
                     timestamp = String(dayjs(selectedText).unix());
-                    CommonUtils.assert(
-                        timestamp !== "NaN",
-                        `Invalid timestamp: "%s".`,
-                        selectedText
-                    );
+                    if (timestamp === "NaN") {
+                        window.showWarningMessage(
+                            format(`Invalid timestamp: "%s".`, selectedText)
+                        );
+
+                        return;
+                    }
                 }
                 await TextEditorUtils.replaceTextRangeOffset({
                     editor,
