@@ -2,12 +2,12 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "A collection of commonly used tools for VSCode.",
-    "version": "0.16.1",
+    "version": "0.16.2",
     "publisher": "Sower",
     "icon": "./assets/icon.png",
     "repository": {
         "type": "git",
-        "url": "http://gitea.sower.fun/vsc-extensions/sower-tools.git"
+        "url": "https://github.com/sooower/sower-tools"
     },
     "license": "MIT",
     "engines": {

@@ -67,7 +67,7 @@ export function showSelectedLines({
 export function createAndShowStatusItem() {
     statusBarItem = vscode.window.createStatusBarItem(
         vscode.StatusBarAlignment.Right,
-        100
+        -90
     );
     setSelectedLinesStatusItemText();
     statusBarItem.show();

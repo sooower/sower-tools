@@ -5,8 +5,8 @@ export let statusBarItem: vscode.StatusBarItem;
 
 export async function showCountdownTimer() {
     statusBarItem = vscode.window.createStatusBarItem(
-        vscode.StatusBarAlignment.Left,
-        -100
+        vscode.StatusBarAlignment.Right,
+        -80
     );
     statusBarItem.text = "00:00:00";
     statusBarItem.tooltip = "Click to start countdown timer";
