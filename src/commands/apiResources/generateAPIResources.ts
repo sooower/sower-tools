@@ -37,7 +37,7 @@ export function subscribeGenerateAPIResources() {
                             format(
                                 `Generated API Resources:\n%s`,
                                 generatedAPIResources
-                                    .map((it) => `'${it}'`)
+                                    .map(it => `'${it}'`)
                                     .join(", ")
                             )
                         );

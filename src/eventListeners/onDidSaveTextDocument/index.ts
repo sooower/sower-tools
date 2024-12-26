@@ -5,7 +5,7 @@ import { updateFuncParameterTypeName } from "./updateFuncParameterTypeName";
 import { updateNodeBuiltinImports } from "./updateNodeBuiltinImports";
 
 export function subscribeOnDidSaveTextDocumentListener() {
-    const listener = vscode.workspace.onDidSaveTextDocument(async (doc) => {
+    const listener = vscode.workspace.onDidSaveTextDocument(async doc => {
         try {
             const editor = vscode.window.activeTextEditor;
             if (editor === undefined) {

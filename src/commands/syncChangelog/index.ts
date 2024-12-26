@@ -229,9 +229,9 @@ async function updateReadmeFile(
         featureEndIndex
     );
     const appendedFeatures = newAddedItems
-        .filter((it) => it.trim() !== "")
-        .map((it) => (it.trim() === "" ? it : it.endsWith(".") ? it : it + "."))
-        .filter((it) => !existsFeatures.includes(it));
+        .filter(it => it.trim() !== "")
+        .map(it => (it.trim() === "" ? it : it.endsWith(".") ? it : it + "."))
+        .filter(it => !existsFeatures.includes(it));
 
     if (appendedFeatures.length === 0) {
         return;

@@ -106,7 +106,7 @@ export function findFuncOrCtorDeclarationNodeAtOffset({
 export function findEnumDeclarationNodes(sourceFile: ts.SourceFile) {
     const enumNodes: ts.EnumDeclaration[] = [];
 
-    sourceFile.forEachChild((node) => {
+    sourceFile.forEachChild(node => {
         if (node.getText().trim() === "") {
             return;
         }

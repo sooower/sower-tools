@@ -69,7 +69,7 @@ export function reIndent(str: string, indentNum = 0) {
     }
 
     return lines
-        .map((line) => {
+        .map(line => {
             return " ".repeat(indentNum) + line.slice(minIndent);
         })
         .join("\n");

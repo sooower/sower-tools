@@ -64,7 +64,7 @@ async function generateEnumAssertionFunction({
     node,
 }: TGenerateEnumAssertionFunctionOptions) {
     const nodeName = node.name.text;
-    const enumMemberNames = node.members.map((it) =>
+    const enumMemberNames = node.members.map(it =>
         it.name.getText(getSourceFileByEditor(editor))
     );
     const enumNameWithoutPrefix = mapEnumNameWithoutPrefix(nodeName);
@@ -88,7 +88,7 @@ async function generateEnumAssertionFunction({
         nodeName,
         valName,
         enumMemberNames
-            .map((memberName) => `case ${nodeName}.${memberName}:`)
+            .map(memberName => `case ${nodeName}.${memberName}:`)
             .join("\n"),
         valName,
         valName,

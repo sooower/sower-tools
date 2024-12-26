@@ -51,7 +51,7 @@ export function subscribeGenerateModel() {
                         vscode.window.showInformationMessage(
                             format(
                                 `Generated files:\n%s`,
-                                generatedFils.map((it) => `'${it}'`).join(", ")
+                                generatedFils.map(it => `'${it}'`).join(", ")
                             )
                         );
 
@@ -337,13 +337,13 @@ async function parseCreateStmt(text: string) {
         }
     }
 
-    const createStmt = stmts.find((it) => it.type === "CreateTableStmt");
+    const createStmt = stmts.find(it => it.type === "CreateTableStmt");
     CommonUtils.assert(
         createStmt !== undefined,
         `Can not parse create table statements from text "${text}".`
     );
     const detailMap = new Map<string, TColumnDetail>();
-    const notNullColumns = createStmt.columnOrConstraints.flatMap((it) => {
+    const notNullColumns = createStmt.columnOrConstraints.flatMap(it => {
         const cols = [];
         if (it.tableConstraint?.primaryKey !== undefined) {
             cols.push(...it.tableConstraint.primaryKey);
@@ -354,12 +354,12 @@ async function parseCreateStmt(text: string) {
 
         return cols;
     });
-    createStmt.columnOrConstraints.forEach((it) => {
+    createStmt.columnOrConstraints.forEach(it => {
         const { column, type, columnConstraints } = it;
         if (column !== undefined) {
             let nullable = true;
             if (
-                columnConstraints?.find((it) => it.notNull === true) !==
+                columnConstraints?.find(it => it.notNull === true) !==
                     undefined ||
                 notNullColumns.includes(column)
             ) {

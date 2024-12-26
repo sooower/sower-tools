@@ -47,8 +47,8 @@ async function updateTypeMemberNames({
     const typeDeclarationNodes = findAllTypeDeclarationNode(sourceFile);
 
     typeDeclarationNodes
-        .filter((it) => it.name.text.endsWith("Options"))
-        .forEach((node) => {
+        .filter(it => it.name.text.endsWith("Options"))
+        .forEach(node => {
             const memberMap = getTypeMemberNameMap(node);
             ts.forEachChild(sourceFile, findFunctionParameters);
 
@@ -62,7 +62,7 @@ async function updateTypeMemberNames({
                     return;
                 }
 
-                node.parameters.forEach((parameter) => {
+                node.parameters.forEach(parameter => {
                     if (
                         parameter.type === undefined ||
                         !ts.isTypeReferenceNode(parameter.type)
@@ -110,7 +110,7 @@ function getTypeMemberNameMap(node: ts.Node) {
         return memberMap;
     }
 
-    node.type.members.forEach((m) => {
+    node.type.members.forEach(m => {
         if (ts.isPropertySignature(m) && ts.isIdentifier(m.name)) {
             const typeName = node.name.getText();
             if (memberMap.has(typeName)) {

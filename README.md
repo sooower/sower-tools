@@ -31,6 +31,7 @@
 -   Add 'Open All Files' functionality.
 -   Add generating API resources functionality.
 -   Add support convert arrow function params when convert function parameter into object structure.
+-   Add countdown timer functionality and update configuration.
 
 ## Usage
 

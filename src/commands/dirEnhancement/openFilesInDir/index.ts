@@ -15,8 +15,7 @@ export async function subscribeOpenFilesInDir() {
         async (uri: vscode.Uri) => {
             try {
                 const files = (await getFilesInFolder(uri)).filter(
-                    (it) =>
-                        !skippedShowFilenames.includes(path.basename(it.path))
+                    it => !skippedShowFilenames.includes(path.basename(it.path))
                 );
 
                 const relativePath = path.relative(

@@ -69,7 +69,7 @@ export class TextEditorUtils {
             sourceFile,
             node.getEnd()
         );
-        await editor.edit((editBuilder) => {
+        await editor.edit(editBuilder => {
             editBuilder.replace(
                 new vscode.Range(
                     new vscode.Position(startPos.line, startPos.character),
@@ -87,7 +87,7 @@ export class TextEditorUtils {
         newText,
         endPlusOne,
     }: TReplaceTextRangeOffsetOptions) {
-        await editor.edit((editBuilder) => {
+        await editor.edit(editBuilder => {
             editBuilder.replace(
                 new vscode.Range(
                     editor.document.positionAt(start),
@@ -110,7 +110,7 @@ export class TextEditorUtils {
             sourceFile,
             Number.MAX_VALUE
         );
-        await editor.edit((editBuilder) => {
+        await editor.edit(editBuilder => {
             editBuilder.replace(
                 new vscode.Range(
                     new vscode.Position(startPos.line, startPos.character),
@@ -134,7 +134,7 @@ export class TextEditorUtils {
             sourceFile,
             node.getEnd()
         );
-        await editor.edit((editBuilder) => {
+        await editor.edit(editBuilder => {
             editBuilder.delete(
                 new vscode.Range(
                     new vscode.Position(startPos.line, startPos.character),
@@ -156,7 +156,7 @@ export class TextEditorUtils {
             sourceFile,
             fullStart !== undefined ? node.getFullStart() : node.getStart()
         );
-        await editor.edit((editBuilder) => {
+        await editor.edit(editBuilder => {
             editBuilder.insert(
                 new vscode.Position(startPos.line, startPos.character),
                 text + lineBreak
@@ -176,7 +176,7 @@ export class TextEditorUtils {
             sourceFile,
             node.getEnd()
         );
-        await editor.edit((editBuilder) => {
+        await editor.edit(editBuilder => {
             editBuilder.insert(
                 new vscode.Position(
                     endPos.line,
@@ -195,7 +195,7 @@ export class TextEditorUtils {
         text,
         lineBreak = "\n\n",
     }: TInsertTextAtOffsetOptions) {
-        await editor.edit((editBuilder) => {
+        await editor.edit(editBuilder => {
             editBuilder.insert(
                 editor.document.positionAt(offset),
                 lineBreak + text

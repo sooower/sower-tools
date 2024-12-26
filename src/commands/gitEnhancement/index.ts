@@ -63,7 +63,7 @@ let terminal: vscode.Terminal;
 
 function createTempTerminal() {
     terminal =
-        vscode.window.terminals.find((it) => it.name === kTerminalName) ??
+        vscode.window.terminals.find(it => it.name === kTerminalName) ??
         vscode.window.createTerminal(kTerminalName);
     terminal.show();
 

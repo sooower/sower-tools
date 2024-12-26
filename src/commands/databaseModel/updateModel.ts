@@ -367,7 +367,7 @@ function extractTypeMemberMap(node: ts.TypeAliasDeclaration) {
     const propMap = new Map<string, { type: string; optional: boolean }>();
 
     if (node.type !== undefined && ts.isTypeLiteralNode(node.type)) {
-        node.type.members.forEach((member) => {
+        node.type.members.forEach(member => {
             if (ts.isPropertySignature(member)) {
                 const oName = member.name.getText();
                 const name = oName.includes("EColumn")

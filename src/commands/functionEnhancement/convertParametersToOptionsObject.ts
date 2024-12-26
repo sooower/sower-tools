@@ -89,7 +89,7 @@ async function convertParametersToOptionsObject({
             parameter.type !== undefined &&
             ts.isTypeLiteralNode(parameter.type)
         ) {
-            const typeMembersText = parameter.type.members.map((it) => {
+            const typeMembersText = parameter.type.members.map(it => {
                 if (ts.isPropertySignature(it)) {
                     const memberName = it.name.getText();
                     const memberType = it.type?.getText() ?? ETsType.Unknown;
@@ -122,13 +122,13 @@ async function convertParametersToOptionsObject({
     } else {
         // Refactor multiple parameters to named type parameter
 
-        const paramNames = node.parameters.map((it) =>
+        const paramNames = node.parameters.map(it =>
             !it.getText().includes("=>") && it.getText().includes("=")
                 ? it.getText()
                 : it.name.getText()
         );
 
-        const typeMembersText = node.parameters.map((it) => {
+        const typeMembersText = node.parameters.map(it => {
             const paramName = it.name.getText();
             const paramType = it.type?.getText() ?? mapTsType(it);
             const optional =

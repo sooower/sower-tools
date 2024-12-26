@@ -1,3 +1,5 @@
+import z from "zod";
+
 import { vscode } from "@/shared";
 import {
     extensionCtx,
@@ -14,13 +16,15 @@ export function subscribeDebugProject() {
         `${extensionName}.debuggingEnhancement.debugProject`,
         async () => {
             try {
-                const debugProjectConfigurationNames = CommonUtils.assertArray(
-                    getConfigurationItem(
-                        `${extensionName}.debuggingEnhancement.debugProjectConfigurationNames`
-                    )
-                ).map((it) => CommonUtils.assertString(it));
+                const debugProjectConfigurationNames = z
+                    .array(z.string())
+                    .parse(
+                        getConfigurationItem(
+                            `${extensionName}.debuggingEnhancement.debugProjectConfigurationNames`
+                        )
+                    );
                 const debugProjectConfiguration =
-                    getDebuggingConfigurations().find((it) =>
+                    getDebuggingConfigurations().find(it =>
                         debugProjectConfigurationNames.includes(it.name)
                     );
                 CommonUtils.assert(

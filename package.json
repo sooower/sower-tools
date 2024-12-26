@@ -2,7 +2,7 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "A collection of commonly used tools for VSCode.",
-    "version": "0.16.0",
+    "version": "0.16.1",
     "publisher": "Sower",
     "icon": "./assets/icon.png",
     "repository": {
@@ -489,6 +489,7 @@
         "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
         "check-types": "tsc --noEmit",
         "lint": "eslint src --ext ts",
+        "format": "prettier --ignore-path .prettierignore --write './src/**/*.{ts,js}'",
         "test": "vscode-test"
     },
     "devDependencies": {
