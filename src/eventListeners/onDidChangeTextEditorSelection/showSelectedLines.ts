@@ -61,10 +61,7 @@ export function showSelectedLines({
         code++;
     }
 
-    setSelectedLinesStatusItemText({
-        lines,
-        code,
-    });
+    setSelectedLinesStatusItemText({ lines, code });
 }
 
 export function createAndShowStatusItem() {
@@ -72,16 +69,19 @@ export function createAndShowStatusItem() {
         vscode.StatusBarAlignment.Right,
         100
     );
-    setSelectedLinesStatusItemText({});
+    setSelectedLinesStatusItemText();
     statusBarItem.show();
 }
 
-export function setSelectedLinesStatusItemText({
-    lines,
-    code,
-}: {
+export function setSelectedLinesStatusItemText(options?: {
     lines?: number;
     code?: number;
 }) {
-    statusBarItem.text = format(`Sel. Ln. %s, Co. %s`, lines ?? 0, code ?? 0);
+    const { lines, code } = options ?? { lines: 0, code: 0 };
+    statusBarItem.text = format(`Sel. Ln. %s, Co. %s`, lines, code);
+    statusBarItem.tooltip = format(
+        "Selected lines is %d and code lines is %d.",
+        lines,
+        code
+    );
 }

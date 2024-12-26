@@ -2,7 +2,7 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "A collection of commonly used tools for VSCode.",
-    "version": "0.15.3",
+    "version": "0.16.0",
     "publisher": "Sower",
     "icon": "./assets/icon.png",
     "repository": {
@@ -113,6 +113,10 @@
             {
                 "command": "sower-tools.dirEnhancement.openFilesInDir",
                 "title": "Open All Files"
+            },
+            {
+                "command": "sower-tools.countdownTimer",
+                "title": "Countdown Timer"
             }
         ],
         "submenus": [
@@ -426,6 +430,49 @@
                     "default": [
                         ".DS_Store"
                     ]
+                },
+                "sower-tools.countdownTimer.options": {
+                    "description": "The options of countdown timer.",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "label": {
+                                "type": "string",
+                                "description": "The label of the option."
+                            },
+                            "duration": {
+                                "type": "number",
+                                "description": "The duration of the option in seconds."
+                            }
+                        }
+                    },
+                    "default": [
+                        {
+                            "label": "5 seconds",
+                            "duration": 5
+                        },
+                        {
+                            "label": "10 minutes",
+                            "duration": 600
+                        },
+                        {
+                            "label": "20 minutes",
+                            "duration": 1200
+                        },
+                        {
+                            "label": "40 minutes",
+                            "duration": 2400
+                        },
+                        {
+                            "label": "1 hour",
+                            "duration": 3600
+                        },
+                        {
+                            "label": "2 hours",
+                            "duration": 7200
+                        }
+                    ]
                 }
             }
         }
@@ -465,13 +512,15 @@
     },
     "dependencies": {
         "@utils/common": "^0.2.4",
+        "@utils/datetime": "^0.2.4",
         "comment-json": "^4.2.3",
         "dayjs": "^1.11.11",
         "markdown-it": "^14.1.0",
         "pluralize": "^8.0.0",
         "prettier": "2.8.8",
         "remark-parse": "^11.0.0",
-        "unist-util-visit": "^5.0.0"
+        "unist-util-visit": "^5.0.0",
+        "zod": "^3.24.1"
     },
     "extensionDependencies": [
         "shd101wyy.markdown-preview-enhanced"

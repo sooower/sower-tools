@@ -10,7 +10,7 @@ import {
 export function subscribeOnDidChangeTextEditorSelectionListener() {
     createAndShowStatusItem();
 
-    const listener = vscode.window.onDidChangeTextEditorSelection((event) => {
+    const listener = vscode.window.onDidChangeTextEditorSelection(event => {
         try {
             const editor = vscode.window.activeTextEditor;
             if (editor === undefined) {
@@ -19,7 +19,7 @@ export function subscribeOnDidChangeTextEditorSelectionListener() {
 
             const [selection] = event.selections;
             if (selection.isEmpty) {
-                return setSelectedLinesStatusItemText({});
+                return setSelectedLinesStatusItemText();
             }
 
             showSelectedLines({ editor, selection });

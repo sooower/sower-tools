@@ -6,7 +6,7 @@ import {
 } from "@/shared/init";
 
 export function subscribeOnDidChangeConfigurationListener() {
-    const listener = vscode.workspace.onDidChangeConfiguration((event) => {
+    const listener = vscode.workspace.onDidChangeConfiguration(event => {
         try {
             if (!event.affectsConfiguration(`${extensionName}`)) {
                 return;
@@ -15,7 +15,9 @@ export function subscribeOnDidChangeConfigurationListener() {
             reloadConfiguration();
         } catch (e) {
             console.error(e);
-            vscode.window.showErrorMessage(`${e}`);
+            vscode.window.showErrorMessage(
+                `Error while reload configuration. ${e}`
+            );
         }
     });
 

@@ -482,6 +482,25 @@
     "@utils/json" "^0.3.0"
     tsconfig-paths "^4.2.0"
 
+"@utils/common@^0.2.5":
+  version "0.2.6"
+  resolved "https://verdaccio.sower.fun/@utils/common/-/common-0.2.6.tgz#dbecb22ad77a5cb2f115fbe49f21bf845d848c53"
+  integrity sha512-wcwAfFMs/Y4QonfaJORMqLH7e+6QSP+m05wXJ2jZlpgkwTeOO5QosGKCAaLCWieanjTyw0XxfQ7HB0dQBeFDOw==
+  dependencies:
+    comment-json "^4.2.5"
+    tsconfig-paths "^4.2.0"
+    zod "^3.24.1"
+
+"@utils/datetime@^0.2.4":
+  version "0.2.4"
+  resolved "https://verdaccio.sower.fun/@utils/datetime/-/datetime-0.2.4.tgz#59c5a49aed22245c0b9b197202920b88828df1d6"
+  integrity sha512-mQto9lHS4bUEVMXaZ25AgrLDQn6bXow1ccLUxqOoc1ClkHP6NIziJMgIGNrTJhSmCUOzXwk7oq/xlzKpvSbvAg==
+  dependencies:
+    "@utils/json" "^0.4.1"
+    dayjs "^1.11.13"
+    tsconfig-paths "^4.2.0"
+    zod "^3.24.1"
+
 "@utils/json@^0.3.0":
   version "0.3.3"
   resolved "http://verdaccio.sower.fun/@utils/json/-/json-0.3.3.tgz#324b0f8645edf3a0580fe086075e3b827068e3a0"
@@ -489,6 +508,16 @@
   dependencies:
     "@utils/common" "^0.2.3"
     tsconfig-paths "^4.2.0"
+
+"@utils/json@^0.4.1":
+  version "0.4.1"
+  resolved "https://verdaccio.sower.fun/@utils/json/-/json-0.4.1.tgz#939f300f4543567acc1e9e72ec8a5bc096f40bf2"
+  integrity sha512-2UArj90k5F8H2uCAoZPBpoXAOmFLUx2D6sNKj+Zs6w3O3K3tZeu7M/tzkGxyRd2I1vUhggSuGThyZ6NjQ440DQ==
+  dependencies:
+    "@utils/common" "^0.2.5"
+    comment-json "^4.2.5"
+    tsconfig-paths "^4.2.0"
+    zod "^3.24.1"
 
 "@vscode/test-cli@^0.0.9":
   version "0.0.9"
@@ -839,7 +868,7 @@ color-name@~1.1.4:
   resolved "https://registry.npmmirror.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
-comment-json@^4.2.3:
+comment-json@^4.2.3, comment-json@^4.2.5:
   version "4.2.5"
   resolved "https://registry.npmmirror.com/comment-json/-/comment-json-4.2.5.tgz#482e085f759c2704b60bc6f97f55b8c01bc41e70"
   integrity sha512-bKw/r35jR3HGt5PEPm1ljsQQGyCrR8sFGNiN5L+ykDHdpO8Smxkrkla9Yi6NkQyUrb8V54PGhfMs6NrIwtxtdw==
@@ -917,7 +946,7 @@ data-view-byte-offset@^1.0.0:
     es-errors "^1.3.0"
     is-data-view "^1.0.1"
 
-dayjs@^1.11.11:
+dayjs@^1.11.11, dayjs@^1.11.13:
   version "1.11.13"
   resolved "https://registry.npmmirror.com/dayjs/-/dayjs-1.11.13.tgz#92430b0139055c3ebb60150aa13e860a4b5a366c"
   integrity sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==
@@ -3365,3 +3394,8 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.npmmirror.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+zod@^3.24.1:
+  version "3.24.1"
+  resolved "https://registry.npmmirror.com/zod/-/zod-3.24.1.tgz#27445c912738c8ad1e9de1bea0359fa44d9d35ee"
+  integrity sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==
