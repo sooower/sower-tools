@@ -474,15 +474,7 @@
   resolved "https://registry.npmmirror.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@utils/common@^0.2.3", "@utils/common@^0.2.4":
-  version "0.2.4"
-  resolved "http://verdaccio.sower.fun/@utils/common/-/common-0.2.4.tgz#48f5b53f6e4ee1ddf3b34ae10136e614912aa958"
-  integrity sha512-mlwXBRPwYh6nZ1hQ+s/ULO2PN7YOLa/grUPmk0/RdQpNKJcGxQtQXLR6EvXohzvYbH6k/9uUrU+D2re/R9RrvA==
-  dependencies:
-    "@utils/json" "^0.3.0"
-    tsconfig-paths "^4.2.0"
-
-"@utils/common@^0.2.5":
+"@utils/common@^0.2.5", "@utils/common@^0.2.6":
   version "0.2.6"
   resolved "https://verdaccio.sower.fun/@utils/common/-/common-0.2.6.tgz#dbecb22ad77a5cb2f115fbe49f21bf845d848c53"
   integrity sha512-wcwAfFMs/Y4QonfaJORMqLH7e+6QSP+m05wXJ2jZlpgkwTeOO5QosGKCAaLCWieanjTyw0XxfQ7HB0dQBeFDOw==
@@ -500,14 +492,6 @@
     dayjs "^1.11.13"
     tsconfig-paths "^4.2.0"
     zod "^3.24.1"
-
-"@utils/json@^0.3.0":
-  version "0.3.3"
-  resolved "http://verdaccio.sower.fun/@utils/json/-/json-0.3.3.tgz#324b0f8645edf3a0580fe086075e3b827068e3a0"
-  integrity sha512-2iuvXNS1kQxoUJIAff5fhU/+L3Z6kkpy9mP8E/WLgIBDA9FfhxS6s2gckzWlMrEfFXgaif8YvzoppKsWDh7NQQ==
-  dependencies:
-    "@utils/common" "^0.2.3"
-    tsconfig-paths "^4.2.0"
 
 "@utils/json@^0.4.1":
   version "0.4.1"

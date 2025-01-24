@@ -78,9 +78,9 @@ export function setSelectedLinesStatusItemText(options?: {
     code?: number;
 }) {
     const { lines, code } = options ?? { lines: 0, code: 0 };
-    statusBarItem.text = format(`Sel. Ln. %s, Co. %s`, lines, code);
+    statusBarItem.text = format(`Sel. %d ln., %d co.`, lines, code);
     statusBarItem.tooltip = format(
-        "Selected lines is %d and code lines is %d.",
+        "Selected %d lines and %d codes.",
         lines,
         code
     );

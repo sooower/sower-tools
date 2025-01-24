@@ -1,5 +1,5 @@
 {
-  // Define context varibales here
+  // Define context variables here
 
   function textWithoutBlankSpace() {
     return text().toLowerCase().replace(/\s/g, "")

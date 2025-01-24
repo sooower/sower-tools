@@ -2,9 +2,9 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "A collection of commonly used tools for VSCode.",
-    "version": "0.16.2",
+    "version": "0.16.3",
     "publisher": "Sower",
-    "icon": "./assets/icon.png",
+    "icon": "assets/icon.png",
     "repository": {
         "type": "git",
         "url": "https://github.com/sooower/sower-tools"
@@ -449,8 +449,8 @@
                     },
                     "default": [
                         {
-                            "label": "5 seconds",
-                            "duration": 5
+                            "label": "10 seconds",
+                            "duration": 10
                         },
                         {
                             "label": "10 minutes",
@@ -478,15 +478,15 @@
         }
     },
     "scripts": {
-        "vscode:prepublish": "yarn run package",
-        "compile": "yarn run check-types && yarn run lint && node esbuild.js",
+        "vscode:prepublish": "pnpm run package",
+        "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
         "watch": "npm-run-all -p watch:*",
         "watch:esbuild": "node esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-        "package": "yarn run check-types && yarn run lint && node esbuild.js --production",
+        "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
         "compile-tests": "tsc -p . --outDir out",
         "watch-tests": "tsc -p . -w --outDir out",
-        "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+        "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
         "check-types": "tsc --noEmit",
         "lint": "eslint src --ext ts",
         "format": "prettier --ignore-path .prettierignore --write './src/**/*.{ts,js}'",
@@ -512,7 +512,7 @@
         "typescript": "^5.4.5"
     },
     "dependencies": {
-        "@utils/common": "^0.2.4",
+        "@utils/common": "^0.2.6",
         "@utils/datetime": "^0.2.4",
         "comment-json": "^4.2.3",
         "dayjs": "^1.11.11",
@@ -525,6 +525,5 @@
     },
     "extensionDependencies": [
         "shd101wyy.markdown-preview-enhanced"
-    ],
-    "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+    ]
 }
