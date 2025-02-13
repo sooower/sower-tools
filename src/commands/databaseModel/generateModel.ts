@@ -45,7 +45,7 @@ export function subscribeGenerateModel() {
                     title: "Generating files",
                     cancellable: false,
                 },
-                async (_progress, _token) => {
+                async (progress, token) => {
                     try {
                         const generatedFils = await parseSqlAndGenerateFiles();
                         vscode.window.showInformationMessage(

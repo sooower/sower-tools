@@ -19,7 +19,7 @@ export function subscribeGenerateAPIResources() {
                     title: "Generating API Resources",
                     cancellable: false,
                 },
-                async (_progress, _token) => {
+                async (progress, token) => {
                     try {
                         const input = await vscode.window.showInputBox({
                             prompt: "Input API Name please",

@@ -5,7 +5,7 @@ import { extensionCtx } from "@/shared/init";
 
 export function subscribeTimestampHoverProvider() {
     const provider = vscode.languages.registerHoverProvider("*", {
-        provideHover: (document, position, _token) => {
+        provideHover(document, position, token) {
             const editor = vscode.window.activeTextEditor;
             if (editor === undefined) {
                 return;

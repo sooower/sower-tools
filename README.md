@@ -32,6 +32,10 @@
 -   Add generating API resources functionality.
 -   Add support convert arrow function params when convert function parameter into object structure.
 -   Add countdown timer functionality and update configuration.
+-   Add markdown image diagnostics, including:.
+    -   `no-invalid-local-image-file-path`.
+    -   `no-local-image-link`.
+-   Add upload local image to minio storage functionality.
 
 ## Usage
 

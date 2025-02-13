@@ -6,13 +6,13 @@ import {
 } from "@/shared/init";
 
 export function subscribeOnDidChangeConfigurationListener() {
-    const listener = vscode.workspace.onDidChangeConfiguration(event => {
+    const listener = vscode.workspace.onDidChangeConfiguration(async event => {
         try {
             if (!event.affectsConfiguration(`${extensionName}`)) {
                 return;
             }
 
-            reloadConfiguration();
+            await reloadConfiguration();
         } catch (e) {
             console.error(e);
             vscode.window.showErrorMessage(

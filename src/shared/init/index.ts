@@ -1,15 +1,17 @@
+import os from "node:os";
 import path from "node:path";
 
 import z from "zod";
 
 import { CommonUtils } from "@utils/common";
+import { readJsonFile } from "@utils/fs";
 
 import { fs, vscode } from "../";
 
 export let extensionCtx: vscode.ExtensionContext;
 export let extensionName: string;
 
-export function init(context: vscode.ExtensionContext) {
+export async function init(context: vscode.ExtensionContext) {
     const packageJsonContent = JSON.parse(
         fs.readFileSync(
             path.join(context.extensionPath, "package.json"),
@@ -19,27 +21,44 @@ export function init(context: vscode.ExtensionContext) {
     extensionCtx = context;
     extensionName = CommonUtils.mandatory(packageJsonContent.name);
 
-    reloadConfiguration();
+    await reloadConfiguration();
 }
 
 let workspaceConfig: vscode.WorkspaceConfiguration;
 let userConfig: vscode.WorkspaceConfiguration;
 
-export function reloadConfiguration() {
-    workspaceConfig = vscode.workspace.getConfiguration(
-        undefined,
-        vscode.Uri.file(".vscode/settings.json")
-    );
-    userConfig = vscode.workspace.getConfiguration();
+export async function reloadConfiguration() {
+    await vscode.window.withProgress(
+        {
+            location: vscode.ProgressLocation.Notification,
+            title: "Loading configuration",
+            cancellable: false,
+        },
+        async (progress, token) => {
+            try {
+                workspaceConfig = vscode.workspace.getConfiguration(
+                    undefined,
+                    vscode.Uri.file(".vscode/settings.json")
+                );
+                userConfig = vscode.workspace.getConfiguration();
 
-    parseDatabaseModelConfigs();
-    parseUpdateImportsConfigs();
-    parseStringToolsConfigs();
-    parseShowDefaultOpenedDocumentsConfigs();
-    parseShowTimestampConfigs();
-    parseKeyCryptoToolsConfigs();
-    parseOpenFilesInDirConfigs();
-    parseCountdownTimerConfigs();
+                parseDatabaseModelConfigs();
+                parseUpdateImportsConfigs();
+                parseStringToolsConfigs();
+                parseShowDefaultOpenedDocumentsConfigs();
+                parseShowTimestampConfigs();
+                parseKeyCryptoToolsConfigs();
+                parseOpenFilesInDirConfigs();
+                parseCountdownTimerConfigs();
+                parseMarkdownImageUploadEnable();
+                parseMarkdownImageUploadConfigFilePath();
+            } catch (error) {
+                vscode.window.showErrorMessage(
+                    `Load configuration failed: ${(error as Error).message}`
+                );
+            }
+        }
+    );
 }
 
 export function getConfigurationItem(name: string): unknown {
@@ -226,4 +245,56 @@ function parseCountdownTimerConfigs() {
                 getConfigurationItem(`${extensionName}.countdownTimer.options`)
             )
     );
+}
+
+// Markdown image upload
+
+export let enableMarkdownImageUpload: boolean;
+
+const markdownImageUploadConfigSchema = z.object({
+    endpoint: z.string(),
+    accessKey: z.string(),
+    secretKey: z.string(),
+    bucketName: z.string(),
+    useSSL: z.boolean(),
+});
+
+export let markdownImageUploadConfig: z.infer<
+    typeof markdownImageUploadConfigSchema
+>;
+
+function parseMarkdownImageUploadEnable() {
+    enableMarkdownImageUpload = z
+        .boolean()
+        .parse(
+            getConfigurationItem(`${extensionName}.markdownImageUpload.enable`)
+        );
+}
+
+function parseMarkdownImageUploadConfigFilePath() {
+    const configFilePath = path.resolve(
+        z
+            .string()
+            .parse(
+                getConfigurationItem(
+                    `${extensionName}.markdownImageUpload.configFilePath`
+                )
+            )
+            .replace(/^~/, os.homedir())
+    );
+
+    if (!fs.existsSync(configFilePath)) {
+        throw new Error(`config file "${configFilePath}" does not exist.`);
+    }
+
+    const { error, data } = markdownImageUploadConfigSchema.safeParse(
+        readJsonFile(configFilePath)
+    );
+    if (error !== undefined) {
+        throw new Error(
+            `config in file "${configFilePath}" is invalid. ${error.message}`
+        );
+    }
+
+    markdownImageUploadConfig = data;
 }

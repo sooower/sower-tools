@@ -2,7 +2,7 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "A collection of commonly used tools for VSCode.",
-    "version": "0.16.3",
+    "version": "0.17.0",
     "publisher": "Sower",
     "icon": "assets/icon.png",
     "repository": {
@@ -117,6 +117,10 @@
             {
                 "command": "sower-tools.countdownTimer",
                 "title": "Countdown Timer"
+            },
+            {
+                "command": "sower-tools.markdownImageUpload.uploadImageToMinioStorage",
+                "title": "Upload Image to Minio Storage"
             }
         ],
         "submenus": [
@@ -473,20 +477,30 @@
                             "duration": 7200
                         }
                     ]
+                },
+                "sower-tools.markdownImageUpload.enable": {
+                    "description": "If true, it will check local image links in markdown files and provide a code action to upload them to minio storage.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "sower-tools.markdownImageUpload.configFilePath": {
+                    "description": "The path of the config file of markdown image upload. Supports user home directory alias \"~\".",
+                    "type": "string",
+                    "default": "~/.config/sower-tools/.markdownImageUpload-config.json"
                 }
             }
         }
     },
     "scripts": {
-        "vscode:prepublish": "pnpm run package",
-        "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
+        "vscode:prepublish": "yarn run package",
+        "compile": "yarn run check-types && yarn run lint && node esbuild.js",
         "watch": "npm-run-all -p watch:*",
         "watch:esbuild": "node esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-        "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
+        "package": "yarn run check-types && yarn run lint && node esbuild.js --production",
         "compile-tests": "tsc -p . --outDir out",
         "watch-tests": "tsc -p . -w --outDir out",
-        "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+        "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
         "check-types": "tsc --noEmit",
         "lint": "eslint src --ext ts",
         "format": "prettier --ignore-path .prettierignore --write './src/**/*.{ts,js}'",
@@ -514,9 +528,11 @@
     "dependencies": {
         "@utils/common": "^0.2.6",
         "@utils/datetime": "^0.2.4",
+        "@utils/fs": "^0.3.2",
         "comment-json": "^4.2.3",
         "dayjs": "^1.11.11",
         "markdown-it": "^14.1.0",
+        "minio": "^8.0.4",
         "pluralize": "^8.0.0",
         "prettier": "2.8.8",
         "remark-parse": "^11.0.0",
@@ -525,5 +541,8 @@
     },
     "extensionDependencies": [
         "shd101wyy.markdown-preview-enhanced"
-    ]
+    ],
+    "vsce": {
+        "yarn": true
+    }
 }

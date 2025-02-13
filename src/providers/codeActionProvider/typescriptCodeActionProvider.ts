@@ -10,8 +10,8 @@ export class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
     provideCodeActions(
         document: vscode.TextDocument,
         range: vscode.Range | vscode.Selection,
-        _context: vscode.CodeActionContext,
-        _token: vscode.CancellationToken
+        context: vscode.CodeActionContext,
+        token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
         /* functionEnhancement */
 

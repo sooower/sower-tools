@@ -34,7 +34,7 @@ export async function showDefaultOpenedDocument() {
             );
 
             return;
-        } catch (e) {
+        } catch (_e) {
             continue;
         }
     }
