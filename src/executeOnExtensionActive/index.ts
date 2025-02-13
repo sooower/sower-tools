@@ -3,7 +3,6 @@ import {
     enableShowNowTimestamp,
 } from "@/shared/init";
 
-import { showCountdownTimer } from "./showCountdownTimer";
 import { showDefaultOpenedDocument } from "./showDefaultOpenedDocument";
 import { showNowTimestamp } from "./showTimestamp";
 
@@ -17,6 +16,4 @@ export async function executeOnExtensionActive() {
     if (enableShowDefaultOpenedDocument) {
         await showDefaultOpenedDocument();
     }
-
-    await showCountdownTimer();
 }

@@ -1,5 +1,4 @@
 import { subscribeAPIResources } from "./apiResources";
-import { subscribeCountdownTimer } from "./countdownTimer";
 import { subscribeDatabaseModel } from "./databaseModel";
 import { subscribeDebuggingEnhancement } from "./debuggingEnhancement";
 import { subscribeOpenFilesInDir } from "./dirEnhancement/openFilesInDir";
@@ -27,5 +26,4 @@ export function subscribeCommands() {
     subscribeAPIResources();
     subscribeKeyCryptoTools();
     subscribeOpenFilesInDir();
-    subscribeCountdownTimer();
 }

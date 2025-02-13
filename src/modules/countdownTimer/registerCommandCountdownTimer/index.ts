@@ -6,7 +6,6 @@ dayjs.extend(duration);
 
 import { ThemeColor } from "vscode";
 
-import { statusBarItem } from "@/executeOnExtensionActive/showCountdownTimer";
 import { vscode } from "@/shared";
 import {
     countdownTimerOptions,
@@ -16,6 +15,8 @@ import {
 } from "@/shared/init";
 import { extensionName } from "@/shared/init";
 import { nowDatetime } from "@utils/datetime";
+
+import { statusBarItem } from "../showCountdownTimer";
 
 let countdownTimer: NodeJS.Timeout | undefined;
 
@@ -36,7 +37,7 @@ let remainingOption: TCountdownTimerOption = { label: "", duration: 0 };
  */
 let isCountdownStarted = false;
 
-export async function subscribeCountdownTimer() {
+export async function registerCountdownTimer() {
     const command = vscode.commands.registerCommand(
         `${extensionName}.countdownTimer`,
         async () => {

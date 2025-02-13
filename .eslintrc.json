@@ -24,6 +24,7 @@
             "warn",
             { "args": "none", "varsIgnorePattern": "^_", "caughtErrors": "all" }
         ],
+        "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "perfectionist/sort-named-imports": ["warn", {}],
         "perfectionist/sort-imports": [

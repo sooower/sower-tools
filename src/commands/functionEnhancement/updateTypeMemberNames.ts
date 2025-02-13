@@ -4,7 +4,7 @@ import ts from "typescript";
 
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
-import { findAllTypeDeclarationNode } from "@/shared/utils/tsUtils";
+import { findAllTypeDeclarationNodes } from "@/shared/utils/tsUtils";
 import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";
 import { CommonUtils } from "@utils/common";
@@ -44,7 +44,7 @@ async function updateTypeMemberNames({
     const edits: vscode.TextEdit[] = [];
     const sourceFile = getSourceFileByEditor(editor);
 
-    const typeDeclarationNodes = findAllTypeDeclarationNode(sourceFile);
+    const typeDeclarationNodes = findAllTypeDeclarationNodes(sourceFile);
 
     typeDeclarationNodes
         .filter(it => it.name.text.endsWith("Options"))

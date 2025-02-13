@@ -1,5 +1,10 @@
-import { registerDiagnostics } from "./diagnostics";
+import { defineModule } from "@/shared/utils/module";
 
-export function registerMarkdown() {
-    registerDiagnostics();
-}
+import { registerDiagnostics } from "./registerDiagnostics";
+
+export default defineModule({
+    onActive() {
+        registerDiagnostics();
+    },
+    onDeactive() {},
+});
