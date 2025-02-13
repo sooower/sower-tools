@@ -7,7 +7,7 @@ import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
-export function subscribeConvertTimestamp() {
+export function registerCommandConvertTimestamp() {
     const command = vscode.commands.registerCommand(
         `${extensionName}.timestampTool.covertTimestamp`,
         async () => {

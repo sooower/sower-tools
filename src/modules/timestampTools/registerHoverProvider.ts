@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { vscode } from "@/shared";
 import { extensionCtx } from "@/shared/init";
 
-export function subscribeTimestampHoverProvider() {
+export function registerHoverProvider() {
     const provider = vscode.languages.registerHoverProvider("*", {
         provideHover(document, position, token) {
             const editor = vscode.window.activeTextEditor;

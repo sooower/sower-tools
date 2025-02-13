@@ -13,28 +13,6 @@ export class CommonCodeActionProvider implements vscode.CodeActionProvider {
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        /* timestampTool */
-
-        const covertTimestampCodeAction = new vscode.CodeAction(
-            "Convert timestamp",
-            vscode.CodeActionKind.RefactorRewrite
-        );
-        covertTimestampCodeAction.command = {
-            command: `${extensionName}.timestampTool.covertTimestamp`,
-            title: "",
-            arguments: [document, range],
-        };
-
-        const insertTimestampCodeAction = new vscode.CodeAction(
-            "Insert timestamp",
-            vscode.CodeActionKind.Empty
-        );
-        insertTimestampCodeAction.command = {
-            command: `${extensionName}.timestampTool.insertTimestamp`,
-            title: "",
-            arguments: [document, range],
-        };
-
         /* stringTools */
 
         const base64EncodeCodeAction = new vscode.CodeAction(
@@ -92,8 +70,6 @@ export class CommonCodeActionProvider implements vscode.CodeActionProvider {
         };
 
         return [
-            covertTimestampCodeAction,
-            insertTimestampCodeAction,
             base64EncodeCodeAction,
             base64DecodeCodeAction,
             syncChangelogCodeAction,

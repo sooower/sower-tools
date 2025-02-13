@@ -4,7 +4,7 @@ import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
-export function subscribeInsertTimestamp() {
+export function registerCommandInsertTimestamp() {
     const command = vscode.commands.registerCommand(
         `${extensionName}.timestampTool.insertTimestamp`,
         async () => {

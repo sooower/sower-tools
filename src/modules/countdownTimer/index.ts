@@ -5,7 +5,7 @@ import { clearShowTimestampTimer } from "./clearShowTimestampTimer";
 import { registerCountdownTimer } from "./registerCommandCountdownTimer";
 import { showCountdownTimer } from "./showCountdownTimer";
 
-export default defineModule({
+export const countdownTimer = defineModule({
     onActive() {
         registerCountdownTimer();
         showCountdownTimer();

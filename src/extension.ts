@@ -1,8 +1,9 @@
 import { subscribeCommands } from "./commands";
 import { subscribeEventListeners } from "./eventListeners";
 import { executeOnExtensionActive } from "./executeOnExtensionActive";
-import countdownTimer from "./modules/countdownTimer";
-import markdown from "./modules/markdown";
+import { countdownTimer } from "./modules/countdownTimer";
+import { markdown } from "./modules/markdown";
+import { timestampTools } from "./modules/timestampTools";
 import { subscribeProviders } from "./providers";
 import { vscode } from "./shared";
 import { extensionName, init } from "./shared/init";
@@ -19,6 +20,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
         markdown.onActive();
         countdownTimer.onActive();
+        timestampTools.onActive();
 
         console.log(`${extensionName} is now active!`);
     } catch (e) {
@@ -32,6 +34,7 @@ export async function activate(context: vscode.ExtensionContext) {
 export async function deactivate(): Promise<void> {
     markdown.onDeactive();
     countdownTimer.onDeactive();
+    timestampTools.onDeactive();
 
     console.log(`${extensionName} is now deactive!`);
 }

@@ -10,7 +10,6 @@ import { subscribeKeyCryptoTools } from "./keyCryptoTools";
 import { subscribeSortEnums } from "./sortEnums";
 import { subscribeStringTools } from "./stringTools";
 import { subscribeSyncChangelog } from "./syncChangelog";
-import { subscribeTimestampTools } from "./timestampTools";
 
 export function subscribeCommands() {
     subscribeDatabaseModel();
@@ -19,7 +18,6 @@ export function subscribeCommands() {
     subscribeGenerateEnumAssertionFunction();
     subscribeGenerateTypeSchema();
     subscribeGitEnhancement();
-    subscribeTimestampTools();
     subscribeStringTools();
     subscribeSyncChangelog();
     subscribeSortEnums();
