@@ -3,7 +3,7 @@ import path from "node:path";
 import { fs, vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
 
-import { kLocalImageLinkRegex } from "../../consts";
+import { kLocalImageLinkRegex } from "../consts";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 

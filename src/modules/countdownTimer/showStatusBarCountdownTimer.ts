@@ -3,7 +3,7 @@ import { extensionName } from "@/shared/init";
 
 export let statusBarItem: vscode.StatusBarItem;
 
-export async function showCountdownTimer() {
+export async function showStatusBarCountdownTimer() {
     statusBarItem = vscode.window.createStatusBarItem(
         vscode.StatusBarAlignment.Right,
         -80

@@ -4,51 +4,51 @@ import { vscode } from "@/shared";
 import { extensionCtx } from "@/shared/init";
 
 export function registerHoverProvider() {
-    const provider = vscode.languages.registerHoverProvider("*", {
-        provideHover(document, position, token) {
-            const editor = vscode.window.activeTextEditor;
-            if (editor === undefined) {
-                return;
-            }
-
-            let word: string;
-            const selectedWord = document.getText(editor.selection);
-            if (selectedWord !== "") {
-                word = selectedWord;
-            } else {
-                const wordRange = document.getWordRangeAtPosition(position);
-                if (wordRange === undefined) {
+    extensionCtx.subscriptions.push(
+        vscode.languages.registerHoverProvider("*", {
+            provideHover(document, position, token) {
+                const editor = vscode.window.activeTextEditor;
+                if (editor === undefined) {
                     return;
                 }
 
-                word = document.getText(wordRange);
-            }
+                let word: string;
+                const selectedWord = document.getText(editor.selection);
+                if (selectedWord !== "") {
+                    word = selectedWord;
+                } else {
+                    const wordRange = document.getWordRangeAtPosition(position);
+                    if (wordRange === undefined) {
+                        return;
+                    }
 
-            if (!/^\d+$/.test(word)) {
-                return;
-            }
+                    word = document.getText(wordRange);
+                }
 
-            try {
-                const timestamp = dayjs
-                    .unix(Number(word))
-                    .format("YYYY-MM-DD HH:mm:ss");
-
-                if (timestamp === "Invalid Date") {
+                if (!/^\d+$/.test(word)) {
                     return;
                 }
 
-                const content = new vscode.MarkdownString(
-                    `Unix: ${word} -> ${timestamp}`
-                );
+                try {
+                    const timestamp = dayjs
+                        .unix(Number(word))
+                        .format("YYYY-MM-DD HH:mm:ss");
 
-                return new vscode.Hover(content);
-            } catch (e) {
-                console.error("Error processing timestamp hover:", e);
+                    if (timestamp === "Invalid Date") {
+                        return;
+                    }
 
-                return;
-            }
-        },
-    });
+                    const content = new vscode.MarkdownString(
+                        `Unix: ${word} -> ${timestamp}`
+                    );
 
-    extensionCtx.subscriptions.push(provider);
+                    return new vscode.Hover(content);
+                } catch (e) {
+                    console.error("Error processing timestamp hover:", e);
+
+                    return;
+                }
+            },
+        })
+    );
 }

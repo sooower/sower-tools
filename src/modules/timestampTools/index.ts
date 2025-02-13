@@ -1,6 +1,6 @@
 import { defineModule } from "@/shared/utils/module";
 
-import { registerCodeActionProviders } from "./registerCodeActionProviders";
+import { registerCodeActionsProvider } from "./registerCodeActionsProvider";
 import { registerCommandConvertTimestamp } from "./registerCommandConvertTimestamp";
 import { registerCommandInsertTimestamp } from "./registerCommandInsertTimestamp";
 import { registerHoverProvider } from "./registerHoverProvider";
@@ -10,7 +10,7 @@ export const timestampTools = defineModule({
         registerCommandConvertTimestamp();
         registerCommandInsertTimestamp();
         registerHoverProvider();
-        registerCodeActionProviders();
+        registerCodeActionsProvider();
     },
     onDeactive() {},
 });

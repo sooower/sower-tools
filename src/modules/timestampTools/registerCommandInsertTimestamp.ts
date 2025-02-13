@@ -1,13 +1,14 @@
 import dayjs from "dayjs";
 
 import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/init";
+import { extensionCtx } from "@/shared/init";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
+import { kCommandInsertTimestamp } from "./consts";
+
 export function registerCommandInsertTimestamp() {
-    const command = vscode.commands.registerCommand(
-        `${extensionName}.timestampTool.insertTimestamp`,
-        async () => {
+    extensionCtx.subscriptions.push(
+        vscode.commands.registerCommand(kCommandInsertTimestamp, async () => {
             try {
                 const editor = vscode.window.activeTextEditor;
                 if (editor === undefined) {
@@ -24,8 +25,6 @@ export function registerCommandInsertTimestamp() {
                 console.error(e);
                 vscode.window.showErrorMessage(`${e}`);
             }
-        }
+        })
     );
-
-    extensionCtx.subscriptions.push(command);
 }

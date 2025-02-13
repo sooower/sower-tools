@@ -4,13 +4,14 @@ import dayjs from "dayjs";
 import { window } from "vscode";
 
 import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/init";
+import { extensionCtx } from "@/shared/init";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
+import { kCommandConvertTimestamp } from "./consts";
+
 export function registerCommandConvertTimestamp() {
-    const command = vscode.commands.registerCommand(
-        `${extensionName}.timestampTool.covertTimestamp`,
-        async () => {
+    extensionCtx.subscriptions.push(
+        vscode.commands.registerCommand(kCommandConvertTimestamp, async () => {
             try {
                 const editor = vscode.window.activeTextEditor;
                 if (editor === undefined) {
@@ -54,8 +55,6 @@ export function registerCommandConvertTimestamp() {
                 console.error(e);
                 vscode.window.showErrorMessage(`${e}`);
             }
-        }
+        })
     );
-
-    extensionCtx.subscriptions.push(command);
 }

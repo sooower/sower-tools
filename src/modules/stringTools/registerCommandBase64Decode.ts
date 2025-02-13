@@ -1,11 +1,12 @@
 import { vscode } from "@/shared";
-import { enableReplaceText, extensionCtx, extensionName } from "@/shared/init";
+import { enableReplaceText, extensionCtx } from "@/shared/init";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
-export function subscribeBase64Decode() {
-    const command = vscode.commands.registerCommand(
-        `${extensionName}.stringTools.base64Decode`,
-        async () => {
+import { kCommandBase64Decode } from "./consts";
+
+export function registerCommandBase64Decode() {
+    extensionCtx.subscriptions.push(
+        vscode.commands.registerCommand(kCommandBase64Decode, async () => {
             try {
                 const editor = vscode.window.activeTextEditor;
                 if (editor === undefined) {
@@ -24,10 +25,8 @@ export function subscribeBase64Decode() {
                 console.error(e);
                 vscode.window.showErrorMessage(`${e}`);
             }
-        }
+        })
     );
-
-    extensionCtx.subscriptions.push(command);
 }
 
 type TBase64DecodeOptions = {

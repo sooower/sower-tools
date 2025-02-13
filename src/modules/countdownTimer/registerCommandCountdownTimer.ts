@@ -16,7 +16,7 @@ import {
 import { extensionName } from "@/shared/init";
 import { nowDatetime } from "@utils/datetime";
 
-import { statusBarItem } from "../showCountdownTimer";
+import { statusBarItem } from "./showStatusBarCountdownTimer";
 
 let countdownTimer: NodeJS.Timeout | undefined;
 
@@ -37,20 +37,20 @@ let remainingOption: TCountdownTimerOption = { label: "", duration: 0 };
  */
 let isCountdownStarted = false;
 
-export async function registerCountdownTimer() {
-    const command = vscode.commands.registerCommand(
-        `${extensionName}.countdownTimer`,
-        async () => {
-            try {
-                startCountdown();
-            } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(`${e}`);
+export async function registerCommandCountdownTimer() {
+    extensionCtx.subscriptions.push(
+        vscode.commands.registerCommand(
+            `${extensionName}.countdownTimer`,
+            async () => {
+                try {
+                    startCountdown();
+                } catch (e) {
+                    console.error(e);
+                    vscode.window.showErrorMessage(`${e}`);
+                }
             }
-        }
+        )
     );
-
-    extensionCtx.subscriptions.push(command);
 }
 
 async function startCountdown() {

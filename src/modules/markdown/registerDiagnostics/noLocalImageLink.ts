@@ -12,7 +12,7 @@ import {
 } from "@/shared/init";
 import { CommonUtils } from "@utils/common";
 
-import { kLocalImageLinkRegex } from "../../consts";
+import { kLocalImageLinkRegex } from "../consts";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -93,46 +93,6 @@ async function appendDiagnostics(document: vscode.TextDocument) {
     diagnosticCollection.set(document.uri, diagnostics);
 }
 
-class UploadImageActionProvider implements vscode.CodeActionProvider {
-    constructor(private diagnosticCollection: vscode.DiagnosticCollection) {}
-
-    provideCodeActions(
-        document: vscode.TextDocument,
-        range: vscode.Range
-    ): vscode.CodeAction[] {
-        const diagnostic = this.getLocalImageDiagnostic(document, range);
-        if (diagnostic === undefined) {
-            return [];
-        }
-
-        const action = new vscode.CodeAction(
-            "Upload to minio storage",
-            vscode.CodeActionKind.QuickFix
-        );
-        action.diagnostics = [diagnostic];
-        action.command = {
-            command: `${extensionName}.markdownImageUpload.uploadToMinioStorage`,
-            title: "Upload to minio storage",
-            arguments: [document, diagnostic.range],
-        };
-
-        return [action];
-    }
-
-    private getLocalImageDiagnostic(
-        document: vscode.TextDocument,
-        range: vscode.Range
-    ) {
-        return this.diagnosticCollection
-            .get(document.uri)
-            ?.find(
-                d =>
-                    d.range.start.isBeforeOrEqual(range.start) &&
-                    d.range.end.isAfterOrEqual(range.end)
-            );
-    }
-}
-
 async function uploadImageToMinioStorage(
     document: vscode.TextDocument,
     range: vscode.Range
@@ -206,4 +166,44 @@ async function uploadImageToMinioStorage(
             }
         }
     );
+}
+
+class UploadImageActionProvider implements vscode.CodeActionProvider {
+    constructor(private diagnosticCollection: vscode.DiagnosticCollection) {}
+
+    provideCodeActions(
+        document: vscode.TextDocument,
+        range: vscode.Range
+    ): vscode.CodeAction[] {
+        const diagnostic = this.getLocalImageDiagnostic(document, range);
+        if (diagnostic === undefined) {
+            return [];
+        }
+
+        const action = new vscode.CodeAction(
+            "Upload to minio storage",
+            vscode.CodeActionKind.QuickFix
+        );
+        action.diagnostics = [diagnostic];
+        action.command = {
+            command: `${extensionName}.markdownImageUpload.uploadToMinioStorage`,
+            title: "Upload to minio storage",
+            arguments: [document, diagnostic.range],
+        };
+
+        return [action];
+    }
+
+    private getLocalImageDiagnostic(
+        document: vscode.TextDocument,
+        range: vscode.Range
+    ) {
+        return this.diagnosticCollection
+            .get(document.uri)
+            ?.find(
+                d =>
+                    d.range.start.isBeforeOrEqual(range.start) &&
+                    d.range.end.isAfterOrEqual(range.end)
+            );
+    }
 }

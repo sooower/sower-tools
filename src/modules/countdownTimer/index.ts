@@ -2,13 +2,13 @@ import { enableShowNowTimestamp } from "@/shared/init";
 import { defineModule } from "@/shared/utils/module";
 
 import { clearShowTimestampTimer } from "./clearShowTimestampTimer";
-import { registerCountdownTimer } from "./registerCommandCountdownTimer";
-import { showCountdownTimer } from "./showCountdownTimer";
+import { registerCommandCountdownTimer } from "./registerCommandCountdownTimer";
+import { showStatusBarCountdownTimer } from "./showStatusBarCountdownTimer";
 
 export const countdownTimer = defineModule({
     onActive() {
-        registerCountdownTimer();
-        showCountdownTimer();
+        registerCommandCountdownTimer();
+        showStatusBarCountdownTimer();
     },
     onDeactive() {
         if (enableShowNowTimestamp) {

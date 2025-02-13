@@ -13,28 +13,6 @@ export class CommonCodeActionProvider implements vscode.CodeActionProvider {
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        /* stringTools */
-
-        const base64EncodeCodeAction = new vscode.CodeAction(
-            "Base64 encode",
-            vscode.CodeActionKind.Empty
-        );
-        base64EncodeCodeAction.command = {
-            command: `${extensionName}.stringTools.base64Encode`,
-            title: "",
-            arguments: [document, range],
-        };
-
-        const base64DecodeCodeAction = new vscode.CodeAction(
-            "Base64 decode",
-            vscode.CodeActionKind.Empty
-        );
-        base64DecodeCodeAction.command = {
-            command: `${extensionName}.stringTools.base64Decode`,
-            title: "",
-            arguments: [document, range],
-        };
-
         /* syncChangelog */
 
         const syncChangelogCodeAction = new vscode.CodeAction(
@@ -70,8 +48,6 @@ export class CommonCodeActionProvider implements vscode.CodeActionProvider {
         };
 
         return [
-            base64EncodeCodeAction,
-            base64DecodeCodeAction,
             syncChangelogCodeAction,
             keyEncryptCodeAction,
             keyDecryptCodeAction,
