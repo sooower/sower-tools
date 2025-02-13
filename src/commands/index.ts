@@ -8,7 +8,6 @@ import { subscribeGenerateTypeSchema } from "./generateSchemaType";
 import { subscribeGitEnhancement } from "./gitEnhancement";
 import { subscribeKeyCryptoTools } from "./keyCryptoTools";
 import { subscribeSortEnums } from "./sortEnums";
-import { subscribeSyncChangelog } from "./syncChangelog";
 
 export function subscribeCommands() {
     subscribeDatabaseModel();
@@ -17,7 +16,6 @@ export function subscribeCommands() {
     subscribeGenerateEnumAssertionFunction();
     subscribeGenerateTypeSchema();
     subscribeGitEnhancement();
-    subscribeSyncChangelog();
     subscribeSortEnums();
     subscribeAPIResources();
     subscribeKeyCryptoTools();

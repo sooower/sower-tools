@@ -3,13 +3,14 @@ import path from "node:path";
 import markdownIt from "markdown-it";
 
 import { fs, vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/init";
+import { extensionCtx } from "@/shared/init";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 
-export function subscribeSyncChangelog() {
-    const command = vscode.commands.registerCommand(
-        `${extensionName}.syncChangelog`,
-        async () => {
+import { kCommandSyncChangelog } from "./consts";
+
+export function registerCommandSyncChangelog() {
+    extensionCtx.subscriptions.push(
+        vscode.commands.registerCommand(kCommandSyncChangelog, async () => {
             try {
                 const editor = vscode.window.activeTextEditor;
                 if (editor === undefined) {
@@ -28,10 +29,8 @@ export function subscribeSyncChangelog() {
                 console.error(e);
                 vscode.window.showErrorMessage(`${e}`);
             }
-        }
+        })
     );
-
-    extensionCtx.subscriptions.push(command);
 }
 
 export async function syncChangelog() {

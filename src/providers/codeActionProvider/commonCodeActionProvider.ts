@@ -13,18 +13,6 @@ export class CommonCodeActionProvider implements vscode.CodeActionProvider {
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        /* syncChangelog */
-
-        const syncChangelogCodeAction = new vscode.CodeAction(
-            "Sync changelog",
-            vscode.CodeActionKind.Empty
-        );
-        syncChangelogCodeAction.command = {
-            command: `${extensionName}.syncChangelog`,
-            title: "",
-            arguments: [document, range],
-        };
-
         /* keyCryptoToolsKey */
 
         const keyEncryptCodeAction = new vscode.CodeAction(
@@ -47,10 +35,6 @@ export class CommonCodeActionProvider implements vscode.CodeActionProvider {
             arguments: [document, range],
         };
 
-        return [
-            syncChangelogCodeAction,
-            keyEncryptCodeAction,
-            keyDecryptCodeAction,
-        ];
+        return [keyEncryptCodeAction, keyDecryptCodeAction];
     }
 }
