@@ -1,20 +1,18 @@
-import { format } from "node:util";
-
 import { vscode } from "@/shared";
 
-let statusBarItem: vscode.StatusBarItem;
+import { setSelectedLinesStatusItemText } from "./statusBarItems";
 
-type TShowSelectedLinesOptions = {
+type TRefreshSelectedLinesOptions = {
     editor: vscode.TextEditor;
     selection: vscode.Selection;
 };
 
-export function showSelectedLines({
+export function refreshSelectedLines({
     editor,
     selection,
-}: TShowSelectedLinesOptions) {
-    let lines = 0;
-    let code = 0;
+}: TRefreshSelectedLinesOptions) {
+    let totalLines = 0;
+    let nonEmptyLines = 0;
     const indexOfSelectedLineStart = selection.start.line;
     const indexOfSelectedLineEnd = selection.end.line;
     const selectedText = editor.document
@@ -31,14 +29,14 @@ export function showSelectedLines({
             (i === indexOfSelectedLineStart || i === indexOfSelectedLineEnd)
         ) {
             if (currSelectedLineText.length > 0) {
-                lines++;
+                totalLines++;
             }
             continue;
         }
 
         // Blank line
         if (currLineText.trim() === "") {
-            lines++;
+            totalLines++;
             continue;
         }
 
@@ -51,37 +49,18 @@ export function showSelectedLines({
                 currLineText.trimEnd().endsWith("*/") ||
                 currLineText.trimStart().startsWith("*")
             ) {
-                lines++;
+                totalLines++;
                 continue;
             }
         }
 
         // Code line
-        lines++;
-        code++;
+        totalLines++;
+        nonEmptyLines++;
     }
 
-    setSelectedLinesStatusItemText({ lines, code });
-}
-
-export function createAndShowStatusItem() {
-    statusBarItem = vscode.window.createStatusBarItem(
-        vscode.StatusBarAlignment.Right,
-        -90
-    );
-    setSelectedLinesStatusItemText();
-    statusBarItem.show();
-}
-
-export function setSelectedLinesStatusItemText(options?: {
-    lines?: number;
-    code?: number;
-}) {
-    const { lines, code } = options ?? { lines: 0, code: 0 };
-    statusBarItem.text = format(`Sel. %d ln., %d co.`, lines, code);
-    statusBarItem.tooltip = format(
-        "Selected %d lines and %d codes.",
-        lines,
-        code
-    );
+    setSelectedLinesStatusItemText({
+        totalLines,
+        nonEmptyLines,
+    });
 }

@@ -7,9 +7,9 @@ import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
 import { CommonUtils } from "@utils/common";
 
+import { markdownImageUploadConfig } from "../configs/markdownImageUploadConfigFilePath";
+import { enableMarkdownImageUpload } from "../configs/markdownImageUploadEnable";
 import { kLocalImageLinkRegex } from "../consts";
-import { markdownImageUploadConfig } from "../parseConfigs/parseMarkdownImageUploadConfigFilePath";
-import { enableMarkdownImageUpload } from "../parseConfigs/parseMarkdownImageUploadEnable";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 

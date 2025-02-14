@@ -3,7 +3,7 @@ import path from "node:path";
 import { vscode } from "@/shared";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 
-import { readmeDocumentNames } from "./parseConfigs";
+import { readmeDocumentNames } from "./configs";
 
 export async function previewDocument() {
     if (vscode.workspace.workspaceFolders === undefined) {

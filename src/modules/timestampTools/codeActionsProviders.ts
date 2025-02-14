@@ -12,7 +12,7 @@ export function registerCodeActionsProvider() {
     );
 }
 
-export class TimestampCodeActionProvider implements vscode.CodeActionProvider {
+class TimestampCodeActionProvider implements vscode.CodeActionProvider {
     provideCodeActions(
         document: vscode.TextDocument,
         range: vscode.Range | vscode.Selection,

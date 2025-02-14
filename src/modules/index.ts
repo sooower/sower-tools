@@ -4,6 +4,7 @@ import { countdownTimer } from "./countdownTimer";
 import { loadConfiguration } from "./loadConfiguration";
 import { markdown } from "./markdown";
 import { previewReadmeDocument } from "./previewReadmeDocument";
+import { showSelectedLines } from "./showSelectedLines";
 import { showStatusBarNowTimestamp } from "./showStatusBarNowTimestamp";
 import { stringTools } from "./stringTools";
 import { syncChangelog } from "./syncChangelog";
@@ -21,4 +22,5 @@ export function registerModules() {
     moduleManager.registerModule(syncChangelog);
     moduleManager.registerModule(showStatusBarNowTimestamp);
     moduleManager.registerModule(previewReadmeDocument);
+    moduleManager.registerModule(showSelectedLines);
 }

@@ -1,9 +1,9 @@
 import { defineModule } from "@/shared/module";
 
-import { parseConfigs } from "./parseConfigs";
-import { registerCodeActionsProvider } from "./registerCodeActionsProvider";
-import { registerCommandBase64Decode } from "./registerCommandBase64Decode";
-import { registerCommandBase64Encode } from "./registerCommandBase64Encode";
+import { registerCodeActionsProvider } from "./codeActionsProviders";
+import { registerCommandBase64Decode } from "./commands/base64Decode";
+import { registerCommandBase64Encode } from "./commands/base64Encode";
+import { parseConfigs } from "./configs";
 
 export const stringTools = defineModule({
     onActive() {

@@ -1,7 +1,7 @@
 import { defineModule } from "@/shared/module";
 
-import { enablePreviewReadmeDocument, parseConfigs } from "./parseConfigs";
-import { previewDocument } from "./previewDoc";
+import { enablePreviewReadmeDocument, parseConfigs } from "./configs";
+import { previewDocument } from "./utils";
 
 export const previewReadmeDocument = defineModule({
     onActive() {

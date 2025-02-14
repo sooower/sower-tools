@@ -7,7 +7,7 @@ import { extensionCtx } from "@/shared/context";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 import { datetime } from "@utils/datetime";
 
-import { kCommandConvertTimestamp } from "./consts";
+import { kCommandConvertTimestamp } from "../consts";
 
 export function registerCommandConvertTimestamp() {
     extensionCtx.subscriptions.push(

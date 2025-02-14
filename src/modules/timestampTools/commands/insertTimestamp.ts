@@ -3,7 +3,7 @@ import { extensionCtx } from "@/shared/context";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 import { datetime } from "@utils/datetime";
 
-import { kCommandInsertTimestamp } from "./consts";
+import { kCommandInsertTimestamp } from "../consts";
 
 export function registerCommandInsertTimestamp() {
     extensionCtx.subscriptions.push(

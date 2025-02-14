@@ -9,9 +9,9 @@ import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
 import { datetime, nowDatetime } from "@utils/datetime";
 
+import { countdownTimerOptions, TCountdownTimerOption } from "./configs";
 import { kRestore } from "./consts";
-import { countdownTimerOptions, TCountdownTimerOption } from "./parseConfigs";
-import { statusBarItem } from "./showStatusBarCountdownTimer";
+import { statusBarItem } from "./timers";
 
 let countdownTimer: NodeJS.Timeout | undefined;
 

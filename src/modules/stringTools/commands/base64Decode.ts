@@ -2,8 +2,8 @@ import { vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 
-import { kCommandBase64Decode } from "./consts";
-import { enableReplaceText } from "./parseConfigs";
+import { enableReplaceText } from "../configs";
+import { kCommandBase64Decode } from "../consts";
 
 export function registerCommandBase64Decode() {
     extensionCtx.subscriptions.push(

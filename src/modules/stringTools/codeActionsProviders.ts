@@ -12,9 +12,7 @@ export function registerCodeActionsProvider() {
     );
 }
 
-export class StringToolsCodeActionProvider
-    implements vscode.CodeActionProvider
-{
+class StringToolsCodeActionProvider implements vscode.CodeActionProvider {
     provideCodeActions(
         document: vscode.TextDocument,
         range: vscode.Range | vscode.Selection,
