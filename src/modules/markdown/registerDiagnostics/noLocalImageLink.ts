@@ -4,19 +4,18 @@ import { format } from "node:util";
 import { Client } from "minio";
 
 import { vscode } from "@/shared";
-import {
-    enableMarkdownImageUpload,
-    extensionCtx,
-    extensionName,
-    markdownImageUploadConfig,
-} from "@/shared/init";
+import { extensionCtx, extensionName } from "@/shared/context";
 import { CommonUtils } from "@utils/common";
 
 import { kLocalImageLinkRegex } from "../consts";
+import {
+    enableMarkdownImageUpload,
+    markdownImageUploadConfig,
+} from "../parseConfigs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
-export function registerNoLocalImageLink() {
+export function registerDiagnosticNoLocalImageLink() {
     diagnosticCollection =
         vscode.languages.createDiagnosticCollection("markdown-minio");
     extensionCtx.subscriptions.push(diagnosticCollection);

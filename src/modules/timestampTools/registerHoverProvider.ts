@@ -1,7 +1,6 @@
-import dayjs from "dayjs";
-
 import { vscode } from "@/shared";
-import { extensionCtx } from "@/shared/init";
+import { extensionCtx } from "@/shared/context";
+import { datetime } from "@utils/datetime";
 
 export function registerHoverProvider() {
     extensionCtx.subscriptions.push(
@@ -30,7 +29,7 @@ export function registerHoverProvider() {
                 }
 
                 try {
-                    const timestamp = dayjs
+                    const timestamp = datetime
                         .unix(Number(word))
                         .format("YYYY-MM-DD HH:mm:ss");
 

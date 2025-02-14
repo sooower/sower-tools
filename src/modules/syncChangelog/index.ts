@@ -1,4 +1,4 @@
-import { defineModule } from "@/shared/utils/module";
+import { defineModule } from "@/shared/module";
 
 import { registerCodeActionsProvider } from "./registerCodeActionsProvider";
 import { registerCommandSyncChangelog } from "./registerCommandSyncChangelog";
@@ -8,5 +8,4 @@ export const syncChangelog = defineModule({
         registerCommandSyncChangelog();
         registerCodeActionsProvider();
     },
-    onDeactive() {},
 });

@@ -2,11 +2,6 @@ import { vscode } from "@/shared";
 import { extensionName } from "@/shared/init";
 
 export class CommonCodeActionProvider implements vscode.CodeActionProvider {
-    public static readonly providedCodeActionKinds = [
-        vscode.CodeActionKind.RefactorRewrite,
-        vscode.CodeActionKind.Empty,
-    ];
-
     provideCodeActions(
         document: vscode.TextDocument,
         range: vscode.Range | vscode.Selection,

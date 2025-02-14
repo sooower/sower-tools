@@ -1,14 +1,12 @@
 import { subscribeCommands } from "./commands";
 import { subscribeEventListeners } from "./eventListeners";
 import { executeOnExtensionActive } from "./executeOnExtensionActive";
-import { countdownTimer } from "./modules/countdownTimer";
-import { markdown } from "./modules/markdown";
-import { stringTools } from "./modules/stringTools";
-import { syncChangelog } from "./modules/syncChangelog";
-import { timestampTools } from "./modules/timestampTools";
+import { registerModules } from "./modules";
 import { subscribeProviders } from "./providers";
 import { vscode } from "./shared";
-import { extensionName, init } from "./shared/init";
+import { extensionName, initializeContext } from "./shared/context";
+import { init } from "./shared/init";
+import { moduleManager } from "./shared/module";
 
 export async function activate(context: vscode.ExtensionContext) {
     try {
@@ -20,11 +18,9 @@ export async function activate(context: vscode.ExtensionContext) {
         subscribeEventListeners();
         subscribeProviders();
 
-        markdown.onActive();
-        countdownTimer.onActive();
-        timestampTools.onActive();
-        stringTools.onActive();
-        syncChangelog.onActive();
+        initializeContext(context);
+        registerModules();
+        await moduleManager.activateModules();
 
         console.log(`${extensionName} is now active!`);
     } catch (e) {
@@ -35,12 +31,8 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 }
 
-export async function deactivate(): Promise<void> {
-    markdown.onDeactive();
-    countdownTimer.onDeactive();
-    timestampTools.onDeactive();
-    stringTools.onDeactive();
-    syncChangelog.onDeactive();
+export async function deactivate() {
+    await moduleManager.deactivateModules();
 
     console.log(`${extensionName} is now deactive!`);
 }

@@ -1,10 +1,8 @@
-import os from "node:os";
 import path from "node:path";
 
 import z from "zod";
 
 import { CommonUtils } from "@utils/common";
-import { readJsonFile } from "@utils/fs";
 
 import { fs, vscode } from "../";
 
@@ -27,7 +25,7 @@ export async function init(context: vscode.ExtensionContext) {
 let workspaceConfig: vscode.WorkspaceConfiguration;
 let userConfig: vscode.WorkspaceConfiguration;
 
-export async function reloadConfiguration() {
+async function reloadConfiguration() {
     await vscode.window.withProgress(
         {
             location: vscode.ProgressLocation.Notification,
@@ -44,14 +42,9 @@ export async function reloadConfiguration() {
 
                 parseDatabaseModelConfigs();
                 parseUpdateImportsConfigs();
-                parseStringToolsConfigs();
                 parseShowDefaultOpenedDocumentsConfigs();
-                parseShowTimestampConfigs();
                 parseKeyCryptoToolsConfigs();
                 parseOpenFilesInDirConfigs();
-                parseCountdownTimerConfigs();
-                parseMarkdownImageUploadEnable();
-                parseMarkdownImageUploadConfigFilePath();
             } catch (error) {
                 vscode.window.showErrorMessage(
                     `Load configuration failed: ${(error as Error).message}`
@@ -143,20 +136,6 @@ function parseUpdateImportsConfigs() {
         );
 }
 
-// String tools
-
-export let enableReplaceText: boolean;
-
-function parseStringToolsConfigs() {
-    enableReplaceText = z
-        .boolean()
-        .parse(
-            getConfigurationItem(
-                `${extensionName}.stringTools.enableReplaceText`
-            )
-        );
-}
-
 // Show default opened documents
 
 export let enableShowDefaultOpenedDocument: boolean;
@@ -176,18 +155,6 @@ function parseShowDefaultOpenedDocumentsConfigs() {
             getConfigurationItem(
                 `${extensionName}.showDefaultOpenedDocument.documentNames`
             )
-        );
-}
-
-// Show timestamp
-
-export let enableShowNowTimestamp: boolean;
-
-function parseShowTimestampConfigs() {
-    enableShowNowTimestamp = z
-        .boolean()
-        .parse(
-            getConfigurationItem(`${extensionName}.showNowTimestamp.enable`)
         );
 }
 
@@ -213,88 +180,4 @@ function parseOpenFilesInDirConfigs() {
                 `${extensionName}.dirEnhancement.skippedShowFilenames`
             )
         );
-}
-
-// Countdown timer
-
-const countdownTimerOptionSchema = z.object({
-    label: z.string(),
-    duration: z
-        .number()
-        .positive()
-        .transform(it => it * 1000),
-});
-
-export type TCountdownTimerOption = z.infer<typeof countdownTimerOptionSchema>;
-
-export const kRestore = "Restore";
-export let countdownTimerOptions: TCountdownTimerOption[];
-
-function parseCountdownTimerConfigs() {
-    countdownTimerOptions = [
-        {
-            label: kRestore,
-            duration: 0,
-        },
-    ].concat(
-        ...z
-            .array(countdownTimerOptionSchema)
-            .optional()
-            .default([])
-            .parse(
-                getConfigurationItem(`${extensionName}.countdownTimer.options`)
-            )
-    );
-}
-
-// Markdown image upload
-
-export let enableMarkdownImageUpload: boolean;
-
-const markdownImageUploadConfigSchema = z.object({
-    endpoint: z.string(),
-    accessKey: z.string(),
-    secretKey: z.string(),
-    bucketName: z.string(),
-    useSSL: z.boolean(),
-});
-
-export let markdownImageUploadConfig: z.infer<
-    typeof markdownImageUploadConfigSchema
->;
-
-function parseMarkdownImageUploadEnable() {
-    enableMarkdownImageUpload = z
-        .boolean()
-        .parse(
-            getConfigurationItem(`${extensionName}.markdownImageUpload.enable`)
-        );
-}
-
-function parseMarkdownImageUploadConfigFilePath() {
-    const configFilePath = path.resolve(
-        z
-            .string()
-            .parse(
-                getConfigurationItem(
-                    `${extensionName}.markdownImageUpload.configFilePath`
-                )
-            )
-            .replace(/^~/, os.homedir())
-    );
-
-    if (!fs.existsSync(configFilePath)) {
-        throw new Error(`config file "${configFilePath}" does not exist.`);
-    }
-
-    const { error, data } = markdownImageUploadConfigSchema.safeParse(
-        readJsonFile(configFilePath)
-    );
-    if (error !== undefined) {
-        throw new Error(
-            `config in file "${configFilePath}" is invalid. ${error.message}`
-        );
-    }
-
-    markdownImageUploadConfig = data;
 }

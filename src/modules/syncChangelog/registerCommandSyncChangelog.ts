@@ -3,7 +3,7 @@ import path from "node:path";
 import markdownIt from "markdown-it";
 
 import { fs, vscode } from "@/shared";
-import { extensionCtx } from "@/shared/init";
+import { extensionCtx } from "@/shared/context";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 
 import { kCommandSyncChangelog } from "./consts";

@@ -1,13 +1,13 @@
 import path from "node:path";
 
 import { fs, vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/init";
+import { extensionCtx, extensionName } from "@/shared/context";
 
 import { kLocalImageLinkRegex } from "../consts";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
-export function registerNoInvalidLocalImageFilePath() {
+export function registerDiagnosticNoInvalidLocalImageFilePath() {
     diagnosticCollection = vscode.languages.createDiagnosticCollection(
         "markdown-local-image"
     );

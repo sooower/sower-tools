@@ -415,7 +415,7 @@
                     "type": "boolean",
                     "default": true
                 },
-                "sower-tools.showNowTimestamp.enable": {
+                "sower-tools.showStatusBarNowTimestamp.enable": {
                     "description": "If true, it will show current timestamp in status bar.",
                     "type": "boolean",
                     "default": false
@@ -519,6 +519,7 @@
         "@vscode/test-electron": "^2.3.9",
         "esbuild": "^0.20.2",
         "eslint": "^8.57.0",
+        "eslint-plugin-import": "^2.31.0",
         "eslint-plugin-perfectionist": "^4.4.0",
         "npm-run-all": "^4.1.5",
         "ts-node": "^10.9.2",
@@ -530,7 +531,6 @@
         "@utils/datetime": "^0.2.4",
         "@utils/fs": "^0.3.2",
         "comment-json": "^4.2.3",
-        "dayjs": "^1.11.11",
         "markdown-it": "^14.1.0",
         "minio": "^8.0.4",
         "pluralize": "^8.0.0",

@@ -344,7 +344,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
--   File path error when generate schema file.
+-   File path error while generating schema file.
 -   May generate enum assertion function duplicated.
 -   May refactor function parameter to object duplicated.
 

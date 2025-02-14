@@ -1,11 +1,11 @@
 import { format } from "node:util";
 
-import dayjs from "dayjs";
 import { window } from "vscode";
 
 import { vscode } from "@/shared";
-import { extensionCtx } from "@/shared/init";
+import { extensionCtx } from "@/shared/context";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
+import { datetime } from "@utils/datetime";
 
 import { kCommandConvertTimestamp } from "./consts";
 
@@ -24,9 +24,9 @@ export function registerCommandConvertTimestamp() {
 
                 let timestamp: string;
                 if (selectedText.match(/^\d+$/)) {
-                    timestamp = dayjs
+                    timestamp = datetime
                         .unix(Number(selectedText))
-                        .format("YYYY-MM-DD HH:mm:ss");
+                        .format("YYYY-MM-DD HH:mm:ss"); // TODO: update to load timestamp format from configuration
 
                     if (timestamp === "Invalid Date") {
                         window.showWarningMessage(
@@ -36,7 +36,7 @@ export function registerCommandConvertTimestamp() {
                         return;
                     }
                 } else {
-                    timestamp = String(dayjs(selectedText).unix());
+                    timestamp = String(datetime(selectedText).unix());
                     if (timestamp === "NaN") {
                         window.showWarningMessage(
                             format(`Invalid timestamp: "%s".`, selectedText)

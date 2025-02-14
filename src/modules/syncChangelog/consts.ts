@@ -1,3 +1,3 @@
-import { extensionName } from "@/shared/init";
+import { extensionName } from "@/shared/context";
 
 export const kCommandSyncChangelog = `${extensionName}.syncChangelog`;

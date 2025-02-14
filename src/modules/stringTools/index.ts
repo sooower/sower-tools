@@ -1,5 +1,6 @@
-import { defineModule } from "@/shared/utils/module";
+import { defineModule } from "@/shared/module";
 
+import { parseConfigs } from "./parseConfigs";
 import { registerCodeActionsProvider } from "./registerCodeActionsProvider";
 import { registerCommandBase64Decode } from "./registerCommandBase64Decode";
 import { registerCommandBase64Encode } from "./registerCommandBase64Encode";
@@ -10,5 +11,7 @@ export const stringTools = defineModule({
         registerCommandBase64Decode();
         registerCodeActionsProvider();
     },
-    onDeactive() {},
+    onReloadConfiguration() {
+        parseConfigs();
+    },
 });

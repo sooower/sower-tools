@@ -1,5 +1,5 @@
 import { vscode } from "@/shared";
-import { extensionCtx } from "@/shared/init";
+import { extensionCtx } from "@/shared/context";
 
 import { kCommandSyncChangelog } from "./consts";
 
@@ -13,11 +13,6 @@ export function registerCodeActionsProvider() {
 }
 
 class SyncChangelogCodeActionProvider implements vscode.CodeActionProvider {
-    public static readonly providedCodeActionKinds = [
-        vscode.CodeActionKind.RefactorRewrite,
-        vscode.CodeActionKind.Empty,
-    ];
-
     provideCodeActions(
         document: vscode.TextDocument,
         range: vscode.Range | vscode.Selection,

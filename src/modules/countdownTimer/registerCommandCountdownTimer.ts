@@ -1,21 +1,16 @@
 import { format } from "node:util";
 
-import dayjs from "dayjs";
 import duration, { Duration } from "dayjs/plugin/duration"; // ES 2015
-dayjs.extend(duration);
+datetime.extend(duration);
 
 import { ThemeColor } from "vscode";
 
 import { vscode } from "@/shared";
-import {
-    countdownTimerOptions,
-    extensionCtx,
-    kRestore,
-    TCountdownTimerOption,
-} from "@/shared/init";
-import { extensionName } from "@/shared/init";
-import { nowDatetime } from "@utils/datetime";
+import { extensionCtx, extensionName } from "@/shared/context";
+import { datetime, nowDatetime } from "@utils/datetime";
 
+import { kRestore } from "./consts";
+import { countdownTimerOptions, TCountdownTimerOption } from "./parseConfigs";
 import { statusBarItem } from "./showStatusBarCountdownTimer";
 
 let countdownTimer: NodeJS.Timeout | undefined;
@@ -63,7 +58,7 @@ async function startCountdown() {
         if (remainingOption.duration > 0) {
             statusBarItem.text = format(
                 `▶ %s`,
-                convertToTimestamp(dayjs.duration(remainingOption.duration))
+                convertToTimestamp(datetime.duration(remainingOption.duration))
             );
         } else {
             finishCountdown();
@@ -127,7 +122,7 @@ function doCountdown() {
     // Update status bar
     statusBarItem.text = format(
         `■ %s`,
-        convertToTimestamp(dayjs.duration(remainingOption.duration))
+        convertToTimestamp(datetime.duration(remainingOption.duration))
     );
 
     remainingOption.duration -= 1000;
