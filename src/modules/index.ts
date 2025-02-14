@@ -7,6 +7,7 @@ import { markdown } from "./markdown";
 import { previewReadmeDocument } from "./previewReadmeDocument";
 import { showSelectedLines } from "./showSelectedLines";
 import { showStatusBarNowTimestamp } from "./showStatusBarNowTimestamp";
+import { sortEnums } from "./sortEnums";
 import { stringTools } from "./stringTools";
 import { syncChangelog } from "./syncChangelog";
 import { timestampTools } from "./timestampTools";
@@ -33,4 +34,5 @@ export function registerModules() {
         functionEnhancement.syncFunctionParameterTypeName
     );
     moduleManager.registerModule(updateNodeBuiltinModulesImports);
+    moduleManager.registerModule(sortEnums);
 }
