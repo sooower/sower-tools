@@ -10,6 +10,7 @@ import { showStatusBarNowTimestamp } from "./showStatusBarNowTimestamp";
 import { stringTools } from "./stringTools";
 import { syncChangelog } from "./syncChangelog";
 import { timestampTools } from "./timestampTools";
+import { updateNodeBuiltinModulesImports } from "./updateNodeBuiltinModulesImports";
 
 /**
  * Register all sub modules.
@@ -31,4 +32,5 @@ export function registerModules() {
     moduleManager.registerModule(
         functionEnhancement.syncFunctionParameterTypeName
     );
+    moduleManager.registerModule(updateNodeBuiltinModulesImports);
 }

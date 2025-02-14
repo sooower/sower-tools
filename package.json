@@ -357,8 +357,8 @@
                         "changelog.md"
                     ]
                 },
-                "sower-tools.updateImports.nodeBuiltinModules": {
-                    "description": "Node builtin module names.",
+                "sower-tools.updateNodeBuiltinModulesImports.nodeBuiltinModules": {
+                    "description": "Node builtin modules names.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -405,8 +405,8 @@
                         "zlib"
                     ]
                 },
-                "sower-tools.updateImports.enableUpdateNodeBuiltinImports": {
-                    "description": "If true, it will update node builtin imports with prefix \"node:\" automatically when saving file.",
+                "sower-tools.updateNodeBuiltinModulesImports.enable": {
+                    "description": "If true, it will update node builtin modules imports with prefix \"node:\" automatically when saving file.",
                     "type": "boolean",
                     "default": true
                 },

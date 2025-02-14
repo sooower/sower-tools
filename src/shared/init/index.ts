@@ -41,7 +41,6 @@ async function reloadConfiguration() {
                 userConfig = vscode.workspace.getConfiguration();
 
                 parseDatabaseModelConfigs();
-                parseUpdateImportsConfigs();
                 parseKeyCryptoToolsConfigs();
                 parseOpenFilesInDirConfigs();
             } catch (error) {
@@ -109,28 +108,6 @@ function parseDatabaseModelConfigs() {
         .parse(
             getConfigurationItem(
                 `${extensionName}.databaseModel.ignoredUpdatingColumns`
-            )
-        );
-}
-
-// Update imports
-
-export let nodeBuiltinModules: string[];
-export let enableUpdateNodeBuiltinImports: boolean;
-
-function parseUpdateImportsConfigs() {
-    nodeBuiltinModules = z
-        .array(z.string())
-        .parse(
-            getConfigurationItem(
-                `${extensionName}.updateImports.nodeBuiltinModules`
-            )
-        );
-    enableUpdateNodeBuiltinImports = z
-        .boolean()
-        .parse(
-            getConfigurationItem(
-                `${extensionName}.updateImports.enableUpdateNodeBuiltinImports`
             )
         );
 }
