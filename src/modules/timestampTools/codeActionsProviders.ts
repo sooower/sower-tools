@@ -3,7 +3,7 @@ import { extensionCtx } from "@/shared/context";
 
 import { kCommandConvertTimestamp, kCommandInsertTimestamp } from "./consts";
 
-export function registerCodeActionsProvider() {
+export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
         vscode.languages.registerCodeActionsProvider(
             "*", // All languages

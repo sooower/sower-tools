@@ -2,7 +2,6 @@ import { subscribeAPIResources } from "./apiResources";
 import { subscribeDatabaseModel } from "./databaseModel";
 import { subscribeDebuggingEnhancement } from "./debuggingEnhancement";
 import { subscribeOpenFilesInDir } from "./dirEnhancement/openFilesInDir";
-import { subscribeEnhanceFunction } from "./functionEnhancement";
 import { subscribeGenerateEnumAssertionFunction } from "./generateEnumAssertionFunction";
 import { subscribeGenerateTypeSchema } from "./generateSchemaType";
 import { subscribeGitEnhancement } from "./gitEnhancement";
@@ -12,7 +11,6 @@ import { subscribeSortEnums } from "./sortEnums";
 export function subscribeCommands() {
     subscribeDatabaseModel();
     subscribeDebuggingEnhancement();
-    subscribeEnhanceFunction();
     subscribeGenerateEnumAssertionFunction();
     subscribeGenerateTypeSchema();
     subscribeGitEnhancement();

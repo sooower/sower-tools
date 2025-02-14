@@ -51,8 +51,8 @@
                 "title": "Convert Parameters to Options Object"
             },
             {
-                "command": "sower-tools.functionEnhancement.updateTypeMemberNames",
-                "title": "Update Type Member Names"
+                "command": "sower-tools.functionEnhancement.syncTypeMembers",
+                "title": "Sync Type Members with References"
             },
             {
                 "command": "sower-tools.generateEnumAssertionFunction",
@@ -171,7 +171,7 @@
                     "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
                 },
                 {
-                    "command": "sower-tools.functionEnhancement.updateTypeMemberNames",
+                    "command": "sower-tools.functionEnhancement.syncTypeMembers",
                     "group": "003_functionEnhancement@002",
                     "when": "resourceLangId == typescript && editorTextFocus"
                 },

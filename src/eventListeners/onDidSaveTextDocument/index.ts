@@ -1,7 +1,6 @@
 import { vscode } from "@/shared";
 import { enableUpdateNodeBuiltinImports, extensionCtx } from "@/shared/init";
 
-import { updateFuncParameterTypeName } from "./updateFuncParameterTypeName";
 import { updateNodeBuiltinImports } from "./updateNodeBuiltinImports";
 
 export function subscribeOnDidSaveTextDocumentListener() {
@@ -30,8 +29,6 @@ async function handleForTypeScriptFile(editor: vscode.TextEditor) {
     if (editor.document.languageId !== "typescript") {
         return;
     }
-
-    await updateFuncParameterTypeName({ editor });
 
     if (enableUpdateNodeBuiltinImports) {
         await updateNodeBuiltinImports({ editor });

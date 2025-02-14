@@ -1,11 +1,11 @@
 import { defineModule } from "@/shared/module";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
-import { registerCommandSyncChangelog } from "./commands";
+import { registerCommandSyncTypeMembers } from "./commands";
 
-export const syncChangelog = defineModule({
+export const syncTypeMembers = defineModule({
     onActive() {
-        registerCommandSyncChangelog();
+        registerCommandSyncTypeMembers();
         registerCodeActionsProviders();
     },
 });

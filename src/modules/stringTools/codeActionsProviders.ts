@@ -3,7 +3,7 @@ import { extensionCtx } from "@/shared/context";
 
 import { kCommandBase64Decode, kCommandBase64Encode } from "./consts";
 
-export function registerCodeActionsProvider() {
+export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
         vscode.languages.registerCodeActionsProvider(
             "*", // All languages

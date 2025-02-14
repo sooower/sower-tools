@@ -1,9 +1,7 @@
-import { format } from "node:util";
-
 import ts from "typescript";
 
-import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/init";
+import { format, vscode } from "@/shared";
+import { extensionCtx, extensionName } from "@/shared/context";
 import { ETsType } from "@/shared/types";
 import { toUpperCamelCase } from "@/shared/utils";
 import {
@@ -14,40 +12,42 @@ import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 import { CommonUtils } from "@utils/common";
 
-export function subscribeConvertParametersToOptionsObject() {
-    const command = vscode.commands.registerCommand(
-        `${extensionName}.functionEnhancement.convertParametersToOptionsObject`,
-        async () => {
-            try {
-                const editor = vscode.window.activeTextEditor;
-                if (editor === undefined) {
-                    return;
-                }
+export function registerCommandConvertParametersToOptionsObject() {
+    extensionCtx.subscriptions.push(
+        vscode.commands.registerCommand(
+            `${extensionName}.functionEnhancement.convertParametersToOptionsObject`,
+            async () => {
+                try {
+                    const editor = vscode.window.activeTextEditor;
+                    if (editor === undefined) {
+                        return;
+                    }
 
-                if (editor.document.languageId !== "typescript") {
-                    return;
-                }
+                    if (editor.document.languageId !== "typescript") {
+                        return;
+                    }
 
-                const node = findFuncOrCtorDeclarationNodeAtOffset({
-                    sourceFile: getSourceFileByEditor(editor),
-                    offset: editor.document.offsetAt(editor.selection.active),
-                });
-                if (node === undefined) {
-                    return;
-                }
+                    const node = findFuncOrCtorDeclarationNodeAtOffset({
+                        sourceFile: getSourceFileByEditor(editor),
+                        offset: editor.document.offsetAt(
+                            editor.selection.active
+                        ),
+                    });
+                    if (node === undefined) {
+                        return;
+                    }
 
-                await convertParametersToOptionsObject({
-                    editor,
-                    node,
-                });
-            } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(`${e}`);
+                    await convertParametersToOptionsObject({
+                        editor,
+                        node,
+                    });
+                } catch (e) {
+                    console.error(e);
+                    vscode.window.showErrorMessage(`${e}`);
+                }
             }
-        }
+        )
     );
-
-    extensionCtx.subscriptions.push(command);
 }
 
 type TConvertParametersToOptionsObjectOptions = {

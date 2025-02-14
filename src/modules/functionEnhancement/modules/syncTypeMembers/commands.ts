@@ -1,46 +1,67 @@
-import { format } from "node:util";
-
 import ts from "typescript";
 
-import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/init";
+import { format, vscode } from "@/shared";
+import { extensionCtx, extensionName } from "@/shared/context";
 import { findAllTypeDeclarationNodes } from "@/shared/utils/tsUtils";
 import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";
 import { CommonUtils } from "@utils/common";
 
-export function subscribeUpdateTypeMemberNames() {
-    const command = vscode.commands.registerCommand(
-        `${extensionName}.functionEnhancement.updateTypeMemberNames`,
-        async () => {
-            try {
-                const editor = vscode.window.activeTextEditor;
-                if (editor === undefined) {
-                    return;
-                }
+export function registerCommandSyncTypeMembers() {
+    extensionCtx.subscriptions.push(
+        vscode.commands.registerCommand(
+            `${extensionName}.functionEnhancement.syncTypeMembers`,
+            async () => {
+                try {
+                    const editor = vscode.window.activeTextEditor;
+                    if (editor === undefined) {
+                        return;
+                    }
 
-                if (editor.document.languageId !== "typescript") {
-                    return;
-                }
+                    if (editor.document.languageId !== "typescript") {
+                        return;
+                    }
 
-                await updateTypeMemberNames({ editor });
-            } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(`${e}`);
+                    await syncTypeMembers({ editor });
+                } catch (e) {
+                    console.error(e);
+                    vscode.window.showErrorMessage(`${e}`);
+                }
             }
-        }
+        )
     );
-
-    extensionCtx.subscriptions.push(command);
 }
 
-type TUpdateTypeMemberNamesOptions = {
+type TSyncTypeMembersOptions = {
     editor: vscode.TextEditor;
 };
 
-async function updateTypeMemberNames({
-    editor,
-}: TUpdateTypeMemberNamesOptions) {
+/**
+ * Sync all the members of the type to all places in the opened editor that reference the type.
+ *
+ * If the function has only one unstructured object type parameter, and the type name of the
+ * parameter is ends with "Options", then the function parameters will be synced with the type
+ * members after executing this command.
+ *
+ * @example
+ * ```ts
+ * type TOptions = {
+ *     name: string;
+ *     // Assume the `age` has been removed. If execute function `syncTypeMembers`, the `age`
+ *     // will be removed from all the function parameters that reference the `TOptions` type.
+ *     age: number;
+ * }
+ *
+ * function doSomething({
+ *     name,
+ *     age, // The `age` will be remove
+ * }: TOptions) {
+ *     console.log(name);
+ *     console.log(age);
+ * }
+ * ```
+ */
+async function syncTypeMembers({ editor }: TSyncTypeMembersOptions) {
     const edits: vscode.TextEdit[] = [];
     const sourceFile = getSourceFileByEditor(editor);
 
@@ -49,10 +70,7 @@ async function updateTypeMemberNames({
     typeDeclarationNodes
         .filter(it => it.name.text.endsWith("Options"))
         .forEach(node => {
-            const memberMap = getTypeMemberNameMap(node);
-            ts.forEachChild(sourceFile, findFunctionParameters);
-
-            function findFunctionParameters(node: ts.Node) {
+            const findFunctionParameters = (node: ts.Node) => {
                 if (
                     !ts.isFunctionDeclaration(node) &&
                     !ts.isMethodDeclaration(node) &&
@@ -89,7 +107,10 @@ async function updateTypeMemberNames({
                 });
 
                 ts.forEachChild(node, findFunctionParameters);
-            }
+            };
+
+            const memberMap = getTypeMemberNameMap(node);
+            ts.forEachChild(sourceFile, findFunctionParameters);
         });
 
     if (edits.length > 0) {

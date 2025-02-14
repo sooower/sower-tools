@@ -1,45 +1,66 @@
-import { format } from "node:util";
-
 import ts from "typescript";
 
-import { vscode } from "@/shared";
+import { format, vscode } from "@/shared";
+import { extensionCtx } from "@/shared/context";
 import { toUpperCamelCase } from "@/shared/utils";
 import { findTypeDeclarationNode } from "@/shared/utils/tsUtils";
 import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";
 import { CommonUtils } from "@utils/common";
 
-type TUpdateFuncParameterTypeNameOptions = {
+export function registerOnDidSaveTextDocumentListener() {
+    extensionCtx.subscriptions.push(
+        vscode.workspace.onDidSaveTextDocument(async doc => {
+            try {
+                const editor = vscode.window.activeTextEditor;
+                if (editor === undefined) {
+                    return;
+                }
+
+                if (doc !== editor.document) {
+                    return;
+                }
+
+                if (editor.document.languageId !== "typescript") {
+                    return;
+                }
+
+                await syncFunctionParameterTypeName({ editor });
+            } catch (e) {
+                console.error(e);
+                vscode.window.showErrorMessage(`${e}`);
+            }
+        })
+    );
+}
+
+type TSyncFunctionParameterTypeNameOptions = {
     editor: vscode.TextEditor;
 };
 
-export async function updateFuncParameterTypeName({
+/**
+ * Sync the type name of the function parameter with the function name.
+ *
+ * If the function has only one parameter with format `T${functionName}Options`,
+ * then the type name of the parameter will be synced with the function name when
+ * rename the function.
+ */
+async function syncFunctionParameterTypeName({
     editor,
-}: TUpdateFuncParameterTypeNameOptions) {
-    const edits: vscode.TextEdit[] = [];
-
-    const sourceFile = getSourceFileByEditor(editor);
-    ts.forEachChild(sourceFile, doUpdateFuncParameterTypeName);
-
-    if (edits.length > 0) {
-        const edit = new vscode.WorkspaceEdit();
-        edit.set(editor.document.uri, edits);
-        await vscode.workspace.applyEdit(edit);
-    }
-
-    function doUpdateFuncParameterTypeName(
+}: TSyncFunctionParameterTypeNameOptions) {
+    const doSyncFunctionParameterTypeName = (
         node: ts.Node
     ):
         | ts.FunctionDeclaration
         | ts.ArrowFunction
         | ts.MethodDeclaration
-        | undefined {
+        | undefined => {
         if (
             !ts.isFunctionDeclaration(node) &&
             !ts.isArrowFunction(node) &&
             !ts.isMethodDeclaration(node)
         ) {
-            return ts.forEachChild(node, doUpdateFuncParameterTypeName);
+            return ts.forEachChild(node, doSyncFunctionParameterTypeName);
         }
 
         if (node.name === undefined || node.parameters?.length !== 1) {
@@ -89,5 +110,16 @@ export async function updateFuncParameterTypeName({
                 newText: expectedParamTypeName,
             })
         );
+    };
+
+    const edits: vscode.TextEdit[] = [];
+
+    const sourceFile = getSourceFileByEditor(editor);
+    ts.forEachChild(sourceFile, doSyncFunctionParameterTypeName);
+
+    if (edits.length > 0) {
+        const edit = new vscode.WorkspaceEdit();
+        edit.set(editor.document.uri, edits);
+        await vscode.workspace.applyEdit(edit);
     }
 }

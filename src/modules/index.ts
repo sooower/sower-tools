@@ -1,6 +1,7 @@
 import { moduleManager } from "@/shared/module";
 
 import { countdownTimer } from "./countdownTimer";
+import { functionEnhancement } from "./functionEnhancement";
 import { loadConfiguration } from "./loadConfiguration";
 import { markdown } from "./markdown";
 import { previewReadmeDocument } from "./previewReadmeDocument";
@@ -23,4 +24,11 @@ export function registerModules() {
     moduleManager.registerModule(showStatusBarNowTimestamp);
     moduleManager.registerModule(previewReadmeDocument);
     moduleManager.registerModule(showSelectedLines);
+    moduleManager.registerModule(
+        functionEnhancement.convertParametersToObjectOptions
+    );
+    moduleManager.registerModule(functionEnhancement.syncTypeMembers);
+    moduleManager.registerModule(
+        functionEnhancement.syncFunctionParameterTypeName
+    );
 }
