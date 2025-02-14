@@ -17,7 +17,7 @@ export type TCountdownTimerOption = z.infer<typeof countdownTimerOptionSchema>;
 
 export let countdownTimerOptions: TCountdownTimerOption[];
 
-export function parseCountdownTimerConfigs() {
+export function parseConfigs() {
     countdownTimerOptions = [
         { label: kRestore, duration: 0 } satisfies TCountdownTimerOption,
     ].concat(

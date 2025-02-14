@@ -3,6 +3,7 @@ import { moduleManager } from "@/shared/module";
 import { countdownTimer } from "./countdownTimer";
 import { loadConfiguration } from "./loadConfiguration";
 import { markdown } from "./markdown";
+import { previewReadmeDocument } from "./previewReadmeDocument";
 import { showStatusBarNowTimestamp } from "./showStatusBarNowTimestamp";
 import { stringTools } from "./stringTools";
 import { syncChangelog } from "./syncChangelog";
@@ -19,4 +20,5 @@ export function registerModules() {
     moduleManager.registerModule(stringTools);
     moduleManager.registerModule(syncChangelog);
     moduleManager.registerModule(showStatusBarNowTimestamp);
+    moduleManager.registerModule(previewReadmeDocument);
 }

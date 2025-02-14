@@ -42,7 +42,6 @@ async function reloadConfiguration() {
 
                 parseDatabaseModelConfigs();
                 parseUpdateImportsConfigs();
-                parseShowDefaultOpenedDocumentsConfigs();
                 parseKeyCryptoToolsConfigs();
                 parseOpenFilesInDirConfigs();
             } catch (error) {
@@ -132,28 +131,6 @@ function parseUpdateImportsConfigs() {
         .parse(
             getConfigurationItem(
                 `${extensionName}.updateImports.enableUpdateNodeBuiltinImports`
-            )
-        );
-}
-
-// Show default opened documents
-
-export let enableShowDefaultOpenedDocument: boolean;
-export let defaultOpenedDocumentNames: string[];
-
-function parseShowDefaultOpenedDocumentsConfigs() {
-    enableShowDefaultOpenedDocument = z
-        .boolean()
-        .parse(
-            getConfigurationItem(
-                `${extensionName}.showDefaultOpenedDocument.enable`
-            )
-        );
-    defaultOpenedDocumentNames = z
-        .array(z.string())
-        .parse(
-            getConfigurationItem(
-                `${extensionName}.showDefaultOpenedDocument.documentNames`
             )
         );
 }

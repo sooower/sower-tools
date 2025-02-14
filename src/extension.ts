@@ -1,6 +1,5 @@
 import { subscribeCommands } from "./commands";
 import { subscribeEventListeners } from "./eventListeners";
-import { executeOnExtensionActive } from "./executeOnExtensionActive";
 import { registerModules } from "./modules";
 import { subscribeProviders } from "./providers";
 import { vscode } from "./shared";
@@ -11,8 +10,6 @@ import { moduleManager } from "./shared/module";
 export async function activate(context: vscode.ExtensionContext) {
     try {
         await init(context);
-
-        executeOnExtensionActive();
 
         subscribeCommands();
         subscribeEventListeners();

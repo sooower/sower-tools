@@ -8,10 +8,8 @@ import { extensionCtx, extensionName } from "@/shared/context";
 import { CommonUtils } from "@utils/common";
 
 import { kLocalImageLinkRegex } from "../consts";
-import {
-    enableMarkdownImageUpload,
-    markdownImageUploadConfig,
-} from "../parseConfigs";
+import { markdownImageUploadConfig } from "../parseConfigs/parseMarkdownImageUploadConfigFilePath";
+import { enableMarkdownImageUpload } from "../parseConfigs/parseMarkdownImageUploadEnable";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 

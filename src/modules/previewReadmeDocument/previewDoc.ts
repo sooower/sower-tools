@@ -1,10 +1,11 @@
 import path from "node:path";
 
 import { vscode } from "@/shared";
-import { defaultOpenedDocumentNames } from "@/shared/init";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 
-export async function showDefaultOpenedDocument() {
+import { readmeDocumentNames } from "./parseConfigs";
+
+export async function previewDocument() {
     if (vscode.workspace.workspaceFolders === undefined) {
         return;
     }
@@ -13,13 +14,13 @@ export async function showDefaultOpenedDocument() {
         return;
     }
 
-    if (defaultOpenedDocumentNames.length === 0) {
-        console.warn(`No default opened document found.`);
+    if (readmeDocumentNames.length === 0) {
+        console.warn(`No README document found.`);
 
         return;
     }
 
-    for (const docName of defaultOpenedDocumentNames) {
+    for (const docName of readmeDocumentNames) {
         try {
             const doc = await vscode.workspace.openTextDocument(
                 path.join(getWorkspaceFolderPath(), docName)

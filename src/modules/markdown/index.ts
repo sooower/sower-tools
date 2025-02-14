@@ -1,19 +1,13 @@
 import { defineModule } from "@/shared/module";
 
-import {
-    parseMarkdownImageUploadConfigFilePath,
-    parseMarkdownImageUploadEnable,
-} from "./parseConfigs";
-import { registerDiagnosticNoInvalidLocalImageFilePath } from "./registerDiagnostics/noInvalidLocalImageFilePath";
-import { registerDiagnosticNoLocalImageLink } from "./registerDiagnostics/noLocalImageLink";
+import { parseConfigs } from "./parseConfigs";
+import { registerDiagnostics } from "./registerDiagnostics";
 
 export const markdown = defineModule({
     onActive() {
-        registerDiagnosticNoInvalidLocalImageFilePath();
-        registerDiagnosticNoLocalImageLink();
+        registerDiagnostics();
     },
     onReloadConfiguration() {
-        parseMarkdownImageUploadEnable();
-        parseMarkdownImageUploadConfigFilePath();
+        parseConfigs();
     },
 });

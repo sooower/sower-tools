@@ -339,13 +339,13 @@
                         "Current TS File"
                     ]
                 },
-                "sower-tools.showDefaultOpenedDocument.enable": {
-                    "description": "If true, it will show default opened document when open workspace.",
+                "sower-tools.previewReadmeDocument.enable": {
+                    "description": "If true, it will show project README document when open workspace.",
                     "type": "boolean",
                     "default": true
                 },
-                "sower-tools.showDefaultOpenedDocument.documentNames": {
-                    "description": "Default opened filenames, priority is by the order you placed in this array, configurations usually are  description or specification file of your project.",
+                "sower-tools.previewReadmeDocument.documentNames": {
+                    "description": "Project README filenames, priority is by the order you placed in this array, configurations usually are README.md, CHANGELOG.md, etc.",
                     "type": "array",
                     "items": {
                         "type": "string"
