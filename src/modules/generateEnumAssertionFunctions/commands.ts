@@ -17,9 +17,9 @@ import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 import { CommonUtils } from "@utils/common";
 
-export function subscribeGenerateEnumAssertionFunction() {
+export function registerCommandGenerateEnumAssertionFunctions() {
     const command = vscode.commands.registerCommand(
-        `${extensionName}.generateEnumAssertionFunction`,
+        `${extensionName}.generateEnumAssertionFunctions`,
         async () => {
             try {
                 const editor = vscode.window.activeTextEditor;
@@ -40,7 +40,7 @@ export function subscribeGenerateEnumAssertionFunction() {
                     `Can not found enum declaration, please check your code to generate one first.`
                 );
 
-                await generateEnumAssertionFunction({
+                await generateEnumAssertionFunctions({
                     editor,
                     node: enumNode,
                 });
@@ -54,15 +54,15 @@ export function subscribeGenerateEnumAssertionFunction() {
     extensionCtx.subscriptions.push(command);
 }
 
-type TGenerateEnumAssertionFunctionOptions = {
+type TGenerateEnumAssertionFunctionsOptions = {
     editor: vscode.TextEditor;
     node: ts.EnumDeclaration;
 };
 
-async function generateEnumAssertionFunction({
+async function generateEnumAssertionFunctions({
     editor,
     node,
-}: TGenerateEnumAssertionFunctionOptions) {
+}: TGenerateEnumAssertionFunctionsOptions) {
     const nodeName = node.name.text;
     const enumMemberNames = node.members.map(it =>
         it.name.getText(getSourceFileByEditor(editor))

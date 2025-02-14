@@ -5,7 +5,6 @@ import z from "zod";
 import { fs, os } from "@/shared";
 import { getConfigurationItem } from "@/shared/configuration";
 import { extensionName } from "@/shared/context";
-import { CommonUtils } from "@utils/common";
 import { readJsonFile } from "@utils/fs";
 
 const markdownImageUploadConfigSchema = z.object({
@@ -32,10 +31,9 @@ export function parseMarkdownImageUploadConfigFilePath() {
             .replace(/^~/, os.homedir())
     );
 
-    CommonUtils.assert(
-        fs.existsSync(configFilePath),
-        `config file "${configFilePath}" does not exist.`
-    );
+    if (!fs.existsSync(configFilePath)) {
+        throw new Error(`config file "${configFilePath}" does not exist.`);
+    }
 
     const { error, data } = markdownImageUploadConfigSchema.safeParse(
         readJsonFile(configFilePath)

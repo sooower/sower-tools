@@ -55,8 +55,8 @@
                 "title": "Sync Type Members with References"
             },
             {
-                "command": "sower-tools.generateEnumAssertionFunction",
-                "title": "Generate/Update Enum Assertion"
+                "command": "sower-tools.generateEnumAssertionFunctions",
+                "title": "Generate/Update Enum Assertions"
             },
             {
                 "command": "sower-tools.generateTypeSchema",
@@ -176,7 +176,7 @@
                     "when": "resourceLangId == typescript && editorTextFocus"
                 },
                 {
-                    "command": "sower-tools.generateEnumAssertionFunction",
+                    "command": "sower-tools.generateEnumAssertionFunctions",
                     "group": "003_functionEnhancement@003",
                     "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
                 },

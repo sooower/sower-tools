@@ -13,18 +13,6 @@ export class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        /* generateEnumAssertionFunction */
-
-        const generateEnumAssertionFunctionCodeAction = new vscode.CodeAction(
-            "Generate/update enum assertion",
-            vscode.CodeActionKind.Empty
-        );
-        generateEnumAssertionFunctionCodeAction.command = {
-            command: `${extensionName}.generateEnumAssertionFunction`,
-            title: "",
-            arguments: [document, range],
-        };
-
         /* generateTypeSchema */
 
         const generateTypeSchemaCodeAction = new vscode.CodeAction(
@@ -49,10 +37,6 @@ export class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
             arguments: [document, range],
         };
 
-        return [
-            generateEnumAssertionFunctionCodeAction,
-            generateTypeSchemaCodeAction,
-            updateModelCodeAction,
-        ];
+        return [generateTypeSchemaCodeAction, updateModelCodeAction];
     }
 }

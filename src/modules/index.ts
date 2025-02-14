@@ -2,6 +2,7 @@ import { moduleManager } from "@/shared/module";
 
 import { countdownTimer } from "./countdownTimer";
 import { functionEnhancement } from "./functionEnhancement";
+import { generateEnumAssertionFunctions } from "./generateEnumAssertionFunctions";
 import { loadConfiguration } from "./loadConfiguration";
 import { markdown } from "./markdown";
 import { previewReadmeDocument } from "./previewReadmeDocument";
@@ -35,4 +36,5 @@ export function registerModules() {
     );
     moduleManager.registerModule(updateNodeBuiltinModulesImports);
     moduleManager.registerModule(sortEnums);
+    moduleManager.registerModule(generateEnumAssertionFunctions);
 }
