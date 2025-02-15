@@ -527,6 +527,7 @@
         "typescript": "^5.4.5"
     },
     "dependencies": {
+        "@utils/command": "^0.2.2",
         "@utils/common": "^0.2.6",
         "@utils/datetime": "^0.2.4",
         "@utils/fs": "^0.3.2",

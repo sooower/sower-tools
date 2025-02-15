@@ -8,6 +8,7 @@ import { dirEnhancement } from "./dirEnhancement";
 import { functionEnhancement } from "./functionEnhancement";
 import { generateEnumAssertionFunctions } from "./generateEnumAssertionFunctions";
 import { generateTypeOfZodSchema } from "./generateTypeOfZodSchema";
+import { gitEnhancement } from "./gitEnhancement";
 import { keyCryptoTools } from "./keyCryptoTools";
 import { markdown } from "./markdown";
 import { previewReadmeDocument } from "./previewReadmeDocument";
@@ -47,4 +48,5 @@ export function registerModules() {
     moduleManager.registerModule(keyCryptoTools);
     moduleManager.registerModule(dirEnhancement.openFiles);
     moduleManager.registerModule(debuggingEnhancement);
+    moduleManager.registerModule(gitEnhancement);
 }
