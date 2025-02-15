@@ -49,7 +49,7 @@ function registerOnDidChangeConfigurationListener() {
     extensionCtx.subscriptions.push(
         vscode.workspace.onDidChangeConfiguration(async event => {
             try {
-                if (!event.affectsConfiguration(`${extensionName}`)) {
+                if (!event.affectsConfiguration(extensionName)) {
                     return;
                 }
 

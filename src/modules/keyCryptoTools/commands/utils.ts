@@ -132,7 +132,7 @@ export class KeyCrypto {
         ]);
 
         return {
-            plaintext: plaintext,
+            plaintext,
         };
     }
 }

@@ -7,12 +7,12 @@ export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
         vscode.languages.registerCodeActionsProvider(
             "*", // All languages
-            new TimestampCodeActionProvider()
+            new TimestampToolsCodeActionProvider()
         )
     );
 }
 
-class TimestampCodeActionProvider implements vscode.CodeActionProvider {
+class TimestampToolsCodeActionProvider implements vscode.CodeActionProvider {
     provideCodeActions(
         document: vscode.TextDocument,
         range: vscode.Range | vscode.Selection,

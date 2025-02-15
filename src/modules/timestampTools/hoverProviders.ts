@@ -31,7 +31,7 @@ export function registerHoverProvider() {
                 try {
                     const timestamp = datetime
                         .unix(Number(word))
-                        .format("YYYY-MM-DD HH:mm:ss");
+                        .format("YYYY-MM-DD HH:mm:ss"); // TODO: update to load timestamp format from configuration
 
                     if (timestamp === "Invalid Date") {
                         return;
@@ -43,7 +43,7 @@ export function registerHoverProvider() {
 
                     return new vscode.Hover(content);
                 } catch (e) {
-                    console.error("Error processing timestamp hover:", e);
+                    console.error("Error while processing timestamp hover:", e);
 
                     return;
                 }

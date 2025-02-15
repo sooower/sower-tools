@@ -2,7 +2,7 @@
     "name": "sower-tools",
     "displayName": "Sower Tools",
     "description": "A collection of commonly used tools for VSCode.",
-    "version": "0.17.0",
+    "version": "0.17.1",
     "publisher": "Sower",
     "icon": "assets/icon.png",
     "repository": {
@@ -51,16 +51,16 @@
                 "title": "Convert Parameters to Options Object"
             },
             {
-                "command": "sower-tools.functionEnhancement.syncTypeMembers",
+                "command": "sower-tools.functionEnhancement.syncParameterTypeMembers",
                 "title": "Sync Type Members with References"
             },
             {
                 "command": "sower-tools.generateEnumAssertionFunctions",
-                "title": "Generate/Update Enum Assertions"
+                "title": "Generate/update Enum Assertions"
             },
             {
                 "command": "sower-tools.generateTypeOfZodSchema",
-                "title": "Generate Type of Zod Schema"
+                "title": "Generate/update Type of Zod Schema"
             },
             {
                 "command": "sower-tools.gitEnhancement.skipWorkTree",
@@ -115,12 +115,12 @@
                 "title": "Open Files"
             },
             {
-                "command": "sower-tools.countdownTimer",
+                "command": "sower-tools.statusBarEnhancement.countdownTimer",
                 "title": "Countdown Timer"
             },
             {
-                "command": "sower-tools.markdownImageUpload.uploadImageToMinioStorage",
-                "title": "Upload Image to Minio Storage"
+                "command": "sower-tools.markdownEnhancement.localImage.uploadImage",
+                "title": "Upload Image to File Server"
             }
         ],
         "submenus": [
@@ -171,7 +171,7 @@
                     "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
                 },
                 {
-                    "command": "sower-tools.functionEnhancement.syncTypeMembers",
+                    "command": "sower-tools.functionEnhancement.syncParameterTypeMembers",
                     "group": "003_functionEnhancement@002",
                     "when": "resourceLangId == typescript && editorTextFocus"
                 },
@@ -212,7 +212,7 @@
                 },
                 {
                     "command": "sower-tools.sortEnums",
-                    "group": "007_sortEnums@001",
+                    "group": "007_enumsSort@001",
                     "when": "resourceLangId == typescript && editorTextFocus"
                 },
                 {
@@ -339,12 +339,12 @@
                         "Current TS File"
                     ]
                 },
-                "sower-tools.previewReadmeDocument.enable": {
+                "sower-tools.readmeDocumentPreview.enable": {
                     "description": "If true, it will show project README document when open workspace.",
                     "type": "boolean",
                     "default": true
                 },
-                "sower-tools.previewReadmeDocument.documentNames": {
+                "sower-tools.readmeDocumentPreview.documentNames": {
                     "description": "Project README filenames, priority is by the order you placed in this array, configurations usually are README.md, CHANGELOG.md, etc.",
                     "type": "array",
                     "items": {
@@ -357,7 +357,7 @@
                         "changelog.md"
                     ]
                 },
-                "sower-tools.updateNodeBuiltinModulesImports.nodeBuiltinModules": {
+                "sower-tools.nodeBuiltinModulesImportsUpdate.nodeBuiltinModules": {
                     "description": "Node builtin modules names.",
                     "type": "array",
                     "items": {
@@ -405,7 +405,7 @@
                         "zlib"
                     ]
                 },
-                "sower-tools.updateNodeBuiltinModulesImports.enable": {
+                "sower-tools.nodeBuiltinModulesImportsUpdate.enable": {
                     "description": "If true, it will update node builtin modules imports with prefix \"node:\" automatically when saving file.",
                     "type": "boolean",
                     "default": true
@@ -415,27 +415,12 @@
                     "type": "boolean",
                     "default": true
                 },
-                "sower-tools.showStatusBarNowTimestamp.enable": {
+                "sower-tools.statusBarEnhancement.nowTimestamp.enable": {
                     "description": "If true, it will show current timestamp in status bar.",
                     "type": "boolean",
                     "default": false
                 },
-                "sower-tools.keyCryptoTools.key": {
-                    "description": "The default key for encrypt/decrypt text.",
-                    "type": "string",
-                    "default": ""
-                },
-                "sower-tools.dirEnhancement.openFiles.ignoredFilenames": {
-                    "description": "The filenames of files that will be ignored when opening all files in a directory.",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "default": [
-                        ".DS_Store"
-                    ]
-                },
-                "sower-tools.countdownTimer.options": {
+                "sower-tools.statusBarEnhancement.countdownTimer.options": {
                     "description": "The options of countdown timer.",
                     "type": "array",
                     "items": {
@@ -478,15 +463,30 @@
                         }
                     ]
                 },
-                "sower-tools.markdownImageUpload.enable": {
-                    "description": "If true, it will check local image links in markdown files and provide a code action to upload them to minio storage.",
+                "sower-tools.keyCryptoTools.key": {
+                    "description": "The default key for encrypt/decrypt text.",
+                    "type": "string",
+                    "default": ""
+                },
+                "sower-tools.dirEnhancement.openFiles.ignoredFilenames": {
+                    "description": "The filenames of files that will be ignored when opening all files in a directory.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        ".DS_Store"
+                    ]
+                },
+                "sower-tools.markdownEnhancement.localImage.enableUploadImage": {
+                    "description": "If true, it will check local image links in markdown files and provide a code action to upload them to file server.",
                     "type": "boolean",
                     "default": true
                 },
-                "sower-tools.markdownImageUpload.configFilePath": {
-                    "description": "The path of the config file of markdown image upload. Supports user home directory alias \"~\".",
+                "sower-tools.markdownEnhancement.localImage.uploadImageConfigFilePath": {
+                    "description": "The path of the config file for uploading images to file server. Supports user home directory alias \"~\".",
                     "type": "string",
-                    "default": "~/.config/sower-tools/.markdownImageUpload-config.json"
+                    "default": "~/.config/sower-tools/.upload-image-config.json"
                 }
             }
         }

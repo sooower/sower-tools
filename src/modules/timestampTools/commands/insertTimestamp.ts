@@ -17,7 +17,7 @@ export function registerCommandInsertTimestamp() {
                 await TextEditorUtils.insertTextAtOffset({
                     editor,
                     offset: editor.document.offsetAt(editor.selection.active),
-                    text: datetime().format("YYYY-MM-DD HH:mm:ss"),
+                    text: datetime().format("YYYY-MM-DD HH:mm:ss"), // TODO: update to load timestamp format from configuration
                     lineBreak: "",
                 });
             } catch (e) {

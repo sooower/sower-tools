@@ -1,8 +1,6 @@
-import { format } from "node:util";
-
 import { window } from "vscode";
 
-import { vscode } from "@/shared";
+import { format, vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 import { datetime } from "@utils/datetime";
@@ -23,7 +21,7 @@ export function registerCommandConvertTimestamp() {
                     .trim();
 
                 let timestamp: string;
-                if (selectedText.match(/^\d+$/)) {
+                if (selectedText.match(/^\d+$/) !== null) {
                     timestamp = datetime
                         .unix(Number(selectedText))
                         .format("YYYY-MM-DD HH:mm:ss"); // TODO: update to load timestamp format from configuration

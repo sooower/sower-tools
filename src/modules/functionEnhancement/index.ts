@@ -1,9 +1,9 @@
-import { convertParametersToObjectOptions } from "./modules/convertParametersToObjectOptions";
-import { syncFunctionParameterTypeName } from "./modules/syncFunctionParameterTypeName";
-import { syncTypeMembers } from "./modules/syncTypeMembers";
+import { parametersObjectOptionsConversion } from "./modules/parametersObjectOptionsConversion";
+import { parameterTypeMembersSync } from "./modules/parameterTypeMembersSync";
+import { parameterTypeNameSync } from "./modules/parameterTypeNameSync";
 
 export const functionEnhancement = {
-    convertParametersToObjectOptions,
-    syncTypeMembers,
-    syncFunctionParameterTypeName,
+    parametersObjectOptionsConversion,
+    parameterTypeMembersSync,
+    parameterTypeNameSync,
 };

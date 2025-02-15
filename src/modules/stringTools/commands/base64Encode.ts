@@ -19,7 +19,7 @@ export function registerCommandBase64Encode() {
                     .trim();
 
                 await base64Encode({
-                    editor: editor,
+                    editor,
                     text: selectedText,
                 });
             } catch (e) {
@@ -43,13 +43,13 @@ async function base64Encode({ editor, text }: TBase64EncodeOptions) {
     const encodedText = Buffer.from(text, "utf-8").toString("base64");
     enableReplaceText
         ? await TextEditorUtils.replaceTextRangeOffset({
-              editor: editor,
+              editor,
               start: editor.document.offsetAt(editor.selection.start),
               end: editor.document.offsetAt(editor.selection.end),
               newText: encodedText,
           })
         : await TextEditorUtils.insertTextAtOffset({
-              editor: editor,
+              editor,
               offset: editor.document.offsetAt(editor.selection.end),
               text: encodedText,
           });

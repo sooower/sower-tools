@@ -1,5 +1,4 @@
-import { format } from "node:util";
-
+import { format } from "@/shared";
 import { ETsType } from "@/shared/types";
 import { mapEnumNameWithoutPrefix } from "@/shared/utils";
 

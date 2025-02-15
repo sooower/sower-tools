@@ -370,9 +370,10 @@ function extractTypeMemberMap(node: ts.TypeAliasDeclaration) {
                           )
                       )
                     : oName;
-                const type = member.type
-                    ? member.type.getText()
-                    : ETsType.Unknown;
+                const type =
+                    member.type !== undefined
+                        ? member.type.getText()
+                        : ETsType.Unknown;
                 const isOptional = member.questionToken !== undefined;
 
                 propMap.set(name, {
