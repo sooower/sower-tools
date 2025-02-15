@@ -1,8 +1,7 @@
 import ts from "typescript";
 
 import { format, vscode } from "@/shared";
-import { extensionName } from "@/shared/context";
-import { extensionCtx } from "@/shared/init";
+import { extensionCtx, extensionName } from "@/shared/context";
 import { prettierFormatFile } from "@/shared/utils";
 import {
     findTypeDeclarationNode,

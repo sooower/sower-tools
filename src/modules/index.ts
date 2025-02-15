@@ -3,6 +3,7 @@ import { moduleManager } from "@/shared/moduleManager";
 import { common } from "./common";
 import { countdownTimer } from "./countdownTimer";
 import { databaseModel } from "./databaseModel";
+import { dirEnhancement } from "./dirEnhancement";
 import { functionEnhancement } from "./functionEnhancement";
 import { generateEnumAssertionFunctions } from "./generateEnumAssertionFunctions";
 import { generateTypeOfZodSchema } from "./generateTypeOfZodSchema";
@@ -43,4 +44,5 @@ export function registerModules() {
     moduleManager.registerModule(generateTypeOfZodSchema);
     moduleManager.registerModule(databaseModel);
     moduleManager.registerModule(keyCryptoTools);
+    moduleManager.registerModule(dirEnhancement.openFiles);
 }

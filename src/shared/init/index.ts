@@ -1,7 +1,5 @@
 import path from "node:path";
 
-import z from "zod";
-
 import { CommonUtils } from "@utils/common";
 
 import { fs, vscode } from "../";
@@ -39,8 +37,6 @@ async function reloadConfiguration() {
                     vscode.Uri.file(".vscode/settings.json")
                 );
                 userConfig = vscode.workspace.getConfiguration();
-
-                parseOpenFilesInDirConfigs();
             } catch (error) {
                 vscode.window.showErrorMessage(
                     `Load configuration failed: ${(error as Error).message}`
@@ -52,18 +48,4 @@ async function reloadConfiguration() {
 
 export function getConfigurationItem(name: string): unknown {
     return workspaceConfig.get(name) ?? userConfig.get(name);
-}
-
-// Open files in dir
-
-export let skippedShowFilenames: string[];
-
-function parseOpenFilesInDirConfigs() {
-    skippedShowFilenames = z
-        .array(z.string())
-        .parse(
-            getConfigurationItem(
-                `${extensionName}.dirEnhancement.skippedShowFilenames`
-            )
-        );
 }

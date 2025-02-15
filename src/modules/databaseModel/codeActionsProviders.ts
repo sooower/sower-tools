@@ -1,6 +1,5 @@
 import { vscode } from "@/shared";
-import { extensionCtx } from "@/shared/context";
-import { extensionName } from "@/shared/init";
+import { extensionCtx, extensionName } from "@/shared/context";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(

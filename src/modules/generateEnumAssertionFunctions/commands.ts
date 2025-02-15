@@ -3,7 +3,7 @@ import { format } from "node:util";
 import ts from "typescript";
 
 import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/init";
+import { extensionCtx, extensionName } from "@/shared/context";
 import { mapEnumNameWithoutPrefix, prettierFormatFile } from "@/shared/utils";
 import {
     findEnumDeclarationNodeAtOffset,

@@ -111,8 +111,8 @@
                 "title": "Generate API Resources"
             },
             {
-                "command": "sower-tools.dirEnhancement.openFilesInDir",
-                "title": "Open All Files"
+                "command": "sower-tools.dirEnhancement.openFiles",
+                "title": "Open Files"
             },
             {
                 "command": "sower-tools.countdownTimer",
@@ -255,7 +255,7 @@
                     "when": "explorerResourceIsFolder == true"
                 },
                 {
-                    "command": "sower-tools.dirEnhancement.openFilesInDir",
+                    "command": "sower-tools.dirEnhancement.openFiles",
                     "group": "001_dirEnhancement@001",
                     "when": "explorerResourceIsFolder == true"
                 }
@@ -425,8 +425,8 @@
                     "type": "string",
                     "default": ""
                 },
-                "sower-tools.dirEnhancement.skippedShowFilenames": {
-                    "description": "The filenames of files that will be skipped when opening all files in a directory.",
+                "sower-tools.dirEnhancement.openFiles.ignoredFilenames": {
+                    "description": "The filenames of files that will be ignored when opening all files in a directory.",
                     "type": "array",
                     "items": {
                         "type": "string"

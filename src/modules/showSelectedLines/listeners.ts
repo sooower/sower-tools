@@ -1,5 +1,5 @@
 import { vscode } from "@/shared";
-import { extensionCtx } from "@/shared/init";
+import { extensionCtx } from "@/shared/context";
 
 import { refreshSelectedLines } from "./utils/selectedLines";
 import {
