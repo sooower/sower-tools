@@ -530,7 +530,7 @@
         "@utils/common": "^0.2.6",
         "@utils/datetime": "^0.2.4",
         "@utils/fs": "^0.3.2",
-        "comment-json": "^4.2.3",
+        "@utils/json": "^0.4.2",
         "markdown-it": "^14.1.0",
         "minio": "^8.0.4",
         "pluralize": "^8.0.0",

@@ -3,6 +3,7 @@ import { moduleManager } from "@/shared/moduleManager";
 import { common } from "./common";
 import { countdownTimer } from "./countdownTimer";
 import { databaseModel } from "./databaseModel";
+import { debuggingEnhancement } from "./debuggingEnhancement";
 import { dirEnhancement } from "./dirEnhancement";
 import { functionEnhancement } from "./functionEnhancement";
 import { generateEnumAssertionFunctions } from "./generateEnumAssertionFunctions";
@@ -45,4 +46,5 @@ export function registerModules() {
     moduleManager.registerModule(databaseModel);
     moduleManager.registerModule(keyCryptoTools);
     moduleManager.registerModule(dirEnhancement.openFiles);
+    moduleManager.registerModule(debuggingEnhancement);
 }
