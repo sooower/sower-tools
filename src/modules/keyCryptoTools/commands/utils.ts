@@ -4,10 +4,6 @@ import { CommonUtils } from "@utils/common";
 
 const kAuthTagLength = 16;
 
-export type TKeyDecryptConstructorOptions = {
-    password?: string;
-};
-
 export type TDecryptOptions = {
     text: string;
 };
@@ -19,15 +15,14 @@ export type TKeyDecryptReturn = {
 export class KeyCrypto {
     private dataAesKey256: Buffer | undefined;
 
-    constructor(options: TKeyDecryptConstructorOptions) {
-        if (options.password === undefined) {
+    constructor({ key }: { key?: string }) {
+        if (key === undefined) {
             this.dataAesKey256 = undefined;
+
             return;
         }
-        this.dataAesKey256 = CommonUtils.createAESKeySync(
-            options.password,
-            256
-        );
+
+        this.dataAesKey256 = CommonUtils.createAESKeySync(key, 256);
     }
 
     enabled() {

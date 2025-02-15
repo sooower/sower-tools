@@ -40,7 +40,6 @@ async function reloadConfiguration() {
                 );
                 userConfig = vscode.workspace.getConfiguration();
 
-                parseKeyCryptoToolsConfigs();
                 parseOpenFilesInDirConfigs();
             } catch (error) {
                 vscode.window.showErrorMessage(
@@ -53,16 +52,6 @@ async function reloadConfiguration() {
 
 export function getConfigurationItem(name: string): unknown {
     return workspaceConfig.get(name) ?? userConfig.get(name);
-}
-
-// Key crypto tools
-
-export let keyCryptoToolsKey: string;
-
-function parseKeyCryptoToolsConfigs() {
-    keyCryptoToolsKey = z
-        .string()
-        .parse(getConfigurationItem(`${extensionName}.keyCryptoTools.key`));
 }
 
 // Open files in dir

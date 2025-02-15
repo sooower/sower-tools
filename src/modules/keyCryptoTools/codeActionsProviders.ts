@@ -1,15 +1,23 @@
 import { vscode } from "@/shared";
+import { extensionCtx } from "@/shared/context";
 import { extensionName } from "@/shared/init";
 
-export class CommonCodeActionProvider implements vscode.CodeActionProvider {
+export function registerCodeActionsProviders() {
+    extensionCtx.subscriptions.push(
+        vscode.languages.registerCodeActionsProvider(
+            "*", // All languages
+            new KeyCryptoToolsCodeActionProvider()
+        )
+    );
+}
+
+class KeyCryptoToolsCodeActionProvider implements vscode.CodeActionProvider {
     provideCodeActions(
         document: vscode.TextDocument,
         range: vscode.Range | vscode.Selection,
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        /* keyCryptoToolsKey */
-
         const keyEncryptCodeAction = new vscode.CodeAction(
             "Encrypt text",
             vscode.CodeActionKind.RefactorRewrite

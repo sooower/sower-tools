@@ -6,6 +6,7 @@ import { databaseModel } from "./databaseModel";
 import { functionEnhancement } from "./functionEnhancement";
 import { generateEnumAssertionFunctions } from "./generateEnumAssertionFunctions";
 import { generateTypeOfZodSchema } from "./generateTypeOfZodSchema";
+import { keyCryptoTools } from "./keyCryptoTools";
 import { markdown } from "./markdown";
 import { previewReadmeDocument } from "./previewReadmeDocument";
 import { showSelectedLines } from "./showSelectedLines";
@@ -41,4 +42,5 @@ export function registerModules() {
     moduleManager.registerModule(generateEnumAssertionFunctions);
     moduleManager.registerModule(generateTypeOfZodSchema);
     moduleManager.registerModule(databaseModel);
+    moduleManager.registerModule(keyCryptoTools);
 }

@@ -1,6 +1,5 @@
 import { subscribeCommands } from "./commands";
 import { registerModules } from "./modules";
-import { subscribeProviders } from "./providers";
 import { vscode } from "./shared";
 import { initializeConfigurations } from "./shared/configuration";
 import { extensionName, initializeContext } from "./shared/context";
@@ -12,7 +11,6 @@ export async function activate(context: vscode.ExtensionContext) {
         await init(context);
 
         subscribeCommands();
-        subscribeProviders();
 
         // NOTICE: Initialize context must be called first.
         initializeContext(context);
