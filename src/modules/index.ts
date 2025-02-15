@@ -1,10 +1,11 @@
-import { moduleManager } from "@/shared/module";
+import { moduleManager } from "@/shared/moduleManager";
 
+import { common } from "./common";
 import { countdownTimer } from "./countdownTimer";
+import { databaseModel } from "./databaseModel";
 import { functionEnhancement } from "./functionEnhancement";
 import { generateEnumAssertionFunctions } from "./generateEnumAssertionFunctions";
 import { generateTypeOfZodSchema } from "./generateTypeOfZodSchema";
-import { loadConfiguration } from "./loadConfiguration";
 import { markdown } from "./markdown";
 import { previewReadmeDocument } from "./previewReadmeDocument";
 import { showSelectedLines } from "./showSelectedLines";
@@ -19,7 +20,7 @@ import { updateNodeBuiltinModulesImports } from "./updateNodeBuiltinModulesImpor
  * Register all sub modules.
  */
 export function registerModules() {
-    moduleManager.registerModule(loadConfiguration);
+    moduleManager.registerModule(common);
     moduleManager.registerModule(markdown);
     moduleManager.registerModule(countdownTimer);
     moduleManager.registerModule(timestampTools);
@@ -39,4 +40,5 @@ export function registerModules() {
     moduleManager.registerModule(sortEnums);
     moduleManager.registerModule(generateEnumAssertionFunctions);
     moduleManager.registerModule(generateTypeOfZodSchema);
+    moduleManager.registerModule(databaseModel);
 }

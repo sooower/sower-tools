@@ -1,4 +1,4 @@
-import { defineModule } from "@/shared/module";
+import { defineModule } from "@/shared/moduleManager";
 
 import { parseConfigs } from "./configs";
 import { registerOnDidSaveTextDocumentListener } from "./listeners";

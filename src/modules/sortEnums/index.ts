@@ -1,4 +1,4 @@
-import { defineModule } from "@/shared/module";
+import { defineModule } from "@/shared/moduleManager";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
 import { registerSortEnums } from "./commands";

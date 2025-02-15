@@ -1,8 +1,9 @@
 import ts from "typescript";
 
+import { toUpperCamelCase } from "@/modules/common/utils";
+
 import { format, vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
-import { toUpperCamelCase } from "@/shared/utils";
 import { findTypeDeclarationNode } from "@/shared/utils/tsUtils";
 import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";

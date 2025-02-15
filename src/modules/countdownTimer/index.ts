@@ -1,4 +1,4 @@
-import { defineModule } from "@/shared/module";
+import { defineModule } from "@/shared/moduleManager";
 
 import { registerCommandCountdownTimer } from "./commands";
 import { parseConfigs } from "./configs";

@@ -4,11 +4,7 @@ import ts from "typescript";
 
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
-import {
-    mapEnumNameWithoutPrefix,
-    prettierFormatFile,
-    toLowerCamelCase,
-} from "@/shared/utils";
+import { mapEnumNameWithoutPrefix, prettierFormatFile } from "@/shared/utils";
 import {
     findEnumDeclarationNodeAtOffset,
     findFuncDeclarationNode,
@@ -16,6 +12,8 @@ import {
 import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 import { CommonUtils } from "@utils/common";
+
+import { toLowerCamelCase } from "../common/utils";
 
 export function registerCommandGenerateEnumAssertionFunctions() {
     const command = vscode.commands.registerCommand(

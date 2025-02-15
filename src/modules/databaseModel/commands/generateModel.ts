@@ -1,23 +1,20 @@
 import path from "node:path";
-import { format } from "node:util";
 
-import { mapAssertMethod, TColumnDetail } from "@/commands/databaseModel/utils";
-import { fs, vscode } from "@/shared";
-import {
-    enableOverwriteFile,
-    extensionCtx,
-    extensionName,
-    ignoredInsertionColumns,
-    ignoredUpdatingColumns,
-} from "@/shared/init";
+import { toLowerCamelCase, toUpperCamelCase } from "@/modules/common/utils";
+
+import { format, fs, vscode } from "@/shared";
+import { extensionCtx, extensionName } from "@/shared/context";
 import { ETsType } from "@/shared/types";
-import {
-    prettierFormatText,
-    toLowerCamelCase,
-    toUpperCamelCase,
-} from "@/shared/utils";
+import { prettierFormatText } from "@/shared/utils";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 import { CommonUtils } from "@utils/common";
+
+import {
+    enableOverwriteFile,
+    ignoredInsertionColumns,
+    ignoredUpdatingColumns,
+} from "../configs";
+import { mapAssertionMethod, TColumnDetail } from "../utils";
 
 enum ESqlType {
     Integer = "integer",
@@ -35,54 +32,57 @@ enum ESqlType {
     Smallint = "smallint",
 }
 
-export function subscribeGenerateModel() {
-    const command = vscode.commands.registerCommand(
-        `${extensionName}.databaseModel.generateModel`,
-        async () => {
-            vscode.window.withProgress(
-                {
-                    location: vscode.ProgressLocation.Notification,
-                    title: "Generating files",
-                    cancellable: false,
-                },
-                async (progress, token) => {
-                    try {
-                        const generatedFils = await parseSqlAndGenerateFiles();
-                        vscode.window.showInformationMessage(
-                            format(
-                                `Generated files:\n%s`,
-                                generatedFils.map(it => `'${it}'`).join(", ")
-                            )
-                        );
+export function registerCommandGenerateModel() {
+    extensionCtx.subscriptions.push(
+        vscode.commands.registerCommand(
+            `${extensionName}.databaseModel.generateModel`,
+            async () => {
+                vscode.window.withProgress(
+                    {
+                        location: vscode.ProgressLocation.Notification,
+                        title: "Generating files",
+                        cancellable: false,
+                    },
+                    async (progress, token) => {
+                        try {
+                            const generatedFils =
+                                await parseSqlAndGenerateFiles();
+                            vscode.window.showInformationMessage(
+                                format(
+                                    `Generated files:\n%s`,
+                                    generatedFils
+                                        .map(it => `'${it}'`)
+                                        .join(", ")
+                                )
+                            );
 
-                        return;
-                    } catch (e) {
-                        console.error(e);
-                        vscode.window.showErrorMessage(`${e}`);
+                            return;
+                        } catch (e) {
+                            console.error(e);
+                            vscode.window.showErrorMessage(`${e}`);
+                        }
                     }
-                }
-            );
-        }
+                );
+            }
+        )
     );
-
-    extensionCtx.subscriptions.push(command);
 }
 
 async function parseSqlAndGenerateFiles() {
-    /* Get selected text */
+    // Get selected text
 
     const editor = vscode.window.activeTextEditor;
     CommonUtils.assert(editor !== undefined, `No editor activated.`);
 
     const selectedText = editor.document.getText(editor.selection);
 
-    /* Parse SQL statement */
+    // Parse SQL statement
 
     const { schemaName, tableName, detail } = await parseCreateStmt(
         selectedText
     );
 
-    /* Check "src.models.index" file exits */
+    // Check "src.models.index" file exits
 
     const modelFilePath = path.join(
         getWorkspaceFolderPath(),
@@ -102,7 +102,7 @@ async function parseSqlAndGenerateFiles() {
         );
     }
 
-    /* Generate "src.models.schema.index.ts" file */
+    // Generate "src.models.schema.index.ts" file
 
     const schemaFilePath = path.join(
         getWorkspaceFolderPath(),
@@ -132,7 +132,7 @@ async function parseSqlAndGenerateFiles() {
         path.relative(getWorkspaceFolderPath(), schemaFilePath),
     ];
 
-    /* Generate "src.models.schema.table.index.ts" file */
+    // Generate "src.models.schema.table.index.ts" file
 
     const tableFilePath = path.join(
         getWorkspaceFolderPath(),
@@ -170,7 +170,7 @@ async function parseSqlAndGenerateFiles() {
             format(
                 `[EColumn.%s]: %s,`,
                 toUpperCamelCase(column),
-                mapAssertMethod({ tsType, nullable, enumType })
+                mapAssertionMethod({ tsType, nullable, enumType })
             )
         );
 

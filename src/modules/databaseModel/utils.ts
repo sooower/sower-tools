@@ -9,7 +9,11 @@ export type TColumnDetail = {
     enumType: string;
 };
 
-export function mapAssertMethod({ tsType, nullable, enumType }: TColumnDetail) {
+export function mapAssertionMethod({
+    tsType,
+    nullable,
+    enumType,
+}: TColumnDetail) {
     switch (tsType) {
         case ETsType.Number: {
             if (nullable) {

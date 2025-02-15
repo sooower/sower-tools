@@ -1,10 +1,22 @@
-import { vscode } from "..";
-import { moduleManager } from "../module";
+import { vscode } from "../";
+import { extensionCtx, extensionName } from "../context";
+import { moduleManager } from "../moduleManager";
+
+/**
+ * Initialize extension configuration synchronization.
+ *
+ * When any of the extension configuration (in ${projectRootDir}/.vscode/settings.json or workspace settings.json file) is changed,
+ * the configuration will be reloaded.
+ */
+export async function initializeConfigurations() {
+    await reloadConfiguration();
+    registerOnDidChangeConfigurationListener();
+}
 
 let workspaceConfig: vscode.WorkspaceConfiguration;
 let userConfig: vscode.WorkspaceConfiguration;
 
-export async function reloadConfiguration() {
+async function reloadConfiguration() {
     await vscode.window.withProgress(
         {
             location: vscode.ProgressLocation.Notification,
@@ -31,4 +43,23 @@ export async function reloadConfiguration() {
 
 export function getConfigurationItem(name: string): unknown {
     return workspaceConfig.get(name) ?? userConfig.get(name);
+}
+
+function registerOnDidChangeConfigurationListener() {
+    extensionCtx.subscriptions.push(
+        vscode.workspace.onDidChangeConfiguration(async event => {
+            try {
+                if (!event.affectsConfiguration(`${extensionName}`)) {
+                    return;
+                }
+
+                await reloadConfiguration();
+            } catch (e) {
+                console.error(e);
+                vscode.window.showErrorMessage(
+                    `Error while reloading configuration. ${e}`
+                );
+            }
+        })
+    );
 }

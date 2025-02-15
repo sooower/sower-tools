@@ -40,7 +40,6 @@ async function reloadConfiguration() {
                 );
                 userConfig = vscode.workspace.getConfiguration();
 
-                parseDatabaseModelConfigs();
                 parseKeyCryptoToolsConfigs();
                 parseOpenFilesInDirConfigs();
             } catch (error) {
@@ -54,62 +53,6 @@ async function reloadConfiguration() {
 
 export function getConfigurationItem(name: string): unknown {
     return workspaceConfig.get(name) ?? userConfig.get(name);
-}
-
-// Database model
-
-export let enableOverwriteFile: boolean;
-export let specialWordsMap: Map<string, string>;
-export let ignoredInsertionColumns: string[];
-export let ignoredUpdatingColumns: string[];
-
-function parseDatabaseModelConfigs() {
-    enableOverwriteFile = z
-        .boolean()
-        .parse(
-            getConfigurationItem(
-                `${extensionName}.databaseModel.enableOverwriteFile`
-            )
-        );
-
-    specialWordsMap = new Map(
-        z
-            .array(
-                z.string().transform(it => {
-                    const [originalWord, mappedWord] = it.split(":");
-                    CommonUtils.assert(
-                        originalWord !== undefined && mappedWord !== undefined,
-                        `Invalid special uppercase words mapping: ${it}, formatting should be "<originalWord>:<mappedWord>".`
-                    );
-
-                    return [originalWord, mappedWord] satisfies [
-                        string,
-                        string
-                    ];
-                })
-            )
-            .parse(
-                getConfigurationItem(
-                    `${extensionName}.databaseModel.specialUpperCaseWordsMapping`
-                )
-            )
-    );
-
-    ignoredInsertionColumns = z
-        .array(z.string())
-        .parse(
-            getConfigurationItem(
-                `${extensionName}.databaseModel.ignoredInsertionColumns`
-            )
-        );
-
-    ignoredUpdatingColumns = z
-        .array(z.string())
-        .parse(
-            getConfigurationItem(
-                `${extensionName}.databaseModel.ignoredUpdatingColumns`
-            )
-        );
 }
 
 // Key crypto tools

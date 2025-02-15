@@ -21,7 +21,7 @@ class ConvertParametersToObjectOptionsCodeActionProvider
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
         const convertParametersToOptionsObject = new vscode.CodeAction(
             "Convert parameters to options object",
-            vscode.CodeActionKind.RefactorRewrite
+            vscode.CodeActionKind.RefactorExtract
         );
         convertParametersToOptionsObject.command = {
             command: `${extensionName}.functionEnhancement.convertParametersToOptionsObject`,

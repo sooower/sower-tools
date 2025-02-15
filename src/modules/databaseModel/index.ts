@@ -1,14 +1,14 @@
 import { defineModule } from "@/shared/moduleManager";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
-import { registerCommandBase64Decode } from "./commands/base64Decode";
-import { registerCommandBase64Encode } from "./commands/base64Encode";
+import { registerCommandGenerateModel } from "./commands/generateModel";
+import { registerCommandUpdateModel } from "./commands/updateModel";
 import { parseConfigs } from "./configs";
 
-export const stringTools = defineModule({
+export const databaseModel = defineModule({
     onActive() {
-        registerCommandBase64Encode();
-        registerCommandBase64Decode();
+        registerCommandGenerateModel();
+        registerCommandUpdateModel();
         registerCodeActionsProviders();
     },
     onReloadConfiguration() {

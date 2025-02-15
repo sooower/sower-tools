@@ -1,21 +1,11 @@
-import { format } from "node:util";
-
 import ts from "typescript";
 
-import { mapAssertMethod } from "@/commands/databaseModel/utils";
-import { vscode } from "@/shared";
-import {
-    extensionCtx,
-    extensionName,
-    ignoredInsertionColumns,
-    ignoredUpdatingColumns,
-} from "@/shared/init";
+import { toLowerCamelCase, toUpperCamelCase } from "@/modules/common/utils";
+
+import { format, vscode } from "@/shared";
+import { extensionCtx, extensionName } from "@/shared/context";
 import { ETsType } from "@/shared/types";
-import {
-    prettierFormatFile,
-    toLowerCamelCase,
-    toUpperCamelCase,
-} from "@/shared/utils";
+import { prettierFormatFile } from "@/shared/utils";
 import {
     findEnumDeclarationNode,
     findFuncDeclarationNode,
@@ -26,29 +16,32 @@ import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 import { CommonUtils } from "@utils/common";
 
-export function subscribeUpdateModel() {
-    const command = vscode.commands.registerCommand(
-        `${extensionName}.databaseModel.updateModel`,
-        async () => {
-            try {
-                const editor = vscode.window.activeTextEditor;
-                if (editor === undefined) {
-                    return;
-                }
+import { ignoredInsertionColumns, ignoredUpdatingColumns } from "../configs";
+import { mapAssertionMethod } from "../utils";
 
-                if (editor.document.languageId !== "typescript") {
-                    return;
-                }
+export function registerCommandUpdateModel() {
+    extensionCtx.subscriptions.push(
+        vscode.commands.registerCommand(
+            `${extensionName}.databaseModel.updateModel`,
+            async () => {
+                try {
+                    const editor = vscode.window.activeTextEditor;
+                    if (editor === undefined) {
+                        return;
+                    }
 
-                await updateModel({ editor });
-            } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(`${e}`);
+                    if (editor.document.languageId !== "typescript") {
+                        return;
+                    }
+
+                    await updateModel({ editor });
+                } catch (e) {
+                    console.error(e);
+                    vscode.window.showErrorMessage(`${e}`);
+                }
             }
-        }
+        )
     );
-
-    extensionCtx.subscriptions.push(command);
 }
 
 type TUpdateModelOptions = {
@@ -81,7 +74,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
             format(
                 `[EColumn.%s]: %s,`,
                 toUpperCamelCase(field),
-                mapAssertMethod({
+                mapAssertionMethod({
                     tsType: type,
                     nullable: optional,
                     enumType: `${type}`,
@@ -141,7 +134,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         }
     }
 
-    /* Update or insert enum EColumn node */
+    // Update or insert enum EColumn node
 
     const enumEColumnNodeText = `
         enum EColumn {
@@ -173,7 +166,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         });
     }
 
-    /* Update or insert variable kResolver node */
+    // Update or insert variable kResolver node
 
     const varResolverNodeText = `
         const kResolver: TResolvers = {
@@ -206,7 +199,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         });
     }
 
-    /* Update or insert type TInsertOptions node */
+    // Update or insert type TInsertOptions node
 
     const typeInsertOptionsNodeText = `
         type TInsertOptions = {
@@ -233,7 +226,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         });
     }
 
-    /* Update or insert function insert node */
+    // Update or insert function insert node
 
     const funcInsertNodeText = `
         async function insert(dbc: DatabaseConnection, options: TInsertOptions) {
@@ -281,7 +274,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         });
     }
 
-    /* Update or insert type TUpdateOptions node */
+    // Update or insert type TUpdateOptions node
 
     const typeUpdateOptionsNodeText = `
         type TUpdateOptions = Partial<{
@@ -308,7 +301,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         });
     }
 
-    /* Update or insert function update node */
+    // Update or insert function update node
 
     const funcUpdateNodeText = `
         async function update(dbc: DatabaseConnection, id: string, options: TUpdateOptions) {

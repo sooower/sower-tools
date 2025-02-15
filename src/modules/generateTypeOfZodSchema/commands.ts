@@ -3,7 +3,7 @@ import ts from "typescript";
 import { format, vscode } from "@/shared";
 import { extensionName } from "@/shared/context";
 import { extensionCtx } from "@/shared/init";
-import { prettierFormatFile, toUpperCamelCase } from "@/shared/utils";
+import { prettierFormatFile } from "@/shared/utils";
 import {
     findTypeDeclarationNode,
     findVariableDeclarationNodeAtOffset,
@@ -11,6 +11,8 @@ import {
 import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 import { CommonUtils } from "@utils/common";
+
+import { toUpperCamelCase } from "../common/utils";
 
 export function registerCommandGenerateTypeOfZodSchema() {
     extensionCtx.subscriptions.push(

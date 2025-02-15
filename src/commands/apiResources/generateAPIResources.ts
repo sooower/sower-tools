@@ -3,9 +3,10 @@ import { format } from "node:util";
 
 import pluralize from "pluralize";
 
+import { toUpperCamelCase } from "@/modules/common/utils";
+
 import { fs, vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/init";
-import { toUpperCamelCase } from "@/shared/utils";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 
 export function subscribeGenerateAPIResources() {

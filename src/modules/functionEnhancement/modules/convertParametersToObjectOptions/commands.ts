@@ -1,9 +1,10 @@
 import ts from "typescript";
 
+import { toUpperCamelCase } from "@/modules/common/utils";
+
 import { format, vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
 import { ETsType } from "@/shared/types";
-import { toUpperCamelCase } from "@/shared/utils";
 import {
     findFuncOrCtorDeclarationNodeAtOffset,
     findTypeDeclarationNode,

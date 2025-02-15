@@ -281,13 +281,8 @@
             "type": "object",
             "title": "Sower Tools",
             "properties": {
-                "sower-tools.databaseModel.enableOverwriteFile": {
-                    "description": "If true, it will replace file content with new generated text.",
-                    "type": "boolean",
-                    "default": false
-                },
-                "sower-tools.databaseModel.specialUpperCaseWordsMapping": {
-                    "description": "Special words pairs which will be mapped automatically when to uppercase, format: <originalWord>:<mappedWord>.",
+                "sower-tools.uppercaseWordsMapping": {
+                    "description": "Words pairs which will be used to map words when to uppercase, format: <originalWord>:<mappedWord>.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -296,8 +291,13 @@
                         "Id:ID"
                     ]
                 },
+                "sower-tools.databaseModel.enableOverwriteFile": {
+                    "description": "If true, it will replace file content with new generated text if the file exists.",
+                    "type": "boolean",
+                    "default": false
+                },
                 "sower-tools.databaseModel.ignoredInsertionColumns": {
-                    "description": "Special column names which will be ignored when inserting insertion record.",
+                    "description": "Column names which will be ignored when calling models `insert()` method.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -308,7 +308,7 @@
                     ]
                 },
                 "sower-tools.databaseModel.ignoredUpdatingColumns": {
-                    "description": "Special column names which will be ignored when inserting updating record.",
+                    "description": "Column names which will be ignored when calling models `update()` method.",
                     "type": "array",
                     "items": {
                         "type": "string"

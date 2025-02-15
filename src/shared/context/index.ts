@@ -8,6 +8,11 @@ import { readJsonFile } from "@utils/fs";
 export let extensionCtx: vscode.ExtensionContext;
 export let extensionName: string;
 
+/**
+ * Initialize extension context.
+ *
+ * @param context - The extension context.
+ */
 export function initializeContext(context: vscode.ExtensionContext) {
     const { name } = z
         .object({ name: z.string() })
