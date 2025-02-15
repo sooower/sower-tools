@@ -1,17 +1,11 @@
-import { subscribeCommands } from "./commands";
 import { registerModules } from "./modules";
 import { vscode } from "./shared";
 import { initializeConfigurations } from "./shared/configuration";
 import { extensionName, initializeContext } from "./shared/context";
-import { init } from "./shared/init";
 import { moduleManager } from "./shared/moduleManager";
 
 export async function activate(context: vscode.ExtensionContext) {
     try {
-        await init(context);
-
-        subscribeCommands();
-
         // NOTICE: Initialize context must be called first.
         initializeContext(context);
 

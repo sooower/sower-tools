@@ -107,7 +107,7 @@
                 "title": "Decrypt Text"
             },
             {
-                "command": "sower-tools.APIResources.generateAPIResources",
+                "command": "sower-tools.apiResourcesGeneration.generateAPIResources",
                 "title": "Generate API Resources"
             },
             {
@@ -250,8 +250,8 @@
                     "submenu": "explorer/context/sowerTools/Git"
                 },
                 {
-                    "command": "sower-tools.APIResources.generateAPIResources",
-                    "group": "001_APIResources@001",
+                    "command": "sower-tools.apiResourcesGeneration.generateAPIResources",
+                    "group": "001_apiResourcesGeneration@001",
                     "when": "explorerResourceIsFolder == true"
                 },
                 {

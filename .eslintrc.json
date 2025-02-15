@@ -3,10 +3,14 @@
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": 6,
-        "sourceType": "module"
+        "sourceType": "module",
+        "project": "./tsconfig.json",
+        "tsconfigRootDir": "."
     },
     "plugins": ["@typescript-eslint", "perfectionist", "import"],
     "rules": {
+        "object-shorthand": ["warn", "always"],
+        "no-useless-rename": "warn",
         "@typescript-eslint/naming-convention": [
             "warn",
             {
@@ -26,6 +30,20 @@
         ],
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
+        "no-extra-boolean-cast": "warn",
+        "@typescript-eslint/strict-boolean-expressions": [
+            "warn",
+            {
+                "allowString": false,
+                "allowNumber": false,
+                "allowNullableObject": false,
+                "allowNullableBoolean": false,
+                "allowNullableString": false,
+                "allowNullableNumber": false,
+                "allowAny": false
+            }
+        ],
+        "@typescript-eslint/no-non-null-assertion": "warn",
         "import/no-duplicates": ["warn", { "considerQueryString": true }],
         "import/no-default-export": "warn",
         "perfectionist/sort-named-imports": ["warn", {}],

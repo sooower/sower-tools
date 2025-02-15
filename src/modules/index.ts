@@ -1,5 +1,6 @@
 import { moduleManager } from "@/shared/moduleManager";
 
+import { apiResourcesGeneration } from "./apiResourcesGeneration";
 import { common } from "./common";
 import { countdownTimer } from "./countdownTimer";
 import { databaseModel } from "./databaseModel";
@@ -49,4 +50,5 @@ export function registerModules() {
     moduleManager.registerModule(dirEnhancement.openFiles);
     moduleManager.registerModule(debuggingEnhancement);
     moduleManager.registerModule(gitEnhancement);
+    moduleManager.registerModule(apiResourcesGeneration);
 }
