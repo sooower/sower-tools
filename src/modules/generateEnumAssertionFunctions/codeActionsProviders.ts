@@ -21,7 +21,7 @@ class GenerationEnumAssertionFunctionsCodeActionProvider
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
         const generateEnumAssertionFunctionsCodeAction = new vscode.CodeAction(
             "Generate/update enum assertion",
-            vscode.CodeActionKind.Empty
+            vscode.CodeActionKind.QuickFix
         );
         generateEnumAssertionFunctionsCodeAction.command = {
             command: `${extensionName}.generateEnumAssertionFunctions`,

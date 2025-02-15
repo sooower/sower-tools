@@ -1,34 +1,34 @@
 import { vscode } from "@/shared";
-import { extensionCtx } from "@/shared/context";
-
-import { kCommandSyncChangelog } from "./consts";
+import { extensionCtx, extensionName } from "@/shared/context";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
         vscode.languages.registerCodeActionsProvider(
-            "markdown",
-            new SyncChangelogCodeActionProvider()
+            "typescript",
+            new GenerateTypeOfZodSchemaCodeActionProvider()
         )
     );
 }
 
-class SyncChangelogCodeActionProvider implements vscode.CodeActionProvider {
+class GenerateTypeOfZodSchemaCodeActionProvider
+    implements vscode.CodeActionProvider
+{
     provideCodeActions(
         document: vscode.TextDocument,
         range: vscode.Range | vscode.Selection,
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        const syncChangelogCodeAction = new vscode.CodeAction(
-            "Sync changelog",
+        const generateTypeSchemaCodeAction = new vscode.CodeAction(
+            "Generate type declaration of zod schema",
             vscode.CodeActionKind.QuickFix
         );
-        syncChangelogCodeAction.command = {
-            command: kCommandSyncChangelog,
+        generateTypeSchemaCodeAction.command = {
+            command: `${extensionName}.generateTypeOfZodSchema`,
             title: "",
             arguments: [document, range],
         };
 
-        return [syncChangelogCodeAction];
+        return [generateTypeSchemaCodeAction];
     }
 }

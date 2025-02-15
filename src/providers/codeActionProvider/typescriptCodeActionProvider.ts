@@ -13,18 +13,6 @@ export class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        /* generateTypeSchema */
-
-        const generateTypeSchemaCodeAction = new vscode.CodeAction(
-            "Generate Type of Schema",
-            vscode.CodeActionKind.Empty
-        );
-        generateTypeSchemaCodeAction.command = {
-            command: `${extensionName}.generateTypeSchema`,
-            title: "",
-            arguments: [document, range],
-        };
-
         /* databaseModel */
 
         const updateModelCodeAction = new vscode.CodeAction(
@@ -37,6 +25,6 @@ export class TypeScriptCodeActionProvider implements vscode.CodeActionProvider {
             arguments: [document, range],
         };
 
-        return [generateTypeSchemaCodeAction, updateModelCodeAction];
+        return [updateModelCodeAction];
     }
 }

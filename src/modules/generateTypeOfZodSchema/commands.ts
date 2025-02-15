@@ -1,9 +1,8 @@
-import { format } from "node:util";
-
 import ts from "typescript";
 
-import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/init";
+import { format, vscode } from "@/shared";
+import { extensionName } from "@/shared/context";
+import { extensionCtx } from "@/shared/init";
 import { prettierFormatFile, toUpperCamelCase } from "@/shared/utils";
 import {
     findTypeDeclarationNode,
@@ -13,41 +12,43 @@ import { getSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 import { CommonUtils } from "@utils/common";
 
-export function subscribeGenerateTypeSchema() {
-    const command = vscode.commands.registerCommand(
-        `${extensionName}.generateTypeSchema`,
-        async () => {
-            try {
-                const editor = vscode.window.activeTextEditor;
-                if (editor === undefined) {
-                    return;
+export function registerCommandGenerateTypeOfZodSchema() {
+    extensionCtx.subscriptions.push(
+        vscode.commands.registerCommand(
+            `${extensionName}.generateTypeOfZodSchema`,
+            async () => {
+                try {
+                    const editor = vscode.window.activeTextEditor;
+                    if (editor === undefined) {
+                        return;
+                    }
+
+                    if (editor.document.languageId !== "typescript") {
+                        return;
+                    }
+
+                    const varNode = findVariableDeclarationNodeAtOffset({
+                        sourceFile: getSourceFileByEditor(editor),
+                        offset: editor.document.offsetAt(
+                            editor.selection.active
+                        ),
+                    });
+                    CommonUtils.assert(
+                        varNode !== undefined,
+                        `Can not found variable declaration, please check your code.`
+                    );
+
+                    await generateTypeSchema({
+                        editor,
+                        node: varNode,
+                    });
+                } catch (e) {
+                    console.error(e);
+                    vscode.window.showErrorMessage(`${e}`);
                 }
-
-                if (editor.document.languageId !== "typescript") {
-                    return;
-                }
-
-                const varNode = findVariableDeclarationNodeAtOffset({
-                    sourceFile: getSourceFileByEditor(editor),
-                    offset: editor.document.offsetAt(editor.selection.active),
-                });
-                CommonUtils.assert(
-                    varNode !== undefined,
-                    `Can not found variable declaration, please check your code.`
-                );
-
-                await generateTypeSchema({
-                    editor,
-                    node: varNode,
-                });
-            } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(`${e}`);
             }
-        }
+        )
     );
-
-    extensionCtx.subscriptions.push(command);
 }
 
 type TGenerateTypeSchemaOptions = {
@@ -66,10 +67,9 @@ async function generateTypeSchema({
             schemaName.endsWith("Schema") ? schemaName.slice(0, -6) : schemaName
         )
     );
+
     const typeText = format(
-        `
-            %s type %s = z.infer<typeof %s>;
-        `,
+        `%s type %s = z.infer<typeof %s>;`,
         node.parent.parent.getText().startsWith("export") ? "export" : "",
         typeName,
         schemaName

@@ -59,8 +59,8 @@
                 "title": "Generate/Update Enum Assertions"
             },
             {
-                "command": "sower-tools.generateTypeSchema",
-                "title": "Generate Type of Schema"
+                "command": "sower-tools.generateTypeOfZodSchema",
+                "title": "Generate Type of Zod Schema"
             },
             {
                 "command": "sower-tools.gitEnhancement.skipWorkTree",
@@ -181,7 +181,7 @@
                     "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
                 },
                 {
-                    "command": "sower-tools.generateTypeSchema",
+                    "command": "sower-tools.generateTypeOfZodSchema",
                     "group": "003_functionEnhancement@004",
                     "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
                 },
