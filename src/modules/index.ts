@@ -1,4 +1,4 @@
-import { moduleManager } from "@/shared/moduleManager";
+import { defineModule } from "@/shared/moduleManager";
 
 import { apiResourcesGeneration } from "./apiResourcesGeneration";
 import { syncChangelog } from "./changelogSync";
@@ -19,33 +19,23 @@ import { stringTools } from "./stringTools";
 import { timestampTools } from "./timestampTools";
 import { typeOfZodSchemaGeneration } from "./typeOfZodSchemaGeneration";
 
-/**
- * Register all sub modules.
- */
-export function registerModules() {
-    moduleManager.registerModule(common);
-    moduleManager.registerModule(markdownEnhancement.localImage);
-    moduleManager.registerModule(timestampTools);
-    moduleManager.registerModule(stringTools);
-    moduleManager.registerModule(syncChangelog);
-    moduleManager.registerModule(readmeDocumentPreview);
-    moduleManager.registerModule(
-        functionEnhancement.parametersObjectOptionsConversion
-    );
-    moduleManager.registerModule(functionEnhancement.parameterTypeMembersSync);
-    moduleManager.registerModule(functionEnhancement.parameterTypeNameSync);
-    moduleManager.registerModule(functionEnhancement.returnStmtStyleDiagnostic);
-    moduleManager.registerModule(nodeBuiltinModulesImportsUpdate);
-    moduleManager.registerModule(enumsSort);
-    moduleManager.registerModule(enumAssertionFunctionsGeneration);
-    moduleManager.registerModule(typeOfZodSchemaGeneration);
-    moduleManager.registerModule(databaseModel);
-    moduleManager.registerModule(keyCryptoTools);
-    moduleManager.registerModule(dirEnhancement.openFiles);
-    moduleManager.registerModule(debuggingEnhancement);
-    moduleManager.registerModule(gitEnhancement);
-    moduleManager.registerModule(apiResourcesGeneration);
-    moduleManager.registerModule(statusBarEnhancement.countdownTimer);
-    moduleManager.registerModule(statusBarEnhancement.nowTimestamp);
-    moduleManager.registerModule(statusBarEnhancement.selectedLines);
-}
+export const modules = defineModule([
+    common,
+    markdownEnhancement,
+    timestampTools,
+    stringTools,
+    syncChangelog,
+    readmeDocumentPreview,
+    functionEnhancement,
+    nodeBuiltinModulesImportsUpdate,
+    enumsSort,
+    enumAssertionFunctionsGeneration,
+    typeOfZodSchemaGeneration,
+    databaseModel,
+    keyCryptoTools,
+    dirEnhancement,
+    debuggingEnhancement,
+    gitEnhancement,
+    apiResourcesGeneration,
+    statusBarEnhancement,
+]);

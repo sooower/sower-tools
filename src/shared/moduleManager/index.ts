@@ -1,5 +1,6 @@
-export type TExtensionLifecycleFunc = () => Promise<void> | void;
+import { CommonUtils } from "@utils/common";
 
+export type TExtensionLifecycleFunc = () => Promise<void> | void;
 /**
  * Module for the extension.
  */
@@ -20,31 +21,58 @@ export type TModule = {
     onReloadConfiguration?: TExtensionLifecycleFunc;
 };
 
+type TModules = TModule | (TModule | TModules)[];
+
 /**
- * Define a module for the extension.
+ * Define module, support define multiple sub modules, nested sub modules or both multiple and nested sub modules.
+ *
+ * - Define a module
  *
  * @example
  * ```ts
- * export default defineModule({
+ * export const module = defineModule({
  *     onActive() {},
  *     onDeactive() {},
  *     onReloadConfiguration() {},
  * });
+ *```
+ *
+ * - Define a module with sub modules
+ *
+ * @example
+ * ```ts
+ * export const module = defineModule([
+ *     // Nested sub modules
+ *     defineModule(
+ *         defineModule({
+ *             onActive() {},
+ *         }),
+ *     ),
+ *     // Multiple sub modules
+ *     defineModule([
+ *        subModule1,
+ *        subModule2,
+ *     ]),
+ * ]);
  * ```
  */
-export const defineModule = (module: TModule) => module;
+export const defineModule = <T extends TModules>(module: T): T => module;
 
 /**
  * Manager for the modules, including activate, deactivate and reload configuration for all modules.
  */
 class ModuleManager {
-    private modules = new Set<TModule>();
+    private readonly modules = new Set<TModule>();
 
     /**
-     * Register a module, which is called when the extension is activated.
+     * Register modules, which is called when the extension is activated.
      */
-    registerModule(module: TModule) {
-        this.modules.add(module);
+    registerModules(modules: TModules) {
+        if (CommonUtils.isArray(modules)) {
+            modules.forEach(module => this.registerModules(module));
+        } else {
+            this.modules.add(modules);
+        }
     }
 
     /**

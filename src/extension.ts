@@ -1,4 +1,4 @@
-import { registerModules } from "./modules";
+import { modules } from "./modules";
 import { vscode } from "./shared";
 import { initializeConfigurations } from "./shared/configuration";
 import { extensionName, initializeContext } from "./shared/context";
@@ -9,7 +9,7 @@ export async function activate(context: vscode.ExtensionContext) {
         // NOTICE: Initialize context must be called first.
         initializeContext(context);
 
-        registerModules();
+        moduleManager.registerModules(modules);
 
         // NOTICE: Initialize configurations must be called after registerModules.
         await initializeConfigurations();
