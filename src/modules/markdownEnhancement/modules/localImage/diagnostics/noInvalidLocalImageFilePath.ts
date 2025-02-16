@@ -14,19 +14,19 @@ export function registerDiagnosticNoInvalidLocalImageFilePath() {
     extensionCtx.subscriptions.push(diagnosticCollection);
 
     extensionCtx.subscriptions.push(
-        vscode.workspace.onDidOpenTextDocument(appendDiagnostics)
+        vscode.workspace.onDidOpenTextDocument(updateDiagnostics)
     );
     extensionCtx.subscriptions.push(
-        vscode.workspace.onDidSaveTextDocument(appendDiagnostics)
+        vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
     );
     extensionCtx.subscriptions.push(
         vscode.workspace.onDidChangeTextDocument(e =>
-            appendDiagnostics(e.document)
+            updateDiagnostics(e.document)
         )
     );
 }
 
-function appendDiagnostics(document: vscode.TextDocument) {
+function updateDiagnostics(document: vscode.TextDocument) {
     if (document.languageId !== "markdown") {
         return;
     }

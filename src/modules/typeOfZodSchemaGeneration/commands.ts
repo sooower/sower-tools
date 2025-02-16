@@ -7,7 +7,7 @@ import {
     findTypeDeclarationNode,
     findVariableDeclarationNodeAtOffset,
 } from "@/shared/utils/tsUtils";
-import { getSourceFileByEditor } from "@/shared/utils/vscode";
+import { createSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 import { CommonUtils } from "@utils/common";
 
@@ -29,7 +29,7 @@ export function registerCommandGenerateTypeOfZodSchema() {
                     }
 
                     const varNode = findVariableDeclarationNodeAtOffset({
-                        sourceFile: getSourceFileByEditor(editor),
+                        sourceFile: createSourceFileByEditor(editor),
                         offset: editor.document.offsetAt(
                             editor.selection.active
                         ),
@@ -76,7 +76,7 @@ async function generateTypeSchema({
         schemaName
     );
 
-    const sourceFile = getSourceFileByEditor(editor);
+    const sourceFile = createSourceFileByEditor(editor);
     const typeDeclarationNode = findTypeDeclarationNode({
         sourceFile,
         typeName,
@@ -102,9 +102,9 @@ async function generateTypeSchema({
 
     await TextEditorUtils.replaceTextOfSourceFile({
         editor,
-        sourceFile: getSourceFileByEditor(editor),
+        sourceFile: createSourceFileByEditor(editor),
         newText: await prettierFormatFile(
-            getSourceFileByEditor(editor).fileName
+            createSourceFileByEditor(editor).fileName
         ),
     });
 }

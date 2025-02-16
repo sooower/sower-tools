@@ -19,26 +19,39 @@ class TimestampToolsCodeActionProvider implements vscode.CodeActionProvider {
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        const covertTimestampCodeAction = new vscode.CodeAction(
-            "Convert timestamp",
-            vscode.CodeActionKind.RefactorRewrite
-        );
-        covertTimestampCodeAction.command = {
-            command: kCommandConvertTimestamp,
-            title: "",
-            arguments: [document, range],
-        };
+        const codeActions: (vscode.CodeAction | vscode.Command)[] = [];
 
-        const insertTimestampCodeAction = new vscode.CodeAction(
-            "Insert timestamp",
-            vscode.CodeActionKind.Empty
-        );
-        insertTimestampCodeAction.command = {
-            command: kCommandInsertTimestamp,
-            title: "",
-            arguments: [document, range],
-        };
+        if (isSelectedContent(document, range)) {
+            const covertTimestampCodeAction = new vscode.CodeAction(
+                "Convert timestamp",
+                vscode.CodeActionKind.RefactorRewrite
+            );
+            covertTimestampCodeAction.command = {
+                command: kCommandConvertTimestamp,
+                title: "",
+                arguments: [document, range],
+            };
+            codeActions.push(covertTimestampCodeAction);
+        }
 
-        return [covertTimestampCodeAction, insertTimestampCodeAction];
+        if (!isSelectedContent(document, range)) {
+            const insertTimestampCodeAction = new vscode.CodeAction(
+                "Insert timestamp",
+                vscode.CodeActionKind.Empty
+            );
+            insertTimestampCodeAction.command = {
+                command: kCommandInsertTimestamp,
+                title: "",
+                arguments: [document, range],
+            };
+
+            codeActions.push(insertTimestampCodeAction);
+        }
+
+        return codeActions;
     }
+}
+
+function isSelectedContent(document: vscode.TextDocument, range: vscode.Range) {
+    return document.getText(range).trim() !== "";
 }

@@ -12,7 +12,7 @@ import {
     findTypeDeclarationNode,
     findVariableDeclarationNode,
 } from "@/shared/utils/tsUtils";
-import { getSourceFileByEditor } from "@/shared/utils/vscode";
+import { createSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 import { CommonUtils } from "@utils/common";
 
@@ -50,7 +50,7 @@ type TUpdateModelOptions = {
 
 export async function updateModel({ editor }: TUpdateModelOptions) {
     const typTDefinitionsNode = findTypeDeclarationNode({
-        sourceFile: getSourceFileByEditor(editor),
+        sourceFile: createSourceFileByEditor(editor),
         typeName: "TDefinitions",
     });
     CommonUtils.assert(
@@ -142,28 +142,29 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         }
     `;
     const enumEColumnNode = findEnumDeclarationNode({
-        sourceFile: getSourceFileByEditor(editor),
+        sourceFile: createSourceFileByEditor(editor),
         enumName: "EColumn",
     });
     if (enumEColumnNode !== undefined) {
         await TextEditorUtils.replaceTextOfNode({
             editor,
-            sourceFile: getSourceFileByEditor(editor),
+            sourceFile: createSourceFileByEditor(editor),
             node: enumEColumnNode,
             newText: enumEColumnNodeText,
         });
     } else {
-        await TextEditorUtils.insertTextAfterNode({
-            editor,
-            sourceFile: getSourceFileByEditor(editor),
-            node: CommonUtils.mandatory(
-                findVariableDeclarationNode({
-                    sourceFile: getSourceFileByEditor(editor),
-                    varName: "kFullQualifiedTableName",
-                })
-            ),
-            text: enumEColumnNodeText,
+        const node = findVariableDeclarationNode({
+            sourceFile: createSourceFileByEditor(editor),
+            varName: "kFullQualifiedTableName",
         });
+        if (node !== undefined) {
+            await TextEditorUtils.insertTextAfterNode({
+                editor,
+                sourceFile: createSourceFileByEditor(editor),
+                node,
+                text: enumEColumnNodeText,
+            });
+        }
     }
 
     // Update or insert variable kResolver node
@@ -174,7 +175,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         };
     `;
     const varResolverNode = findVariableDeclarationNode({
-        sourceFile: getSourceFileByEditor(editor),
+        sourceFile: createSourceFileByEditor(editor),
         varName: "kResolver",
     });
     if (varResolverNode !== undefined) {
@@ -186,17 +187,18 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
             endPlusOne: true,
         });
     } else {
-        await TextEditorUtils.insertTextAfterNode({
-            editor,
-            sourceFile: getSourceFileByEditor(editor),
-            node: CommonUtils.mandatory(
-                findTypeDeclarationNode({
-                    sourceFile: getSourceFileByEditor(editor),
-                    typeName: "TResolvers",
-                })
-            ),
-            text: varResolverNodeText,
+        const node = findTypeDeclarationNode({
+            sourceFile: createSourceFileByEditor(editor),
+            typeName: "TResolvers",
         });
+        if (node !== undefined) {
+            await TextEditorUtils.insertTextAfterNode({
+                editor,
+                sourceFile: createSourceFileByEditor(editor),
+                node,
+                text: varResolverNodeText,
+            });
+        }
     }
 
     // Update or insert type TInsertOptions node
@@ -207,23 +209,25 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         };
     `;
     const typeInsertOptionsNode = findTypeDeclarationNode({
-        sourceFile: getSourceFileByEditor(editor),
+        sourceFile: createSourceFileByEditor(editor),
         typeName: "TInsertOptions",
     });
     if (typeInsertOptionsNode !== undefined) {
         await TextEditorUtils.replaceTextOfNode({
             editor,
-            sourceFile: getSourceFileByEditor(editor),
+            sourceFile: createSourceFileByEditor(editor),
             node: typeInsertOptionsNode,
             newText: typeInsertOptionsNodeText,
         });
     } else {
-        await TextEditorUtils.insertTextAfterNode({
-            editor,
-            sourceFile: getSourceFileByEditor(editor),
-            node: CommonUtils.mandatory(varResolverNode),
-            text: typeInsertOptionsNodeText,
-        });
+        if (varResolverNode !== undefined) {
+            await TextEditorUtils.insertTextAfterNode({
+                editor,
+                sourceFile: createSourceFileByEditor(editor),
+                node: varResolverNode,
+                text: typeInsertOptionsNodeText,
+            });
+        }
     }
 
     // Update or insert function insert node
@@ -255,55 +259,58 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         }
     `;
     const funcInsertNode = findFuncDeclarationNode({
-        sourceFile: getSourceFileByEditor(editor),
+        sourceFile: createSourceFileByEditor(editor),
         funcName: "insert",
     });
     if (funcInsertNode !== undefined) {
         await TextEditorUtils.replaceTextOfNode({
             editor,
-            sourceFile: getSourceFileByEditor(editor),
+            sourceFile: createSourceFileByEditor(editor),
             node: funcInsertNode,
             newText: funcInsertNodeText,
         });
     } else {
-        await TextEditorUtils.insertTextAfterNode({
-            editor,
-            sourceFile: getSourceFileByEditor(editor),
-            node: CommonUtils.mandatory(typeInsertOptionsNode),
-            text: funcInsertNodeText,
-        });
-    }
+        if (typeInsertOptionsNode !== undefined) {
+            await TextEditorUtils.insertTextAfterNode({
+                editor,
+                sourceFile: createSourceFileByEditor(editor),
+                node: typeInsertOptionsNode,
+                text: funcInsertNodeText,
+            });
+        }
 
-    // Update or insert type TUpdateOptions node
+        // Update or insert type TUpdateOptions node
 
-    const typeUpdateOptionsNodeText = `
+        const typeUpdateOptionsNodeText = `
         type TUpdateOptions = Partial<{
             ${typeTUpdateOptionsContent.join("\n")}
         }>;
     `;
-    const typeUpdateOptionsNode = findTypeDeclarationNode({
-        sourceFile: getSourceFileByEditor(editor),
-        typeName: "TUpdateOptions",
-    });
-    if (typeUpdateOptionsNode !== undefined) {
-        await TextEditorUtils.replaceTextOfNode({
-            editor,
-            sourceFile: getSourceFileByEditor(editor),
-            node: typeUpdateOptionsNode,
-            newText: typeUpdateOptionsNodeText,
+        const typeUpdateOptionsNode = findTypeDeclarationNode({
+            sourceFile: createSourceFileByEditor(editor),
+            typeName: "TUpdateOptions",
         });
-    } else {
-        await TextEditorUtils.insertTextAfterNode({
-            editor,
-            sourceFile: getSourceFileByEditor(editor),
-            node: CommonUtils.mandatory(varResolverNode),
-            text: typeUpdateOptionsNodeText,
-        });
-    }
+        if (typeUpdateOptionsNode !== undefined) {
+            await TextEditorUtils.replaceTextOfNode({
+                editor,
+                sourceFile: createSourceFileByEditor(editor),
+                node: typeUpdateOptionsNode,
+                newText: typeUpdateOptionsNodeText,
+            });
+        } else {
+            if (varResolverNode !== undefined) {
+                await TextEditorUtils.insertTextAfterNode({
+                    editor,
+                    sourceFile: createSourceFileByEditor(editor),
+                    node: varResolverNode,
+                    text: typeUpdateOptionsNodeText,
+                });
+            }
+        }
 
-    // Update or insert function update node
+        // Update or insert function update node
 
-    const funcUpdateNodeText = `
+        const funcUpdateNodeText = `
         async function update(dbc: DatabaseConnection, id: string, options: TUpdateOptions) {
             const columnValues: TColumnValue[] = [];
 
@@ -325,35 +332,38 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
             return await dbc.query(preparedStmt, vars);
         }
     `;
-    const funcUpdateNode = findFuncDeclarationNode({
-        sourceFile: getSourceFileByEditor(editor),
-        funcName: "update",
-    });
-    if (funcUpdateNode !== undefined) {
-        await TextEditorUtils.replaceTextOfNode({
-            editor,
-            sourceFile: getSourceFileByEditor(editor),
-            node: funcUpdateNode,
-            newText: funcUpdateNodeText,
+        const funcUpdateNode = findFuncDeclarationNode({
+            sourceFile: createSourceFileByEditor(editor),
+            funcName: "update",
         });
-    } else {
-        await TextEditorUtils.insertTextAfterNode({
+        if (funcUpdateNode !== undefined) {
+            await TextEditorUtils.replaceTextOfNode({
+                editor,
+                sourceFile: createSourceFileByEditor(editor),
+                node: funcUpdateNode,
+                newText: funcUpdateNodeText,
+            });
+        } else {
+            if (typeUpdateOptionsNode !== undefined) {
+                await TextEditorUtils.insertTextAfterNode({
+                    editor,
+                    sourceFile: createSourceFileByEditor(editor),
+                    node: typeUpdateOptionsNode,
+                    text: funcUpdateNodeText,
+                });
+            }
+        }
+
+        await vscode.workspace.save(editor.document.uri);
+
+        await TextEditorUtils.replaceTextOfSourceFile({
             editor,
-            sourceFile: getSourceFileByEditor(editor),
-            node: CommonUtils.mandatory(typeUpdateOptionsNode),
-            text: funcUpdateNodeText,
+            sourceFile: createSourceFileByEditor(editor),
+            newText: await prettierFormatFile(
+                createSourceFileByEditor(editor).fileName
+            ),
         });
     }
-
-    await vscode.workspace.save(editor.document.uri);
-
-    await TextEditorUtils.replaceTextOfSourceFile({
-        editor,
-        sourceFile: getSourceFileByEditor(editor),
-        newText: await prettierFormatFile(
-            getSourceFileByEditor(editor).fileName
-        ),
-    });
 }
 
 function extractTypeMemberMap(node: ts.TypeAliasDeclaration) {

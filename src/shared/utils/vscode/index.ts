@@ -3,15 +3,18 @@ import ts from "typescript";
 import { vscode } from "@/shared";
 import { CommonUtils } from "@utils/common";
 
-export function getSourceFileByEditor(editor: vscode.TextEditor) {
+export function createSourceFileByEditor(editor: vscode.TextEditor) {
+    return createSourceFileByDocument(editor.document);
+}
+
+export function createSourceFileByDocument(document: vscode.TextDocument) {
     return ts.createSourceFile(
-        editor.document.fileName,
-        editor.document.getText(),
+        document.fileName,
+        document.getText(),
         ts.ScriptTarget.ES2015,
         true
     );
 }
-
 export function getWorkspaceFolder() {
     CommonUtils.assert(
         vscode.workspace.workspaceFolders !== undefined,

@@ -19,6 +19,10 @@ class StringToolsCodeActionProvider implements vscode.CodeActionProvider {
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
+        if (document.getText(range).trim() === "") {
+            return [];
+        }
+
         const base64EncodeCodeAction = new vscode.CodeAction(
             "Base64 encode",
             vscode.CodeActionKind.RefactorRewrite

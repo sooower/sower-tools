@@ -2,7 +2,7 @@ import ts from "typescript";
 
 import { vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
-import { getSourceFileByEditor } from "@/shared/utils/vscode";
+import { createSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";
 
 import {
@@ -75,7 +75,10 @@ export async function updateNodeBuiltinModulesImportsWithPrefix({
     };
 
     const edits: vscode.TextEdit[] = [];
-    ts.forEachChild(getSourceFileByEditor(editor), doUpdateNodeBuiltinImports);
+    ts.forEachChild(
+        createSourceFileByEditor(editor),
+        doUpdateNodeBuiltinImports
+    );
 
     if (edits.length > 0) {
         const edit = new vscode.WorkspaceEdit();

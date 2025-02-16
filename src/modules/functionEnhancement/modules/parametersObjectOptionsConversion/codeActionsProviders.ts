@@ -1,5 +1,9 @@
+import ts from "typescript";
+
 import { vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
+import { findFuncOrCtorDeclarationNodeAtOffset } from "@/shared/utils/tsUtils";
+import { createSourceFileByDocument } from "@/shared/utils/vscode";
 
 import { kCommandConvertParametersToOptionsObject } from "./consts";
 
@@ -21,6 +25,10 @@ class ConvertParametersToObjectOptionsCodeActionProvider
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
+        if (!isValidFunctionOrConstructorDeclaration(document, range)) {
+            return [];
+        }
+
         const convertParametersToOptionsObjectCodeAction =
             new vscode.CodeAction(
                 "Convert parameters to options object",
@@ -35,4 +43,46 @@ class ConvertParametersToObjectOptionsCodeActionProvider
 
         return [convertParametersToOptionsObjectCodeAction];
     }
+}
+
+/**
+ * Check if the cursor is in the function declaration and the function has
+ * only one parameter which type is object and the parameter name is ends with
+ * `Options`
+ *
+ * @param document - The document to check
+ * @param range - The range to check
+ * @returns True if the function satisfies the conditions, otherwise false
+ */
+function isValidFunctionOrConstructorDeclaration(
+    document: vscode.TextDocument,
+    range: vscode.Range | vscode.Selection
+): boolean {
+    const node = findFuncOrCtorDeclarationNodeAtOffset({
+        sourceFile: createSourceFileByDocument(document),
+        offset: document.offsetAt(range.start),
+    });
+
+    if (node === undefined) {
+        return false;
+    }
+
+    if (node.parameters.length === 1) {
+        return false;
+    }
+
+    const parameter = node.parameters[0];
+    if (parameter.type === undefined) {
+        return false;
+    }
+
+    if (ts.isTypeLiteralNode(parameter.type)) {
+        return false;
+    }
+
+    if (parameter.type.getText().endsWith("Options")) {
+        return false;
+    }
+
+    return true;
 }

@@ -1,5 +1,7 @@
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
+import { findVariableDeclarationNodeAtOffset } from "@/shared/utils/tsUtils";
+import { createSourceFileByDocument } from "@/shared/utils/vscode";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
@@ -19,8 +21,12 @@ class GenerateTypeOfZodSchemaCodeActionProvider
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
+        if (!isZodSchemaDeclaration(document, range)) {
+            return [];
+        }
+
         const generateTypeSchemaCodeAction = new vscode.CodeAction(
-            "Generate/update type declaration",
+            "Generate/update type of schema",
             vscode.CodeActionKind.QuickFix
         );
         generateTypeSchemaCodeAction.command = {
@@ -31,4 +37,19 @@ class GenerateTypeOfZodSchemaCodeActionProvider
 
         return [generateTypeSchemaCodeAction];
     }
+}
+
+function isZodSchemaDeclaration(
+    document: vscode.TextDocument,
+    range: vscode.Range | vscode.Selection
+) {
+    const sourceFile = createSourceFileByDocument(document);
+    const node = findVariableDeclarationNodeAtOffset({
+        sourceFile,
+        offset: document.offsetAt(range.start),
+    });
+
+    // TODO: Only check the variable name rule temporarily, we should strictly check
+    // variable value type is zod schema declaration in the future.
+    return node !== undefined && node.name.getText().endsWith("Schema");
 }

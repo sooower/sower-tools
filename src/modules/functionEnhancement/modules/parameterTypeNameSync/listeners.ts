@@ -5,7 +5,7 @@ import { toUpperCamelCase } from "@/modules/common/utils";
 import { format, vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
 import { findTypeDeclarationNode } from "@/shared/utils/tsUtils";
-import { getSourceFileByEditor } from "@/shared/utils/vscode";
+import { createSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";
 import { CommonUtils } from "@utils/common";
 
@@ -115,7 +115,7 @@ async function syncFunctionParameterTypeName({
 
     const edits: vscode.TextEdit[] = [];
 
-    const sourceFile = getSourceFileByEditor(editor);
+    const sourceFile = createSourceFileByEditor(editor);
     ts.forEachChild(sourceFile, doSyncFunctionParameterTypeName);
 
     if (edits.length > 0) {

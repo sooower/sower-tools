@@ -7,7 +7,7 @@ import {
     findEnumDeclarationNodeAtOffset,
     findFuncDeclarationNode,
 } from "@/shared/utils/tsUtils";
-import { getSourceFileByEditor } from "@/shared/utils/vscode";
+import { createSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 import { CommonUtils } from "@utils/common";
 
@@ -28,7 +28,7 @@ export function registerCommandGenerateEnumAssertionFunctions() {
                 }
 
                 const enumNode = findEnumDeclarationNodeAtOffset({
-                    sourceFile: getSourceFileByEditor(editor),
+                    sourceFile: createSourceFileByEditor(editor),
                     offset: editor.document.offsetAt(editor.selection.active),
                 });
                 CommonUtils.assert(
@@ -61,7 +61,7 @@ async function generateEnumAssertionFunctions({
 }: TGenerateEnumAssertionFunctionsOptions) {
     const nodeName = node.name.text;
     const enumMemberNames = node.members.map(it =>
-        it.name.getText(getSourceFileByEditor(editor))
+        it.name.getText(createSourceFileByEditor(editor))
     );
     const enumNameWithoutPrefix = mapEnumNameWithoutPrefix(nodeName);
     const valName = toLowerCamelCase(enumNameWithoutPrefix);
@@ -91,20 +91,20 @@ async function generateEnumAssertionFunctions({
         valName
     );
     const assertFuncDeclarationNode = findFuncDeclarationNode({
-        sourceFile: getSourceFileByEditor(editor),
+        sourceFile: createSourceFileByEditor(editor),
         funcName: `assert${enumNameWithoutPrefix}`,
     });
     if (assertFuncDeclarationNode !== undefined) {
         await TextEditorUtils.replaceTextOfNode({
             editor,
-            sourceFile: getSourceFileByEditor(editor),
+            sourceFile: createSourceFileByEditor(editor),
             node: assertFuncDeclarationNode,
             newText: assertFuncText,
         });
     } else {
         await TextEditorUtils.insertTextAfterNode({
             editor,
-            sourceFile: getSourceFileByEditor(editor),
+            sourceFile: createSourceFileByEditor(editor),
             node,
             text: assertFuncText,
         });
@@ -128,16 +128,16 @@ async function generateEnumAssertionFunctions({
         valName
     );
     const assertOptionalFuncDeclarationNode = findFuncDeclarationNode({
-        sourceFile: getSourceFileByEditor(editor),
+        sourceFile: createSourceFileByEditor(editor),
         funcName: `assertOptional${enumNameWithoutPrefix}`,
     });
     if (assertOptionalFuncDeclarationNode === undefined) {
         await TextEditorUtils.insertTextAfterNode({
             editor,
-            sourceFile: getSourceFileByEditor(editor),
+            sourceFile: createSourceFileByEditor(editor),
             node: CommonUtils.mandatory(
                 findFuncDeclarationNode({
-                    sourceFile: getSourceFileByEditor(editor),
+                    sourceFile: createSourceFileByEditor(editor),
                     funcName: `assert${enumNameWithoutPrefix}`,
                 })
             ),
@@ -163,16 +163,16 @@ async function generateEnumAssertionFunctions({
         valName
     );
     const assertNullableFuncDeclarationNode = findFuncDeclarationNode({
-        sourceFile: getSourceFileByEditor(editor),
+        sourceFile: createSourceFileByEditor(editor),
         funcName: `assertNullable${enumNameWithoutPrefix}`,
     });
     if (assertNullableFuncDeclarationNode === undefined) {
         await TextEditorUtils.insertTextAfterNode({
             editor,
-            sourceFile: getSourceFileByEditor(editor),
+            sourceFile: createSourceFileByEditor(editor),
             node: CommonUtils.mandatory(
                 findFuncDeclarationNode({
-                    sourceFile: getSourceFileByEditor(editor),
+                    sourceFile: createSourceFileByEditor(editor),
                     funcName: `assertOptional${enumNameWithoutPrefix}`,
                 })
             ),
@@ -184,9 +184,9 @@ async function generateEnumAssertionFunctions({
 
     await TextEditorUtils.replaceTextOfSourceFile({
         editor,
-        sourceFile: getSourceFileByEditor(editor),
+        sourceFile: createSourceFileByEditor(editor),
         newText: await prettierFormatFile(
-            getSourceFileByEditor(editor).fileName
+            createSourceFileByEditor(editor).fileName
         ),
     });
 }

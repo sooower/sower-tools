@@ -1,5 +1,8 @@
+import ts from "typescript";
+
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
+import { createSourceFileByDocument } from "@/shared/utils/vscode";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
@@ -17,6 +20,10 @@ class SortEnumsCodeActionProvider implements vscode.CodeActionProvider {
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
+        if (!isCurrentFileOnlyContainsEnumsDeclarations(document)) {
+            return [];
+        }
+
         const sortEnumsCodeAction = new vscode.CodeAction(
             "Sort enums",
             vscode.CodeActionKind.QuickFix
@@ -29,4 +36,12 @@ class SortEnumsCodeActionProvider implements vscode.CodeActionProvider {
 
         return [sortEnumsCodeAction];
     }
+}
+
+function isCurrentFileOnlyContainsEnumsDeclarations(
+    document: vscode.TextDocument
+): boolean {
+    return createSourceFileByDocument(document).statements.every(it =>
+        ts.isEnumDeclaration(it)
+    );
 }

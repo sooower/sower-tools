@@ -3,7 +3,7 @@ import ts from "typescript";
 import { format, vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
 import { findAllTypeDeclarationNodes } from "@/shared/utils/tsUtils";
-import { getSourceFileByEditor } from "@/shared/utils/vscode";
+import { createSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";
 import { CommonUtils } from "@utils/common";
 
@@ -67,7 +67,7 @@ async function syncParameterTypeMembers({
     editor,
 }: TSyncParameterTypeMembersOptions) {
     const edits: vscode.TextEdit[] = [];
-    const sourceFile = getSourceFileByEditor(editor);
+    const sourceFile = createSourceFileByEditor(editor);
 
     const typeDeclarationNodes = findAllTypeDeclarationNodes(sourceFile);
 

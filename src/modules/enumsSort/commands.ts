@@ -1,7 +1,7 @@
 import { fs, vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
 import { findEnumDeclarationNodes } from "@/shared/utils/tsUtils";
-import { getSourceFileByEditor } from "@/shared/utils/vscode";
+import { createSourceFileByEditor } from "@/shared/utils/vscode";
 
 export function registerCommandSortEnums() {
     extensionCtx.subscriptions.push(
@@ -34,7 +34,9 @@ export function registerCommandSortEnums() {
  * Sort enum declarations in the file which only contain enum declarations.
  */
 async function sortEnums(editor: vscode.TextEditor) {
-    const enumNodes = findEnumDeclarationNodes(getSourceFileByEditor(editor));
+    const enumNodes = findEnumDeclarationNodes(
+        createSourceFileByEditor(editor)
+    );
     const sortedEnumTexts =
         enumNodes
             .sort((a, b) => {

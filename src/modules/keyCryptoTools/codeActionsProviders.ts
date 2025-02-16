@@ -17,6 +17,10 @@ class KeyCryptoToolsCodeActionProvider implements vscode.CodeActionProvider {
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
+        if (document.getText(range).trim() === "") {
+            return [];
+        }
+
         const keyEncryptCodeAction = new vscode.CodeAction(
             "Encrypt text",
             vscode.CodeActionKind.RefactorRewrite

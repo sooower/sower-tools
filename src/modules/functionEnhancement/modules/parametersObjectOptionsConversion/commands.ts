@@ -9,7 +9,7 @@ import {
     findFuncOrCtorDeclarationNodeAtOffset,
     findTypeDeclarationNode,
 } from "@/shared/utils/tsUtils";
-import { getSourceFileByEditor } from "@/shared/utils/vscode";
+import { createSourceFileByEditor } from "@/shared/utils/vscode";
 import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
 import { CommonUtils } from "@utils/common";
 
@@ -31,7 +31,7 @@ export function registerCommandConvertParametersToOptionsObject() {
                     }
 
                     const node = findFuncOrCtorDeclarationNodeAtOffset({
-                        sourceFile: getSourceFileByEditor(editor),
+                        sourceFile: createSourceFileByEditor(editor),
                         offset: editor.document.offsetAt(
                             editor.selection.active
                         ),
@@ -117,7 +117,7 @@ async function convertParametersToOptionsObject({
 
             await TextEditorUtils.replaceTextOfNode({
                 editor,
-                sourceFile: getSourceFileByEditor(editor),
+                sourceFile: createSourceFileByEditor(editor),
                 node: parameter.type,
                 newText: typeName,
             });
@@ -164,7 +164,7 @@ async function convertParametersToOptionsObject({
 
     // Insert new typeDeclarationText
 
-    const sourceFile = getSourceFileByEditor(editor);
+    const sourceFile = createSourceFileByEditor(editor);
     if (
         findTypeDeclarationNode({
             sourceFile,

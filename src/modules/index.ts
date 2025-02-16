@@ -34,6 +34,7 @@ export function registerModules() {
     );
     moduleManager.registerModule(functionEnhancement.parameterTypeMembersSync);
     moduleManager.registerModule(functionEnhancement.parameterTypeNameSync);
+    moduleManager.registerModule(functionEnhancement.returnStmtStyleDiagnostic);
     moduleManager.registerModule(nodeBuiltinModulesImportsUpdate);
     moduleManager.registerModule(enumsSort);
     moduleManager.registerModule(enumAssertionFunctionsGeneration);
