@@ -1,19 +1,21 @@
 import ts from "typescript";
 
-import { toLowerCamelCase, toUpperCamelCase } from "@/modules/common/utils";
+import {
+    toLowerCamelCase,
+    toUpperCamelCase,
+} from "@/modules/common/modules/configuration/utils";
 
-import { format, vscode } from "@/shared";
+import { ETsType, format, vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
-import { ETsType } from "@/shared/types";
 import { prettierFormatFile } from "@/shared/utils";
 import {
     findEnumDeclarationNode,
     findFuncDeclarationNode,
     findTypeDeclarationNode,
     findVariableDeclarationNode,
-} from "@/shared/utils/tsUtils";
+} from "@/shared/utils/typescript";
 import { createSourceFileByEditor } from "@/shared/utils/vscode";
-import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
+import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
 import { CommonUtils } from "@utils/common";
 
 import { ignoredInsertionColumns, ignoredUpdatingColumns } from "../configs";
@@ -146,7 +148,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         enumName: "EColumn",
     });
     if (enumEColumnNode !== undefined) {
-        await TextEditorUtils.replaceTextOfNode({
+        await textEditorUtils.replaceTextOfNode({
             editor,
             sourceFile: createSourceFileByEditor(editor),
             node: enumEColumnNode,
@@ -158,7 +160,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
             varName: "kFullQualifiedTableName",
         });
         if (node !== undefined) {
-            await TextEditorUtils.insertTextAfterNode({
+            await textEditorUtils.insertTextAfterNode({
                 editor,
                 sourceFile: createSourceFileByEditor(editor),
                 node,
@@ -179,7 +181,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         varName: "kResolver",
     });
     if (varResolverNode !== undefined) {
-        await TextEditorUtils.replaceTextRangeOffset({
+        await textEditorUtils.replaceTextRangeOffset({
             editor,
             start: varResolverNode.parent.getStart(),
             end: varResolverNode.getEnd(),
@@ -192,7 +194,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
             typeName: "TResolvers",
         });
         if (node !== undefined) {
-            await TextEditorUtils.insertTextAfterNode({
+            await textEditorUtils.insertTextAfterNode({
                 editor,
                 sourceFile: createSourceFileByEditor(editor),
                 node,
@@ -213,7 +215,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         typeName: "TInsertOptions",
     });
     if (typeInsertOptionsNode !== undefined) {
-        await TextEditorUtils.replaceTextOfNode({
+        await textEditorUtils.replaceTextOfNode({
             editor,
             sourceFile: createSourceFileByEditor(editor),
             node: typeInsertOptionsNode,
@@ -221,7 +223,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         });
     } else {
         if (varResolverNode !== undefined) {
-            await TextEditorUtils.insertTextAfterNode({
+            await textEditorUtils.insertTextAfterNode({
                 editor,
                 sourceFile: createSourceFileByEditor(editor),
                 node: varResolverNode,
@@ -263,7 +265,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         funcName: "insert",
     });
     if (funcInsertNode !== undefined) {
-        await TextEditorUtils.replaceTextOfNode({
+        await textEditorUtils.replaceTextOfNode({
             editor,
             sourceFile: createSourceFileByEditor(editor),
             node: funcInsertNode,
@@ -271,7 +273,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         });
     } else {
         if (typeInsertOptionsNode !== undefined) {
-            await TextEditorUtils.insertTextAfterNode({
+            await textEditorUtils.insertTextAfterNode({
                 editor,
                 sourceFile: createSourceFileByEditor(editor),
                 node: typeInsertOptionsNode,
@@ -291,7 +293,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
             typeName: "TUpdateOptions",
         });
         if (typeUpdateOptionsNode !== undefined) {
-            await TextEditorUtils.replaceTextOfNode({
+            await textEditorUtils.replaceTextOfNode({
                 editor,
                 sourceFile: createSourceFileByEditor(editor),
                 node: typeUpdateOptionsNode,
@@ -299,7 +301,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
             });
         } else {
             if (varResolverNode !== undefined) {
-                await TextEditorUtils.insertTextAfterNode({
+                await textEditorUtils.insertTextAfterNode({
                     editor,
                     sourceFile: createSourceFileByEditor(editor),
                     node: varResolverNode,
@@ -337,7 +339,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
             funcName: "update",
         });
         if (funcUpdateNode !== undefined) {
-            await TextEditorUtils.replaceTextOfNode({
+            await textEditorUtils.replaceTextOfNode({
                 editor,
                 sourceFile: createSourceFileByEditor(editor),
                 node: funcUpdateNode,
@@ -345,7 +347,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
             });
         } else {
             if (typeUpdateOptionsNode !== undefined) {
-                await TextEditorUtils.insertTextAfterNode({
+                await textEditorUtils.insertTextAfterNode({
                     editor,
                     sourceFile: createSourceFileByEditor(editor),
                     node: typeUpdateOptionsNode,
@@ -356,7 +358,7 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
 
         await vscode.workspace.save(editor.document.uri);
 
-        await TextEditorUtils.replaceTextOfSourceFile({
+        await textEditorUtils.replaceTextOfSourceFile({
             editor,
             sourceFile: createSourceFileByEditor(editor),
             newText: await prettierFormatFile(

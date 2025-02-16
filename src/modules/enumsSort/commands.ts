@@ -1,6 +1,6 @@
 import { fs, vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
-import { findEnumDeclarationNodes } from "@/shared/utils/tsUtils";
+import { findEnumDeclarationNodes } from "@/shared/utils/typescript";
 import { createSourceFileByEditor } from "@/shared/utils/vscode";
 
 export function registerCommandSortEnums() {

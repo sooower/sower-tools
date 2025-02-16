@@ -1,10 +1,12 @@
 import path from "node:path";
 
-import { toLowerCamelCase, toUpperCamelCase } from "@/modules/common/utils";
+import {
+    toLowerCamelCase,
+    toUpperCamelCase,
+} from "@/modules/common/modules/configuration/utils";
 
-import { format, fs, vscode } from "@/shared";
+import { ETsType, format, fs, vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
-import { ETsType } from "@/shared/types";
 import { prettierFormatText } from "@/shared/utils";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 import { CommonUtils } from "@utils/common";

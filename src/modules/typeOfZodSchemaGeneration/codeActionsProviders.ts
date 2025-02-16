@@ -1,6 +1,6 @@
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
-import { findVariableDeclarationNodeAtOffset } from "@/shared/utils/tsUtils";
+import { findVariableDeclarationNodeAtOffset } from "@/shared/utils/typescript";
 import { createSourceFileByDocument } from "@/shared/utils/vscode";
 
 export function registerCodeActionsProviders() {

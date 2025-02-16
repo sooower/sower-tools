@@ -6,12 +6,12 @@ import { prettierFormatFile } from "@/shared/utils";
 import {
     findTypeDeclarationNode,
     findVariableDeclarationNodeAtOffset,
-} from "@/shared/utils/tsUtils";
+} from "@/shared/utils/typescript";
 import { createSourceFileByEditor } from "@/shared/utils/vscode";
-import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
+import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
 import { CommonUtils } from "@utils/common";
 
-import { toUpperCamelCase } from "../common/utils";
+import { toUpperCamelCase } from "../common/modules/configuration/utils";
 
 export function registerCommandGenerateTypeOfZodSchema() {
     extensionCtx.subscriptions.push(
@@ -82,14 +82,14 @@ async function generateTypeSchema({
         typeName,
     });
     if (typeDeclarationNode !== undefined) {
-        await TextEditorUtils.replaceTextOfNode({
+        await textEditorUtils.replaceTextOfNode({
             editor,
             sourceFile,
             node: typeDeclarationNode,
             newText: typeText,
         });
     } else {
-        await TextEditorUtils.insertTextAfterNode({
+        await textEditorUtils.insertTextAfterNode({
             editor,
             sourceFile,
             node,
@@ -100,7 +100,7 @@ async function generateTypeSchema({
 
     await vscode.workspace.save(editor.document.uri);
 
-    await TextEditorUtils.replaceTextOfSourceFile({
+    await textEditorUtils.replaceTextOfSourceFile({
         editor,
         sourceFile: createSourceFileByEditor(editor),
         newText: await prettierFormatFile(

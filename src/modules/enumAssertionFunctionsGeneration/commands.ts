@@ -6,12 +6,12 @@ import { mapEnumNameWithoutPrefix, prettierFormatFile } from "@/shared/utils";
 import {
     findEnumDeclarationNodeAtOffset,
     findFuncDeclarationNode,
-} from "@/shared/utils/tsUtils";
+} from "@/shared/utils/typescript";
 import { createSourceFileByEditor } from "@/shared/utils/vscode";
-import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
+import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
 import { CommonUtils } from "@utils/common";
 
-import { toLowerCamelCase } from "../common/utils";
+import { toLowerCamelCase } from "../common/modules/configuration/utils";
 
 export function registerCommandGenerateEnumAssertionFunctions() {
     const command = vscode.commands.registerCommand(
@@ -95,14 +95,14 @@ async function generateEnumAssertionFunctions({
         funcName: `assert${enumNameWithoutPrefix}`,
     });
     if (assertFuncDeclarationNode !== undefined) {
-        await TextEditorUtils.replaceTextOfNode({
+        await textEditorUtils.replaceTextOfNode({
             editor,
             sourceFile: createSourceFileByEditor(editor),
             node: assertFuncDeclarationNode,
             newText: assertFuncText,
         });
     } else {
-        await TextEditorUtils.insertTextAfterNode({
+        await textEditorUtils.insertTextAfterNode({
             editor,
             sourceFile: createSourceFileByEditor(editor),
             node,
@@ -132,7 +132,7 @@ async function generateEnumAssertionFunctions({
         funcName: `assertOptional${enumNameWithoutPrefix}`,
     });
     if (assertOptionalFuncDeclarationNode === undefined) {
-        await TextEditorUtils.insertTextAfterNode({
+        await textEditorUtils.insertTextAfterNode({
             editor,
             sourceFile: createSourceFileByEditor(editor),
             node: CommonUtils.mandatory(
@@ -167,7 +167,7 @@ async function generateEnumAssertionFunctions({
         funcName: `assertNullable${enumNameWithoutPrefix}`,
     });
     if (assertNullableFuncDeclarationNode === undefined) {
-        await TextEditorUtils.insertTextAfterNode({
+        await textEditorUtils.insertTextAfterNode({
             editor,
             sourceFile: createSourceFileByEditor(editor),
             node: CommonUtils.mandatory(
@@ -182,7 +182,7 @@ async function generateEnumAssertionFunctions({
 
     await vscode.workspace.save(editor.document.uri);
 
-    await TextEditorUtils.replaceTextOfSourceFile({
+    await textEditorUtils.replaceTextOfSourceFile({
         editor,
         sourceFile: createSourceFileByEditor(editor),
         newText: await prettierFormatFile(

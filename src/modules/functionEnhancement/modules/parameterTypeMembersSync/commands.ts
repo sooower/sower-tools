@@ -2,9 +2,9 @@ import ts from "typescript";
 
 import { format, vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
-import { findAllTypeDeclarationNodes } from "@/shared/utils/tsUtils";
+import { findAllTypeDeclarationNodes } from "@/shared/utils/typescript";
 import { createSourceFileByEditor } from "@/shared/utils/vscode";
-import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";
+import { textEditUtils } from "@/shared/utils/vscode/textEdit";
 import { CommonUtils } from "@utils/common";
 
 import { kCommandSyncParameterTypeMembers } from "./consts";
@@ -101,7 +101,7 @@ async function syncParameterTypeMembers({
                             ).join(", ")
                         );
                         edits.push(
-                            TextEditUtils.replaceTextOfNode({
+                            textEditUtils.replaceTextOfNode({
                                 editor,
                                 node: parameter.name,
                                 newText: newParamsText,

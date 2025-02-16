@@ -1,9 +1,5 @@
 import { defineModule } from "@/shared/moduleManager";
 
-import { parseConfigs } from "./configs";
+import { configuration } from "./modules/configuration";
 
-export const common = defineModule({
-    onReloadConfiguration() {
-        parseConfigs();
-    },
-});
+export const common = defineModule([configuration]);

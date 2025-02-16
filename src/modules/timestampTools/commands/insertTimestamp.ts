@@ -1,6 +1,6 @@
 import { vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
-import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
+import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
 import { datetime } from "@utils/datetime";
 
 import { kCommandInsertTimestamp } from "../consts";
@@ -14,7 +14,7 @@ export function registerCommandInsertTimestamp() {
                     return;
                 }
 
-                await TextEditorUtils.insertTextAtOffset({
+                await textEditorUtils.insertTextAtOffset({
                     editor,
                     offset: editor.document.offsetAt(editor.selection.active),
                     text: datetime().format("YYYY-MM-DD HH:mm:ss"), // TODO: update to load timestamp format from configuration

@@ -2,7 +2,7 @@ import { window } from "vscode";
 
 import { format, vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
-import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
+import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
 import { datetime } from "@utils/datetime";
 
 import { kCommandConvertTimestamp } from "../consts";
@@ -43,7 +43,7 @@ export function registerCommandConvertTimestamp() {
                         return;
                     }
                 }
-                await TextEditorUtils.replaceTextRangeOffset({
+                await textEditorUtils.replaceTextRangeOffset({
                     editor,
                     start: editor.document.offsetAt(editor.selection.start),
                     end: editor.document.offsetAt(editor.selection.end),

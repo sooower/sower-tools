@@ -2,11 +2,11 @@ import path from "node:path";
 
 import pluralize from "pluralize";
 
-import { toUpperCamelCase } from "@/modules/common/utils";
-
 import { format, fs, vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
+
+import { toUpperCamelCase } from "../common/modules/configuration/utils";
 
 export function registerCommandGenerateAPIResources() {
     extensionCtx.subscriptions.push(

@@ -1,6 +1,6 @@
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
-import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
+import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
 
 import { keyCryptoToolsKey } from "../configs";
 import { KeyCrypto } from "./utils";
@@ -24,7 +24,7 @@ export function registerCommandKeyDecrypt() {
                         key: keyCryptoToolsKey,
                     });
 
-                    await TextEditorUtils.replaceTextRangeOffset({
+                    await textEditorUtils.replaceTextRangeOffset({
                         editor,
                         start: editor.document.offsetAt(editor.selection.start),
                         end: editor.document.offsetAt(editor.selection.end),

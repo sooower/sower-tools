@@ -1,12 +1,12 @@
 import ts from "typescript";
 
-import { toUpperCamelCase } from "@/modules/common/utils";
+import { toUpperCamelCase } from "@/modules/common/modules/configuration/utils";
 
 import { format, vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
-import { findTypeDeclarationNode } from "@/shared/utils/tsUtils";
+import { findTypeDeclarationNode } from "@/shared/utils/typescript";
 import { createSourceFileByEditor } from "@/shared/utils/vscode";
-import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";
+import { textEditUtils } from "@/shared/utils/vscode/textEdit";
 import { CommonUtils } from "@utils/common";
 
 export function registerOnDidSaveTextDocumentListener() {
@@ -100,12 +100,12 @@ async function syncFunctionParameterTypeName({
         );
 
         edits.push(
-            TextEditUtils.replaceTextOfNode({
+            textEditUtils.replaceTextOfNode({
                 editor,
                 node: typeDeclarationNode.name,
                 newText: expectedParamTypeName,
             }),
-            TextEditUtils.replaceTextOfNode({
+            textEditUtils.replaceTextOfNode({
                 editor,
                 node: parameter.type,
                 newText: expectedParamTypeName,

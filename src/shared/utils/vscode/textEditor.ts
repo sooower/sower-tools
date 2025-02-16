@@ -54,8 +54,8 @@ type TInsertTextAtOffsetOptions = {
     lineBreak?: string;
 };
 
-export class TextEditorUtils {
-    static async replaceTextOfNode({
+class TextEditorUtils {
+    async replaceTextOfNode({
         editor,
         sourceFile,
         node,
@@ -80,7 +80,7 @@ export class TextEditorUtils {
         });
     }
 
-    static async replaceTextRangeOffset({
+    async replaceTextRangeOffset({
         editor,
         start,
         end,
@@ -100,7 +100,7 @@ export class TextEditorUtils {
         });
     }
 
-    static async replaceTextOfSourceFile({
+    async replaceTextOfSourceFile({
         editor,
         sourceFile,
         newText,
@@ -121,7 +121,7 @@ export class TextEditorUtils {
         });
     }
 
-    static async deleteTextOfNode({
+    async deleteTextOfNode({
         editor,
         sourceFile,
         node,
@@ -144,7 +144,7 @@ export class TextEditorUtils {
         });
     }
 
-    static async insertTextBeforeNode({
+    async insertTextBeforeNode({
         editor,
         sourceFile,
         node,
@@ -164,7 +164,7 @@ export class TextEditorUtils {
         });
     }
 
-    static async insertTextAfterNode({
+    async insertTextAfterNode({
         editor,
         sourceFile,
         node,
@@ -189,7 +189,7 @@ export class TextEditorUtils {
         });
     }
 
-    static async insertTextAtOffset({
+    async insertTextAtOffset({
         editor,
         offset,
         text,
@@ -203,3 +203,5 @@ export class TextEditorUtils {
         });
     }
 }
+
+export const textEditorUtils = new TextEditorUtils();

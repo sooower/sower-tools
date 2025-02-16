@@ -2,7 +2,7 @@ import ts from "typescript";
 
 import { vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
-import { findFuncOrCtorDeclarationNodeAtOffset } from "@/shared/utils/tsUtils";
+import { findFuncOrCtorDeclarationNodeAtOffset } from "@/shared/utils/typescript";
 import { createSourceFileByDocument } from "@/shared/utils/vscode";
 
 import { kCommandConvertParametersToOptionsObject } from "./consts";

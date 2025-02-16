@@ -3,7 +3,7 @@ import ts from "typescript";
 import { vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
 import { createSourceFileByEditor } from "@/shared/utils/vscode";
-import { TextEditUtils } from "@/shared/utils/vscode/textEditUtils";
+import { textEditUtils } from "@/shared/utils/vscode/textEdit";
 
 import {
     enableUpdateNodeBuiltinModulesImports,
@@ -63,7 +63,7 @@ export async function updateNodeBuiltinModulesImportsWithPrefix({
             !moduleName.startsWith("node:")
         ) {
             edits.push(
-                TextEditUtils.replaceTextRangeOffset({
+                textEditUtils.replaceTextRangeOffset({
                     editor,
                     start: node.moduleSpecifier.getStart() + 1,
                     end: node.moduleSpecifier.getEnd() - 1,

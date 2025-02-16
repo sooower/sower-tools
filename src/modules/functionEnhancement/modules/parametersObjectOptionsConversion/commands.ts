@@ -1,16 +1,15 @@
 import ts from "typescript";
 
-import { toUpperCamelCase } from "@/modules/common/utils";
+import { toUpperCamelCase } from "@/modules/common/modules/configuration/utils";
 
-import { format, vscode } from "@/shared";
+import { ETsType, format, vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
-import { ETsType } from "@/shared/types";
 import {
     findFuncOrCtorDeclarationNodeAtOffset,
     findTypeDeclarationNode,
-} from "@/shared/utils/tsUtils";
+} from "@/shared/utils/typescript";
 import { createSourceFileByEditor } from "@/shared/utils/vscode";
-import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
+import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
 import { CommonUtils } from "@utils/common";
 
 import { kCommandConvertParametersToOptionsObject } from "./consts";
@@ -115,7 +114,7 @@ async function convertParametersToOptionsObject({
                 typeMembersText.join("\n\t")
             );
 
-            await TextEditorUtils.replaceTextOfNode({
+            await textEditorUtils.replaceTextOfNode({
                 editor,
                 sourceFile: createSourceFileByEditor(editor),
                 node: parameter.type,
@@ -149,7 +148,7 @@ async function convertParametersToOptionsObject({
 
         const firstParam = node.parameters[0];
         const lastParam = node.parameters[node.parameters.length - 1];
-        await TextEditorUtils.replaceTextRangeOffset({
+        await textEditorUtils.replaceTextRangeOffset({
             editor,
             start: firstParam.getStart(),
             end: lastParam.getEnd(),
@@ -172,7 +171,7 @@ async function convertParametersToOptionsObject({
         }) === undefined &&
         typeDeclarationText !== undefined
     ) {
-        await TextEditorUtils.insertTextBeforeNode({
+        await textEditorUtils.insertTextBeforeNode({
             editor,
             sourceFile,
             node:

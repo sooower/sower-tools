@@ -16,6 +16,11 @@ export function registerDiagnosticReturnStmtStyle() {
     extensionCtx.subscriptions.push(
         vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
     );
+    extensionCtx.subscriptions.push(
+        vscode.workspace.onDidChangeTextDocument(e =>
+            updateDiagnostics(e.document)
+        )
+    );
 }
 
 const diagnostics: vscode.Diagnostic[] = [];

@@ -1,6 +1,6 @@
 import { vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
-import { findTypeDeclarationNodeAtOffset } from "@/shared/utils/tsUtils";
+import { findTypeDeclarationNodeAtOffset } from "@/shared/utils/typescript";
 import { createSourceFileByDocument } from "@/shared/utils/vscode";
 
 import { kCommandSyncParameterTypeMembers } from "./consts";

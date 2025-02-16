@@ -23,12 +23,8 @@ type TReplaceTextRangeOffsetOptions = {
     endPlusOne?: boolean;
 };
 
-export class TextEditUtils {
-    static replaceTextOfNode({
-        editor,
-        node,
-        newText,
-    }: TReplaceTextOfNodeOptions) {
+class TextEditUtils {
+    replaceTextOfNode({ editor, node, newText }: TReplaceTextOfNodeOptions) {
         return vscode.TextEdit.replace(
             new vscode.Range(
                 editor.document.positionAt(node.getStart()),
@@ -38,7 +34,7 @@ export class TextEditUtils {
         );
     }
 
-    static insertTextAfterNode({
+    insertTextAfterNode({
         editor,
         node,
         text,
@@ -50,7 +46,7 @@ export class TextEditUtils {
         );
     }
 
-    static replaceTextRangeOffset({
+    replaceTextRangeOffset({
         editor,
         start,
         end,
@@ -66,3 +62,5 @@ export class TextEditUtils {
         );
     }
 }
+
+export const textEditUtils = new TextEditUtils();

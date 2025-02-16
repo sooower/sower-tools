@@ -1,6 +1,6 @@
 import { vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
-import { findEnumDeclarationNodeAtOffset } from "@/shared/utils/tsUtils";
+import { findEnumDeclarationNodeAtOffset } from "@/shared/utils/typescript";
 import { createSourceFileByDocument } from "@/shared/utils/vscode";
 
 export function registerCodeActionsProviders() {

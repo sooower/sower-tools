@@ -1,6 +1,6 @@
 import { vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";
-import { TextEditorUtils } from "@/shared/utils/vscode/textEditorUtils";
+import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
 
 import { enableReplaceText } from "../configs";
 import { kCommandBase64Encode } from "../consts";
@@ -42,13 +42,13 @@ async function base64Encode({ editor, text }: TBase64EncodeOptions) {
 
     const encodedText = Buffer.from(text, "utf-8").toString("base64");
     enableReplaceText
-        ? await TextEditorUtils.replaceTextRangeOffset({
+        ? await textEditorUtils.replaceTextRangeOffset({
               editor,
               start: editor.document.offsetAt(editor.selection.start),
               end: editor.document.offsetAt(editor.selection.end),
               newText: encodedText,
           })
-        : await TextEditorUtils.insertTextAtOffset({
+        : await textEditorUtils.insertTextAtOffset({
               editor,
               offset: editor.document.offsetAt(editor.selection.end),
               text: encodedText,
