@@ -1,6 +1,6 @@
 import ts from "typescript";
 
-import { toUpperCamelCase } from "@/modules/common/modules/configuration/utils";
+import { toUpperCamelCase } from "@/modules/shared/modules/configuration/utils";
 
 import { ETsType, format, vscode } from "@/shared";
 import { extensionCtx } from "@/shared/context";

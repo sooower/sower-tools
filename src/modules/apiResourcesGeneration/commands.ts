@@ -6,7 +6,7 @@ import { format, fs, vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";
 import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
 
-import { toUpperCamelCase } from "../common/modules/configuration/utils";
+import { toUpperCamelCase } from "../shared/modules/configuration/utils";
 
 export function registerCommandGenerateAPIResources() {
     extensionCtx.subscriptions.push(

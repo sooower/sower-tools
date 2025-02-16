@@ -3,7 +3,7 @@ import path from "node:path";
 import {
     toLowerCamelCase,
     toUpperCamelCase,
-} from "@/modules/common/modules/configuration/utils";
+} from "@/modules/shared/modules/configuration/utils";
 
 import { ETsType, format, fs, vscode } from "@/shared";
 import { extensionCtx, extensionName } from "@/shared/context";

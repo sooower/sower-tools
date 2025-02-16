@@ -11,7 +11,7 @@ import { createSourceFileByEditor } from "@/shared/utils/vscode";
 import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
 import { CommonUtils } from "@utils/common";
 
-import { toLowerCamelCase } from "../common/modules/configuration/utils";
+import { toLowerCamelCase } from "../shared/modules/configuration/utils";
 
 export function registerCommandGenerateEnumAssertionFunctions() {
     const command = vscode.commands.registerCommand(

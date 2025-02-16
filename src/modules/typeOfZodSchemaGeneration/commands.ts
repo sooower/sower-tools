@@ -11,7 +11,7 @@ import { createSourceFileByEditor } from "@/shared/utils/vscode";
 import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
 import { CommonUtils } from "@utils/common";
 
-import { toUpperCamelCase } from "../common/modules/configuration/utils";
+import { toUpperCamelCase } from "../shared/modules/configuration/utils";
 
 export function registerCommandGenerateTypeOfZodSchema() {
     extensionCtx.subscriptions.push(
