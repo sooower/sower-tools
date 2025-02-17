@@ -19,11 +19,6 @@ export function registerDiagnosticNoInvalidLocalImageFilePath() {
     extensionCtx.subscriptions.push(
         vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
     );
-    extensionCtx.subscriptions.push(
-        vscode.workspace.onDidChangeTextDocument(e =>
-            updateDiagnostics(e.document)
-        )
-    );
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {

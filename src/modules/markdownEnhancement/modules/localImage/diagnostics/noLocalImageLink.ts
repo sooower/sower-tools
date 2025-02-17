@@ -20,22 +20,17 @@ export function registerDiagnosticNoLocalImageLink() {
 
     // Register diagnostic update trigger
     extensionCtx.subscriptions.push(
-        vscode.workspace.onDidOpenTextDocument(appendDiagnostics)
+        vscode.workspace.onDidOpenTextDocument(updateDiagnostics)
     );
     extensionCtx.subscriptions.push(
-        vscode.workspace.onDidSaveTextDocument(appendDiagnostics)
-    );
-    extensionCtx.subscriptions.push(
-        vscode.workspace.onDidChangeTextDocument(e =>
-            appendDiagnostics(e.document)
-        )
+        vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
     );
 
     // Register upload image to minio storage command
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
-            `${extensionName}.markdownImageEnhancement.imageUpload.uploadImageToMinioStorage`,
-            uploadImageToMinioStorage
+            `${extensionName}.markdownEnhancement.localImage.uploadImage`,
+            uploadImage
         )
     );
 
@@ -49,10 +44,12 @@ export function registerDiagnosticNoLocalImageLink() {
     );
 }
 
-async function appendDiagnostics(document: vscode.TextDocument) {
+async function updateDiagnostics(document: vscode.TextDocument) {
     if (document.languageId !== "markdown") {
         return;
     }
+
+    console.log("xxx:", document.getText());
 
     if (!enableUploadImage) {
         diagnosticCollection.clear();
@@ -90,10 +87,7 @@ async function appendDiagnostics(document: vscode.TextDocument) {
     diagnosticCollection.set(document.uri, diagnostics);
 }
 
-async function uploadImageToMinioStorage(
-    document: vscode.TextDocument,
-    range: vscode.Range
-) {
+async function uploadImage(document: vscode.TextDocument, range: vscode.Range) {
     vscode.window.withProgress(
         {
             location: vscode.ProgressLocation.Notification,

@@ -16,6 +16,7 @@ import { readmeDocumentPreview } from "./readmeDocumentPreview";
 import { shared } from "./shared";
 import { statusBarEnhancement } from "./statusBarEnhancement";
 import { stringTools } from "./stringTools";
+import { styleCheck } from "./styleCheck";
 import { timestampTools } from "./timestampTools";
 import { typeOfZodSchemaGeneration } from "./typeOfZodSchemaGeneration";
 
@@ -38,4 +39,5 @@ export const modules = defineModule([
     gitEnhancement,
     apiResourcesGeneration,
     statusBarEnhancement,
+    styleCheck,
 ]);

@@ -6,8 +6,10 @@ import { createSourceFileByDocument } from "@/shared/utils/vscode";
 
 let collection: vscode.DiagnosticCollection;
 
-export function registerDiagnosticReturnStmtStyle() {
-    collection = vscode.languages.createDiagnosticCollection("returnStmtStyle");
+export function registerDiagnosticReturnStatementStyle() {
+    collection = vscode.languages.createDiagnosticCollection(
+        "return-statement-style"
+    );
     extensionCtx.subscriptions.push(collection);
 
     extensionCtx.subscriptions.push(
@@ -16,25 +18,20 @@ export function registerDiagnosticReturnStmtStyle() {
     extensionCtx.subscriptions.push(
         vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
     );
-    extensionCtx.subscriptions.push(
-        vscode.workspace.onDidChangeTextDocument(e =>
-            updateDiagnostics(e.document)
-        )
-    );
 }
 
-const diagnostics: vscode.Diagnostic[] = [];
-
 function updateDiagnostics(document: vscode.TextDocument) {
-    diagnostics.length = 0; // Clear the previous diagnostics
-
     if (document.languageId !== "typescript") {
         return;
     }
 
+    console.log("date:", new Date().toISOString());
+
+    const diagnostics: vscode.Diagnostic[] = [];
+
     const visitNode = (node: ts.Node) => {
         if (ts.isBlock(node)) {
-            checkBlock(node, document);
+            checkBlock(node, document, diagnostics);
         }
         ts.forEachChild(node, visitNode);
     };
@@ -43,7 +40,11 @@ function updateDiagnostics(document: vscode.TextDocument) {
     collection.set(document.uri, diagnostics);
 }
 
-function checkBlock(block: ts.Block, document: vscode.TextDocument) {
+function checkBlock(
+    block: ts.Block,
+    document: vscode.TextDocument,
+    diagnostics: vscode.Diagnostic[]
+) {
     const stmts = block.statements;
     if (stmts.length < 2) {
         return;
@@ -69,7 +70,7 @@ function checkBlock(block: ts.Block, document: vscode.TextDocument) {
             "Missing blank line before return statement.",
             vscode.DiagnosticSeverity.Warning
         );
-        diagnostic.code = `@${extensionName}/blank-line-before-return`;
+        diagnostic.code = `@${extensionName}/blank-line-before-return-statement`;
 
         diagnostics.push(diagnostic);
     }
