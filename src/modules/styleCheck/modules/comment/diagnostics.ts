@@ -1,8 +1,10 @@
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
+import { findBlockNodeAtOffset } from "@/utils/typescript";
 import { detectCommentType, kCommentType } from "@/utils/typescript/comment";
+import { createSourceFileByDocument } from "@/utils/vscode";
 
-import { hasValidLeadingSpace } from "../../utils";
+import { hasValidLeadingSpaceBefore } from "../../utils";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -30,13 +32,36 @@ export function updateDiagnostics(document: vscode.TextDocument) {
             continue;
         }
 
+        // Skip check if the comment is the first line
         if (lineIndex < 1) {
             continue;
         }
 
-        if (!isValidCommentSpacing(document, lineIndex)) {
-            appendDiagnostic(document, lineIndex, diagnostics);
+        // check if the comment is the first sub node of a block node
+        const blockNode = findBlockNodeAtOffset({
+            sourceFile: createSourceFileByDocument(document),
+            offset: document.offsetAt(currentLine.range.start),
+        });
+
+        // Skip check if the comment is the first line of function, type, interface, class declaration
+        const firstSubNode = blockNode?.statements.at(0);
+        if (
+            firstSubNode === undefined ||
+            firstSubNode.getStart() >=
+                document.offsetAt(currentLine.range.start)
+        ) {
+            continue;
         }
+
+        if (isConsecutiveSingleLineComment(document, lineIndex)) {
+            continue;
+        }
+
+        if (hasValidLeadingSpaceBefore(document, lineIndex)) {
+            continue;
+        }
+
+        appendDiagnostic(document, lineIndex, diagnostics);
     }
 
     diagnosticCollection.set(document.uri, diagnostics);
@@ -54,7 +79,7 @@ function isCodeWithEndComment(text: string): boolean {
     return codeParts[0].trim().length > 0;
 }
 
-function isValidCommentSpacing(
+function isConsecutiveSingleLineComment(
     document: vscode.TextDocument,
     lineIndex: number
 ): boolean {
@@ -65,7 +90,6 @@ function isValidCommentSpacing(
         document.lineAt(lineIndex - 1).text
     );
 
-    // Skip check if consecutive single line comment
     if (
         currentLineCommentType === kCommentType.SingleLine &&
         previousLineCommentType === kCommentType.SingleLine
@@ -73,7 +97,7 @@ function isValidCommentSpacing(
         return true;
     }
 
-    return hasValidLeadingSpace(document, lineIndex);
+    return false;
 }
 
 function appendDiagnostic(
@@ -93,7 +117,7 @@ function appendDiagnostic(
             new vscode.Position(line.lineNumber, firstVisibleCharIndex),
             line.range.end
         ),
-        "Need a blank line before the comment",
+        "Missing a blank line before the comment",
         vscode.DiagnosticSeverity.Warning
     );
     diagnostic.code = `@${extensionName}/blank-line-before-comment`;

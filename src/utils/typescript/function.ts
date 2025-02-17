@@ -1,4 +1,4 @@
-import ts from "typescript";
+import ts, { ConstructorDeclaration, MethodDeclaration } from "typescript";
 
 export type TFunc =
     | ts.FunctionDeclaration
@@ -77,4 +77,23 @@ export function findAllFuncOrCtorDeclarationNodes(sourceFile: ts.SourceFile) {
     visit(sourceFile);
 
     return funcOrCtorDeclarationNodes;
+}
+
+export function findFirstMethodOrCtorDeclarationNode(
+    sourceFile: ts.SourceFile
+) {
+    const visit = (
+        node: ts.Node
+    ): MethodDeclaration | ConstructorDeclaration | undefined => {
+        if (
+            !ts.isMethodDeclaration(node) &&
+            !ts.isConstructorDeclaration(node)
+        ) {
+            return ts.forEachChild(node, visit);
+        }
+
+        return node;
+    };
+
+    return visit(sourceFile);
 }

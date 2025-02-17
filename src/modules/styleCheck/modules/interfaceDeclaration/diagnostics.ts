@@ -6,7 +6,7 @@ import { findAllInterfaceDeclarationNodes } from "@/utils/typescript";
 import { detectCommentType } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
 
-import { hasValidLeadingSpace } from "../../utils";
+import { hasValidLeadingSpaceBefore } from "../../utils";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -48,11 +48,12 @@ function appendDiagnostic(
         interfaceDeclNodeStartPos
     ).line;
 
+    // Skip if the interface declaration is the first line
     if (interfaceDeclNodeStartLineIndex === 0) {
         return;
     }
 
-    if (hasValidLeadingSpace(document, interfaceDeclNodeStartLineIndex)) {
+    if (hasValidLeadingSpaceBefore(document, interfaceDeclNodeStartLineIndex)) {
         return;
     }
 
@@ -67,7 +68,7 @@ function appendDiagnostic(
             document.positionAt(interfaceDeclNodeStartPos),
             document.positionAt(interfaceDeclNodeStartPos)
         ),
-        "Need a blank line before the interface declaration",
+        "Missing a blank line before the interface declaration",
         vscode.DiagnosticSeverity.Warning
     );
     diagnostic.code = `@${extensionName}/blank-line-before-interface-declaration`;

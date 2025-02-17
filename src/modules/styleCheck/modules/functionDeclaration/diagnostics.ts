@@ -1,10 +1,14 @@
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
-import { findAllFuncOrCtorDeclarationNodes, TFunc } from "@/utils/typescript";
+import {
+    findAllFuncOrCtorDeclarationNodes,
+    findFirstMethodOrCtorDeclarationNode,
+    TFunc,
+} from "@/utils/typescript";
 import { detectCommentType } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
 
-import { hasValidLeadingSpace } from "../../utils";
+import { hasValidLeadingSpaceBefore } from "../../utils";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -45,11 +49,20 @@ function appendDiagnostic(
     const funcDeclNodeStartLineIndex =
         document.positionAt(funcNodeStartPos).line;
 
+    // Skip if the function declaration is the first line
     if (funcDeclNodeStartLineIndex === 0) {
         return;
     }
 
-    if (hasValidLeadingSpace(document, funcDeclNodeStartLineIndex)) {
+    // Skip if the constructor or method declaration is the first one of its parent class
+    const firstCtorOrMethodDecl = findFirstMethodOrCtorDeclarationNode(
+        createSourceFileByDocument(document)
+    );
+    if (firstCtorOrMethodDecl?.getStart() === funcNodeStartPos) {
+        return;
+    }
+
+    if (hasValidLeadingSpaceBefore(document, funcDeclNodeStartLineIndex)) {
         return;
     }
 
@@ -64,7 +77,7 @@ function appendDiagnostic(
             document.positionAt(funcNodeStartPos),
             document.positionAt(funcNodeStartPos)
         ),
-        "Need a blank line before the function declaration",
+        "Missing a blank line before the function declaration",
         vscode.DiagnosticSeverity.Warning
     );
     diagnostic.code = `@${extensionName}/blank-line-before-function-declaration`;

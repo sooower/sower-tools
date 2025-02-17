@@ -6,7 +6,7 @@ import { findAllClassDeclarationNodes } from "@/utils/typescript";
 import { detectCommentType } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
 
-import { hasValidLeadingSpace } from "../../utils";
+import { hasValidLeadingSpaceBefore } from "../../utils";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -46,11 +46,12 @@ function appendDiagnostic(
     const classDeclNodeStartLineIndex =
         document.positionAt(classNodeStartPos).line;
 
+    // Skip if the class declaration is the first line
     if (classDeclNodeStartLineIndex === 0) {
         return;
     }
 
-    if (hasValidLeadingSpace(document, classDeclNodeStartLineIndex)) {
+    if (hasValidLeadingSpaceBefore(document, classDeclNodeStartLineIndex)) {
         return;
     }
 
@@ -65,7 +66,7 @@ function appendDiagnostic(
             document.positionAt(classNodeStartPos),
             document.positionAt(classNodeStartPos)
         ),
-        "Need a blank line before the class declaration",
+        "Missing a blank line before the class declaration",
         vscode.DiagnosticSeverity.Warning
     );
     diagnostic.code = `@${extensionName}/blank-line-before-class-declaration`;

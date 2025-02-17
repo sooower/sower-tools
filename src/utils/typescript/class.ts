@@ -1,14 +1,13 @@
 import ts from "typescript";
 
-type TFindClassDeclarationNodeOffsetOptions = {
+type TFindClassDeclarationNodeAtOffsetOptions = {
     sourceFile: ts.SourceFile;
     offset: number;
 };
-
-export function findClassDeclarationNodeOffset({
+export function findClassDeclarationNodeAtOffset({
     sourceFile,
     offset,
-}: TFindClassDeclarationNodeOffsetOptions) {
+}: TFindClassDeclarationNodeAtOffsetOptions) {
     const visit = (node: ts.Node): ts.ClassDeclaration | undefined => {
         if (!ts.isClassDeclaration(node)) {
             return ts.forEachChild(node, visit);

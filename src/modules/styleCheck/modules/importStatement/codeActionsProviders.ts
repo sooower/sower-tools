@@ -9,11 +9,11 @@ export function registerCodeActionsProviders() {
                     .filter(
                         d =>
                             d.code ===
-                            `@${extensionName}/blank-line-before-type-declaration`
+                            `@${extensionName}/blank-line-after-last-import-statement`
                     )
                     .map(diagnostic => {
                         const codeAction = new vscode.CodeAction(
-                            "Add a blank line before the type declaration",
+                            "Add a blank line after the last import statement",
                             vscode.CodeActionKind.QuickFix
                         );
 
@@ -21,7 +21,10 @@ export function registerCodeActionsProviders() {
                         codeAction.edit = new vscode.WorkspaceEdit();
                         codeAction.edit.insert(
                             document.uri,
-                            new vscode.Position(diagnostic.range.start.line, 0),
+                            new vscode.Position(
+                                diagnostic.range.end.line + 1,
+                                0
+                            ),
                             "\n"
                         );
 

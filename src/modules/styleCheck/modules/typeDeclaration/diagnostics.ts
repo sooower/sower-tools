@@ -6,7 +6,7 @@ import { findAllTypeDeclarationNodes } from "@/utils/typescript";
 import { detectCommentType } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
 
-import { hasValidLeadingSpace } from "../../utils";
+import { hasValidLeadingSpaceBefore } from "../../utils";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -46,11 +46,20 @@ function appendDiagnostic(
     const typeDeclNodeStartLineIndex =
         document.positionAt(typeDeclNodeStartPos).line;
 
+    // Skip if the type declaration is the first line
     if (typeDeclNodeStartLineIndex === 0) {
         return;
     }
 
-    if (hasValidLeadingSpace(document, typeDeclNodeStartLineIndex)) {
+    // Skip if the type declaration only contains a single line
+    if (
+        document.positionAt(node.getStart()).line ===
+        document.positionAt(node.getEnd()).line
+    ) {
+        return;
+    }
+
+    if (hasValidLeadingSpaceBefore(document, typeDeclNodeStartLineIndex)) {
         return;
     }
 
@@ -65,7 +74,7 @@ function appendDiagnostic(
             document.positionAt(typeDeclNodeStartPos),
             document.positionAt(typeDeclNodeStartPos)
         ),
-        "Need a blank line before the type declaration",
+        "Missing a blank line before the type declaration",
         vscode.DiagnosticSeverity.Warning
     );
     diagnostic.code = `@${extensionName}/blank-line-before-type-declaration`;
