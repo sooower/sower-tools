@@ -1,4 +1,4 @@
-import { vscode } from "@/shared";
+import { vscode } from "@/core";
 
 import { setSelectedLinesStatusItemText } from "./statusBarItems";
 

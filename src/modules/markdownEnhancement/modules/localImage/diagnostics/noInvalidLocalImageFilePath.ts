@@ -1,7 +1,7 @@
 import path from "node:path";
 
-import { fs, vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
+import { fs, vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
 
 import { kLocalImageLinkRegex } from "../consts";
 

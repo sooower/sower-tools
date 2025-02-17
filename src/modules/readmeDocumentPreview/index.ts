@@ -1,4 +1,4 @@
-import { defineModule } from "@/shared/moduleManager";
+import { defineModule } from "@/core/moduleManager";
 
 import { enablePreviewReadmeDocument, parseConfigs } from "./configs";
 import { previewDocument } from "./utils";

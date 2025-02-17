@@ -1,4 +1,4 @@
-import { defineModule } from "@/shared/moduleManager";
+import { defineModule } from "@/core/moduleManager";
 
 import { registerCommandDebugCurrentFile } from "./commands/debugCurrentFile";
 import { registerCommandDebugProject } from "./commands/debugProject";

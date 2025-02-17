@@ -1,6 +1,6 @@
-import { vscode } from "@/shared";
-import { extensionCtx } from "@/shared/context";
-import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
+import { vscode } from "@/core";
+import { extensionCtx } from "@/core/context";
+import { textEditorUtils } from "@/utils/vscode/textEditor";
 
 import { enableReplaceText } from "../configs";
 import { kCommandBase64Decode } from "../consts";

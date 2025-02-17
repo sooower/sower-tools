@@ -1,4 +1,4 @@
-import { defineModule } from "@/shared/moduleManager";
+import { defineModule } from "@/core/moduleManager";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
 import { registerCommandBase64Decode } from "./commands/base64Decode";

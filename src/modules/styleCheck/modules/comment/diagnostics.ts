@@ -1,5 +1,5 @@
-import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
+import { vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
 
 const kCommentType = {
     SingleLine: "//",

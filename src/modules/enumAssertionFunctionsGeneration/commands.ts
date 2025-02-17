@@ -1,14 +1,14 @@
 import ts from "typescript";
 
-import { format, vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
-import { mapEnumNameWithoutPrefix, prettierFormatFile } from "@/shared/utils";
+import { format, vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
+import { mapEnumNameWithoutPrefix, prettierFormatFile } from "@/utils";
 import {
     findEnumDeclarationNodeAtOffset,
     findFuncDeclarationNode,
-} from "@/shared/utils/typescript";
-import { createSourceFileByEditor } from "@/shared/utils/vscode";
-import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
+} from "@/utils/typescript";
+import { createSourceFileByEditor } from "@/utils/vscode";
+import { textEditorUtils } from "@/utils/vscode/textEditor";
 import { CommonUtils } from "@utils/common";
 
 import { toLowerCamelCase } from "../shared/modules/configuration/utils";

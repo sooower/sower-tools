@@ -3,9 +3,9 @@ import path from "node:path";
 import markdownIt from "markdown-it";
 import z from "zod";
 
-import { fs, vscode } from "@/shared";
-import { extensionCtx } from "@/shared/context";
-import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
+import { fs, vscode } from "@/core";
+import { extensionCtx } from "@/core/context";
+import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { readJsonFile } from "@utils/fs";
 
 import { kCommandSyncChangelog } from "./consts";

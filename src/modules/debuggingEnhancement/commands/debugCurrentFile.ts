@@ -1,6 +1,6 @@
-import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
-import { getWorkspaceFolder } from "@/shared/utils/vscode";
+import { vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
+import { getWorkspaceFolder } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 import { debugCurrentFileConfigurationNames } from "../configs";

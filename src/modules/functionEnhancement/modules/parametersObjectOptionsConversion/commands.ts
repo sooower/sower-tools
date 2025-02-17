@@ -2,14 +2,16 @@ import ts from "typescript";
 
 import { toUpperCamelCase } from "@/modules/shared/modules/configuration/utils";
 
-import { ETsType, format, vscode } from "@/shared";
-import { extensionCtx } from "@/shared/context";
+import { ETsType } from "@/types";
+
+import { format, vscode } from "@/core";
+import { extensionCtx } from "@/core/context";
 import {
     findFuncOrCtorDeclarationNodeAtOffset,
     findTypeDeclarationNode,
-} from "@/shared/utils/typescript";
-import { createSourceFileByEditor } from "@/shared/utils/vscode";
-import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
+} from "@/utils/typescript";
+import { createSourceFileByEditor } from "@/utils/vscode";
+import { textEditorUtils } from "@/utils/vscode/textEditor";
 import { CommonUtils } from "@utils/common";
 
 import { kCommandConvertParametersToOptionsObject } from "./consts";

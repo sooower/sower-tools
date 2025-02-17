@@ -5,17 +5,19 @@ import {
     toUpperCamelCase,
 } from "@/modules/shared/modules/configuration/utils";
 
-import { ETsType, format, vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
-import { prettierFormatFile } from "@/shared/utils";
+import { ETsType } from "@/types";
+
+import { format, vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
+import { prettierFormatFile } from "@/utils";
 import {
     findEnumDeclarationNode,
     findFuncDeclarationNode,
     findTypeDeclarationNode,
     findVariableDeclarationNode,
-} from "@/shared/utils/typescript";
-import { createSourceFileByEditor } from "@/shared/utils/vscode";
-import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
+} from "@/utils/typescript";
+import { createSourceFileByEditor } from "@/utils/vscode";
+import { textEditorUtils } from "@/utils/vscode/textEditor";
 import { CommonUtils } from "@utils/common";
 
 import { ignoredInsertionColumns, ignoredUpdatingColumns } from "../configs";

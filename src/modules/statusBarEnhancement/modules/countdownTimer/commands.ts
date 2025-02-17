@@ -1,8 +1,8 @@
 import duration, { Duration } from "dayjs/plugin/duration"; // ES 2015
 import { ThemeColor } from "vscode";
 
-import { format, vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
+import { format, vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
 import { datetime, nowDatetime } from "@utils/datetime";
 
 import { countdownTimerOptions, TCountdownTimerOption } from "./configs";

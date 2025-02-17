@@ -1,8 +1,8 @@
 import ts from "typescript";
 
-import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
-import { createSourceFileByDocument } from "@/shared/utils/vscode";
+import { vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
+import { createSourceFileByDocument } from "@/utils/vscode";
 
 let collection: vscode.DiagnosticCollection;
 
@@ -24,8 +24,6 @@ function updateDiagnostics(document: vscode.TextDocument) {
     if (document.languageId !== "typescript") {
         return;
     }
-
-    console.log("date:", new Date().toISOString());
 
     const diagnostics: vscode.Diagnostic[] = [];
 

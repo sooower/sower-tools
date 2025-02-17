@@ -1,4 +1,4 @@
-import { defineModule } from "@/shared/moduleManager";
+import { defineModule } from "@/core/moduleManager";
 
 import { comment } from "./modules/comment";
 import { returnStatement } from "./modules/returnStatement";

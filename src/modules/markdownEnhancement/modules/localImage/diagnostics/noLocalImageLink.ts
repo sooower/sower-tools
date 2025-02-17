@@ -2,8 +2,8 @@ import path from "node:path";
 
 import { Client } from "minio";
 
-import { format, vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
+import { format, vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
 import { CommonUtils } from "@utils/common";
 
 import { uploadImageConfig } from "../configs/uploadImageConfigFilePath";

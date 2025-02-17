@@ -1,4 +1,4 @@
-import { vscode } from "../";
+import { vscode } from "..";
 import { extensionCtx, extensionName } from "../context";
 import { moduleManager } from "../moduleManager";
 

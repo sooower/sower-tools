@@ -2,11 +2,11 @@ import ts from "typescript";
 
 import { toUpperCamelCase } from "@/modules/shared/modules/configuration/utils";
 
-import { format, vscode } from "@/shared";
-import { extensionCtx } from "@/shared/context";
-import { findTypeDeclarationNode } from "@/shared/utils/typescript";
-import { createSourceFileByEditor } from "@/shared/utils/vscode";
-import { textEditUtils } from "@/shared/utils/vscode/textEdit";
+import { format, vscode } from "@/core";
+import { extensionCtx } from "@/core/context";
+import { findTypeDeclarationNode } from "@/utils/typescript";
+import { createSourceFileByEditor } from "@/utils/vscode";
+import { textEditUtils } from "@/utils/vscode/textEdit";
 import { CommonUtils } from "@utils/common";
 
 export function registerOnDidSaveTextDocumentListener() {

@@ -1,8 +1,8 @@
+import { vscode } from "./core";
+import { initializeConfigurations } from "./core/configuration";
+import { extensionName, initializeContext } from "./core/context";
+import { moduleManager } from "./core/moduleManager";
 import { modules } from "./modules";
-import { vscode } from "./shared";
-import { initializeConfigurations } from "./shared/configuration";
-import { extensionName, initializeContext } from "./shared/context";
-import { moduleManager } from "./shared/moduleManager";
 
 export async function activate(context: vscode.ExtensionContext) {
     try {

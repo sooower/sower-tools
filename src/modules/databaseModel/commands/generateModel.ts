@@ -5,10 +5,12 @@ import {
     toUpperCamelCase,
 } from "@/modules/shared/modules/configuration/utils";
 
-import { ETsType, format, fs, vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
-import { prettierFormatText } from "@/shared/utils";
-import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
+import { ETsType } from "@/types";
+
+import { format, fs, vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
+import { prettierFormatText } from "@/utils";
+import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 import {

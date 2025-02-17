@@ -1,7 +1,7 @@
 import { Position } from "vscode";
 
-import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
+import { vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(

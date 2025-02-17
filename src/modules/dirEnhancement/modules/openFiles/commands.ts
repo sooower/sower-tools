@@ -1,8 +1,8 @@
 import path from "node:path";
 
-import { format, vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
-import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
+import { format, vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
+import { getWorkspaceFolderPath } from "@/utils/vscode";
 
 import { ignoredFilenames } from "./configs";
 

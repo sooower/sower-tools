@@ -1,8 +1,8 @@
 import path from "node:path";
 
-import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
-import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
+import { vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
+import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { execCommand } from "@utils/command";
 
 export function registerCommandSkipWorkTree() {

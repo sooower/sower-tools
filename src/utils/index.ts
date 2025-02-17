@@ -2,9 +2,8 @@ import { nextTick } from "node:process";
 
 import * as prettier from "prettier";
 
+import { fs } from "@/core";
 import { CommonUtils } from "@utils/common";
-
-import { fs } from "../";
 
 export function mapEnumNameWithoutPrefix(enumTypeName: string) {
     CommonUtils.assert(

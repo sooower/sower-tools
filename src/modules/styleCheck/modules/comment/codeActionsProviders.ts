@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { extensionName } from "@/shared/context";
+import { extensionName } from "@/core/context";
 
 export function registerCodeActionsProviders() {
     vscode.languages.registerCodeActionsProvider("typescript", {

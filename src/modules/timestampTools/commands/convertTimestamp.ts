@@ -1,8 +1,8 @@
 import { window } from "vscode";
 
-import { format, vscode } from "@/shared";
-import { extensionCtx } from "@/shared/context";
-import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
+import { format, vscode } from "@/core";
+import { extensionCtx } from "@/core/context";
+import { textEditorUtils } from "@/utils/vscode/textEditor";
 import { datetime } from "@utils/datetime";
 
 import { kCommandConvertTimestamp } from "../consts";

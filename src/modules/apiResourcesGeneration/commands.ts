@@ -2,9 +2,9 @@ import path from "node:path";
 
 import pluralize from "pluralize";
 
-import { format, fs, vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
-import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
+import { format, fs, vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
+import { getWorkspaceFolderPath } from "@/utils/vscode";
 
 import { toUpperCamelCase } from "../shared/modules/configuration/utils";
 

@@ -1,9 +1,9 @@
 import ts from "typescript";
 
-import { vscode } from "@/shared";
-import { extensionCtx } from "@/shared/context";
-import { createSourceFileByEditor } from "@/shared/utils/vscode";
-import { textEditUtils } from "@/shared/utils/vscode/textEdit";
+import { vscode } from "@/core";
+import { extensionCtx } from "@/core/context";
+import { createSourceFileByEditor } from "@/utils/vscode";
+import { textEditUtils } from "@/utils/vscode/textEdit";
 
 import {
     enableUpdateNodeBuiltinModulesImports,

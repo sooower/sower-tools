@@ -1,4 +1,4 @@
-import { vscode } from "@/shared";
+import { vscode } from "@/core";
 import { datetime } from "@utils/datetime";
 
 import { enableShowStatusBarNowTimestamp } from "./configs";

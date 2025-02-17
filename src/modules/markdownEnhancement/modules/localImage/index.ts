@@ -1,4 +1,4 @@
-import { defineModule } from "@/shared/moduleManager";
+import { defineModule } from "@/core/moduleManager";
 
 import { parseUploadImageConfigFilePath } from "./configs/uploadImageConfigFilePath";
 import { parseUploadImageEnable } from "./configs/uploadImageEnable";

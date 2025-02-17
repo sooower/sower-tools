@@ -1,8 +1,8 @@
 import crypto from "node:crypto";
 
-import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
-import { textEditorUtils } from "@/shared/utils/vscode/textEditor";
+import { vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
+import { textEditorUtils } from "@/utils/vscode/textEditor";
 
 import { keyCryptoToolsKey } from "../configs";
 import { KeyCrypto } from "./utils";

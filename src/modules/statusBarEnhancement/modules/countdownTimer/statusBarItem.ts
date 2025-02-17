@@ -1,5 +1,5 @@
-import { vscode } from "@/shared";
-import { extensionName } from "@/shared/context";
+import { vscode } from "@/core";
+import { extensionName } from "@/core/context";
 
 export let statusBarItem: vscode.StatusBarItem;
 

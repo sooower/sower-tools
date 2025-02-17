@@ -1,8 +1,8 @@
 import ts from "typescript";
 
-import { vscode } from "@/shared";
-import { extensionCtx, extensionName } from "@/shared/context";
-import { createSourceFileByDocument } from "@/shared/utils/vscode";
+import { vscode } from "@/core";
+import { extensionCtx, extensionName } from "@/core/context";
+import { createSourceFileByDocument } from "@/utils/vscode";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(

@@ -1,4 +1,4 @@
-import { defineModule } from "@/shared/moduleManager";
+import { defineModule } from "@/core/moduleManager";
 
 import { registerCommandListFiles } from "./commands/listFiles";
 import { registerCommandNoSkipWorkTree } from "./commands/noSkipWorkTree";

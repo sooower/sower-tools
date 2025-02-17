@@ -1,4 +1,4 @@
-import { defineModule } from "@/shared/moduleManager";
+import { defineModule } from "@/core/moduleManager";
 
 import { apiResourcesGeneration } from "./apiResourcesGeneration";
 import { syncChangelog } from "./changelogSync";

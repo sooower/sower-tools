@@ -1,4 +1,4 @@
-import { format, vscode } from "@/shared";
+import { format, vscode } from "@/core";
 
 let statusBarItem: vscode.StatusBarItem;
 

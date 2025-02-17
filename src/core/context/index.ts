@@ -2,8 +2,9 @@ import path from "node:path";
 
 import { z } from "zod";
 
-import { vscode } from "@/shared";
 import { readJsonFile } from "@utils/fs";
+
+import { vscode } from "..";
 
 export let extensionCtx: vscode.ExtensionContext;
 export let extensionName: string;

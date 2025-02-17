@@ -1,7 +1,7 @@
 import path from "node:path";
 
-import { vscode } from "@/shared";
-import { extensionCtx } from "@/shared/context";
+import { vscode } from "@/core";
+import { extensionCtx } from "@/core/context";
 
 import { kCommandSyncChangelog } from "./consts";
 

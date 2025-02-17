@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { getConfigurationItem } from "@/shared/configuration";
-import { extensionName } from "@/shared/context";
+import { getConfigurationItem } from "@/core/configuration";
+import { extensionName } from "@/core/context";
 
 /**
  * The key for encrypt/decrypt text.

@@ -2,8 +2,8 @@ import path from "node:path";
 
 import z from "zod";
 
-import { fs } from "@/shared";
-import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
+import { fs } from "@/core";
+import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 import { readFile } from "@utils/fs";
 import { Json } from "@utils/json";

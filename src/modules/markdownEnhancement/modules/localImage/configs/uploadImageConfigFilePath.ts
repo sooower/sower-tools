@@ -2,9 +2,9 @@ import path from "node:path";
 
 import z from "zod";
 
-import { fs, os } from "@/shared";
-import { getConfigurationItem } from "@/shared/configuration";
-import { extensionName } from "@/shared/context";
+import { fs, os } from "@/core";
+import { getConfigurationItem } from "@/core/configuration";
+import { extensionName } from "@/core/context";
 import { readJsonFile } from "@utils/fs";
 
 const uploadImageConfigSchema = z.object({

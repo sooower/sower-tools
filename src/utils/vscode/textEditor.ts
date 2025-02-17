@@ -1,6 +1,6 @@
 import ts from "typescript";
 
-import { vscode } from "@/shared";
+import { vscode } from "@/core";
 
 type TReplaceTextOfSourceFileOptions = {
     editor: vscode.TextEditor;

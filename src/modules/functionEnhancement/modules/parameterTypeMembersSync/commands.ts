@@ -1,10 +1,10 @@
 import ts from "typescript";
 
-import { format, vscode } from "@/shared";
-import { extensionCtx } from "@/shared/context";
-import { findAllTypeDeclarationNodes } from "@/shared/utils/typescript";
-import { createSourceFileByEditor } from "@/shared/utils/vscode";
-import { textEditUtils } from "@/shared/utils/vscode/textEdit";
+import { format, vscode } from "@/core";
+import { extensionCtx } from "@/core/context";
+import { findAllTypeDeclarationNodes } from "@/utils/typescript";
+import { createSourceFileByEditor } from "@/utils/vscode";
+import { textEditUtils } from "@/utils/vscode/textEdit";
 import { CommonUtils } from "@utils/common";
 
 import { kCommandSyncParameterTypeMembers } from "./consts";

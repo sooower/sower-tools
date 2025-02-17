@@ -1,7 +1,7 @@
 import path from "node:path";
 
-import { vscode } from "@/shared";
-import { getWorkspaceFolderPath } from "@/shared/utils/vscode";
+import { vscode } from "@/core";
+import { getWorkspaceFolderPath } from "@/utils/vscode";
 
 import { readmeDocumentNames } from "./configs";
 
