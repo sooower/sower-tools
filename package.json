@@ -487,6 +487,45 @@
                     "description": "The path of the config file for uploading images to file server. Supports user home directory alias \"~\".",
                     "type": "string",
                     "default": "~/.config/sower-tools/.upload-image-config.json"
+                },
+                "sower-tools.completionItemEnhancement.logPrinting.patterns": {
+                    "description": "The mapping patterns of log printing, when your input matches the trigger and you selected the completion item, it will be replaced with the replacement.",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "trigger": {
+                                "type": "string",
+                                "description": "The trigger of the log printing."
+                            },
+                            "replacement": {
+                                "type": "string",
+                                "description": "The replacement of the log printing."
+                            }
+                        }
+                    },
+                    "default": [
+                        {
+                            "trigger": "{{varName}}.log",
+                            "replacement": "console.log(\"{{varName}}:\", {{varName}});"
+                        },
+                        {
+                            "trigger": "{{varName}}.info",
+                            "replacement": "console.info(\"{{varName}}:\", {{varName}});"
+                        },
+                        {
+                            "trigger": "{{varName}}.debug",
+                            "replacement": "console.debug(\"{{varName}}:\", {{varName}});"
+                        },
+                        {
+                            "trigger": "{{varName}}.warn",
+                            "replacement": "console.warn(\"{{varName}}:\", {{varName}});"
+                        },
+                        {
+                            "trigger": "{{varName}}.error",
+                            "replacement": "console.error(\"{{varName}}:\", {{varName}});"
+                        }
+                    ]
                 }
             }
         }

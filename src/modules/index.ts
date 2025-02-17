@@ -2,6 +2,7 @@ import { defineModule } from "@/core/moduleManager";
 
 import { apiResourcesGeneration } from "./apiResourcesGeneration";
 import { syncChangelog } from "./changelogSync";
+import { completionItemEnhancement } from "./completionItemEnhancement";
 import { databaseModel } from "./databaseModel";
 import { debuggingEnhancement } from "./debuggingEnhancement";
 import { dirEnhancement } from "./dirEnhancement";
@@ -40,4 +41,5 @@ export const modules = defineModule([
     apiResourcesGeneration,
     statusBarEnhancement,
     styleCheck,
+    completionItemEnhancement,
 ]);
