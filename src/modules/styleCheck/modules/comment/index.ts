@@ -1,11 +1,11 @@
 import { defineModule } from "@/core/moduleManager";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
-import { registerDiagnosticCommentStyle } from "./diagnostics";
+import { registerDiagnosticComment } from "./diagnostics";
 
 export const comment = defineModule({
     onActive() {
-        registerDiagnosticCommentStyle();
+        registerDiagnosticComment();
         registerCodeActionsProviders();
     },
 });

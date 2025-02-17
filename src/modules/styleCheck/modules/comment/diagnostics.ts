@@ -1,24 +1,18 @@
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
+import { detectCommentType, kCommentType } from "@/utils/typescript/comment";
 
-const kCommentType = {
-    SingleLine: "//",
-    MultiLineStart: "/*",
-    MultiLineEnd: "*/",
-    DocComment: "/**",
-};
+import { hasValidLeadingSpace } from "../../utils";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
-export function registerDiagnosticCommentStyle() {
+export function registerDiagnosticComment() {
     diagnosticCollection =
-        vscode.languages.createDiagnosticCollection("comment-style");
+        vscode.languages.createDiagnosticCollection("comment");
 
-    extensionCtx.subscriptions.push(diagnosticCollection);
     extensionCtx.subscriptions.push(
-        vscode.workspace.onDidOpenTextDocument(updateDiagnostics)
-    );
-    extensionCtx.subscriptions.push(
+        diagnosticCollection,
+        vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
         vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
     );
 }
@@ -80,49 +74,6 @@ function isValidCommentSpacing(
     }
 
     return hasValidLeadingSpace(document, lineIndex);
-}
-
-function detectCommentType(text: string): string | null {
-    const trimmed = text.trim();
-
-    if (trimmed.startsWith(kCommentType.DocComment)) {
-        return kCommentType.DocComment;
-    }
-
-    if (trimmed.startsWith(kCommentType.SingleLine)) {
-        return kCommentType.SingleLine;
-    }
-
-    if (trimmed.includes(kCommentType.MultiLineEnd)) {
-        return kCommentType.MultiLineEnd;
-    }
-
-    if (trimmed.startsWith(kCommentType.MultiLineStart)) {
-        return kCommentType.MultiLineStart;
-    }
-
-    return null;
-}
-
-function hasValidLeadingSpace(
-    document: vscode.TextDocument,
-    lineIndex: number
-): boolean {
-    let blankCount = 0;
-    let currentLineIndex = lineIndex - 1;
-
-    // Scan backwards until non-empty line
-    while (currentLineIndex >= 0) {
-        const currentLine = document.lineAt(currentLineIndex);
-        if (currentLine.isEmptyOrWhitespace) {
-            blankCount++;
-            currentLineIndex--;
-        } else {
-            break;
-        }
-    }
-
-    return blankCount >= 1;
 }
 
 function appendDiagnostic(

@@ -2,20 +2,17 @@ import ts from "typescript";
 
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
+import { findAllBlockNodes } from "@/utils/typescript";
 import { createSourceFileByDocument } from "@/utils/vscode";
 
 let collection: vscode.DiagnosticCollection;
 
-export function registerDiagnosticReturnStatementStyle() {
-    collection = vscode.languages.createDiagnosticCollection(
-        "return-statement-style"
-    );
-    extensionCtx.subscriptions.push(collection);
-
+export function registerDiagnosticReturnStatement() {
+    collection =
+        vscode.languages.createDiagnosticCollection("return-statement");
     extensionCtx.subscriptions.push(
-        vscode.workspace.onDidOpenTextDocument(updateDiagnostics)
-    );
-    extensionCtx.subscriptions.push(
+        collection,
+        vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
         vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
     );
 }
@@ -26,19 +23,13 @@ function updateDiagnostics(document: vscode.TextDocument) {
     }
 
     const diagnostics: vscode.Diagnostic[] = [];
-
-    const visitNode = (node: ts.Node) => {
-        if (ts.isBlock(node)) {
-            checkBlock(node, document, diagnostics);
-        }
-        ts.forEachChild(node, visitNode);
-    };
-
-    ts.forEachChild(createSourceFileByDocument(document), visitNode);
+    findAllBlockNodes(createSourceFileByDocument(document)).forEach(block => {
+        appendDiagnostic(block, document, diagnostics);
+    });
     collection.set(document.uri, diagnostics);
 }
 
-function checkBlock(
+function appendDiagnostic(
     block: ts.Block,
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
@@ -50,6 +41,13 @@ function checkBlock(
 
     const lastStmt = stmts[stmts.length - 1];
     if (!ts.isReturnStatement(lastStmt)) {
+        // Check last statement is a return statement recursively.
+        ts.forEachChild(lastStmt, child => {
+            if (ts.isBlock(child)) {
+                return appendDiagnostic(child, document, diagnostics);
+            }
+        });
+
         return;
     }
 

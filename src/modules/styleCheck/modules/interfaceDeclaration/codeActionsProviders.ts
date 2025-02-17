@@ -1,5 +1,3 @@
-import { Position } from "vscode";
-
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
 
@@ -9,20 +7,21 @@ export function registerCodeActionsProviders() {
             provideCodeActions(document, range, context, token) {
                 return context.diagnostics
                     .filter(
-                        diagnostic =>
-                            diagnostic.code ===
-                                `@${extensionName}/blank-line-before-return-statement` &&
-                            isCursorInDiagnosticRange(diagnostic, range)
+                        d =>
+                            d.code ===
+                            `@${extensionName}/blank-line-before-interface-declaration`
                     )
                     .map(diagnostic => {
                         const codeAction = new vscode.CodeAction(
-                            "Add blank line before return statement",
+                            "Add a blank line before the interface declaration",
                             vscode.CodeActionKind.QuickFix
                         );
+
+                        codeAction.diagnostics = [diagnostic];
                         codeAction.edit = new vscode.WorkspaceEdit();
                         codeAction.edit.insert(
                             document.uri,
-                            new Position(diagnostic.range.start.line, 0),
+                            new vscode.Position(diagnostic.range.start.line, 0),
                             "\n"
                         );
 
@@ -30,15 +29,5 @@ export function registerCodeActionsProviders() {
                     });
             },
         })
-    );
-}
-
-function isCursorInDiagnosticRange(
-    diagnostic: vscode.Diagnostic,
-    range: vscode.Range | vscode.Selection
-) {
-    return (
-        range.start.line >= diagnostic.range.start.line &&
-        range.end.line <= diagnostic.range.end.line
     );
 }

@@ -1,11 +1,11 @@
 import { defineModule } from "@/core/moduleManager";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
-import { registerDiagnosticReturnStatement } from "./diagnostics";
+import { registerDiagnosticFunctionDeclaration } from "./diagnostics";
 
-export const returnStatement = defineModule({
+export const functionDeclaration = defineModule({
     onActive() {
-        registerDiagnosticReturnStatement();
+        registerDiagnosticFunctionDeclaration();
         registerCodeActionsProviders();
     },
 });

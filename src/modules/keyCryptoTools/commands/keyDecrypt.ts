@@ -1,6 +1,6 @@
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
-import { textEditorUtils } from "@/utils/vscode/textEditor";
+import { textEditorUtils } from "@/utils/vscode";
 
 import { keyCryptoToolsKey } from "../configs";
 import { KeyCrypto } from "./utils";

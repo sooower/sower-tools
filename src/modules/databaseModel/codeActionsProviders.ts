@@ -23,9 +23,14 @@ class GenerateModelCodeActionProvider implements vscode.CodeActionProvider {
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
+        const selectedText = document.getText(range).toUpperCase();
+        if (!selectedText.includes("CREATE TABLE")) {
+            return [];
+        }
+
         const generateModelCodeAction = new vscode.CodeAction(
             "Generate model",
-            vscode.CodeActionKind.Empty
+            vscode.CodeActionKind.RefactorExtract
         );
         generateModelCodeAction.command = {
             command: `${extensionName}.databaseModel.generateModel`,

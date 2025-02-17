@@ -2,8 +2,7 @@ import ts from "typescript";
 
 import { vscode } from "@/core";
 import { extensionCtx } from "@/core/context";
-import { createSourceFileByEditor } from "@/utils/vscode";
-import { textEditUtils } from "@/utils/vscode/textEdit";
+import { createSourceFileByEditor, textEditUtils } from "@/utils/vscode";
 
 import {
     enableUpdateNodeBuiltinModulesImports,

@@ -10,8 +10,7 @@ import {
     findFuncOrCtorDeclarationNodeAtOffset,
     findTypeDeclarationNode,
 } from "@/utils/typescript";
-import { createSourceFileByEditor } from "@/utils/vscode";
-import { textEditorUtils } from "@/utils/vscode/textEditor";
+import { createSourceFileByEditor, textEditorUtils } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 import { kCommandConvertParametersToOptionsObject } from "./consts";

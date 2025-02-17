@@ -1,6 +1,6 @@
 import { vscode } from "@/core";
 import { extensionCtx } from "@/core/context";
-import { textEditorUtils } from "@/utils/vscode/textEditor";
+import { textEditorUtils } from "@/utils/vscode";
 import { datetime } from "@utils/datetime";
 
 import { kCommandInsertTimestamp } from "../consts";

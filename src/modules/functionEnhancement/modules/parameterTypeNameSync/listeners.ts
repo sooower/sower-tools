@@ -5,8 +5,7 @@ import { toUpperCamelCase } from "@/modules/shared/modules/configuration/utils";
 import { format, vscode } from "@/core";
 import { extensionCtx } from "@/core/context";
 import { findTypeDeclarationNode } from "@/utils/typescript";
-import { createSourceFileByEditor } from "@/utils/vscode";
-import { textEditUtils } from "@/utils/vscode/textEdit";
+import { createSourceFileByEditor, textEditUtils } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 export function registerOnDidSaveTextDocumentListener() {
