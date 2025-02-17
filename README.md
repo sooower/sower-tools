@@ -35,6 +35,11 @@
     -   `no-invalid-local-image-file-path`.
     -   `no-local-image-link`.
 -   Add upload local image to minio storage functionality.
+-   Add module `returnStmtStyleDiagnostic` and fix code actions pre-condition.
+-   Add module `styleCheck` and add a sub module `comment` for comment style check.
+-   Add class, function, interface and type declarations style diagnostics and code actions.
+-   Add import statement style diagnostics and code actions.
+-   Add log printing completion item enhancement, support print log to the console and update configuration dynamically.
 
 ## Usage
 
