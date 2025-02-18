@@ -95,8 +95,8 @@
                 "title": "Sync Changelog"
             },
             {
-                "command": "sower-tools.sortEnums",
-                "title": "Sort Enums"
+                "command": "sower-tools.sortEnumsDeclaration",
+                "title": "Sort Enums Declaration"
             },
             {
                 "command": "sower-tools.keyCryptoTools.keyEncrypt",
@@ -211,8 +211,8 @@
                     "when": "resourceLangId == markdown && editorTextFocus"
                 },
                 {
-                    "command": "sower-tools.sortEnums",
-                    "group": "007_enumsSort@001",
+                    "command": "sower-tools.sortEnumsDeclaration",
+                    "group": "007_enumsDeclarationSort@001",
                     "when": "resourceLangId == typescript && editorTextFocus"
                 },
                 {

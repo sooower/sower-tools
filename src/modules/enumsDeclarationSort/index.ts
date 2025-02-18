@@ -1,11 +1,11 @@
 import { defineModule } from "@/core/moduleManager";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
-import { registerCommandSortEnums } from "./commands";
+import { registerCommandSortEnumsDeclaration } from "./commands";
 
-export const enumsSort = defineModule({
+export const enumsDeclarationSort = defineModule({
     onActive() {
-        registerCommandSortEnums();
+        registerCommandSortEnumsDeclaration();
         registerCodeActionsProviders();
     },
 });

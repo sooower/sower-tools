@@ -3,10 +3,10 @@ import { extensionCtx, extensionName } from "@/core/context";
 import { findTopLevelEnumDeclarationNodes } from "@/utils/typescript";
 import { createSourceFileByEditor } from "@/utils/vscode";
 
-export function registerCommandSortEnums() {
+export function registerCommandSortEnumsDeclaration() {
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
-            `${extensionName}.sortEnums`,
+            `${extensionName}.sortEnumsDeclaration`,
             async () => {
                 try {
                     const editor = vscode.window.activeTextEditor;
@@ -20,7 +20,7 @@ export function registerCommandSortEnums() {
 
                     await vscode.workspace.save(editor.document.uri);
 
-                    await sortEnums(editor);
+                    await sortEnumsDeclaration(editor);
                 } catch (e) {
                     console.error(e);
                     vscode.window.showErrorMessage(`${e}`);
@@ -33,7 +33,7 @@ export function registerCommandSortEnums() {
 /**
  * Sort enum declarations in the file which only contain enum declarations.
  */
-async function sortEnums(editor: vscode.TextEditor) {
+async function sortEnumsDeclaration(editor: vscode.TextEditor) {
     const enumNodes = findTopLevelEnumDeclarationNodes(
         createSourceFileByEditor(editor)
     );

@@ -7,7 +7,7 @@ import { databaseModel } from "./databaseModel";
 import { debuggingEnhancement } from "./debuggingEnhancement";
 import { dirEnhancement } from "./dirEnhancement";
 import { enumAssertionFunctionsGeneration } from "./enumAssertionFunctionsGeneration";
-import { enumsSort } from "./enumsSort";
+import { enumsDeclarationSort } from "./enumsDeclarationSort";
 import { functionEnhancement } from "./functionEnhancement";
 import { gitEnhancement } from "./gitEnhancement";
 import { keyCryptoTools } from "./keyCryptoTools";
@@ -30,7 +30,7 @@ export const modules = defineModule([
     readmeDocumentPreview,
     functionEnhancement,
     nodeBuiltinModulesImportsUpdate,
-    enumsSort,
+    enumsDeclarationSort,
     enumAssertionFunctionsGeneration,
     typeOfZodSchemaGeneration,
     databaseModel,
