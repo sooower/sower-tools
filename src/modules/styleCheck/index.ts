@@ -4,6 +4,7 @@ import { breakStatement } from "./modules/breakStatement";
 import { classDeclaration } from "./modules/classDeclaration";
 import { comment } from "./modules/comment";
 import { continueStatement } from "./modules/continueStatement";
+import { enumDeclaration } from "./modules/enumDeclaration";
 import { functionDeclaration } from "./modules/functionDeclaration";
 import { importStatement } from "./modules/importStatement";
 import { interfaceDeclaration } from "./modules/interfaceDeclaration";
@@ -20,4 +21,5 @@ export const styleCheck = defineModule([
     functionDeclaration,
     continueStatement,
     breakStatement,
+    enumDeclaration,
 ]);

@@ -3,13 +3,13 @@ import ts from "typescript";
 import { isOffsetWithinNode } from "./utils";
 
 /**
- * Find all root level (not nested in other nodes) enum declaration nodes in a source file.
+ * Find all top level (not nested in other nodes) enum declaration nodes in a source file.
  *
  * @throws Error if non-enum nodes are found
  * @param sourceFile - The source file to search for enum declaration nodes
  * @returns An array of all enum declaration nodes in the source file
  */
-export function findRootLevelEnumDeclarationNodes(sourceFile: ts.SourceFile) {
+export function findTopLevelEnumDeclarationNodes(sourceFile: ts.SourceFile) {
     const enumNodes: ts.EnumDeclaration[] = [];
 
     sourceFile.forEachChild(node => {

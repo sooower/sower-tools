@@ -1,6 +1,6 @@
 import { fs, vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
-import { findRootLevelEnumDeclarationNodes } from "@/utils/typescript";
+import { findTopLevelEnumDeclarationNodes } from "@/utils/typescript";
 import { createSourceFileByEditor } from "@/utils/vscode";
 
 export function registerCommandSortEnums() {
@@ -34,7 +34,7 @@ export function registerCommandSortEnums() {
  * Sort enum declarations in the file which only contain enum declarations.
  */
 async function sortEnums(editor: vscode.TextEditor) {
-    const enumNodes = findRootLevelEnumDeclarationNodes(
+    const enumNodes = findTopLevelEnumDeclarationNodes(
         createSourceFileByEditor(editor)
     );
     const sortedEnumTexts =

@@ -571,6 +571,11 @@
                     "description": "If true, it will check the break statement style.",
                     "type": "boolean",
                     "default": true
+                },
+                "sower-tools.styleCheck.enumDeclaration.enable": {
+                    "description": "If true, it will check the enum declaration style.",
+                    "type": "boolean",
+                    "default": true
                 }
             }
         }
