@@ -2,11 +2,11 @@ import { defineModule } from "@/core/moduleManager";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
 import { parseConfig } from "./configs";
-import { registerDiagnosticClassDeclaration } from "./diagnostics";
+import { registerDiagnosticContinueStatement } from "./diagnostics";
 
-export const classDeclaration = defineModule({
+export const continueStatement = defineModule({
     onActive() {
-        registerDiagnosticClassDeclaration();
+        registerDiagnosticContinueStatement();
         registerCodeActionsProviders();
     },
 

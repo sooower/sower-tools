@@ -26,7 +26,7 @@ class LogPrintingCompletionItemProvider
             new vscode.Range(position.with(undefined, 0), position)
         );
 
-        const match = lineText.match(/(\w+)\.(\w+)$/);
+        const match = lineText.match(/(.+)\.(\w+)$/);
         if (match === null) {
             return [];
         }
@@ -39,9 +39,8 @@ class LogPrintingCompletionItemProvider
                 pattern.trigger.split(".")[1].trim().includes(suffix.trim())
             )
             .map(pattern => {
-                const replacement = pattern.replacement.replace(
-                    /{{varName}}/g,
-                    varName
+                const replacement = trimQuoteBounds(
+                    pattern.replacement.replace(/{{varName}}/g, varName)
                 );
                 const varRange = new vscode.Range(
                     position.line,
@@ -65,4 +64,12 @@ class LogPrintingCompletionItemProvider
                 return item;
             });
     }
+}
+
+function trimQuoteBounds(text: string) {
+    if (/^["'`].+["'`]$/.test(text)) {
+        return text.slice(1, -1);
+    }
+
+    return text;
 }

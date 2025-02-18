@@ -1,7 +1,7 @@
 import { ETsType } from "@/types";
 
 import { format } from "@/core";
-import { mapEnumNameWithoutPrefix } from "@/utils";
+import { mapEnumNameWithoutPrefix } from "@/utils/common";
 
 export type TColumnDetail = {
     tsType: string;

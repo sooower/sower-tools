@@ -3,10 +3,11 @@ import ts from "typescript";
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
 import { findAllClassDeclarationNodes } from "@/utils/typescript";
-import { detectCommentType } from "@/utils/typescript/comment";
+import { detectCommentKind } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
 
 import { hasValidLeadingSpaceBefore } from "../../utils";
+import { enableStyleCheckClassDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -17,12 +18,23 @@ export function registerDiagnosticClassDeclaration() {
     extensionCtx.subscriptions.push(
         diagnosticCollection,
         vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
-        vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
+        vscode.workspace.onDidSaveTextDocument(updateDiagnostics),
+        vscode.window.onDidChangeActiveTextEditor(e => {
+            if (e?.document !== undefined) {
+                updateDiagnostics(e.document);
+            }
+        })
     );
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
     if (document.languageId !== "typescript") {
+        return;
+    }
+
+    if (!enableStyleCheckClassDeclaration) {
+        diagnosticCollection.delete(document.uri);
+
         return;
     }
 
@@ -46,7 +58,7 @@ function appendDiagnostic(
     const classDeclNodeStartLineIndex =
         document.positionAt(classNodeStartPos).line;
 
-    // Skip if the class declaration is the first line
+    // Skip if the class declaration is the first line of the document
     if (classDeclNodeStartLineIndex === 0) {
         return;
     }
@@ -55,9 +67,9 @@ function appendDiagnostic(
         return;
     }
 
-    // Skip if the previous line is not a comment
+    // Skip if the previous line is a comment
     const prevLine = document.lineAt(classDeclNodeStartLineIndex - 1);
-    if (detectCommentType(prevLine.text) !== null) {
+    if (detectCommentKind(prevLine.text) !== null) {
         return;
     }
 

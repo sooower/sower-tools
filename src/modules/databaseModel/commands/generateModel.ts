@@ -9,7 +9,7 @@ import { ETsType } from "@/types";
 
 import { format, fs, vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
-import { prettierFormatText } from "@/utils";
+import { prettierFormatText } from "@/utils/common";
 import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 

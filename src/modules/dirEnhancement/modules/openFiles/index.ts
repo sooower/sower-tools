@@ -7,6 +7,7 @@ export const openFiles = defineModule({
     onActive() {
         registerCommandOpenFiles();
     },
+
     onReloadConfiguration() {
         parseConfigs();
     },

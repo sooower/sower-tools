@@ -1,10 +1,9 @@
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
-import { findBlockNodeAtOffset } from "@/utils/typescript";
-import { detectCommentType, kCommentType } from "@/utils/typescript/comment";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { detectCommentKind, kCommentKind } from "@/utils/typescript/comment";
 
-import { hasValidLeadingSpaceBefore } from "../../utils";
+import { hasValidLeadingSpaceBefore, isBodyStartLine } from "../../utils";
+import { enableStyleCheckComment } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -15,12 +14,23 @@ export function registerDiagnosticComment() {
     extensionCtx.subscriptions.push(
         diagnosticCollection,
         vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
-        vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
+        vscode.workspace.onDidSaveTextDocument(updateDiagnostics),
+        vscode.window.onDidChangeActiveTextEditor(e => {
+            if (e?.document !== undefined) {
+                updateDiagnostics(e.document);
+            }
+        })
     );
 }
 
-export function updateDiagnostics(document: vscode.TextDocument) {
+function updateDiagnostics(document: vscode.TextDocument) {
     if (document.languageId !== "typescript") {
+        return;
+    }
+
+    if (!enableStyleCheckComment) {
+        diagnosticCollection.delete(document.uri);
+
         return;
     }
 
@@ -32,24 +42,8 @@ export function updateDiagnostics(document: vscode.TextDocument) {
             continue;
         }
 
-        // Skip check if the comment is the first line
+        // Skip if the comment is the first line of the document
         if (lineIndex < 1) {
-            continue;
-        }
-
-        // check if the comment is the first sub node of a block node
-        const blockNode = findBlockNodeAtOffset({
-            sourceFile: createSourceFileByDocument(document),
-            offset: document.offsetAt(currentLine.range.start),
-        });
-
-        // Skip check if the comment is the first line of function, type, interface, class declaration
-        const firstSubNode = blockNode?.statements.at(0);
-        if (
-            firstSubNode === undefined ||
-            firstSubNode.getStart() >=
-                document.offsetAt(currentLine.range.start)
-        ) {
             continue;
         }
 
@@ -61,43 +55,15 @@ export function updateDiagnostics(document: vscode.TextDocument) {
             continue;
         }
 
+        if (isBodyStartLine(document, lineIndex)) {
+            continue;
+        }
+
+        console.log("appendDiagnostic: line:", lineIndex + 1);
         appendDiagnostic(document, lineIndex, diagnostics);
     }
 
     diagnosticCollection.set(document.uri, diagnostics);
-}
-
-function isCommentLine(text: string): boolean {
-    return [
-        /^\s*\/\/\/?/, // "///" or "//"
-        /^\s*\/\*\*?/, // "/**" or "/*"
-    ].some(pattern => pattern.test(text) && !isCodeWithEndComment(text));
-}
-
-function isCodeWithEndComment(text: string): boolean {
-    const codeParts = text.split(/\/\/|\/\*/);
-    return codeParts[0].trim().length > 0;
-}
-
-function isConsecutiveSingleLineComment(
-    document: vscode.TextDocument,
-    lineIndex: number
-): boolean {
-    const currentLineCommentType = detectCommentType(
-        document.lineAt(lineIndex).text
-    );
-    const previousLineCommentType = detectCommentType(
-        document.lineAt(lineIndex - 1).text
-    );
-
-    if (
-        currentLineCommentType === kCommentType.SingleLine &&
-        previousLineCommentType === kCommentType.SingleLine
-    ) {
-        return true;
-    }
-
-    return false;
 }
 
 function appendDiagnostic(
@@ -123,4 +89,40 @@ function appendDiagnostic(
     diagnostic.code = `@${extensionName}/blank-line-before-comment`;
 
     diagnostics.push(diagnostic);
+}
+
+/**
+ * Check if the line is a comment line, by checking if it starts with `//` or `/*`.
+ * @param text The text to check
+ * @returns True if the line is a comment line, false otherwise
+ */
+function isCommentLine(text: string): boolean {
+    return /^\s*(\/\/|\/\*)/.test(text.trimStart());
+}
+
+/**
+ * Check if the current line and the previous line are consecutive single line comments.
+ * @param document The document to check
+ * @param lineIndex The index of the current line
+ * @returns True if the current line and the previous line are consecutive single line comments, false otherwise
+ */
+function isConsecutiveSingleLineComment(
+    document: vscode.TextDocument,
+    lineIndex: number
+): boolean {
+    const currentLineCommentKind = detectCommentKind(
+        document.lineAt(lineIndex).text
+    );
+    const previousLineCommentKind = detectCommentKind(
+        document.lineAt(lineIndex - 1).text
+    );
+
+    if (
+        currentLineCommentKind === kCommentKind.SingleLine &&
+        previousLineCommentKind === kCommentKind.SingleLine
+    ) {
+        return true;
+    }
+
+    return false;
 }

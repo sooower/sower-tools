@@ -1,6 +1,7 @@
 import { CommonUtils } from "@utils/common";
 
 export type TExtensionLifecycleFunc = () => Promise<void> | void;
+
 /**
  * Module for the extension.
  */

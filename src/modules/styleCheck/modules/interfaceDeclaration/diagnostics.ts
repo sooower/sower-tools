@@ -3,10 +3,11 @@ import ts from "typescript";
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
 import { findAllInterfaceDeclarationNodes } from "@/utils/typescript";
-import { detectCommentType } from "@/utils/typescript/comment";
+import { detectCommentKind } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
 
 import { hasValidLeadingSpaceBefore } from "../../utils";
+import { enableStyleCheckInterfaceDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -18,12 +19,23 @@ export function registerDiagnosticInterfaceDeclaration() {
     extensionCtx.subscriptions.push(
         diagnosticCollection,
         vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
-        vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
+        vscode.workspace.onDidSaveTextDocument(updateDiagnostics),
+        vscode.window.onDidChangeActiveTextEditor(e => {
+            if (e?.document !== undefined) {
+                updateDiagnostics(e.document);
+            }
+        })
     );
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
     if (document.languageId !== "typescript") {
+        return;
+    }
+
+    if (!enableStyleCheckInterfaceDeclaration) {
+        diagnosticCollection.delete(document.uri);
+
         return;
     }
 
@@ -48,7 +60,7 @@ function appendDiagnostic(
         interfaceDeclNodeStartPos
     ).line;
 
-    // Skip if the interface declaration is the first line
+    // Skip if the interface declaration is the first line of the document
     if (interfaceDeclNodeStartLineIndex === 0) {
         return;
     }
@@ -59,7 +71,7 @@ function appendDiagnostic(
 
     // Skip if the previous line is not a comment
     const prevLine = document.lineAt(interfaceDeclNodeStartLineIndex - 1);
-    if (detectCommentType(prevLine.text) !== null) {
+    if (detectCommentKind(prevLine.text) !== null) {
         return;
     }
 

@@ -10,6 +10,7 @@ export const localImage = defineModule({
         registerDiagnosticNoInvalidLocalImageFilePath();
         registerDiagnosticNoLocalImageLink();
     },
+
     onReloadConfiguration() {
         parseUploadImageEnable();
         parseUploadImageConfigFilePath();

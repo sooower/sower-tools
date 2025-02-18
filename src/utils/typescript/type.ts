@@ -1,5 +1,7 @@
 import ts from "typescript";
 
+import { isOffsetWithinNode } from "./utils";
+
 type TFindTypeDeclarationNodeOptions = {
     sourceFile: ts.SourceFile;
     typeName: string;
@@ -10,25 +12,22 @@ export function findTypeDeclarationNode({
     typeName,
 }: TFindTypeDeclarationNodeOptions) {
     const visit = (node: ts.Node): ts.TypeAliasDeclaration | undefined => {
-        if (!ts.isTypeAliasDeclaration(node)) {
-            return ts.forEachChild(node, visit);
-        }
-
-        if (node.name?.text === typeName) {
+        if (ts.isTypeAliasDeclaration(node) && node.name?.text === typeName) {
             return node;
         }
+
+        return ts.forEachChild(node, visit);
     };
 
     return visit(sourceFile);
 }
 
 export function findAllTypeDeclarationNodes(sourceFile: ts.SourceFile) {
-    const visit = (node: ts.Node): ts.TypeAliasDeclaration | undefined => {
-        if (!ts.isTypeAliasDeclaration(node)) {
-            return ts.forEachChild(node, visit);
+    const visit = (node: ts.Node) => {
+        if (ts.isTypeAliasDeclaration(node)) {
+            typeDeclarationNodes.push(node);
         }
-
-        typeDeclarationNodes.push(node);
+        ts.forEachChild(node, visit);
     };
 
     const typeDeclarationNodes: ts.TypeAliasDeclaration[] = [];
@@ -47,13 +46,14 @@ export function findTypeDeclarationNodeAtOffset({
     offset,
 }: TFindTypeDeclarationNodeAtOffsetOptions) {
     const visit = (node: ts.Node): ts.TypeAliasDeclaration | undefined => {
-        if (!ts.isTypeAliasDeclaration(node)) {
-            return ts.forEachChild(node, visit);
-        }
-
-        if (node.getStart() <= offset && node.getEnd() >= offset) {
+        if (
+            ts.isTypeAliasDeclaration(node) &&
+            isOffsetWithinNode(node, offset)
+        ) {
             return node;
         }
+
+        return ts.forEachChild(node, visit);
     };
 
     return visit(sourceFile);

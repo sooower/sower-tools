@@ -48,6 +48,7 @@ export class KeyCrypto {
         const cipherText = cipher.update(text, "utf8");
         cipher.final();
         const tag = cipher.getAuthTag();
+
         return [
             "fomo1",
             "aes-256-gcm",

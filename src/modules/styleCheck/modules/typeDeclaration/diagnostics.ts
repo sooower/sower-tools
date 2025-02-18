@@ -3,10 +3,11 @@ import ts from "typescript";
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
 import { findAllTypeDeclarationNodes } from "@/utils/typescript";
-import { detectCommentType } from "@/utils/typescript/comment";
+import { detectCommentKind } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
 
 import { hasValidLeadingSpaceBefore } from "../../utils";
+import { enableStyleCheckTypeDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -17,12 +18,23 @@ export function registerDiagnosticTypeDeclaration() {
     extensionCtx.subscriptions.push(
         diagnosticCollection,
         vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
-        vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
+        vscode.workspace.onDidSaveTextDocument(updateDiagnostics),
+        vscode.window.onDidChangeActiveTextEditor(e => {
+            if (e?.document !== undefined) {
+                updateDiagnostics(e.document);
+            }
+        })
     );
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
     if (document.languageId !== "typescript") {
+        return;
+    }
+
+    if (!enableStyleCheckTypeDeclaration) {
+        diagnosticCollection.delete(document.uri);
+
         return;
     }
 
@@ -46,7 +58,7 @@ function appendDiagnostic(
     const typeDeclNodeStartLineIndex =
         document.positionAt(typeDeclNodeStartPos).line;
 
-    // Skip if the type declaration is the first line
+    // Skip if the type declaration is the first line of the document
     if (typeDeclNodeStartLineIndex === 0) {
         return;
     }
@@ -65,7 +77,7 @@ function appendDiagnostic(
 
     // Skip if the previous line is not a comment
     const prevLine = document.lineAt(typeDeclNodeStartLineIndex - 1);
-    if (detectCommentType(prevLine.text) !== null) {
+    if (detectCommentKind(prevLine.text) !== null) {
         return;
     }
 

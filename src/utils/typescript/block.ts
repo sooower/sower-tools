@@ -1,12 +1,13 @@
 import ts from "typescript";
 
-export function findAllBlockNodes(sourceFile: ts.SourceFile) {
-    const visit = (node: ts.Node): ts.Block | undefined => {
-        if (!ts.isBlock(node)) {
-            return ts.forEachChild(node, visit);
-        }
+import { isOffsetWithinNode } from "./utils";
 
-        blockNodes.push(node);
+export function findAllBlockNodes(sourceFile: ts.SourceFile) {
+    const visit = (node: ts.Node) => {
+        if (ts.isBlock(node)) {
+            blockNodes.push(node);
+        }
+        ts.forEachChild(node, visit);
     };
 
     const blockNodes: ts.Block[] = [];
@@ -15,24 +16,29 @@ export function findAllBlockNodes(sourceFile: ts.SourceFile) {
     return blockNodes;
 }
 
-type TFindBlockNodeAtOffsetOptions = {
+type TFindAllBlockNodesAtOffsetOptions = {
     sourceFile: ts.SourceFile;
     offset: number;
 };
 
-export function findBlockNodeAtOffset({
+export function findAllBlockNodesAtOffset({
     sourceFile,
     offset,
-}: TFindBlockNodeAtOffsetOptions) {
+}: TFindAllBlockNodesAtOffsetOptions) {
     const visit = (node: ts.Node): ts.Block | undefined => {
-        if (!ts.isBlock(node)) {
+        if (ts.isBlock(node)) {
+            if (isOffsetWithinNode(node, offset)) {
+                blockNodes.push(node);
+            }
+
             return ts.forEachChild(node, visit);
         }
 
-        if (node.getStart() <= offset && node.getEnd() >= offset) {
-            return node;
-        }
+        return ts.forEachChild(node, visit);
     };
 
-    return visit(sourceFile);
+    const blockNodes: ts.Block[] = [];
+    visit(sourceFile);
+
+    return blockNodes;
 }

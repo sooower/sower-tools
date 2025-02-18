@@ -2,13 +2,16 @@ import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
 import {
     findAllFuncOrCtorDeclarationNodes,
-    findFirstMethodOrCtorDeclarationNode,
+    isFirstChildInParentFunction,
+    isFirstClassMember,
+    isFunctionParameter,
     TFunc,
 } from "@/utils/typescript";
-import { detectCommentType } from "@/utils/typescript/comment";
+import { detectCommentKind } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
 
-import { hasValidLeadingSpaceBefore } from "../../utils";
+import { hasValidLeadingSpaceBefore, isBodyStartLine } from "../../utils";
+import { enableStyleCheckFunctionDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -20,12 +23,23 @@ export function registerDiagnosticFunctionDeclaration() {
     extensionCtx.subscriptions.push(
         diagnosticCollection,
         vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
-        vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
+        vscode.workspace.onDidSaveTextDocument(updateDiagnostics),
+        vscode.window.onDidChangeActiveTextEditor(e => {
+            if (e?.document !== undefined) {
+                updateDiagnostics(e.document);
+            }
+        })
     );
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
     if (document.languageId !== "typescript") {
+        return;
+    }
+
+    if (!enableStyleCheckFunctionDeclaration) {
+        diagnosticCollection.delete(document.uri);
+
         return;
     }
 
@@ -49,16 +63,24 @@ function appendDiagnostic(
     const funcDeclNodeStartLineIndex =
         document.positionAt(funcNodeStartPos).line;
 
-    // Skip if the function declaration is the first line
+    // Skip if the function declaration is the first line of the document
     if (funcDeclNodeStartLineIndex === 0) {
         return;
     }
 
-    // Skip if the constructor or method declaration is the first one of its parent class
-    const firstCtorOrMethodDecl = findFirstMethodOrCtorDeclarationNode(
-        createSourceFileByDocument(document)
-    );
-    if (firstCtorOrMethodDecl?.getStart() === funcNodeStartPos) {
+    if (isBodyStartLine(document, funcDeclNodeStartLineIndex)) {
+        return;
+    }
+
+    if (isFirstClassMember(node)) {
+        return;
+    }
+
+    if (isFirstChildInParentFunction(node)) {
+        return;
+    }
+
+    if (isFunctionParameter(node)) {
         return;
     }
 
@@ -66,9 +88,9 @@ function appendDiagnostic(
         return;
     }
 
-    // Skip if the previous line is not a comment
+    // Skip if the previous line is a comment
     const prevLine = document.lineAt(funcDeclNodeStartLineIndex - 1);
-    if (detectCommentType(prevLine.text) !== null) {
+    if (detectCommentKind(prevLine.text) !== null) {
         return;
     }
 

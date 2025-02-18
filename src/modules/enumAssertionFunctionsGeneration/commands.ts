@@ -2,7 +2,7 @@ import ts from "typescript";
 
 import { format, vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
-import { mapEnumNameWithoutPrefix, prettierFormatFile } from "@/utils";
+import { mapEnumNameWithoutPrefix, prettierFormatFile } from "@/utils/common";
 import {
     findEnumDeclarationNodeAtOffset,
     findFuncDeclarationNode,

@@ -1,10 +1,16 @@
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
 
+import { enableStyleCheckClassDeclaration } from "./configs";
+
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
         vscode.languages.registerCodeActionsProvider("typescript", {
             provideCodeActions(document, range, context, token) {
+                if (!enableStyleCheckClassDeclaration) {
+                    return [];
+                }
+
                 return context.diagnostics
                     .filter(
                         d =>

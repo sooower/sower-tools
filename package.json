@@ -526,6 +526,51 @@
                             "replacement": "console.error(\"{{varName}}:\", {{varName}});"
                         }
                     ]
+                },
+                "sower-tools.styleCheck.comment.enable": {
+                    "description": "If true, it will check the comment style.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "sower-tools.styleCheck.classDeclaration.enable": {
+                    "description": "If true, it will check the class declaration style.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "sower-tools.styleCheck.functionDeclaration.enable": {
+                    "description": "If true, it will check the function declaration style.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "sower-tools.styleCheck.importStatement.enable": {
+                    "description": "If true, it will check the import statement style.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "sower-tools.styleCheck.interfaceDeclaration.enable": {
+                    "description": "If true, it will check the interface declaration style.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "sower-tools.styleCheck.returnStatement.enable": {
+                    "description": "If true, it will check the return statement style.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "sower-tools.styleCheck.typeDeclaration.enable": {
+                    "description": "If true, it will check the type declaration style.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "sower-tools.styleCheck.continueStatement.enable": {
+                    "description": "If true, it will check the continue statement style.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "sower-tools.styleCheck.breakStatement.enable": {
+                    "description": "If true, it will check the break statement style.",
+                    "type": "boolean",
+                    "default": true
                 }
             }
         }

@@ -11,6 +11,7 @@ export const keyCryptoTools = defineModule({
         registerCommandKeyDecrypt();
         registerCodeActionsProviders();
     },
+
     onReloadConfiguration() {
         parseConfigs();
     },

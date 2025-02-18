@@ -9,7 +9,7 @@ import { ETsType } from "@/types";
 
 import { format, vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
-import { prettierFormatFile } from "@/utils";
+import { prettierFormatFile } from "@/utils/common";
 import {
     findEnumDeclarationNode,
     findFuncDeclarationNode,

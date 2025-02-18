@@ -5,13 +5,13 @@ import { extensionCtx, extensionName } from "@/core/context";
 import { findAllBlockNodes } from "@/utils/typescript";
 import { createSourceFileByDocument } from "@/utils/vscode";
 
-import { enableStyleCheckReturnStatement } from "./configs";
+import { enableStyleCheckBreakStatement } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
-export function registerDiagnosticReturnStatement() {
+export function registerDiagnosticBreakStatement() {
     diagnosticCollection =
-        vscode.languages.createDiagnosticCollection("return-statement");
+        vscode.languages.createDiagnosticCollection("break-statement");
     extensionCtx.subscriptions.push(
         diagnosticCollection,
         vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
@@ -29,7 +29,7 @@ function updateDiagnostics(document: vscode.TextDocument) {
         return;
     }
 
-    if (!enableStyleCheckReturnStatement) {
+    if (!enableStyleCheckBreakStatement) {
         diagnosticCollection.delete(document.uri);
 
         return;
@@ -53,15 +53,15 @@ function appendDiagnostic(
     }
 
     const lastStmt = stmts[stmts.length - 1];
-    if (!ts.isReturnStatement(lastStmt)) {
+    if (!ts.isBreakStatement(lastStmt)) {
         return;
     }
 
     const prevStmt = stmts[stmts.length - 2];
     const prevEndLine = document.positionAt(prevStmt.getEnd()).line;
-    const returnStartLine = document.positionAt(lastStmt.getStart()).line;
+    const breakStartLine = document.positionAt(lastStmt.getStart()).line;
 
-    if (returnStartLine - prevEndLine < 2) {
+    if (breakStartLine - prevEndLine < 2) {
         const range = new vscode.Range(
             document.positionAt(lastStmt.getStart()),
             document.positionAt(lastStmt.getEnd())
@@ -69,10 +69,10 @@ function appendDiagnostic(
 
         const diagnostic = new vscode.Diagnostic(
             range,
-            "Missing blank line before return statement.",
+            "Missing blank line before break statement.",
             vscode.DiagnosticSeverity.Warning
         );
-        diagnostic.code = `@${extensionName}/blank-line-before-return-statement`;
+        diagnostic.code = `@${extensionName}/blank-line-before-break-statement`;
 
         diagnostics.push(diagnostic);
     }

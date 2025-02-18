@@ -10,9 +10,11 @@ export const nowTimestamp = defineModule({
     onActive() {
         refreshNowTimestampStatusBarItem();
     },
+
     onDeactive() {
         clearNowTimestampStatusBarItemTimer();
     },
+
     onReloadConfiguration() {
         parseShowStatusBarNowTimestampConfigs();
         refreshNowTimestampStatusBarItem();

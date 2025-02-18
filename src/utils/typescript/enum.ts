@@ -1,6 +1,15 @@
 import ts from "typescript";
 
-export function findEnumDeclarationNodes(sourceFile: ts.SourceFile) {
+import { isOffsetWithinNode } from "./utils";
+
+/**
+ * Find all root level (not nested in other nodes) enum declaration nodes in a source file.
+ *
+ * @throws Error if non-enum nodes are found
+ * @param sourceFile - The source file to search for enum declaration nodes
+ * @returns An array of all enum declaration nodes in the source file
+ */
+export function findRootLevelEnumDeclarationNodes(sourceFile: ts.SourceFile) {
     const enumNodes: ts.EnumDeclaration[] = [];
 
     sourceFile.forEachChild(node => {
@@ -34,13 +43,11 @@ export function findEnumDeclarationNode({
     enumName,
 }: TFindEnumDeclarationNodeOptions) {
     const visit = (node: ts.Node): ts.EnumDeclaration | undefined => {
-        if (!ts.isEnumDeclaration(node)) {
-            return ts.forEachChild(node, visit);
-        }
-
-        if (node.name?.text === enumName) {
+        if (ts.isEnumDeclaration(node) && node.name?.text === enumName) {
             return node;
         }
+
+        return ts.forEachChild(node, visit);
     };
 
     return visit(sourceFile);
@@ -56,13 +63,11 @@ export function findEnumDeclarationNodeAtOffset({
     offset,
 }: TFindEnumDeclarationNodeAtOffsetOptions) {
     const visit = (node: ts.Node): ts.EnumDeclaration | undefined => {
-        if (!ts.isEnumDeclaration(node)) {
-            return ts.forEachChild(node, visit);
-        }
-
-        if (node.getStart() <= offset && node.getEnd() >= offset) {
+        if (ts.isEnumDeclaration(node) && isOffsetWithinNode(node, offset)) {
             return node;
         }
+
+        return ts.forEachChild(node, visit);
     };
 
     return visit(sourceFile);

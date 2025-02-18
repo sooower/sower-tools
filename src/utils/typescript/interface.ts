@@ -1,12 +1,13 @@
 import ts from "typescript";
 
-export function findAllInterfaceDeclarationNodes(sourceFile: ts.SourceFile) {
-    const visit = (node: ts.Node): ts.InterfaceDeclaration | undefined => {
-        if (!ts.isInterfaceDeclaration(node)) {
-            return ts.forEachChild(node, visit);
-        }
+import { isOffsetWithinNode } from "./utils";
 
-        typeDeclarationNodes.push(node);
+export function findAllInterfaceDeclarationNodes(sourceFile: ts.SourceFile) {
+    const visit = (node: ts.Node) => {
+        if (ts.isInterfaceDeclaration(node)) {
+            typeDeclarationNodes.push(node);
+        }
+        ts.forEachChild(node, visit);
     };
 
     const typeDeclarationNodes: ts.InterfaceDeclaration[] = [];
@@ -27,13 +28,14 @@ export function findInterfaceDeclarationNodeAtOffset({
     | ts.InterfaceDeclaration
     | undefined {
     const visit = (node: ts.Node): ts.InterfaceDeclaration | undefined => {
-        if (!ts.isInterfaceDeclaration(node)) {
-            return ts.forEachChild(node, visit);
-        }
-
-        if (node.getStart() <= offset && node.getEnd() >= offset) {
+        if (
+            ts.isInterfaceDeclaration(node) &&
+            isOffsetWithinNode(node, offset)
+        ) {
             return node;
         }
+
+        return ts.forEachChild(node, visit);
     };
 
     return visit(sourceFile);

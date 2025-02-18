@@ -11,11 +11,11 @@ export function registerCodeActionsProviders() {
                     .filter(
                         diagnostic =>
                             diagnostic.code ===
-                            `@${extensionName}/blank-line-before-return-statement`
+                            `@${extensionName}/blank-line-before-continue-statement`
                     )
                     .map(diagnostic => {
                         const codeAction = new vscode.CodeAction(
-                            "Add blank line before return statement",
+                            "Add blank line before continue statement",
                             vscode.CodeActionKind.QuickFix
                         );
                         codeAction.edit = new vscode.WorkspaceEdit();

@@ -11,6 +11,7 @@ export const stringTools = defineModule({
         registerCommandBase64Decode();
         registerCodeActionsProviders();
     },
+
     onReloadConfiguration() {
         parseConfigs();
     },

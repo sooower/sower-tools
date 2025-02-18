@@ -1,5 +1,7 @@
 import ts from "typescript";
 
+import { isOffsetWithinNode } from "./utils";
+
 type TFindVariableDeclarationNodeOptions = {
     sourceFile: ts.Node;
     varName: string;
@@ -10,13 +12,11 @@ export function findVariableDeclarationNode({
     varName,
 }: TFindVariableDeclarationNodeOptions) {
     const visit = (node: ts.Node): ts.VariableDeclaration | undefined => {
-        if (!ts.isVariableDeclaration(node)) {
-            return ts.forEachChild(node, visit);
-        }
-
-        if (node.name.getText() === varName) {
+        if (ts.isVariableDeclaration(node) && node.name.getText() === varName) {
             return node;
         }
+
+        return ts.forEachChild(node, visit);
     };
 
     return visit(sourceFile);
@@ -32,13 +32,14 @@ export function findVariableDeclarationNodeAtOffset({
     offset,
 }: TFindVariableDeclarationNodeAtOffsetOptions) {
     const visit = (node: ts.Node): ts.VariableDeclaration | undefined => {
-        if (!ts.isVariableDeclaration(node)) {
-            return ts.forEachChild(node, visit);
-        }
-
-        if (node.getStart() <= offset && node.getEnd() >= offset) {
+        if (
+            ts.isVariableDeclaration(node) &&
+            isOffsetWithinNode(node, offset)
+        ) {
             return node;
         }
+
+        return ts.forEachChild(node, visit);
     };
 
     return visit(sourceFile);
