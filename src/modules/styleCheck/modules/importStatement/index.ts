@@ -1,13 +1,22 @@
 import { defineModule } from "@/core/moduleManager";
 
-import { registerCodeActionsProviders } from "./codeActionsProviders";
+import {
+    registerCodeActionsProviderBlankAfterLastImportStatement,
+    registerCodeActionsProviderImportStatementsTopOfFile,
+} from "./codeActionsProviders";
 import { parseConfig } from "./configs";
-import { registerDiagnosticImportStatement } from "./diagnostics";
+import {
+    registerDiagnosticBlankLineAfterLastImportStatement,
+    registerDiagnosticImportStatementsTopOfFile,
+} from "./diagnostics";
 
 export const importStatement = defineModule({
     onActive() {
-        registerCodeActionsProviders();
-        registerDiagnosticImportStatement();
+        registerCodeActionsProviderBlankAfterLastImportStatement();
+        registerDiagnosticBlankLineAfterLastImportStatement();
+
+        registerCodeActionsProviderImportStatementsTopOfFile();
+        registerDiagnosticImportStatementsTopOfFile();
     },
     onReloadConfiguration() {
         parseConfig();

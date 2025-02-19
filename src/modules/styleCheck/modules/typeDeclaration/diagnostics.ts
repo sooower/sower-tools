@@ -5,6 +5,7 @@ import { extensionCtx, extensionName } from "@/core/context";
 import { findAllTypeDeclarationNodes } from "@/utils/typescript";
 import { detectCommentKind } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
+import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import { hasValidLeadingSpaceBefore } from "../../utils";
 import { enableStyleCheckTypeDeclaration } from "./configs";
@@ -82,11 +83,8 @@ function appendDiagnostic(
     }
 
     const diagnostic = new vscode.Diagnostic(
-        new vscode.Range(
-            document.positionAt(typeDeclNodeStartPos),
-            document.positionAt(typeDeclNodeStartPos)
-        ),
-        "Missing a blank line before the type declaration",
+        buildRangeByLineIndex(document, typeDeclNodeStartLineIndex),
+        "Missing a blank line before the type declaration.",
         vscode.DiagnosticSeverity.Warning
     );
     diagnostic.code = `@${extensionName}/blank-line-before-type-declaration`;

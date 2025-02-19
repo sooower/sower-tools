@@ -1,9 +1,13 @@
 import { defineModule } from "@/core/moduleManager";
 
-import { parseUploadImageConfigFilePath } from "./configs/uploadImageConfigFilePath";
-import { parseUploadImageEnable } from "./configs/uploadImageEnable";
-import { registerDiagnosticNoInvalidLocalImageFilePath } from "./diagnostics/noInvalidLocalImageFilePath";
-import { registerDiagnosticNoLocalImageLink } from "./diagnostics/noLocalImageLink";
+import {
+    parseUploadImageConfigFilePath,
+    parseUploadImageEnable,
+} from "./configs";
+import {
+    registerDiagnosticNoInvalidLocalImageFilePath,
+    registerDiagnosticNoLocalImageLink,
+} from "./diagnostics";
 
 export const localImage = defineModule({
     onActive() {

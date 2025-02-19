@@ -1,19 +1,22 @@
 import ts from "typescript";
 
+import { hasValidLeadingSpaceAfter } from "@/modules/styleCheck/utils";
+
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
 import { findLastImportStatementNode } from "@/utils/typescript";
 import { detectCommentKind } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
+import { buildRangeByNode } from "@/utils/vscode/range";
 
-import { hasValidLeadingSpaceAfter } from "../../utils";
-import { enableStyleCheckImportStatement } from "./configs";
+import { enableStyleCheckImportStatement } from "../configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
-export function registerDiagnosticImportStatement() {
-    diagnosticCollection =
-        vscode.languages.createDiagnosticCollection("import-statement");
+export function registerDiagnosticBlankLineAfterLastImportStatement() {
+    diagnosticCollection = vscode.languages.createDiagnosticCollection(
+        "blank-line-after-last-import-statement"
+    );
 
     extensionCtx.subscriptions.push(
         diagnosticCollection,
@@ -58,30 +61,26 @@ function appendDiagnostic(
         return;
     }
 
-    const nodeEndLine = document.positionAt(node.getEnd()).line;
+    const nodeEndLineIndex = document.positionAt(node.getEnd()).line;
 
     // Skip if the last import statement is the last line of the file
-    if (nodeEndLine === document.lineCount - 1) {
+    if (nodeEndLineIndex === document.lineCount - 1) {
         return;
     }
 
-    if (hasValidLeadingSpaceAfter(document, nodeEndLine)) {
+    if (hasValidLeadingSpaceAfter(document, nodeEndLineIndex)) {
         return;
     }
 
     // Skip if the next line is a comment
-    const nextLine = document.lineAt(nodeEndLine + 1);
+    const nextLine = document.lineAt(nodeEndLineIndex + 1);
     if (detectCommentKind(nextLine.text) !== null) {
         return;
     }
 
-    const importNodeEndPos = node.getEnd();
     const diagnostic = new vscode.Diagnostic(
-        new vscode.Range(
-            document.positionAt(importNodeEndPos),
-            document.positionAt(importNodeEndPos)
-        ),
-        "Missing a blank line after the last import statement",
+        buildRangeByNode(document, node),
+        "Missing a blank line after the last import statement.",
         vscode.DiagnosticSeverity.Warning
     );
     diagnostic.code = `@${extensionName}/blank-line-after-last-import-statement`;

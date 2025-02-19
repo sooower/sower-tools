@@ -83,7 +83,6 @@ async function generateTypeSchema({
     if (typeDeclarationNode !== undefined) {
         await textEditorUtils.replaceTextOfNode({
             editor,
-            sourceFile,
             node: typeDeclarationNode,
             newText: typeText,
         });
@@ -101,7 +100,6 @@ async function generateTypeSchema({
 
     await textEditorUtils.replaceTextOfSourceFile({
         editor,
-        sourceFile: createSourceFileByEditor(editor),
         newText: await prettierFormatFile(
             createSourceFileByEditor(editor).fileName
         ),

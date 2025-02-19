@@ -1,7 +1,7 @@
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
 
-export function registerCodeActionsProviders() {
+export function registerCodeActionsProviderBlankAfterLastImportStatement() {
     extensionCtx.subscriptions.push(
         vscode.languages.registerCodeActionsProvider("typescript", {
             provideCodeActions(document, range, context, token) {

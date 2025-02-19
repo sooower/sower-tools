@@ -5,6 +5,7 @@ import { extensionCtx, extensionName } from "@/core/context";
 import { findAllInterfaceDeclarationNodes } from "@/utils/typescript";
 import { detectCommentKind } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
+import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import { hasValidLeadingSpaceBefore } from "../../utils";
 import { enableStyleCheckInterfaceDeclaration } from "./configs";
@@ -76,11 +77,8 @@ function appendDiagnostic(
     }
 
     const diagnostic = new vscode.Diagnostic(
-        new vscode.Range(
-            document.positionAt(interfaceDeclNodeStartPos),
-            document.positionAt(interfaceDeclNodeStartPos)
-        ),
-        "Missing a blank line before the interface declaration",
+        buildRangeByLineIndex(document, interfaceDeclNodeStartLineIndex),
+        "Missing a blank line before the interface declaration.",
         vscode.DiagnosticSeverity.Warning
     );
     diagnostic.code = `@${extensionName}/blank-line-before-interface-declaration`;

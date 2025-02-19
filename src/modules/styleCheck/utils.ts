@@ -55,12 +55,12 @@ export function hasValidLeadingSpaceAfter(
 }
 
 /**
- * Check if the line is the first child of its parent, including function body, object, array, and assignment.
+ * Check if the line is the first line of its parent, including function body, object, array, and assignment.
  * @param document The document to check.
  * @param lineIndex The index of the line to check.
- * @returns True if the line is the first child of its parent, false otherwise.
+ * @returns True if the line is the first line of its parent, false otherwise.
  */
-export function isFirstChildOfParent(
+export function isFirstLineOfParent(
     document: vscode.TextDocument,
     lineIndex: number
 ): boolean {
@@ -74,35 +74,74 @@ export function isFirstChildOfParent(
         }
 
         return (
-            isFirstChildOfArrowFunction(lineText) ||
-            isFirstChildOfObject(lineText) ||
-            isFirstArrayElement(lineText) ||
+            isFirstLineOfArrowFunctionBody(lineText) ||
+            isFirstLineOfObjectBody(lineText) ||
+            isFirstLineOfArrayBody(lineText) ||
             isAssignmentValue(lineText) ||
-            isParameterOfFunction(lineText)
+            isFirstParameterOfFunction(lineText)
         );
     }
 
     return false;
 }
 
-function isFirstChildOfArrowFunction(text: string): boolean {
+function isFirstLineOfArrowFunctionBody(text: string): boolean {
     const lastChars = text.slice(-2);
 
     return lastChars === "=>" && !text.trimStart().startsWith("//");
 }
 
-function isFirstChildOfObject(text: string): boolean {
+function isFirstLineOfObjectBody(text: string): boolean {
     return text.endsWith("{") && !text.includes("//");
 }
 
-function isFirstArrayElement(text: string): boolean {
+function isFirstLineOfArrayBody(text: string): boolean {
     return text.endsWith("[") && !text.includes("//");
 }
 
-function isParameterOfFunction(text: string): boolean {
+function isFirstParameterOfFunction(text: string): boolean {
     return (text.endsWith("(") || text.endsWith(",")) && !text.includes("//");
 }
 
 function isAssignmentValue(text: string): boolean {
     return text.endsWith("=") && !text.includes("//");
+}
+
+/**
+ * Check if the line is the last line of its parent, including function body, object, array.
+ * @param document The document to check.
+ * @param lineIndex The index of the line to check.
+ * @returns True if the line is the last line of its parent, false otherwise.
+ */
+export function isLastLineOfParent(
+    document: vscode.TextDocument,
+    lineIndex: number
+): boolean {
+    for (let i = lineIndex + 1; i < document.lineCount; i++) {
+        const lineText = document.lineAt(i).text.trimStart();
+
+        if (!/\S/.test(lineText)) {
+            continue;
+        }
+
+        return (
+            isLastLineOfObjectBody(lineText) ||
+            isLastLineOfArrayBody(lineText) ||
+            isLastParameterOfFunction(lineText)
+        );
+    }
+
+    return false;
+}
+
+function isLastLineOfObjectBody(text: string): boolean {
+    return text.startsWith("}") && !text.includes("//");
+}
+
+function isLastLineOfArrayBody(text: string): boolean {
+    return text.startsWith("]") && !text.includes("//");
+}
+
+function isLastParameterOfFunction(text: string): boolean {
+    return text.startsWith(")") && !text.includes("//");
 }

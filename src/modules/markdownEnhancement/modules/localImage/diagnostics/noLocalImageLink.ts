@@ -4,6 +4,7 @@ import { Client } from "minio";
 
 import { format, vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
+import { buildRangeByOffsets } from "@/utils/vscode/range";
 import { CommonUtils } from "@utils/common";
 
 import { uploadImageConfig } from "../configs/uploadImageConfigFilePath";
@@ -49,8 +50,6 @@ async function updateDiagnostics(document: vscode.TextDocument) {
         return;
     }
 
-    console.log("xxx:", document.getText());
-
     if (!enableUploadImage) {
         diagnosticCollection.clear();
 
@@ -64,19 +63,13 @@ async function updateDiagnostics(document: vscode.TextDocument) {
     let match;
     while ((match = kLocalImageLinkRegex.exec(text)) !== null) {
         const [imageLink, imagePath] = match;
-        const imagePathStartPos = document.positionAt(
-            match.index + imageLink.indexOf(imagePath)
-        );
-        const imagePathEndPos = document.positionAt(
+        const range = buildRangeByOffsets(
+            document,
+            match.index + imageLink.indexOf(imagePath),
             match.index + imageLink.indexOf(imagePath) + imagePath.length
         );
-        const imagePathRange = new vscode.Range(
-            imagePathStartPos,
-            imagePathEndPos
-        );
-
         const diagnostic = new vscode.Diagnostic(
-            imagePathRange,
+            range,
             `Unrecommended local image path "${imagePath}".`,
             vscode.DiagnosticSeverity.Warning
         );

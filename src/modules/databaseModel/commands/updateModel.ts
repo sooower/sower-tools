@@ -151,7 +151,6 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
     if (enumEColumnNode !== undefined) {
         await textEditorUtils.replaceTextOfNode({
             editor,
-            sourceFile: createSourceFileByEditor(editor),
             node: enumEColumnNode,
             newText: enumEColumnNodeText,
         });
@@ -218,7 +217,6 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
     if (typeInsertOptionsNode !== undefined) {
         await textEditorUtils.replaceTextOfNode({
             editor,
-            sourceFile: createSourceFileByEditor(editor),
             node: typeInsertOptionsNode,
             newText: typeInsertOptionsNodeText,
         });
@@ -268,7 +266,6 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
     if (funcInsertNode !== undefined) {
         await textEditorUtils.replaceTextOfNode({
             editor,
-            sourceFile: createSourceFileByEditor(editor),
             node: funcInsertNode,
             newText: funcInsertNodeText,
         });
@@ -296,7 +293,6 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         if (typeUpdateOptionsNode !== undefined) {
             await textEditorUtils.replaceTextOfNode({
                 editor,
-                sourceFile: createSourceFileByEditor(editor),
                 node: typeUpdateOptionsNode,
                 newText: typeUpdateOptionsNodeText,
             });
@@ -342,7 +338,6 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
         if (funcUpdateNode !== undefined) {
             await textEditorUtils.replaceTextOfNode({
                 editor,
-                sourceFile: createSourceFileByEditor(editor),
                 node: funcUpdateNode,
                 newText: funcUpdateNodeText,
             });
@@ -361,7 +356,6 @@ export async function updateModel({ editor }: TUpdateModelOptions) {
 
         await textEditorUtils.replaceTextOfSourceFile({
             editor,
-            sourceFile: createSourceFileByEditor(editor),
             newText: await prettierFormatFile(
                 createSourceFileByEditor(editor).fileName
             ),

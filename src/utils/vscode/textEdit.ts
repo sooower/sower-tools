@@ -2,6 +2,8 @@ import ts from "typescript";
 
 import { vscode } from "@/core";
 
+import { buildRangeByNode, buildRangeByOffsets } from "./range";
+
 type TReplaceTextOfNodeOptions = {
     editor: vscode.TextEditor;
     node: ts.Node;
@@ -26,10 +28,7 @@ type TReplaceTextRangeOffsetOptions = {
 class TextEditUtils {
     replaceTextOfNode({ editor, node, newText }: TReplaceTextOfNodeOptions) {
         return vscode.TextEdit.replace(
-            new vscode.Range(
-                editor.document.positionAt(node.getStart()),
-                editor.document.positionAt(node.getEnd())
-            ),
+            buildRangeByNode(editor.document, node),
             newText
         );
     }
@@ -54,9 +53,10 @@ class TextEditUtils {
         endPlusOne,
     }: TReplaceTextRangeOffsetOptions) {
         return vscode.TextEdit.replace(
-            new vscode.Range(
-                editor.document.positionAt(start),
-                editor.document.positionAt(endPlusOne === true ? end + 1 : end)
+            buildRangeByOffsets(
+                editor.document,
+                start,
+                endPlusOne === true ? end + 1 : end
             ),
             newText
         );

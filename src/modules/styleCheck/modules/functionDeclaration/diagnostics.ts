@@ -7,8 +7,9 @@ import {
 } from "@/utils/typescript";
 import { detectCommentKind } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
+import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
-import { hasValidLeadingSpaceBefore, isFirstChildOfParent } from "../../utils";
+import { hasValidLeadingSpaceBefore, isFirstLineOfParent } from "../../utils";
 import { enableStyleCheckFunctionDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -66,7 +67,7 @@ function appendDiagnostic(
         return;
     }
 
-    if (isFirstChildOfParent(document, funcDeclNodeStartLineIndex)) {
+    if (isFirstLineOfParent(document, funcDeclNodeStartLineIndex)) {
         return;
     }
 
@@ -85,11 +86,8 @@ function appendDiagnostic(
     }
 
     const diagnostic = new vscode.Diagnostic(
-        new vscode.Range(
-            document.positionAt(funcNodeStartPos),
-            document.positionAt(funcNodeStartPos)
-        ),
-        "Missing a blank line before the function declaration",
+        buildRangeByLineIndex(document, funcDeclNodeStartLineIndex),
+        "Missing a blank line before the function declaration.",
         vscode.DiagnosticSeverity.Warning
     );
     diagnostic.code = `@${extensionName}/blank-line-before-function-declaration`;

@@ -117,7 +117,6 @@ async function convertParametersToOptionsObject({
 
             await textEditorUtils.replaceTextOfNode({
                 editor,
-                sourceFile: createSourceFileByEditor(editor),
                 node: parameter.type,
                 newText: typeName,
             });

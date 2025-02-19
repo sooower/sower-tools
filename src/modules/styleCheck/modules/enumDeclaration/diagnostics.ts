@@ -5,6 +5,7 @@ import { extensionCtx, extensionName } from "@/core/context";
 import { findTopLevelEnumDeclarationNodes } from "@/utils/typescript";
 import { detectCommentKind } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
+import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import { hasValidLeadingSpaceBefore } from "../../utils";
 import { enableStyleCheckEnumDeclaration } from "./configs";
@@ -74,11 +75,8 @@ function appendDiagnostic(
     }
 
     const diagnostic = new vscode.Diagnostic(
-        new vscode.Range(
-            document.positionAt(enumNodeStartPos),
-            document.positionAt(enumNodeStartPos)
-        ),
-        "Missing a blank line before the enum declaration",
+        buildRangeByLineIndex(document, enumDeclNodeStartLineIndex),
+        "Missing a blank line before the enum declaration.",
         vscode.DiagnosticSeverity.Warning
     );
     diagnostic.code = `@${extensionName}/blank-line-before-enum-declaration`;

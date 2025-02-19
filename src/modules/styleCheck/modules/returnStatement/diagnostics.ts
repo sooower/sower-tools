@@ -4,6 +4,7 @@ import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
 import { findAllBlockNodes } from "@/utils/typescript";
 import { createSourceFileByDocument } from "@/utils/vscode";
+import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import { enableStyleCheckReturnStatement } from "./configs";
 
@@ -62,13 +63,8 @@ function appendDiagnostic(
     const returnStartLine = document.positionAt(lastStmt.getStart()).line;
 
     if (returnStartLine - prevEndLine < 2) {
-        const range = new vscode.Range(
-            document.positionAt(lastStmt.getStart()),
-            document.positionAt(lastStmt.getEnd())
-        );
-
         const diagnostic = new vscode.Diagnostic(
-            range,
+            buildRangeByLineIndex(document, returnStartLine),
             "Missing blank line before return statement.",
             vscode.DiagnosticSeverity.Warning
         );

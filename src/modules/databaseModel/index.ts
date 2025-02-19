@@ -1,8 +1,10 @@
 import { defineModule } from "@/core/moduleManager";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
-import { registerCommandGenerateModel } from "./commands/generateModel";
-import { registerCommandUpdateModel } from "./commands/updateModel";
+import {
+    registerCommandGenerateModel,
+    registerCommandUpdateModel,
+} from "./commands";
 import { parseConfigs } from "./configs";
 
 export const databaseModel = defineModule({

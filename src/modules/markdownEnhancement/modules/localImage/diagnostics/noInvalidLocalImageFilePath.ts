@@ -2,6 +2,7 @@ import path from "node:path";
 
 import { fs, vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
+import { buildRangeByOffsets } from "@/utils/vscode/range";
 
 import { kLocalImageLinkRegex } from "../consts";
 
@@ -40,20 +41,13 @@ function updateDiagnostics(document: vscode.TextDocument) {
             imagePath
         );
         if (!fs.existsSync(imageAbsPath)) {
-            const imagePathStartPos = document.positionAt(
-                match.index + imageLink.indexOf(imagePath)
-            );
-            const imagePathEndPos = document.positionAt(
+            const range = buildRangeByOffsets(
+                document,
+                match.index + imageLink.indexOf(imagePath),
                 match.index + imageLink.indexOf(imagePath) + imagePath.length
             );
-
-            const imagePathRange = new vscode.Range(
-                imagePathStartPos,
-                imagePathEndPos
-            );
-
             const diagnostic = new vscode.Diagnostic(
-                imagePathRange,
+                range,
                 `Local image file "${imagePath}" not found.`,
                 vscode.DiagnosticSeverity.Error
             );

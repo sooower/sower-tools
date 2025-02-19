@@ -1,5 +1,6 @@
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
+import { getTrimmedLineText } from "@/utils/vscode";
 
 import { patterns } from "./configs";
 
@@ -22,11 +23,9 @@ class LogPrintingCompletionItemProvider
         token: vscode.CancellationToken,
         context: vscode.CompletionContext
     ): vscode.CompletionItem[] | Thenable<vscode.CompletionItem[]> {
-        const lineText = document.getText(
-            new vscode.Range(position.with(undefined, 0), position)
+        const match = getTrimmedLineText(document, position.line).match(
+            /(.+)\.(\w+)$/
         );
-
-        const match = lineText.match(/(.+)\.(\w+)$/);
         if (match === null) {
             return [];
         }
@@ -39,8 +38,9 @@ class LogPrintingCompletionItemProvider
                 pattern.trigger.split(".")[1].trim().includes(suffix.trim())
             )
             .map(pattern => {
-                const replacement = trimQuoteBounds(
-                    pattern.replacement.replace(/{{varName}}/g, varName)
+                const replacement = pattern.replacement.replace(
+                    /{{varName}}/g,
+                    varName
                 );
                 const varRange = new vscode.Range(
                     position.line,
@@ -64,12 +64,4 @@ class LogPrintingCompletionItemProvider
                 return item;
             });
     }
-}
-
-function trimQuoteBounds(text: string) {
-    if (/^["'`].+["'`]$/.test(text)) {
-        return text.slice(1, -1);
-    }
-
-    return text;
 }

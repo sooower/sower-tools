@@ -2,15 +2,15 @@ import ts from "typescript";
 
 import { vscode } from "@/core";
 
+import { buildRangeByNode, buildRangeByOffsets } from "./range";
+
 type TReplaceTextOfSourceFileOptions = {
     editor: vscode.TextEditor;
-    sourceFile: ts.SourceFile;
     newText: string;
 };
 
 type TReplaceTextOfNodeOptions = {
     editor: vscode.TextEditor;
-    sourceFile: ts.SourceFile;
     node: ts.Node;
     newText: string;
 };
@@ -25,7 +25,6 @@ type TReplaceTextRangeOffsetOptions = {
 
 type TDeleteTextOfNodeOptions = {
     editor: vscode.TextEditor;
-    sourceFile: ts.SourceFile;
     node: ts.Node;
 };
 
@@ -57,24 +56,12 @@ type TInsertTextAtOffsetOptions = {
 class TextEditorUtils {
     async replaceTextOfNode({
         editor,
-        sourceFile,
         node,
         newText,
     }: TReplaceTextOfNodeOptions) {
-        const startPos = ts.getLineAndCharacterOfPosition(
-            sourceFile,
-            node.getStart()
-        );
-        const endPos = ts.getLineAndCharacterOfPosition(
-            sourceFile,
-            node.getEnd()
-        );
         await editor.edit(editBuilder => {
             editBuilder.replace(
-                new vscode.Range(
-                    new vscode.Position(startPos.line, startPos.character),
-                    new vscode.Position(endPos.line, endPos.character)
-                ),
+                buildRangeByNode(editor.document, node),
                 newText
             );
         });
@@ -89,11 +76,10 @@ class TextEditorUtils {
     }: TReplaceTextRangeOffsetOptions) {
         await editor.edit(editBuilder => {
             editBuilder.replace(
-                new vscode.Range(
-                    editor.document.positionAt(start),
-                    editor.document.positionAt(
-                        endPlusOne === true ? end + 1 : end
-                    )
+                buildRangeByOffsets(
+                    editor.document,
+                    start,
+                    endPlusOne === true ? end + 1 : end
                 ),
                 newText
             );
@@ -102,45 +88,23 @@ class TextEditorUtils {
 
     async replaceTextOfSourceFile({
         editor,
-        sourceFile,
         newText,
     }: TReplaceTextOfSourceFileOptions) {
-        const startPos = ts.getLineAndCharacterOfPosition(sourceFile, 0);
-        const endPos = ts.getLineAndCharacterOfPosition(
-            sourceFile,
-            Number.MAX_VALUE
-        );
         await editor.edit(editBuilder => {
             editBuilder.replace(
-                new vscode.Range(
-                    new vscode.Position(startPos.line, startPos.character),
-                    new vscode.Position(endPos.line, endPos.character)
+                buildRangeByOffsets(
+                    editor.document,
+                    0,
+                    editor.document.getText().length
                 ),
                 newText
             );
         });
     }
 
-    async deleteTextOfNode({
-        editor,
-        sourceFile,
-        node,
-    }: TDeleteTextOfNodeOptions) {
-        const startPos = ts.getLineAndCharacterOfPosition(
-            sourceFile,
-            node.getStart()
-        );
-        const endPos = ts.getLineAndCharacterOfPosition(
-            sourceFile,
-            node.getEnd()
-        );
+    async deleteTextOfNode({ editor, node }: TDeleteTextOfNodeOptions) {
         await editor.edit(editBuilder => {
-            editBuilder.delete(
-                new vscode.Range(
-                    new vscode.Position(startPos.line, startPos.character),
-                    new vscode.Position(endPos.line, endPos.character)
-                )
-            );
+            editBuilder.delete(buildRangeByNode(editor.document, node));
         });
     }
 

@@ -1,8 +1,10 @@
 import { defineModule } from "@/core/moduleManager";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
-import { registerCommandKeyDecrypt } from "./commands/keyDecrypt";
-import { registerCommandKeyEncrypt } from "./commands/keyEncrypt";
+import {
+    registerCommandKeyDecrypt,
+    registerCommandKeyEncrypt,
+} from "./commands";
 import { parseConfigs } from "./configs";
 
 export const keyCryptoTools = defineModule({

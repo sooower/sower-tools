@@ -96,7 +96,6 @@ async function generateEnumAssertionFunctions({
     if (assertFuncDeclarationNode !== undefined) {
         await textEditorUtils.replaceTextOfNode({
             editor,
-            sourceFile: createSourceFileByEditor(editor),
             node: assertFuncDeclarationNode,
             newText: assertFuncText,
         });
@@ -183,7 +182,6 @@ async function generateEnumAssertionFunctions({
 
     await textEditorUtils.replaceTextOfSourceFile({
         editor,
-        sourceFile: createSourceFileByEditor(editor),
         newText: await prettierFormatFile(
             createSourceFileByEditor(editor).fileName
         ),

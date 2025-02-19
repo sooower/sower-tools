@@ -1,8 +1,13 @@
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
 import { detectCommentKind, kCommentKind } from "@/utils/typescript/comment";
+import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
-import { hasValidLeadingSpaceBefore, isFirstChildOfParent } from "../../utils";
+import {
+    hasValidLeadingSpaceBefore,
+    isFirstLineOfParent,
+    isLastLineOfParent,
+} from "../../utils";
 import { enableStyleCheckComment, skipCheckCharacter } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -60,7 +65,11 @@ function updateDiagnostics(document: vscode.TextDocument) {
             continue;
         }
 
-        if (isFirstChildOfParent(document, lineIndex)) {
+        if (isFirstLineOfParent(document, lineIndex)) {
+            continue;
+        }
+
+        if (isLastLineOfParent(document, lineIndex)) {
             continue;
         }
 
@@ -72,22 +81,12 @@ function updateDiagnostics(document: vscode.TextDocument) {
 
 function appendDiagnostic(
     document: vscode.TextDocument,
-    lineNumber: number,
+    lineIndex: number,
     diagnostics: vscode.Diagnostic[]
 ) {
-    const line = document.lineAt(lineNumber);
-
-    const firstVisibleCharIndex = line.firstNonWhitespaceCharacterIndex;
-    if (firstVisibleCharIndex === -1) {
-        return;
-    }
-
     const diagnostic = new vscode.Diagnostic(
-        new vscode.Range(
-            new vscode.Position(line.lineNumber, firstVisibleCharIndex),
-            line.range.end
-        ),
-        "Missing a blank line before the comment",
+        buildRangeByLineIndex(document, lineIndex),
+        "Missing a blank line before the comment.",
         vscode.DiagnosticSeverity.Warning
     );
     diagnostic.code = `@${extensionName}/blank-line-before-comment`;
