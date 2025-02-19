@@ -9,7 +9,6 @@ export const comment = defineModule({
         registerDiagnosticComment();
         registerCodeActionsProviders();
     },
-
     onReloadConfiguration() {
         parseConfig();
     },

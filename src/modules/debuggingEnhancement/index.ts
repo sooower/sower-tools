@@ -9,7 +9,6 @@ export const debuggingEnhancement = defineModule({
         registerCommandDebugCurrentFile();
         registerCommandDebugProject();
     },
-
     onReloadConfiguration() {
         parseConfigs();
     },

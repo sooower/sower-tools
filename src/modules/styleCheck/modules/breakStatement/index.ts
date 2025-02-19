@@ -9,7 +9,6 @@ export const breakStatement = defineModule({
         registerDiagnosticBreakStatement();
         registerCodeActionsProviders();
     },
-
     onReloadConfiguration() {
         parseConfig();
     },

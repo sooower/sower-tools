@@ -1,4 +1,4 @@
-import ts, { ConstructorDeclaration, MethodDeclaration } from "typescript";
+import ts from "typescript";
 
 import { isOffsetWithinNode } from "./utils";
 
@@ -82,72 +82,6 @@ export function findAllFuncOrCtorDeclarationNodes(sourceFile: ts.SourceFile) {
     visit(sourceFile);
 
     return funcOrCtorDeclarationNodes;
-}
-
-export function findFirstMethodOrCtorDeclarationNode(
-    sourceFile: ts.SourceFile
-) {
-    const visit = (
-        node: ts.Node
-    ): MethodDeclaration | ConstructorDeclaration | undefined => {
-        if (ts.isMethodDeclaration(node) || ts.isConstructorDeclaration(node)) {
-            return node;
-        }
-
-        return ts.forEachChild(node, visit);
-    };
-
-    return visit(sourceFile);
-}
-
-export function isFirstClassMember(node: TFunc): boolean {
-    if (!ts.isClassDeclaration(node.parent)) {
-        return false;
-    }
-
-    const classMembers = node.parent.members;
-
-    return classMembers.length > 0 && classMembers[0] === node;
-}
-
-export function isFirstChildInParentFunction(node: ts.Node): boolean {
-    const parentFunction = findContainingFunction(node);
-    if (parentFunction === undefined) {
-        return false;
-    }
-
-    const functionBody = getFunctionBody(parentFunction);
-    if (functionBody === undefined || !ts.isBlock(functionBody)) {
-        return false;
-    }
-
-    const firstStatement = functionBody.statements[0];
-    if (firstStatement === undefined) {
-        return false;
-    }
-
-    return node.getText() === firstStatement.getText();
-}
-
-function findContainingFunction(node: ts.Node): ts.Node | undefined {
-    let current = node.parent;
-    while (current !== undefined) {
-        if (ts.isFunctionLike(current)) {
-            return current;
-        }
-        current = current.parent;
-    }
-
-    return undefined;
-}
-
-function getFunctionBody(funcNode: ts.Node): ts.Node | undefined {
-    return ts.isFunctionDeclaration(funcNode) ||
-        ts.isFunctionExpression(funcNode)
-        ? funcNode.body
-        : ts.isArrowFunction(funcNode)
-        ? funcNode.body
-        : undefined;
 }
 
 export function isFunctionParameter(node: TFunc): boolean {

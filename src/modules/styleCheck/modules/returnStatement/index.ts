@@ -9,7 +9,6 @@ export const returnStatement = defineModule({
         registerDiagnosticReturnStatement();
         registerCodeActionsProviders();
     },
-
     onReloadConfiguration() {
         parseConfig();
     },

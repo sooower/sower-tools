@@ -9,7 +9,6 @@ export const enumDeclaration = defineModule({
         registerDiagnosticEnumDeclaration();
         registerCodeActionsProviders();
     },
-
     onReloadConfiguration() {
         parseConfig();
     },

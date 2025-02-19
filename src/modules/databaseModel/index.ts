@@ -11,7 +11,6 @@ export const databaseModel = defineModule({
         registerCommandUpdateModel();
         registerCodeActionsProviders();
     },
-
     onReloadConfiguration() {
         parseConfigs();
     },

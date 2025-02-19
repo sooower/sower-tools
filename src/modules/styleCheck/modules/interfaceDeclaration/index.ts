@@ -9,7 +9,6 @@ export const interfaceDeclaration = defineModule({
         registerDiagnosticInterfaceDeclaration();
         registerCodeActionsProviders();
     },
-
     onReloadConfiguration() {
         parseConfig();
     },

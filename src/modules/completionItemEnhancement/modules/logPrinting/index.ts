@@ -7,7 +7,6 @@ export const logPrinting = defineModule({
     onActive() {
         registerCompletionItemProviders();
     },
-
     onReloadConfiguration() {
         parseConfigs();
     },

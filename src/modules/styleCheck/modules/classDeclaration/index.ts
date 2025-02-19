@@ -9,7 +9,6 @@ export const classDeclaration = defineModule({
         registerDiagnosticClassDeclaration();
         registerCodeActionsProviders();
     },
-
     onReloadConfiguration() {
         parseConfig();
     },

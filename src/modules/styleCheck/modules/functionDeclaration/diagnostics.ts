@@ -2,15 +2,13 @@ import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
 import {
     findAllFuncOrCtorDeclarationNodes,
-    isFirstChildInParentFunction,
-    isFirstClassMember,
     isFunctionParameter,
     TFunc,
 } from "@/utils/typescript";
 import { detectCommentKind } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
 
-import { hasValidLeadingSpaceBefore, isBodyStartLine } from "../../utils";
+import { hasValidLeadingSpaceBefore, isFirstChildOfParent } from "../../utils";
 import { enableStyleCheckFunctionDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -68,15 +66,7 @@ function appendDiagnostic(
         return;
     }
 
-    if (isBodyStartLine(document, funcDeclNodeStartLineIndex)) {
-        return;
-    }
-
-    if (isFirstClassMember(node)) {
-        return;
-    }
-
-    if (isFirstChildInParentFunction(node)) {
+    if (isFirstChildOfParent(document, funcDeclNodeStartLineIndex)) {
         return;
     }
 

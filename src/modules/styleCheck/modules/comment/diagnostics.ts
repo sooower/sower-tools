@@ -2,7 +2,7 @@ import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
 import { detectCommentKind, kCommentKind } from "@/utils/typescript/comment";
 
-import { hasValidLeadingSpaceBefore, isBodyStartLine } from "../../utils";
+import { hasValidLeadingSpaceBefore, isFirstChildOfParent } from "../../utils";
 import { enableStyleCheckComment } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -55,7 +55,7 @@ function updateDiagnostics(document: vscode.TextDocument) {
             continue;
         }
 
-        if (isBodyStartLine(document, lineIndex)) {
+        if (isFirstChildOfParent(document, lineIndex)) {
             continue;
         }
 

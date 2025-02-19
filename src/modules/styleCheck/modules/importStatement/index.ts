@@ -9,7 +9,6 @@ export const importStatement = defineModule({
         registerCodeActionsProviders();
         registerDiagnosticImportStatement();
     },
-
     onReloadConfiguration() {
         parseConfig();
     },

@@ -9,7 +9,6 @@ export const functionDeclaration = defineModule({
         registerDiagnosticFunctionDeclaration();
         registerCodeActionsProviders();
     },
-
     onReloadConfiguration() {
         parseConfig();
     },

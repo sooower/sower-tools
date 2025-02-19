@@ -7,7 +7,6 @@ export const nodeBuiltinModulesImportsUpdate = defineModule({
     onActive() {
         registerOnDidSaveTextDocumentListener();
     },
-
     onReloadConfiguration() {
         parseConfigs();
     },

@@ -9,7 +9,6 @@ export const typeDeclaration = defineModule({
         registerCodeActionsProviders();
         registerDiagnosticTypeDeclaration();
     },
-
     onReloadConfiguration() {
         parseConfig();
     },

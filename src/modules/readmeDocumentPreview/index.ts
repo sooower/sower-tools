@@ -9,7 +9,6 @@ export const readmeDocumentPreview = defineModule({
             previewDocument();
         }
     },
-
     onReloadConfiguration() {
         parseConfigs();
 

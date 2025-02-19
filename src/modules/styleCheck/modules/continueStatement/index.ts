@@ -9,7 +9,6 @@ export const continueStatement = defineModule({
         registerDiagnosticContinueStatement();
         registerCodeActionsProviders();
     },
-
     onReloadConfiguration() {
         parseConfig();
     },

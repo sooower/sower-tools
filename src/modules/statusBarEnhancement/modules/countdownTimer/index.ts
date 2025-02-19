@@ -9,7 +9,6 @@ export const countdownTimer = defineModule({
         registerCommandCountdownTimer();
         showStatusBarCountdownTimer();
     },
-
     onReloadConfiguration() {
         parseConfigs();
     },

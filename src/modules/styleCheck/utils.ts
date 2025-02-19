@@ -55,48 +55,54 @@ export function hasValidLeadingSpaceAfter(
 }
 
 /**
- * Check if the line is the start of a function body or arrow function.
- * @param document The document to check
- * @param lineIndex The index of the current line
- * @returns True if the line is the start of a function body or arrow function, false otherwise
+ * Check if the line is the first child of its parent, including function body, object, array, and assignment.
+ * @param document The document to check.
+ * @param lineIndex The index of the line to check.
+ * @returns True if the line is the first child of its parent, false otherwise.
  */
-export function isBodyStartLine(
+export function isFirstChildOfParent(
     document: vscode.TextDocument,
     lineIndex: number
 ): boolean {
     // Scan from the line before the comment line upwards
     for (let i = lineIndex - 1; i >= 0; i--) {
-        const lineText = document.lineAt(i).text;
+        const lineText = document.lineAt(i).text.trimEnd();
 
         // Skip empty lines
         if (!/\S/.test(lineText)) {
             continue;
         }
 
-        const trimmed = lineText.trimEnd();
-
-        return isFunctionBodyEnd(trimmed) || isInArrowFunction(trimmed);
+        return (
+            isFirstChildOfArrowFunction(lineText) ||
+            isFirstChildOfObject(lineText) ||
+            isFirstArrayElement(lineText) ||
+            isAssignmentValue(lineText) ||
+            isParameterOfFunction(lineText)
+        );
     }
 
     return false;
 }
 
-/**
- * Check if the line is a function body end, by checking if it ends with `{`.
- * @param text The text to check
- * @returns True if the line is a function body end, false otherwise
- */
-function isFunctionBodyEnd(text: string): boolean {
-    return text.endsWith("{") && !text.includes("//");
-}
-
-/**
- * Check if the line is in an arrow function, by checking if it ends with `=>`.
- * @param text The text to check
- * @returns True if the line is in an arrow function, false otherwise
- */
-function isInArrowFunction(text: string): boolean {
+function isFirstChildOfArrowFunction(text: string): boolean {
     const lastChars = text.slice(-2);
 
     return lastChars === "=>" && !text.trimStart().startsWith("//");
+}
+
+function isFirstChildOfObject(text: string): boolean {
+    return text.endsWith("{") && !text.includes("//");
+}
+
+function isFirstArrayElement(text: string): boolean {
+    return text.endsWith("[") && !text.includes("//");
+}
+
+function isParameterOfFunction(text: string): boolean {
+    return (text.endsWith("(") || text.endsWith(",")) && !text.includes("//");
+}
+
+function isAssignmentValue(text: string): boolean {
+    return text.endsWith("=") && !text.includes("//");
 }
