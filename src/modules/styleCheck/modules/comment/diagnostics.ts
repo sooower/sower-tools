@@ -3,7 +3,7 @@ import { extensionCtx, extensionName } from "@/core/context";
 import { detectCommentKind, kCommentKind } from "@/utils/typescript/comment";
 
 import { hasValidLeadingSpaceBefore, isFirstChildOfParent } from "../../utils";
-import { enableStyleCheckComment } from "./configs";
+import { enableStyleCheckComment, skipCheckCharacter } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -47,6 +47,11 @@ function updateDiagnostics(document: vscode.TextDocument) {
             continue;
         }
 
+        // Skip if the comment starts with skip check character
+        if (startsWithSkipCheckCharacter(currentLine.text)) {
+            continue;
+        }
+
         if (isConsecutiveSingleLineComment(document, lineIndex)) {
             continue;
         }
@@ -59,7 +64,6 @@ function updateDiagnostics(document: vscode.TextDocument) {
             continue;
         }
 
-        console.log("appendDiagnostic: line:", lineIndex + 1);
         appendDiagnostic(document, lineIndex, diagnostics);
     }
 
@@ -125,4 +129,13 @@ function isConsecutiveSingleLineComment(
     }
 
     return false;
+}
+
+function startsWithSkipCheckCharacter(text: string): boolean {
+    // There need an additional backslash '\' to prevent escape,
+    // so when the skip check character is '?', the original regex is:
+    // /^(\/\/|\/\*\\s*)\?/
+    return new RegExp(`^(\\/\\/|\\/\\*\\*?\\s*)\\${skipCheckCharacter}`).test(
+        text.trimStart()
+    );
 }

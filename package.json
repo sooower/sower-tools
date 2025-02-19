@@ -532,6 +532,11 @@
                     "type": "boolean",
                     "default": true
                 },
+                "sower-tools.styleCheck.comment.skipCheckCharacter": {
+                    "description": "The character that will be used to skip the comment check.",
+                    "type": "string",
+                    "default": "?"
+                },
                 "sower-tools.styleCheck.classDeclaration.enable": {
                     "description": "If true, it will check the class declaration style.",
                     "type": "boolean",
