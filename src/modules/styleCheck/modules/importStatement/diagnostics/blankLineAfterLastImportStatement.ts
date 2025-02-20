@@ -1,6 +1,9 @@
 import ts from "typescript";
 
-import { hasValidLeadingSpaceAfter } from "@/modules/styleCheck/utils";
+import {
+    hasValidLeadingSpaceAfter,
+    isIgnoredFile,
+} from "@/modules/styleCheck/utils";
 
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
@@ -36,6 +39,12 @@ function updateDiagnostics(document: vscode.TextDocument) {
     }
 
     if (!enableStyleCheckImportStatement) {
+        diagnosticCollection.delete(document.uri);
+
+        return;
+    }
+
+    if (isIgnoredFile(document)) {
         diagnosticCollection.delete(document.uri);
 
         return;

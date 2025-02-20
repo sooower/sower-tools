@@ -10,10 +10,18 @@ export function registerCommandListSkippedFiles() {
             async () => {
                 try {
                     const skippedFiles = await execCommand({
-                        command: `git ls-files -v | grep '^S'`,
+                        command: `git ls-files -v | grep '^S' || echo ''`,
                         cwd: getWorkspaceFolderPath(),
                         interactive: false,
                     });
+
+                    if (skippedFiles?.length === 0) {
+                        vscode.window.showInformationMessage(
+                            "No skipped files found."
+                        );
+
+                        return;
+                    }
 
                     await vscode.window.showTextDocument(
                         await vscode.workspace.openTextDocument({

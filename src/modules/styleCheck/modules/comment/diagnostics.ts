@@ -6,6 +6,7 @@ import { buildRangeByLineIndex } from "@/utils/vscode/range";
 import {
     hasValidLeadingSpaceBefore,
     isFirstLineOfParent,
+    isIgnoredFile,
     isLastLineOfParent,
 } from "../../utils";
 import { enableStyleCheckComment, skipCheckCharacter } from "./configs";
@@ -34,6 +35,12 @@ function updateDiagnostics(document: vscode.TextDocument) {
     }
 
     if (!enableStyleCheckComment) {
+        diagnosticCollection.delete(document.uri);
+
+        return;
+    }
+
+    if (isIgnoredFile(document)) {
         diagnosticCollection.delete(document.uri);
 
         return;

@@ -7,7 +7,7 @@ import { detectCommentKind } from "@/utils/typescript/comment";
 import { createSourceFileByDocument } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
-import { hasValidLeadingSpaceBefore } from "../../utils";
+import { hasValidLeadingSpaceBefore, isIgnoredFile } from "../../utils";
 import { enableStyleCheckInterfaceDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -35,6 +35,12 @@ function updateDiagnostics(document: vscode.TextDocument) {
     }
 
     if (!enableStyleCheckInterfaceDeclaration) {
+        diagnosticCollection.delete(document.uri);
+
+        return;
+    }
+
+    if (isIgnoredFile(document)) {
         diagnosticCollection.delete(document.uri);
 
         return;

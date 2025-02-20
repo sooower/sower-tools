@@ -6,6 +6,7 @@ import { findAllBlockNodes } from "@/utils/typescript";
 import { createSourceFileByDocument } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
+import { isIgnoredFile } from "../../utils";
 import { enableStyleCheckReturnStatement } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -31,6 +32,12 @@ function updateDiagnostics(document: vscode.TextDocument) {
     }
 
     if (!enableStyleCheckReturnStatement) {
+        diagnosticCollection.delete(document.uri);
+
+        return;
+    }
+
+    if (isIgnoredFile(document)) {
         diagnosticCollection.delete(document.uri);
 
         return;

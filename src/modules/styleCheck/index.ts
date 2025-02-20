@@ -1,5 +1,6 @@
 import { defineModule } from "@/core/moduleManager";
 
+import { parseConfigs } from "./configs";
 import { breakStatement } from "./modules/breakStatement";
 import { classDeclaration } from "./modules/classDeclaration";
 import { comment } from "./modules/comment";
@@ -12,6 +13,12 @@ import { returnStatement } from "./modules/returnStatement";
 import { typeDeclaration } from "./modules/typeDeclaration";
 
 export const styleCheck = defineModule([
+    {
+        onReloadConfiguration() {
+            parseConfigs();
+        },
+    },
+    // Add sub modules
     comment,
     returnStatement,
     classDeclaration,

@@ -52,6 +52,7 @@
         "@utils/datetime": "^0.2.4",
         "@utils/fs": "^0.3.2",
         "@utils/json": "^0.4.2",
+        "ignore": "^7.0.3",
         "markdown-it": "^14.1.0",
         "minio": "^8.0.4",
         "pluralize": "^8.0.0",
@@ -632,6 +633,30 @@
                             "trigger": "{{varName}}.error",
                             "replacement": "console.error(\"{{varName}}:\", {{varName}});"
                         }
+                    ]
+                },
+                "sower-tools.styleCheck.ignore.patterns": {
+                    "description": "The 'glob' patterns of files or directories that will be ignored when checking style. The priority is higher than compatibility config files.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "node_modules/**",
+                        "dist/**",
+                        "build/**"
+                    ]
+                },
+                "sower-tools.styleCheck.ignore.compatibleConfigFilenames": {
+                    "description": "The compatible config filenames that will be used to ignore style check files. The priority is lower than configured items in '.styleCheck.ignore.patterns'.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        ".eslintignore",
+                        ".prettierignore",
+                        ".gitignore"
                     ]
                 },
                 "sower-tools.styleCheck.comment.enable": {

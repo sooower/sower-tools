@@ -1,5 +1,7 @@
 import ts from "typescript";
 
+import { isIgnoredFile } from "@/modules/styleCheck/utils";
+
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
 import { findAllTopLevelStatements } from "@/utils/typescript/statement";
@@ -33,6 +35,12 @@ function updateDiagnostics(document: vscode.TextDocument) {
     }
 
     if (!enableStyleCheckImportStatement) {
+        diagnosticCollection.delete(document.uri);
+
+        return;
+    }
+
+    if (isIgnoredFile(document)) {
         diagnosticCollection.delete(document.uri);
 
         return;
