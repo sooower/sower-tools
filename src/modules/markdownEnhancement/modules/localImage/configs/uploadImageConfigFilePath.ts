@@ -7,6 +7,8 @@ import { getConfigurationItem } from "@/core/configuration";
 import { extensionName } from "@/core/context";
 import { readJsonFile } from "@utils/fs";
 
+import { enableUploadImage } from "./uploadImageEnable";
+
 const uploadImageConfigSchema = z.object({
     endpoint: z.string(),
     accessKey: z.string(),
@@ -18,6 +20,10 @@ const uploadImageConfigSchema = z.object({
 export let uploadImageConfig: z.infer<typeof uploadImageConfigSchema>;
 
 export function parseUploadImageConfigFilePath() {
+    if (!enableUploadImage) {
+        return;
+    }
+
     const configFilePath = path.resolve(
         z
             .string()
