@@ -24,9 +24,16 @@ export function getDebuggingConfigurations() {
             .object({
                 configurations: z.array(
                     z.object({
-                        type: z.string(),
                         name: z.string(),
+                        type: z.string(),
                         request: z.string(),
+                        args: z.array(z.string()).optional(),
+                        runtimeArgs: z.array(z.string()).optional(),
+                        cwd: z.string().optional(),
+                        internalConsoleOptions: z.string().optional(),
+                        skipFiles: z.array(z.string()).optional(),
+                        env: z.record(z.string(), z.string()).optional(),
+                        envFile: z.string().optional(),
                     })
                 ),
             })
