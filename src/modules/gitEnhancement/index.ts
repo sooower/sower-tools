@@ -1,15 +1,17 @@
 import { defineModule } from "@/core/moduleManager";
 
 import {
-    registerCommandListFiles,
+    registerCommandForcePush,
+    registerCommandListSkippedFiles,
     registerCommandNoSkipWorkTree,
     registerCommandSkipWorkTree,
 } from "./commands";
 
 export const gitEnhancement = defineModule({
     onActive() {
-        registerCommandListFiles();
+        registerCommandListSkippedFiles();
         registerCommandNoSkipWorkTree();
         registerCommandSkipWorkTree();
+        registerCommandForcePush();
     },
 });

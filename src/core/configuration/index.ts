@@ -31,7 +31,7 @@ async function reloadConfiguration() {
                 );
                 userConfig = vscode.workspace.getConfiguration();
 
-                moduleManager.reloadConfiguration();
+                await moduleManager.reloadConfiguration();
             } catch (error) {
                 vscode.window.showErrorMessage(
                     `Load configuration failed: ${(error as Error).message}`

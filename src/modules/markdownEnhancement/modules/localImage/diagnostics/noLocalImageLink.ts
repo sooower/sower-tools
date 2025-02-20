@@ -27,10 +27,10 @@ export function registerDiagnosticNoLocalImageLink() {
         vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
     );
 
-    // Register upload image to minio storage command
+    // Register command upload image to minio storage
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
-            `${extensionName}.markdownEnhancement.localImage.uploadImage`,
+            `${extensionName}.markdownEnhancement.localImage.uploadToMinioStorage`,
             uploadImage
         )
     );
@@ -170,7 +170,7 @@ class UploadImageActionProvider implements vscode.CodeActionProvider {
         );
         action.diagnostics = [diagnostic];
         action.command = {
-            command: `${extensionName}.markdownImageEnhancement.imageUpload.uploadToMinioStorage`,
+            command: `${extensionName}.markdownEnhancement.localImage.uploadToMinioStorage`,
             title: "Upload to minio storage",
             arguments: [document, diagnostic.range],
         };

@@ -76,10 +76,12 @@ async function getFilesInFolder(uri: vscode.Uri) {
         switch (type) {
             case vscode.FileType.Directory: {
                 files.push(...(await getFilesInFolder(fullPath)));
+
                 break;
             }
             case vscode.FileType.File: {
                 files.push(fullPath);
+
                 break;
             }
             default: {

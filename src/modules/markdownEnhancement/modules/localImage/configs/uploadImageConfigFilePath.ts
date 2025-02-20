@@ -36,7 +36,9 @@ export function parseUploadImageConfigFilePath() {
     );
 
     if (!fs.existsSync(configFilePath)) {
-        throw new Error(`config file "${configFilePath}" does not exist.`);
+        throw new Error(
+            `Upload markdown image config file "${configFilePath}" does not exist.`
+        );
     }
 
     const { error, data } = uploadImageConfigSchema.safeParse(
@@ -44,7 +46,7 @@ export function parseUploadImageConfigFilePath() {
     );
     if (error !== undefined) {
         throw new Error(
-            `config in file "${configFilePath}" is invalid. ${error.message}`
+            `Config in upload markdown image config file "${configFilePath}" is invalid. ${error.message}`
         );
     }
 

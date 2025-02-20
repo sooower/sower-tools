@@ -26,7 +26,14 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 export async function deactivate() {
-    await moduleManager.deactivateModules();
+    try {
+        await moduleManager.deactivateModules();
 
-    console.log(`${extensionName} is now deactive!`);
+        console.log(`${extensionName} is now deactive!`);
+    } catch (e) {
+        console.error(e);
+        vscode.window.showErrorMessage(
+            `Error while deactivating extension. ${e}`
+        );
+    }
 }
