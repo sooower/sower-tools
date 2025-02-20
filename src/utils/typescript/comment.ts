@@ -1,27 +1,27 @@
-export enum kCommentKind {
+export enum ECommentKind {
     SingleLine = "//",
     MultiLineStart = "/*",
     MultiLineEnd = "*/",
-    DocComment = "/**",
+    DocCommentStart = "/**",
 }
 
-export function detectCommentKind(text: string): kCommentKind | null {
+export function detectCommentKind(text: string): ECommentKind | null {
     const trimmed = text.trim();
 
-    if (trimmed.startsWith(kCommentKind.DocComment)) {
-        return kCommentKind.DocComment;
+    if (trimmed.startsWith(ECommentKind.DocCommentStart)) {
+        return ECommentKind.DocCommentStart;
     }
 
-    if (trimmed.startsWith(kCommentKind.SingleLine)) {
-        return kCommentKind.SingleLine;
+    if (trimmed.startsWith(ECommentKind.SingleLine)) {
+        return ECommentKind.SingleLine;
     }
 
-    if (trimmed.includes(kCommentKind.MultiLineEnd)) {
-        return kCommentKind.MultiLineEnd;
+    if (trimmed.startsWith(ECommentKind.MultiLineStart)) {
+        return ECommentKind.MultiLineStart;
     }
 
-    if (trimmed.startsWith(kCommentKind.MultiLineStart)) {
-        return kCommentKind.MultiLineStart;
+    if (trimmed.includes(ECommentKind.MultiLineEnd)) {
+        return ECommentKind.MultiLineEnd;
     }
 
     return null;

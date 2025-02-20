@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import { extensionName } from "@/core/context";
 
-export function registerCodeActionsProviders() {
+export function registerCodeActionsProviderAddBlankLineBeforeComment() {
     vscode.languages.registerCodeActionsProvider("typescript", {
         provideCodeActions(document, range, context, token) {
             return context.diagnostics

@@ -1,13 +1,18 @@
 import { defineModule } from "@/core/moduleManager";
 
-import { registerCodeActionsProviders } from "./codeActionsProviders";
+import {
+    registerCodeActionsProviderAddBlankLineBeforeComment,
+    registerCodeActionsProviderSuppressCommentWarning,
+} from "./codeActionsProviders";
 import { parseConfig } from "./configs";
 import { registerDiagnosticComment } from "./diagnostics";
 
 export const comment = defineModule({
     onActive() {
         registerDiagnosticComment();
-        registerCodeActionsProviders();
+
+        registerCodeActionsProviderAddBlankLineBeforeComment();
+        registerCodeActionsProviderSuppressCommentWarning();
     },
     onReloadConfiguration() {
         parseConfig();

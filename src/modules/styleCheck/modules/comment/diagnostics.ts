@@ -1,6 +1,6 @@
 import { vscode } from "@/core";
 import { extensionCtx, extensionName } from "@/core/context";
-import { detectCommentKind, kCommentKind } from "@/utils/typescript/comment";
+import { detectCommentKind, ECommentKind } from "@/utils/typescript/comment";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import {
@@ -43,7 +43,7 @@ function updateDiagnostics(document: vscode.TextDocument) {
 
     for (let lineIndex = 0; lineIndex < document.lineCount; lineIndex++) {
         const currentLine = document.lineAt(lineIndex);
-        if (!isCommentLine(currentLine.text)) {
+        if (!isCommentLine(currentLine.text.trim())) {
             continue;
         }
 
@@ -54,6 +54,10 @@ function updateDiagnostics(document: vscode.TextDocument) {
 
         // Skip if the comment starts with skip check character
         if (startsWithSkipCheckCharacter(currentLine.text)) {
+            continue;
+        }
+
+        if (startsOrEndsWithClosedMultiLinesComment(currentLine.text)) {
             continue;
         }
 
@@ -100,7 +104,7 @@ function appendDiagnostic(
  * @returns True if the line is a comment line, false otherwise
  */
 function isCommentLine(text: string): boolean {
-    return /^\s*(\/\/|\/\*)/.test(text.trimStart());
+    return /^(\/\/|\/\*)/.test(text.trimStart());
 }
 
 /**
@@ -121,8 +125,8 @@ function isConsecutiveSingleLineComment(
     );
 
     if (
-        currentLineCommentKind === kCommentKind.SingleLine &&
-        previousLineCommentKind === kCommentKind.SingleLine
+        currentLineCommentKind === ECommentKind.SingleLine &&
+        previousLineCommentKind === ECommentKind.SingleLine
     ) {
         return true;
     }
@@ -137,4 +141,26 @@ function startsWithSkipCheckCharacter(text: string): boolean {
     return new RegExp(`^(\\/\\/|\\/\\*\\*?\\s*)\\${skipCheckCharacter}`).test(
         text.trimStart()
     );
+}
+
+function startsOrEndsWithClosedMultiLinesComment(text: string): boolean {
+    const trimmedText = text.trim();
+    const multiLineStartIndex = trimmedText.indexOf(
+        ECommentKind.MultiLineStart
+    );
+    const multiLineEndIndex = trimmedText.indexOf(ECommentKind.MultiLineEnd);
+
+    if (multiLineStartIndex === -1 || multiLineEndIndex === -1) {
+        return false;
+    }
+
+    if (
+        multiLineStartIndex === 0 &&
+        multiLineEndIndex === trimmedText.length - 2
+    ) {
+        // Means the whole text is a multi-line comment
+        return false;
+    }
+
+    return true;
 }
