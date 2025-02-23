@@ -1,5 +1,8 @@
 import { extensionCtx, extensionName, logger, vscode } from "@/core";
-import { getWorkspaceFolderPathSafe } from "@/utils/vscode";
+import {
+    getWorkspaceFolderPath,
+    getWorkspaceFolderPathSafe,
+} from "@/utils/vscode";
 import { execCommand } from "@utils/command";
 
 export function registerCommandForcePush() {
@@ -8,13 +11,21 @@ export function registerCommandForcePush() {
             `${extensionName}.gitEnhancement.forcePush`,
             async () => {
                 try {
+                    const kForcePush = "Force push";
+
+                    const currBranch = await execCommand({
+                        command: `git branch --show-current`,
+                        cwd: getWorkspaceFolderPath(),
+                        interactive: false,
+                    });
+
                     const confirm = await vscode.window.showWarningMessage(
-                        "Force push will override the remote branch! Do you want to continue?",
+                        `Are you sure you want to force push branch '${currBranch}'? (it will override the remote branch and not be able to rollback)`,
                         { modal: true },
-                        "Confirm"
+                        kForcePush
                     );
 
-                    if (confirm !== "Confirm") {
+                    if (confirm !== kForcePush) {
                         return;
                     }
 

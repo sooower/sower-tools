@@ -125,8 +125,12 @@ async function updatePackageFile(
 
     const content = z
         .object({
+            name: z.string(),
+            displayName: z.string().optional(),
+            description: z.string().optional(),
             version: z.string().optional(),
         })
+        .passthrough()
         .parse(readJsonFile(packageFilePath));
     if (content.version === lastVersion) {
         return;

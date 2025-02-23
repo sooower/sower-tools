@@ -40,6 +40,16 @@
 -   Add class, function, interface and type declarations style diagnostics and code actions.
 -   Add import statement style diagnostics and code actions.
 -   Add log printing completion item enhancement, support print log to the console and update configuration dynamically.
+-   Add configuration options for style check modules.
+-   Add enum declaration style check module.
+-   Add skip check character option for comment style check.
+-   Add style check `import-statements-top-of-file` and consolidate module index files and simplify import statements.
+-   Add module `blankLinesRemoval` for formatting markdown document.
+-   Enhance comment style check with new diagnostics and code actions.
+-   Add file ignore configuration for style check module.
+-   Add module `tryStatement` for try statement style check.
+-   Add logger for enhancing log printing and removed redundant commands in package.json.
+-   Add module `projectsOpen` for project enhancement with project group configuration and add command `openProjects` to batch open projects.
 
 ## Usage
 

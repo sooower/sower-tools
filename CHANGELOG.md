@@ -5,6 +5,32 @@ All notable changes to "sower-tools" will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.3] - 2025-02-23
+
+### Added
+
+-   Add configuration options for style check modules.
+-   Add enum declaration style check module.
+-   Add skip check character option for comment style check.
+-   Add style check `import-statements-top-of-file` and consolidate module index files and simplify import statements.
+-   Add module `blankLinesRemoval` for formatting markdown document.
+-   Enhance comment style check with new diagnostics and code actions.
+-   Add file ignore configuration for style check module.
+-   Add module `tryStatement` for try statement style check.
+-   Add logger for enhancing log printing and removed redundant commands in package.json.
+-   Add module `projectsOpen` for project enhancement with project group configuration and add command `openProjects` to batch open projects.
+
+### Fixed
+
+-   Fix some problems of style check in module `functionDeclaration` and `comment`.
+-   Update style check of module `comment` and `functionStatement` and fix code with new style check.
+-   Update debugging configuration schema validation for fixing debug current file not work.
+-   Error parsing configuration item `uploadImageConfigFilePath` when configuration item `parseUploadImageConfigFilePath` is disabled.
+
+### Changed
+
+-   Rename `enumsSort` module to `enumsDeclarationSort`.
+
 ## [0.17.2] - 2025-02-17
 
 ### Added
