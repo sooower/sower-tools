@@ -1,13 +1,12 @@
 import ts from "typescript";
 
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { findAllInterfaceDeclarationNodes } from "@/utils/typescript";
 import { detectCommentKind } from "@/utils/typescript/comment";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
-import { hasValidLeadingSpaceBefore, isIgnoredFile } from "../../utils";
+import { hasValidLeadingSpaceBefore, isIgnoredFile } from "../shared/utils";
 import { enableStyleCheckInterfaceDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -30,7 +29,7 @@ export function registerDiagnosticInterfaceDeclaration() {
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
-    if (document.languageId !== "typescript") {
+    if (!isTypeScriptFile(document)) {
         return;
     }
 
@@ -48,46 +47,54 @@ function updateDiagnostics(document: vscode.TextDocument) {
 
     const diagnostics: vscode.Diagnostic[] = [];
 
-    findAllInterfaceDeclarationNodes(
-        createSourceFileByDocument(document)
-    ).forEach(node => {
-        appendDiagnostic(node, document, diagnostics);
-    });
+    checkIsMissingBlankLineBeforeInterfaceDeclaration(document, diagnostics);
 
     diagnosticCollection.set(document.uri, diagnostics);
 }
 
-function appendDiagnostic(
-    node: ts.InterfaceDeclaration,
+function checkIsMissingBlankLineBeforeInterfaceDeclaration(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
-): vscode.Diagnostic | undefined {
-    const interfaceDeclNodeStartPos = node.getStart();
-    const interfaceDeclNodeStartLineIndex = document.positionAt(
-        interfaceDeclNodeStartPos
-    ).line;
+) {
+    const appendDiagnostic = (node: ts.InterfaceDeclaration) => {
+        const interfaceDeclNodeStartPos = node.getStart();
+        const interfaceDeclNodeStartLineIndex = document.positionAt(
+            interfaceDeclNodeStartPos
+        ).line;
 
-    // Skip if the interface declaration is the first line of the document
-    if (interfaceDeclNodeStartLineIndex === 0) {
-        return;
-    }
+        // Skip if the interface declaration is the first line of the document
+        if (interfaceDeclNodeStartLineIndex === 0) {
+            return;
+        }
 
-    if (hasValidLeadingSpaceBefore(document, interfaceDeclNodeStartLineIndex)) {
-        return;
-    }
+        if (
+            hasValidLeadingSpaceBefore(
+                document,
+                interfaceDeclNodeStartLineIndex
+            )
+        ) {
+            return;
+        }
 
-    // Skip if the previous line is not a comment
-    const prevLine = document.lineAt(interfaceDeclNodeStartLineIndex - 1);
-    if (detectCommentKind(prevLine.text) !== null) {
-        return;
-    }
+        // Skip if the previous line is not a comment
+        const prevLine = document.lineAt(interfaceDeclNodeStartLineIndex - 1);
+        if (detectCommentKind(prevLine.text) !== null) {
+            return;
+        }
 
-    const diagnostic = new vscode.Diagnostic(
-        buildRangeByLineIndex(document, interfaceDeclNodeStartLineIndex),
-        "Missing a blank line before the interface declaration.",
-        vscode.DiagnosticSeverity.Warning
-    );
-    diagnostic.code = `@${extensionName}/blank-line-before-interface-declaration`;
+        const diagnostic = new vscode.Diagnostic(
+            buildRangeByLineIndex(document, interfaceDeclNodeStartLineIndex),
+            "Missing a blank line before the interface declaration.",
+            vscode.DiagnosticSeverity.Warning
+        );
+        diagnostic.code = `@${extensionName}/blank-line-before-interface-declaration`;
 
-    diagnostics.push(diagnostic);
+        diagnostics.push(diagnostic);
+    };
+
+    findAllInterfaceDeclarationNodes(
+        createSourceFileByDocument(document)
+    ).forEach(node => {
+        appendDiagnostic(node);
+    });
 }

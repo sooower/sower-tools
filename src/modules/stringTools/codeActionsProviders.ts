@@ -1,5 +1,4 @@
-import { vscode } from "@/core";
-import { extensionCtx } from "@/core/context";
+import { extensionCtx, vscode } from "@/core";
 
 import { kCommandBase64Decode, kCommandBase64Encode } from "./consts";
 

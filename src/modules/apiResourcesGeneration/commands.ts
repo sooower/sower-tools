@@ -2,8 +2,7 @@ import path from "node:path";
 
 import pluralize from "pluralize";
 
-import { format, fs, vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, fs, logger, vscode } from "@/core";
 import { getWorkspaceFolderPath } from "@/utils/vscode";
 
 import { toUpperCamelCase } from "../shared/modules/configuration/utils";
@@ -33,19 +32,19 @@ export function registerCommandGenerateAPIResources() {
                                 await generateAPIResources(
                                     path.join(uri.fsPath, input)
                                 );
-                            vscode.window.showInformationMessage(
-                                format(
-                                    `Generated API Resources:\n%s`,
-                                    generatedAPIResources
-                                        .map(it => `'${it}'`)
-                                        .join(", ")
-                                )
+                            logger.info(
+                                `Generated API Resources.\n`,
+                                generatedAPIResources
+                                    .map(it => `- ${it}`)
+                                    .join("\n")
                             );
 
                             return;
                         } catch (e) {
-                            console.error(e);
-                            vscode.window.showErrorMessage(`${e}`);
+                            logger.error(
+                                "Failed to generate API resources.",
+                                e
+                            );
                         }
                     }
                 );

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { extensionName } from "@/core/context";
+import { extensionName } from "@/core";
 
 export function registerCodeActionsProviderAddBlankLineBeforeComment() {
     vscode.languages.registerCodeActionsProvider("typescript", {

@@ -1,9 +1,12 @@
 import ts from "typescript";
 
-import { format, vscode } from "@/core";
-import { extensionCtx } from "@/core/context";
+import { extensionCtx, format, logger, vscode } from "@/core";
 import { findAllTypeDeclarationNodes } from "@/utils/typescript";
-import { createSourceFileByEditor, textEditUtils } from "@/utils/vscode";
+import {
+    createSourceFileByEditor,
+    isMarkdownFile,
+    textEditUtils,
+} from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 import { kCommandSyncParameterTypeMembers } from "./consts";
@@ -19,14 +22,13 @@ export function registerCommandSyncTypeMembers() {
                         return;
                     }
 
-                    if (editor.document.languageId !== "typescript") {
+                    if (!isMarkdownFile(editor.document)) {
                         return;
                     }
 
                     await syncParameterTypeMembers({ editor });
                 } catch (e) {
-                    console.error(e);
-                    vscode.window.showErrorMessage(`${e}`);
+                    logger.error("Failed to sync parameter type members.", e);
                 }
             }
         )

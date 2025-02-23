@@ -1,4 +1,4 @@
-import { defineModule } from "@/core/moduleManager";
+import { defineModule } from "@/core";
 
 import { countdownTimer } from "./modules/countdownTimer";
 import { nowTimestamp } from "./modules/nowTimestamp";

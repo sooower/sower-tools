@@ -1,5 +1,4 @@
-import { vscode } from "@/core";
-import { extensionCtx } from "@/core/context";
+import { extensionCtx, vscode } from "@/core";
 import { findTypeDeclarationNodeAtOffset } from "@/utils/typescript";
 import { createSourceFileByDocument } from "@/utils/vscode";
 

@@ -4,13 +4,16 @@ import { toUpperCamelCase } from "@/modules/shared/modules/configuration/utils";
 
 import { ETsType } from "@/types";
 
-import { format, vscode } from "@/core";
-import { extensionCtx } from "@/core/context";
+import { extensionCtx, format, logger, vscode } from "@/core";
 import {
     findFuncOrCtorDeclarationNodeAtOffset,
     findTypeDeclarationNode,
 } from "@/utils/typescript";
-import { createSourceFileByEditor, textEditorUtils } from "@/utils/vscode";
+import {
+    createSourceFileByEditor,
+    isMarkdownFile,
+    textEditorUtils,
+} from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 import { kCommandConvertParametersToOptionsObject } from "./consts";
@@ -26,7 +29,7 @@ export function registerCommandConvertParametersToOptionsObject() {
                         return;
                     }
 
-                    if (editor.document.languageId !== "typescript") {
+                    if (!isMarkdownFile(editor.document)) {
                         return;
                     }
 
@@ -45,8 +48,10 @@ export function registerCommandConvertParametersToOptionsObject() {
                         node,
                     });
                 } catch (e) {
-                    console.error(e);
-                    vscode.window.showErrorMessage(`${e}`);
+                    logger.error(
+                        "Failed to convert parameters to options object.",
+                        e
+                    );
                 }
             }
         )

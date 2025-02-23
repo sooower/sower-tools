@@ -21,22 +21,26 @@ export function refreshSelectedLines({
 
     for (let i = indexOfSelectedLineStart; i <= indexOfSelectedLineEnd; i++) {
         const currLineText = editor.document.lineAt(i).text;
-        const currSelectedLineText = selectedText[i - indexOfSelectedLineStart];
+        const currSelectedLineText = selectedText.at(
+            i - indexOfSelectedLineStart
+        );
 
         // Special handling for selected start or end line
         if (
-            currSelectedLineText.trim() === "" &&
+            currSelectedLineText?.trim() === "" &&
             (i === indexOfSelectedLineStart || i === indexOfSelectedLineEnd)
         ) {
             if (currSelectedLineText.length > 0) {
                 totalLines++;
             }
+
             continue;
         }
 
         // Blank line
         if (currLineText.trim() === "") {
             totalLines++;
+
             continue;
         }
 
@@ -50,6 +54,7 @@ export function refreshSelectedLines({
                 currLineText.trimStart().startsWith("*")
             ) {
                 totalLines++;
+
                 continue;
             }
         }

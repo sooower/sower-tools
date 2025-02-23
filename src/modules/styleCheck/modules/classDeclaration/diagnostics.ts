@@ -1,13 +1,12 @@
 import ts from "typescript";
 
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { findAllClassDeclarationNodes } from "@/utils/typescript";
 import { detectCommentKind } from "@/utils/typescript/comment";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
-import { hasValidLeadingSpaceBefore, isIgnoredFile } from "../../utils";
+import { hasValidLeadingSpaceBefore, isIgnoredFile } from "../shared/utils";
 import { enableStyleCheckClassDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -29,7 +28,7 @@ export function registerDiagnosticClassDeclaration() {
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
-    if (document.languageId !== "typescript") {
+    if (!isTypeScriptFile(document)) {
         return;
     }
 
@@ -47,45 +46,48 @@ function updateDiagnostics(document: vscode.TextDocument) {
 
     const diagnostics: vscode.Diagnostic[] = [];
 
-    findAllClassDeclarationNodes(createSourceFileByDocument(document)).forEach(
-        node => {
-            appendDiagnostic(node, document, diagnostics);
-        }
-    );
+    checkIsMissingBlankLineBeforeClassDeclaration(document, diagnostics);
 
     diagnosticCollection.set(document.uri, diagnostics);
 }
 
-function appendDiagnostic(
-    node: ts.ClassDeclaration,
+function checkIsMissingBlankLineBeforeClassDeclaration(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
-): vscode.Diagnostic | undefined {
-    const classNodeStartPos = node.getStart();
-    const classDeclNodeStartLineIndex =
-        document.positionAt(classNodeStartPos).line;
+) {
+    const appendDiagnostic = (node: ts.ClassDeclaration) => {
+        const classNodeStartPos = node.getStart();
+        const classDeclNodeStartLineIndex =
+            document.positionAt(classNodeStartPos).line;
 
-    // Skip if the class declaration is the first line of the document
-    if (classDeclNodeStartLineIndex === 0) {
-        return;
-    }
+        // Skip if the class declaration is the first line of the document
+        if (classDeclNodeStartLineIndex === 0) {
+            return;
+        }
 
-    if (hasValidLeadingSpaceBefore(document, classDeclNodeStartLineIndex)) {
-        return;
-    }
+        if (hasValidLeadingSpaceBefore(document, classDeclNodeStartLineIndex)) {
+            return;
+        }
 
-    // Skip if the previous line is a comment
-    const prevLine = document.lineAt(classDeclNodeStartLineIndex - 1);
-    if (detectCommentKind(prevLine.text) !== null) {
-        return;
-    }
+        // Skip if the previous line is a comment
+        const prevLine = document.lineAt(classDeclNodeStartLineIndex - 1);
+        if (detectCommentKind(prevLine.text) !== null) {
+            return;
+        }
 
-    const diagnostic = new vscode.Diagnostic(
-        buildRangeByLineIndex(document, classDeclNodeStartLineIndex),
-        "Missing a blank line before the class declaration.",
-        vscode.DiagnosticSeverity.Warning
+        const diagnostic = new vscode.Diagnostic(
+            buildRangeByLineIndex(document, classDeclNodeStartLineIndex),
+            "Missing a blank line before the class declaration.",
+            vscode.DiagnosticSeverity.Warning
+        );
+        diagnostic.code = `@${extensionName}/blank-line-before-class-declaration`;
+
+        diagnostics.push(diagnostic);
+    };
+
+    findAllClassDeclarationNodes(createSourceFileByDocument(document)).forEach(
+        node => {
+            appendDiagnostic(node);
+        }
     );
-    diagnostic.code = `@${extensionName}/blank-line-before-class-declaration`;
-
-    diagnostics.push(diagnostic);
 }

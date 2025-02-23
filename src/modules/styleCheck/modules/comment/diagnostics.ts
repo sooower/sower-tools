@@ -1,6 +1,6 @@
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { detectCommentKind, ECommentKind } from "@/utils/typescript/comment";
+import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import {
@@ -8,7 +8,7 @@ import {
     isFirstLineOfParent,
     isIgnoredFile,
     isLastLineOfParent,
-} from "../../utils";
+} from "../shared/utils";
 import { enableStyleCheckComment, skipCheckCharacter } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -30,7 +30,7 @@ export function registerDiagnosticComment() {
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
-    if (document.languageId !== "typescript") {
+    if (!isTypeScriptFile(document)) {
         return;
     }
 
@@ -48,6 +48,15 @@ function updateDiagnostics(document: vscode.TextDocument) {
 
     const diagnostics: vscode.Diagnostic[] = [];
 
+    checkIsMissingBlankLineBeforeComment(document, diagnostics);
+
+    diagnosticCollection.set(document.uri, diagnostics);
+}
+
+function checkIsMissingBlankLineBeforeComment(
+    document: vscode.TextDocument,
+    diagnostics: vscode.Diagnostic[]
+) {
     for (let lineIndex = 0; lineIndex < document.lineCount; lineIndex++) {
         const currentLine = document.lineAt(lineIndex);
         if (!isCommentLine(currentLine.text.trim())) {
@@ -84,25 +93,19 @@ function updateDiagnostics(document: vscode.TextDocument) {
             continue;
         }
 
-        appendDiagnostic(document, lineIndex, diagnostics);
+        const appendDiagnostic = () => {
+            const diagnostic = new vscode.Diagnostic(
+                buildRangeByLineIndex(document, lineIndex),
+                "Missing a blank line before the comment.",
+                vscode.DiagnosticSeverity.Warning
+            );
+            diagnostic.code = `@${extensionName}/blank-line-before-comment`;
+
+            diagnostics.push(diagnostic);
+        };
+
+        appendDiagnostic();
     }
-
-    diagnosticCollection.set(document.uri, diagnostics);
-}
-
-function appendDiagnostic(
-    document: vscode.TextDocument,
-    lineIndex: number,
-    diagnostics: vscode.Diagnostic[]
-) {
-    const diagnostic = new vscode.Diagnostic(
-        buildRangeByLineIndex(document, lineIndex),
-        "Missing a blank line before the comment.",
-        vscode.DiagnosticSeverity.Warning
-    );
-    diagnostic.code = `@${extensionName}/blank-line-before-comment`;
-
-    diagnostics.push(diagnostic);
 }
 
 /**

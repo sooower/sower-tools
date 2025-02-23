@@ -1,5 +1,4 @@
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { findEnumDeclarationNodeAtOffset } from "@/utils/typescript";
 import { createSourceFileByDocument } from "@/utils/vscode";
 

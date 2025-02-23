@@ -1,13 +1,16 @@
 import ts from "typescript";
 
-import { format, vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, format, logger, vscode } from "@/core";
 import { prettierFormatFile } from "@/utils/common";
 import {
     findTypeDeclarationNode,
     findVariableDeclarationNodeAtOffset,
 } from "@/utils/typescript";
-import { createSourceFileByEditor, textEditorUtils } from "@/utils/vscode";
+import {
+    createSourceFileByEditor,
+    isTypeScriptFile,
+    textEditorUtils,
+} from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 import { toUpperCamelCase } from "../shared/modules/configuration/utils";
@@ -23,7 +26,7 @@ export function registerCommandGenerateTypeOfZodSchema() {
                         return;
                     }
 
-                    if (editor.document.languageId !== "typescript") {
+                    if (!isTypeScriptFile(editor.document)) {
                         return;
                     }
 
@@ -43,8 +46,7 @@ export function registerCommandGenerateTypeOfZodSchema() {
                         node: varNode,
                     });
                 } catch (e) {
-                    console.error(e);
-                    vscode.window.showErrorMessage(`${e}`);
+                    logger.error("Failed to generate type of zod schema.", e);
                 }
             }
         )

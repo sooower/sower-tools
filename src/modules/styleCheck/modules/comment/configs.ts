@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-import { getConfigurationItem } from "@/core/configuration";
-import { extensionName } from "@/core/context";
+import { extensionName, getConfigurationItem } from "@/core";
 
 export let enableStyleCheckComment: boolean;
 export let skipCheckCharacter: string;

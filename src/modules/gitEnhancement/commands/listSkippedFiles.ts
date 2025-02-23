@@ -1,5 +1,4 @@
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, logger, vscode } from "@/core";
 import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { execCommand } from "@utils/command";
 
@@ -16,9 +15,7 @@ export function registerCommandListSkippedFiles() {
                     });
 
                     if (skippedFiles?.length === 0) {
-                        vscode.window.showInformationMessage(
-                            "No skipped files found."
-                        );
+                        logger.warn("No skipped files found.");
 
                         return;
                     }
@@ -29,8 +26,7 @@ export function registerCommandListSkippedFiles() {
                         })
                     );
                 } catch (e) {
-                    console.error(e);
-                    vscode.window.showErrorMessage(`${e}`);
+                    logger.error("Failed to list skipped files.", e);
                 }
             }
         )

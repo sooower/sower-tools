@@ -1,7 +1,7 @@
 import { ViewColumn } from "vscode";
 
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, logger, vscode } from "@/core";
+import { isMarkdownFile } from "@/utils/vscode";
 
 import { languageIds, skipFirstLine } from "./configs";
 
@@ -11,11 +11,7 @@ export function registerCommandRemoveBlankLines() {
             `${extensionName}.markdownEnhancement.removeBlankLines`,
             async (document: vscode.TextDocument) => {
                 try {
-                    if (document === undefined) {
-                        return;
-                    }
-
-                    if (document.languageId !== "markdown") {
+                    if (!isMarkdownFile(document)) {
                         return;
                     }
 
@@ -27,8 +23,7 @@ export function registerCommandRemoveBlankLines() {
                         ViewColumn.Beside
                     );
                 } catch (e) {
-                    console.error(e);
-                    vscode.window.showErrorMessage(`${e}`);
+                    logger.error("Failed to remove blank lines.", e);
                 }
             }
         )

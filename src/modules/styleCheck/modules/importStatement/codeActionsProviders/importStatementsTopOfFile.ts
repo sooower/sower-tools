@@ -1,5 +1,4 @@
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, vscode } from "@/core";
 
 export function registerCodeActionsProviderImportStatementsTopOfFile() {
     extensionCtx.subscriptions.push(
@@ -19,12 +18,22 @@ export function registerCodeActionsProviderImportStatementsTopOfFile() {
 
                         codeAction.diagnostics = [diagnostic];
                         codeAction.edit = new vscode.WorkspaceEdit();
-                        codeAction.edit.delete(document.uri, diagnostic.range);
+                        codeAction.edit.delete(
+                            document.uri,
+                            new vscode.Range(
+                                diagnostic.range.start,
+                                new vscode.Position(
+                                    diagnostic.range.end.line + 1,
+                                    0
+                                )
+                            )
+                        );
                         codeAction.edit.insert(
                             document.uri,
                             new vscode.Position(0, 0),
                             document.getText(diagnostic.range) + "\n"
                         );
+                        //? FIXME: Remove the blank line after move the import statement to the top of the file
 
                         return codeAction;
                     });

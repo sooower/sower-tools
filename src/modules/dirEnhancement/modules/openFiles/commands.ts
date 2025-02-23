@@ -1,7 +1,6 @@
 import path from "node:path";
 
-import { format, vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, format, logger, vscode } from "@/core";
 import { getWorkspaceFolderPath } from "@/utils/vscode";
 
 import { ignoredFilenames } from "./configs";
@@ -14,8 +13,7 @@ export async function registerCommandOpenFiles() {
                 try {
                     await openFiles(uri);
                 } catch (e) {
-                    console.error(e);
-                    vscode.window.showErrorMessage(`${e}`);
+                    logger.error("Failed to open files.", e);
                 }
             }
         )
@@ -46,21 +44,19 @@ async function openFiles(uri: vscode.Uri) {
                     progress.report({
                         increment: (1 / files.length) * 100,
                         message: format(
-                            `Opening file [%d/%d] in dir '${relativePath}'.`,
+                            `Opening file [%d/%d] in dir "${relativePath}".`,
                             ++openedFilesCount,
                             files.length
                         ),
                     });
                 } catch (e) {
-                    vscode.window.showWarningMessage(
-                        `Skipped to open file '${file}'. ${e}`
-                    );
+                    logger.warn(`Skipped to open file "${file}".`, e);
                 }
             }
 
             if (openedFilesCount === files.length) {
-                vscode.window.showInformationMessage(
-                    `Total of ${files.length} files in dir '${relativePath}' were opened.`
+                logger.info(
+                    `Total of ${files.length} files in dir "${relativePath}" were opened.`
                 );
             }
         }
@@ -85,8 +81,8 @@ async function getFilesInFolder(uri: vscode.Uri) {
                 break;
             }
             default: {
-                console.warn(
-                    `Skipped handle file type '${type}' for file '${fullPath}'.`
+                logger.warn(
+                    `Skipped handle file type "${type}" for file "${fullPath}".`
                 );
             }
         }

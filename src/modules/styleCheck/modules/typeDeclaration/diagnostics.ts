@@ -1,13 +1,12 @@
 import ts from "typescript";
 
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { findAllTypeDeclarationNodes } from "@/utils/typescript";
 import { detectCommentKind } from "@/utils/typescript/comment";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
-import { hasValidLeadingSpaceBefore, isIgnoredFile } from "../../utils";
+import { hasValidLeadingSpaceBefore, isIgnoredFile } from "../shared/utils";
 import { enableStyleCheckTypeDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -29,7 +28,7 @@ export function registerDiagnosticTypeDeclaration() {
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
-    if (document.languageId !== "typescript") {
+    if (!isTypeScriptFile(document)) {
         return;
     }
 
@@ -47,53 +46,55 @@ function updateDiagnostics(document: vscode.TextDocument) {
 
     const diagnostics: vscode.Diagnostic[] = [];
 
-    findAllTypeDeclarationNodes(createSourceFileByDocument(document))
-        .filter(node => !ts.isParenthesizedTypeNode(node))
-        .forEach(node => {
-            appendDiagnostic(node, document, diagnostics);
-        });
-
+    checkIsMissingBlankLineBeforeTypeDeclaration(document, diagnostics);
     diagnosticCollection.set(document.uri, diagnostics);
 }
 
-function appendDiagnostic(
-    node: ts.TypeAliasDeclaration,
+function checkIsMissingBlankLineBeforeTypeDeclaration(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
-): vscode.Diagnostic | undefined {
-    const typeDeclNodeStartPos = node.getStart();
-    const typeDeclNodeStartLineIndex =
-        document.positionAt(typeDeclNodeStartPos).line;
+) {
+    const appendDiagnostic = (node: ts.TypeAliasDeclaration) => {
+        const typeDeclNodeStartPos = node.getStart();
+        const typeDeclNodeStartLineIndex =
+            document.positionAt(typeDeclNodeStartPos).line;
 
-    // Skip if the type declaration is the first line of the document
-    if (typeDeclNodeStartLineIndex === 0) {
-        return;
-    }
+        // Skip if the type declaration is the first line of the document
+        if (typeDeclNodeStartLineIndex === 0) {
+            return;
+        }
 
-    // Skip if the type declaration only contains a single line
-    if (
-        document.positionAt(node.getStart()).line ===
-        document.positionAt(node.getEnd()).line
-    ) {
-        return;
-    }
+        // Skip if the type declaration only contains a single line
+        if (
+            document.positionAt(node.getStart()).line ===
+            document.positionAt(node.getEnd()).line
+        ) {
+            return;
+        }
 
-    if (hasValidLeadingSpaceBefore(document, typeDeclNodeStartLineIndex)) {
-        return;
-    }
+        if (hasValidLeadingSpaceBefore(document, typeDeclNodeStartLineIndex)) {
+            return;
+        }
 
-    // Skip if the previous line is not a comment
-    const prevLine = document.lineAt(typeDeclNodeStartLineIndex - 1);
-    if (detectCommentKind(prevLine.text) !== null) {
-        return;
-    }
+        // Skip if the previous line is not a comment
+        const prevLine = document.lineAt(typeDeclNodeStartLineIndex - 1);
+        if (detectCommentKind(prevLine.text) !== null) {
+            return;
+        }
 
-    const diagnostic = new vscode.Diagnostic(
-        buildRangeByLineIndex(document, typeDeclNodeStartLineIndex),
-        "Missing a blank line before the type declaration.",
-        vscode.DiagnosticSeverity.Warning
-    );
-    diagnostic.code = `@${extensionName}/blank-line-before-type-declaration`;
+        const diagnostic = new vscode.Diagnostic(
+            buildRangeByLineIndex(document, typeDeclNodeStartLineIndex),
+            "Missing a blank line before the type declaration.",
+            vscode.DiagnosticSeverity.Warning
+        );
+        diagnostic.code = `@${extensionName}/blank-line-before-type-declaration`;
 
-    diagnostics.push(diagnostic);
+        diagnostics.push(diagnostic);
+    };
+
+    findAllTypeDeclarationNodes(createSourceFileByDocument(document))
+        .filter(node => !ts.isParenthesizedTypeNode(node))
+        .forEach(node => {
+            appendDiagnostic(node);
+        });
 }

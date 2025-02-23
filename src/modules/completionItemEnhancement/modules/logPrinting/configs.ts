@@ -1,7 +1,6 @@
 import z from "zod";
 
-import { getConfigurationItem } from "@/core/configuration";
-import { extensionName } from "@/core/context";
+import { extensionName, getConfigurationItem } from "@/core";
 
 const patternSchema = z.object({
     trigger: z.string().nonempty(),

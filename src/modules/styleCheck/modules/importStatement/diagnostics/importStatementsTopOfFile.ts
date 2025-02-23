@@ -1,11 +1,10 @@
 import ts from "typescript";
 
-import { isIgnoredFile } from "@/modules/styleCheck/utils";
+import { isIgnoredFile } from "@/modules/styleCheck/modules/shared/utils";
 
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { findAllTopLevelStatements } from "@/utils/typescript/statement";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByNode } from "@/utils/vscode/range";
 
 import { enableStyleCheckImportStatement } from "../configs";
@@ -30,7 +29,7 @@ export function registerDiagnosticImportStatementsTopOfFile() {
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
-    if (document.languageId !== "typescript") {
+    if (!isTypeScriptFile(document)) {
         return;
     }
 
@@ -48,6 +47,26 @@ function updateDiagnostics(document: vscode.TextDocument) {
 
     const diagnostics: vscode.Diagnostic[] = [];
 
+    checkIsImportStatementsTopOfFile(document, diagnostics);
+
+    diagnosticCollection.set(document.uri, diagnostics);
+}
+
+function checkIsImportStatementsTopOfFile(
+    document: vscode.TextDocument,
+    diagnostics: vscode.Diagnostic[]
+) {
+    const appendDiagnostic = (node: ts.Statement) => {
+        const diagnostic = new vscode.Diagnostic(
+            buildRangeByNode(document, node),
+            "Import statements should always be at the top of the file.",
+            vscode.DiagnosticSeverity.Warning
+        );
+        diagnostic.code = `@${extensionName}/import-statements-top-of-file`;
+
+        diagnostics.push(diagnostic);
+    };
+
     const topLevelStatements = findAllTopLevelStatements(
         createSourceFileByDocument(document)
     );
@@ -60,24 +79,7 @@ function updateDiagnostics(document: vscode.TextDocument) {
         }
 
         if (ts.isImportDeclaration(stmt) && foundNonImportStatement) {
-            appendDiagnostic(stmt, document, diagnostics);
+            appendDiagnostic(stmt);
         }
     }
-
-    diagnosticCollection.set(document.uri, diagnostics);
-}
-
-function appendDiagnostic(
-    node: ts.Statement,
-    document: vscode.TextDocument,
-    diagnostics: vscode.Diagnostic[]
-) {
-    const diagnostic = new vscode.Diagnostic(
-        buildRangeByNode(document, node),
-        "Import statements should always be at the top of the file.",
-        vscode.DiagnosticSeverity.Warning
-    );
-    diagnostic.code = `@${extensionName}/import-statements-top-of-file`;
-
-    diagnostics.push(diagnostic);
 }

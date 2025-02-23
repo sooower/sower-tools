@@ -1,4 +1,4 @@
-import { defineModule } from "@/core/moduleManager";
+import { defineModule } from "@/core";
 
 import { parametersObjectOptionsConversion } from "./modules/parametersObjectOptionsConversion";
 import { parameterTypeMembersSync } from "./modules/parameterTypeMembersSync";

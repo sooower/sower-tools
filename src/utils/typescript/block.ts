@@ -42,3 +42,17 @@ export function findAllBlockNodesAtOffset({
 
     return blockNodes;
 }
+
+export function findAllTryBlockNodes(sourceFile: ts.SourceFile) {
+    const visit = (node: ts.Node) => {
+        if (ts.isTryStatement(node)) {
+            blockNodes.push(node.tryBlock);
+        }
+        ts.forEachChild(node, visit);
+    };
+
+    const blockNodes: ts.Block[] = [];
+    visit(sourceFile);
+
+    return blockNodes;
+}

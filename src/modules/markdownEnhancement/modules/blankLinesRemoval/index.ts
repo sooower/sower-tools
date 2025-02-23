@@ -1,4 +1,4 @@
-import { defineModule } from "@/core/moduleManager";
+import { defineModule } from "@/core";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
 import { registerCommandRemoveBlankLines } from "./commands";

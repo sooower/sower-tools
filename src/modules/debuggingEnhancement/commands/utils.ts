@@ -41,6 +41,6 @@ export function getDebuggingConfigurations() {
 
         return configurations;
     } catch (e) {
-        throw new Error(`Error when getting debugging configurations. ${e}`);
+        throw new Error(`Failed to get debugging configurations. ${e}`);
     }
 }

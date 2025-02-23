@@ -43,7 +43,7 @@ export function findEnumDeclarationNode({
     enumName,
 }: TFindEnumDeclarationNodeOptions) {
     const visit = (node: ts.Node): ts.EnumDeclaration | undefined => {
-        if (ts.isEnumDeclaration(node) && node.name?.text === enumName) {
+        if (ts.isEnumDeclaration(node) && node.name.text === enumName) {
             return node;
         }
 

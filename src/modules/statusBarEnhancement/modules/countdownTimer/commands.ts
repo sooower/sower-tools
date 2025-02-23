@@ -1,8 +1,7 @@
 import duration, { Duration } from "dayjs/plugin/duration"; // ES 2015
 import { ThemeColor } from "vscode";
 
-import { format, vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, format, logger, vscode } from "@/core";
 import { datetime, nowDatetime } from "@utils/datetime";
 
 import { countdownTimerOptions, TCountdownTimerOption } from "./configs";
@@ -36,10 +35,9 @@ export async function registerCommandCountdownTimer() {
             `${extensionName}.statusBarEnhancement.countdownTimer`,
             async () => {
                 try {
-                    startCountdown();
+                    await startCountdown();
                 } catch (e) {
-                    console.error(e);
-                    vscode.window.showErrorMessage(`${e}`);
+                    logger.error("Failed to start countdown timer.", e);
                 }
             }
         )
@@ -127,9 +125,7 @@ function doCountdown() {
 }
 
 function finishCountdown() {
-    vscode.window.showInformationMessage(
-        `[${nowDatetime()}] The ${remainingOption.label} already up!`
-    );
+    logger.info(`[${nowDatetime()}] The ${remainingOption.label} already up!`);
     statusBarItem.backgroundColor = undefined;
     statusBarItem.text = "▶";
     isCountdownStarted = false;

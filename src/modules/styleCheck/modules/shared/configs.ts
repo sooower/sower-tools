@@ -1,7 +1,6 @@
 import z from "zod";
 
-import { getConfigurationItem } from "@/core/configuration";
-import { extensionName } from "@/core/context";
+import { extensionName, getConfigurationItem } from "@/core";
 
 /**
  * The 'glob' patterns of files that will be ignored when checking style.

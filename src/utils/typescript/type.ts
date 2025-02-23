@@ -12,7 +12,7 @@ export function findTypeDeclarationNode({
     typeName,
 }: TFindTypeDeclarationNodeOptions) {
     const visit = (node: ts.Node): ts.TypeAliasDeclaration | undefined => {
-        if (ts.isTypeAliasDeclaration(node) && node.name?.text === typeName) {
+        if (ts.isTypeAliasDeclaration(node) && node.name.text === typeName) {
             return node;
         }
 

@@ -1,7 +1,6 @@
 import ts from "typescript";
 
-import { vscode } from "@/core";
-import { extensionCtx } from "@/core/context";
+import { extensionCtx, vscode } from "@/core";
 import { findFuncOrCtorDeclarationNodeAtOffset } from "@/utils/typescript";
 import { createSourceFileByDocument } from "@/utils/vscode";
 

@@ -2,9 +2,7 @@ import path from "node:path";
 
 import z from "zod";
 
-import { fs, os } from "@/core";
-import { getConfigurationItem } from "@/core/configuration";
-import { extensionName } from "@/core/context";
+import { extensionName, fs, getConfigurationItem, os } from "@/core";
 import { readJsonFile } from "@utils/fs";
 
 import { enableUploadImage } from "./uploadImageEnable";

@@ -1,7 +1,7 @@
-import { defineModule } from "@/core/moduleManager";
+import { defineModule } from "@/core";
 
 import { apiResourcesGeneration } from "./apiResourcesGeneration";
-import { syncChangelog } from "./changelogSync";
+import { changelogSync } from "./changelogSync";
 import { completionItemEnhancement } from "./completionItemEnhancement";
 import { databaseModel } from "./databaseModel";
 import { debuggingEnhancement } from "./debuggingEnhancement";
@@ -26,7 +26,7 @@ export const modules = defineModule([
     markdownEnhancement,
     timestampTools,
     stringTools,
-    syncChangelog,
+    changelogSync,
     readmeDocumentPreview,
     functionEnhancement,
     nodeBuiltinModulesImportsUpdate,

@@ -1,7 +1,6 @@
-import { fs, vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, fs, logger, vscode } from "@/core";
 import { findTopLevelEnumDeclarationNodes } from "@/utils/typescript";
-import { createSourceFileByEditor } from "@/utils/vscode";
+import { createSourceFileByEditor, isTypeScriptFile } from "@/utils/vscode";
 
 export function registerCommandSortEnumsDeclaration() {
     extensionCtx.subscriptions.push(
@@ -14,7 +13,7 @@ export function registerCommandSortEnumsDeclaration() {
                         return;
                     }
 
-                    if (editor.document.languageId !== "typescript") {
+                    if (!isTypeScriptFile(editor.document)) {
                         return;
                     }
 
@@ -22,8 +21,7 @@ export function registerCommandSortEnumsDeclaration() {
 
                     await sortEnumsDeclaration(editor);
                 } catch (e) {
-                    console.error(e);
-                    vscode.window.showErrorMessage(`${e}`);
+                    logger.error("Failed to sort enums declaration.", e);
                 }
             }
         )

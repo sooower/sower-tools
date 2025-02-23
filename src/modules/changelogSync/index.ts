@@ -1,9 +1,9 @@
-import { defineModule } from "@/core/moduleManager";
+import { defineModule } from "@/core";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
 import { registerCommandSyncChangelog } from "./commands";
 
-export const syncChangelog = defineModule({
+export const changelogSync = defineModule({
     onActive() {
         registerCommandSyncChangelog();
         registerCodeActionsProviders();

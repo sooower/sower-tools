@@ -1,5 +1,4 @@
-import { vscode } from "@/core";
-import { extensionCtx } from "@/core/context";
+import { extensionCtx, logger, vscode } from "@/core";
 import { textEditorUtils } from "@/utils/vscode";
 
 import { enableReplaceText } from "../configs";
@@ -23,8 +22,7 @@ export function registerCommandBase64Encode() {
                     text: selectedText,
                 });
             } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(`${e}`);
+                logger.error("Failed to encode base64.", e);
             }
         })
     );

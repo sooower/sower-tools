@@ -3,13 +3,12 @@ import ts from "typescript";
 import {
     hasValidLeadingSpaceAfter,
     isIgnoredFile,
-} from "@/modules/styleCheck/utils";
+} from "@/modules/styleCheck/modules/shared/utils";
 
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { findLastImportStatementNode } from "@/utils/typescript";
 import { detectCommentKind } from "@/utils/typescript/comment";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByNode } from "@/utils/vscode/range";
 
 import { enableStyleCheckImportStatement } from "../configs";
@@ -34,7 +33,7 @@ export function registerDiagnosticBlankLineAfterLastImportStatement() {
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
-    if (document.languageId !== "typescript") {
+    if (!isTypeScriptFile(document)) {
         return;
     }
 
@@ -52,47 +51,50 @@ function updateDiagnostics(document: vscode.TextDocument) {
 
     const diagnostics: vscode.Diagnostic[] = [];
 
-    const lastImportStatementNode = findLastImportStatementNode(
-        createSourceFileByDocument(document)
-    );
-    appendDiagnostic(lastImportStatementNode, document, diagnostics);
+    checkIsMissingBlankLineAfterLastImportStatement(document, diagnostics);
 
     diagnosticCollection.set(document.uri, diagnostics);
 }
 
-function appendDiagnostic(
-    node: ts.ImportDeclaration | undefined,
+function checkIsMissingBlankLineAfterLastImportStatement(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
 ) {
-    // Skip if there is no import statement
-    if (node === undefined) {
-        return;
-    }
+    const appendDiagnostic = (node: ts.ImportDeclaration) => {
+        const nodeEndLineIndex = document.positionAt(node.getEnd()).line;
 
-    const nodeEndLineIndex = document.positionAt(node.getEnd()).line;
+        // Skip if the last import statement is the last line of the file
+        if (nodeEndLineIndex === document.lineCount - 1) {
+            return;
+        }
 
-    // Skip if the last import statement is the last line of the file
-    if (nodeEndLineIndex === document.lineCount - 1) {
-        return;
-    }
+        if (hasValidLeadingSpaceAfter(document, nodeEndLineIndex)) {
+            return;
+        }
 
-    if (hasValidLeadingSpaceAfter(document, nodeEndLineIndex)) {
-        return;
-    }
+        // Skip if the next line is a comment
+        const nextLine = document.lineAt(nodeEndLineIndex + 1);
+        if (detectCommentKind(nextLine.text) !== null) {
+            return;
+        }
 
-    // Skip if the next line is a comment
-    const nextLine = document.lineAt(nodeEndLineIndex + 1);
-    if (detectCommentKind(nextLine.text) !== null) {
-        return;
-    }
+        const diagnostic = new vscode.Diagnostic(
+            buildRangeByNode(document, node),
+            "Missing a blank line after the last import statement.",
+            vscode.DiagnosticSeverity.Warning
+        );
+        diagnostic.code = `@${extensionName}/blank-line-after-last-import-statement`;
 
-    const diagnostic = new vscode.Diagnostic(
-        buildRangeByNode(document, node),
-        "Missing a blank line after the last import statement.",
-        vscode.DiagnosticSeverity.Warning
+        diagnostics.push(diagnostic);
+    };
+
+    const lastImportStatementNode = findLastImportStatementNode(
+        createSourceFileByDocument(document)
     );
-    diagnostic.code = `@${extensionName}/blank-line-after-last-import-statement`;
 
-    diagnostics.push(diagnostic);
+    if (lastImportStatementNode === undefined) {
+        return;
+    }
+
+    appendDiagnostic(lastImportStatementNode);
 }

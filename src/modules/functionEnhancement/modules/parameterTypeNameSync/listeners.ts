@@ -2,10 +2,13 @@ import ts from "typescript";
 
 import { toUpperCamelCase } from "@/modules/shared/modules/configuration/utils";
 
-import { format, vscode } from "@/core";
-import { extensionCtx } from "@/core/context";
+import { extensionCtx, format, logger, vscode } from "@/core";
 import { findTypeDeclarationNode } from "@/utils/typescript";
-import { createSourceFileByEditor, textEditUtils } from "@/utils/vscode";
+import {
+    createSourceFileByEditor,
+    isTypeScriptFile,
+    textEditUtils,
+} from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 export function registerOnDidSaveTextDocumentListener() {
@@ -21,14 +24,13 @@ export function registerOnDidSaveTextDocumentListener() {
                     return;
                 }
 
-                if (editor.document.languageId !== "typescript") {
+                if (!isTypeScriptFile(editor.document)) {
                     return;
                 }
 
                 await syncFunctionParameterTypeName({ editor });
             } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(`${e}`);
+                logger.error("Failed to sync function parameter type name.", e);
             }
         })
     );
@@ -63,7 +65,7 @@ async function syncFunctionParameterTypeName({
             return ts.forEachChild(node, doSyncFunctionParameterTypeName);
         }
 
-        if (node.name === undefined || node.parameters?.length !== 1) {
+        if (node.name === undefined || node.parameters.length !== 1) {
             return;
         }
 

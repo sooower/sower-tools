@@ -60,13 +60,14 @@ type TModules = TModule | (TModule | TModules)[];
 export const defineModule = <T extends TModules>(module: T): T => module;
 
 /**
- * Manager for the modules, including activate, deactivate and reload configuration for all modules.
+ * A module manager which using publish/subscribe pattern, handling events for activate,
+ * deactivate and reload configuration.
  */
 class ModuleManager {
-    private readonly modules = new Set<TModule>();
+    readonly modules = new Set<TModule>();
 
     /**
-     * Register modules, which is called when the extension is activated.
+     * Register modules including their nested sub modules.
      */
     registerModules(modules: TModules) {
         if (CommonUtils.isArray(modules)) {
@@ -77,14 +78,14 @@ class ModuleManager {
     }
 
     /**
-     * Activate all modules, which is called when the extension is activated.
+     * Activate all registered modules.
      */
     async activateModules() {
         await Promise.all([...this.modules].map(module => module.onActive?.()));
     }
 
     /**
-     * Deactivate all modules, which is called when the extension is deactivated.
+     * Deactivate all registered modules.
      */
     async deactivateModules() {
         await Promise.all(
@@ -93,7 +94,7 @@ class ModuleManager {
     }
 
     /**
-     * Reload configuration for all modules, which is called when extension configuration is reloaded.
+     * Reload configuration for all registered modules.
      */
     async reloadConfiguration() {
         await Promise.all(

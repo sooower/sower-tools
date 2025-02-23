@@ -1,5 +1,4 @@
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, logger, vscode } from "@/core";
 import { getWorkspaceFolderPathSafe } from "@/utils/vscode";
 import { execCommand } from "@utils/command";
 
@@ -21,9 +20,7 @@ export function registerCommandForcePush() {
 
                     const workspaceFolderPath = getWorkspaceFolderPathSafe();
                     if (workspaceFolderPath === undefined) {
-                        vscode.window.showErrorMessage(
-                            `No workspace folder found.`
-                        );
+                        logger.error(`No workspace folder found.`);
 
                         return;
                     }
@@ -33,12 +30,9 @@ export function registerCommandForcePush() {
                         cwd: workspaceFolderPath,
                         interactive: false,
                     });
-                    vscode.window.showInformationMessage(
-                        `Force push successfully.`
-                    );
+                    logger.info(`Force push successfully.`);
                 } catch (e) {
-                    console.error(e);
-                    vscode.window.showErrorMessage(`${e}`);
+                    logger.error("Failed to force push.", e);
                 }
             }
         )

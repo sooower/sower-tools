@@ -1,8 +1,11 @@
 import ts from "typescript";
 
-import { vscode } from "@/core";
-import { extensionCtx } from "@/core/context";
-import { createSourceFileByEditor, textEditUtils } from "@/utils/vscode";
+import { extensionCtx, logger, vscode } from "@/core";
+import {
+    createSourceFileByEditor,
+    isTypeScriptFile,
+    textEditUtils,
+} from "@/utils/vscode";
 
 import {
     enableUpdateNodeBuiltinModulesImports,
@@ -22,7 +25,7 @@ export function registerOnDidSaveTextDocumentListener() {
                     return;
                 }
 
-                if (editor.document.languageId !== "typescript") {
+                if (!isTypeScriptFile(editor.document)) {
                     return;
                 }
 
@@ -30,8 +33,10 @@ export function registerOnDidSaveTextDocumentListener() {
                     await updateNodeBuiltinModulesImportsWithPrefix({ editor });
                 }
             } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(`${e}`);
+                logger.error(
+                    "Failed to update node builtin modules imports with prefix.",
+                    e
+                );
             }
         })
     );

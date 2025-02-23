@@ -1,5 +1,4 @@
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, logger, vscode } from "@/core";
 import { textEditorUtils } from "@/utils/vscode";
 
 import { keyCryptoToolsKey } from "../configs";
@@ -33,8 +32,7 @@ export function registerCommandKeyDecrypt() {
                             .plaintext.toString(),
                     });
                 } catch (e) {
-                    console.error(e);
-                    vscode.window.showErrorMessage(`${e}`);
+                    logger.error("Failed to decrypt key.", e);
                 }
             }
         )

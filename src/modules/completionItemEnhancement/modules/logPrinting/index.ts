@@ -1,4 +1,4 @@
-import { defineModule } from "@/core/moduleManager";
+import { defineModule } from "@/core";
 
 import { registerCompletionItemProviders } from "./completionItemProviders";
 import { parseConfigs } from "./configs";

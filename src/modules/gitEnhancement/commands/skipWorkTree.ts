@@ -1,7 +1,6 @@
 import path from "node:path";
 
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, logger, vscode } from "@/core";
 import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { execCommand } from "@utils/command";
 
@@ -21,12 +20,11 @@ export function registerCommandSkipWorkTree() {
                         cwd: getWorkspaceFolderPath(),
                     });
 
-                    vscode.window.showInformationMessage(
+                    logger.info(
                         `Skipped work tree for file "${relativePath}".`
                     );
                 } catch (e) {
-                    console.error(e);
-                    vscode.window.showErrorMessage(`${e}`);
+                    logger.error("Failed to skip work tree for file.", e);
                 }
             }
         )

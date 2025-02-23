@@ -1,7 +1,6 @@
 import z from "zod";
 
-import { getConfigurationItem } from "@/core/configuration";
-import { extensionName } from "@/core/context";
+import { extensionName, getConfigurationItem } from "@/core";
 import { CommonUtils } from "@utils/common";
 
 /**
@@ -19,7 +18,7 @@ export function parseConfigs() {
 
                     // TODO: need to check if the error can be catch correctly
                     CommonUtils.assert(
-                        originalWord !== undefined && mappedWord !== undefined,
+                        originalWord !== "" && mappedWord !== "",
                         `Invalid uppercase words mapping: ${it}, formatting should be "<originalWord>:<mappedWord>".`
                     );
 
@@ -30,7 +29,9 @@ export function parseConfigs() {
                 })
             )
             .parse(
-                getConfigurationItem(`${extensionName}.uppercaseWordsMapping`)
+                getConfigurationItem(
+                    `${extensionName}.shared.uppercaseWordsMapping`
+                )
             )
     );
 }

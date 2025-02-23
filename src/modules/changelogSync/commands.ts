@@ -3,9 +3,8 @@ import path from "node:path";
 import markdownIt from "markdown-it";
 import z from "zod";
 
-import { fs, vscode } from "@/core";
-import { extensionCtx } from "@/core/context";
-import { getWorkspaceFolderPath } from "@/utils/vscode";
+import { extensionCtx, fs, logger, vscode } from "@/core";
+import { getWorkspaceFolderPath, isMarkdownFile } from "@/utils/vscode";
 import { readJsonFile } from "@utils/fs";
 
 import { kCommandSyncChangelog } from "./consts";
@@ -19,7 +18,7 @@ export function registerCommandSyncChangelog() {
                     return;
                 }
 
-                if (editor.document.languageId !== "markdown") {
+                if (!isMarkdownFile(editor.document)) {
                     return;
                 }
 
@@ -28,8 +27,7 @@ export function registerCommandSyncChangelog() {
 
                 await syncChangelog();
             } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(`${e}`);
+                logger.error("Failed to sync changelog.", e);
             }
         })
     );
@@ -70,7 +68,7 @@ async function findNewVersionAndAddItems(changelogFilename = "CHANGELOG.md") {
                 token.level === 0
             ) {
                 const nextToken = tokens[tokens.indexOf(token) + 1];
-                if (nextToken !== undefined && nextToken.type === "inline") {
+                if (nextToken.type === "inline") {
                     const matchedVersion =
                         nextToken.content.match(/^\[(\d+\.\d+\.\d+)\]/);
                     if (matchedVersion !== null) {
@@ -91,7 +89,6 @@ async function findNewVersionAndAddItems(changelogFilename = "CHANGELOG.md") {
         ) {
             const nextToken = tokens[tokens.indexOf(token) + 1];
             if (
-                nextToken !== undefined &&
                 nextToken.type === "inline" &&
                 nextToken.content.trim() === "Added"
             ) {
@@ -131,7 +128,7 @@ async function updatePackageFile(
             version: z.string().optional(),
         })
         .parse(readJsonFile(packageFilePath));
-    if (content.version === undefined && content.version === lastVersion) {
+    if (content.version === lastVersion) {
         return;
     }
 
@@ -140,9 +137,7 @@ async function updatePackageFile(
     content.version = lastVersion;
     fs.writeFileSync(packageFilePath, JSON.stringify(content, null, 4) + "\n");
 
-    vscode.window.showInformationMessage(
-        `Updated file "${path.basename(packageFilePath)}".`
-    );
+    logger.info(`Updated file "${path.basename(packageFilePath)}".`);
 }
 
 async function updatePm2ConfigFile(
@@ -173,9 +168,7 @@ async function updatePm2ConfigFile(
         JSON.stringify(content, null, 4) + "\n"
     );
 
-    vscode.window.showInformationMessage(
-        `Updated file "${path.basename(pm2ConfigFilePath)}".`
-    );
+    logger.info(`Updated file "${path.basename(pm2ConfigFilePath)}".`);
 }
 
 async function updateReadmeFile(
@@ -204,7 +197,6 @@ async function updateReadmeFile(
         ) {
             const nextToken = tokens[tokens.indexOf(token) + 1];
             if (
-                nextToken !== undefined &&
                 nextToken.type === "inline" &&
                 nextToken.content.trim() === "Features"
             ) {
@@ -245,7 +237,5 @@ async function updateReadmeFile(
     readmeContentLines.splice(featureEndIndex - 1, 0, ...appendedFeatures);
     fs.writeFileSync(readmeFilePath, readmeContentLines.join("\n"));
 
-    vscode.window.showInformationMessage(
-        `Updated file "${path.basename(readmeFilePath)}".`
-    );
+    logger.info(`Updated file "${path.basename(readmeFilePath)}".`);
 }

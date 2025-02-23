@@ -7,8 +7,14 @@ import {
 
 import { ETsType } from "@/types";
 
-import { format, fs, vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import {
+    extensionCtx,
+    extensionName,
+    format,
+    fs,
+    logger,
+    vscode,
+} from "@/core";
 import { prettierFormatText } from "@/utils/common";
 import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
@@ -40,7 +46,7 @@ export function registerCommandGenerateModel() {
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
             `${extensionName}.databaseModel.generateModel`,
-            async () => {
+            async (document: vscode.TextDocument, range: vscode.Range) => {
                 vscode.window.withProgress(
                     {
                         location: vscode.ProgressLocation.Notification,
@@ -50,20 +56,17 @@ export function registerCommandGenerateModel() {
                     async (progress, token) => {
                         try {
                             const generatedFils =
-                                await parseSqlAndGenerateFiles();
-                            vscode.window.showInformationMessage(
-                                format(
-                                    `Generated files:\n%s`,
-                                    generatedFils
-                                        .map(it => `'${it}'`)
-                                        .join(", ")
-                                )
+                                await parseSqlAndGenerateFiles(
+                                    document.getText(range)
+                                );
+                            logger.info(
+                                `Generated files.\n`,
+                                generatedFils.map(it => `- '${it}'`).join("\n")
                             );
 
                             return;
                         } catch (e) {
-                            console.error(e);
-                            vscode.window.showErrorMessage(`${e}`);
+                            logger.error("Failed to generate model.", e);
                         }
                     }
                 );
@@ -72,19 +75,10 @@ export function registerCommandGenerateModel() {
     );
 }
 
-async function parseSqlAndGenerateFiles() {
-    // Get selected text
-
-    const editor = vscode.window.activeTextEditor;
-    CommonUtils.assert(editor !== undefined, `No editor activated.`);
-
-    const selectedText = editor.document.getText(editor.selection);
-
+async function parseSqlAndGenerateFiles(text: string) {
     // Parse SQL statement
 
-    const { schemaName, tableName, detail } = await parseCreateStmt(
-        selectedText
-    );
+    const { schemaName, tableName, detail } = await parseCreateStmt(text);
 
     // Check "src.models.index" file exits
 

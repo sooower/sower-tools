@@ -1,4 +1,4 @@
-import { vscode } from "..";
+import { logger, vscode } from "..";
 import { extensionCtx, extensionName } from "../context";
 import { moduleManager } from "../moduleManager";
 
@@ -32,10 +32,8 @@ async function reloadConfiguration() {
                 userConfig = vscode.workspace.getConfiguration();
 
                 await moduleManager.reloadConfiguration();
-            } catch (error) {
-                vscode.window.showErrorMessage(
-                    `Load configuration failed: ${(error as Error).message}`
-                );
+            } catch (e) {
+                logger.error(`Load configuration failed.`, e);
             }
         }
     );
@@ -55,10 +53,7 @@ function registerOnDidChangeConfigurationListener() {
 
                 await reloadConfiguration();
             } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(
-                    `Error while reloading configuration. ${e}`
-                );
+                logger.error(`Error while reloading configuration.`, e);
             }
         })
     );

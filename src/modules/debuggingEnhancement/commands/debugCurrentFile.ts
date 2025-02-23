@@ -1,5 +1,4 @@
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, logger, vscode } from "@/core";
 import { getWorkspaceFolder } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
@@ -31,8 +30,7 @@ export function registerCommandDebugCurrentFile() {
                         ...debugCurrentFileConfiguration,
                     });
                 } catch (e) {
-                    console.error(e);
-                    vscode.window.showErrorMessage(`${e}`);
+                    logger.error("Failed to debug current file.", e);
                 }
             }
         )

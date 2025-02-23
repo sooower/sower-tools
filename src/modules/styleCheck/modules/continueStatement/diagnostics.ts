@@ -1,12 +1,11 @@
 import ts from "typescript";
 
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { findAllBlockNodes } from "@/utils/typescript";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
-import { isIgnoredFile } from "../../utils";
+import { isIgnoredFile } from "../shared/utils";
 import { enableStyleCheckContinueStatement } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -27,7 +26,7 @@ export function registerDiagnosticContinueStatement() {
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
-    if (document.languageId !== "typescript") {
+    if (!isTypeScriptFile(document)) {
         return;
     }
 
@@ -44,39 +43,44 @@ function updateDiagnostics(document: vscode.TextDocument) {
     }
 
     const diagnostics: vscode.Diagnostic[] = [];
-    findAllBlockNodes(createSourceFileByDocument(document)).forEach(block => {
-        appendDiagnostic(block, document, diagnostics);
-    });
+
+    checkIsMissingBlankLineBeforeContinueStatement(document, diagnostics);
+
     diagnosticCollection.set(document.uri, diagnostics);
 }
 
-function appendDiagnostic(
-    block: ts.Block,
+function checkIsMissingBlankLineBeforeContinueStatement(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
 ) {
-    const stmts = block.statements;
-    if (stmts.length < 2) {
-        return;
-    }
+    const appendDiagnostic = (block: ts.Block) => {
+        const stmts = block.statements;
+        if (stmts.length < 2) {
+            return;
+        }
 
-    const lastStmt = stmts[stmts.length - 1];
-    if (!ts.isContinueStatement(lastStmt)) {
-        return;
-    }
+        const lastStmt = stmts[stmts.length - 1];
+        if (!ts.isContinueStatement(lastStmt)) {
+            return;
+        }
 
-    const prevStmt = stmts[stmts.length - 2];
-    const prevEndLine = document.positionAt(prevStmt.getEnd()).line;
-    const continueStartLine = document.positionAt(lastStmt.getStart()).line;
+        const prevStmt = stmts[stmts.length - 2];
+        const prevEndLine = document.positionAt(prevStmt.getEnd()).line;
+        const continueStartLine = document.positionAt(lastStmt.getStart()).line;
 
-    if (continueStartLine - prevEndLine < 2) {
-        const diagnostic = new vscode.Diagnostic(
-            buildRangeByLineIndex(document, continueStartLine),
-            "Missing blank line before continue statement.",
-            vscode.DiagnosticSeverity.Warning
-        );
-        diagnostic.code = `@${extensionName}/blank-line-before-continue-statement`;
+        if (continueStartLine - prevEndLine < 2) {
+            const diagnostic = new vscode.Diagnostic(
+                buildRangeByLineIndex(document, continueStartLine),
+                "Missing blank line before continue statement.",
+                vscode.DiagnosticSeverity.Warning
+            );
+            diagnostic.code = `@${extensionName}/blank-line-before-continue-statement`;
 
-        diagnostics.push(diagnostic);
-    }
+            diagnostics.push(diagnostic);
+        }
+    };
+
+    findAllBlockNodes(createSourceFileByDocument(document)).forEach(block => {
+        appendDiagnostic(block);
+    });
 }

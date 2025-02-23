@@ -58,6 +58,7 @@
         "pluralize": "^8.0.0",
         "prettier": "2.8.8",
         "remark-parse": "^11.0.0",
+        "ts-morph": "^25.0.1",
         "unist-util-visit": "^5.0.0",
         "zod": "^3.24.1"
     },
@@ -79,14 +80,6 @@
     "contributes": {
         "commands": [
             {
-                "command": "sower-tools.databaseModel.generateModel",
-                "title": "Generate Model"
-            },
-            {
-                "command": "sower-tools.databaseModel.updateModel",
-                "title": "Update Model"
-            },
-            {
                 "command": "sower-tools.debuggingEnhancement.debugProject",
                 "title": "Debug Project",
                 "icon": {
@@ -101,22 +94,6 @@
                     "dark": "./assets/debugCurrentFile-dark.svg",
                     "light": "./assets/debugCurrentFile-light.svg"
                 }
-            },
-            {
-                "command": "sower-tools.functionEnhancement.convertParametersToOptionsObject",
-                "title": "Convert Parameters to Options Object"
-            },
-            {
-                "command": "sower-tools.functionEnhancement.syncParameterTypeMembers",
-                "title": "Sync Type Members with References"
-            },
-            {
-                "command": "sower-tools.generateEnumAssertionFunctions",
-                "title": "Generate/update Enum Assertions"
-            },
-            {
-                "command": "sower-tools.generateTypeOfZodSchema",
-                "title": "Generate/update Type of Zod Schema"
             },
             {
                 "command": "sower-tools.gitEnhancement.skipWorkTree",
@@ -135,56 +112,12 @@
                 "title": "Force Push"
             },
             {
-                "command": "sower-tools.timestampTool.covertTimestamp",
-                "title": "Convert Timestamp"
-            },
-            {
-                "command": "sower-tools.timestampTool.insertTimestamp",
-                "title": "Insert Timestamp"
-            },
-            {
-                "command": "sower-tools.stringTools.base64Encode",
-                "title": "Base64 Encode"
-            },
-            {
-                "command": "sower-tools.stringTools.base64Decode",
-                "title": "Base64 Decode"
-            },
-            {
-                "command": "sower-tools.syncChangelog",
-                "title": "Sync Changelog"
-            },
-            {
-                "command": "sower-tools.sortEnumsDeclaration",
-                "title": "Sort Enums Declaration"
-            },
-            {
-                "command": "sower-tools.keyCryptoTools.keyEncrypt",
-                "title": "Encrypt Text"
-            },
-            {
-                "command": "sower-tools.keyCryptoTools.keyDecrypt",
-                "title": "Decrypt Text"
-            },
-            {
                 "command": "sower-tools.apiResourcesGeneration.generateAPIResources",
                 "title": "Generate API Resources"
             },
             {
                 "command": "sower-tools.dirEnhancement.openFiles",
                 "title": "Open Files"
-            },
-            {
-                "command": "sower-tools.statusBarEnhancement.countdownTimer",
-                "title": "Countdown Timer"
-            },
-            {
-                "command": "sower-tools.markdownEnhancement.localImage.uploadToMinioStorage",
-                "title": "Upload Image to Minio Storage"
-            },
-            {
-                "command": "sower-tools.markdownEnhancement.removeBlankLines",
-                "title": "Remove Blank Lines"
             }
         ],
         "submenus": [
@@ -197,7 +130,7 @@
                 "label": "Sower Tools"
             },
             {
-                "id": "explorer/context/sowerTools/Git",
+                "id": "explorer/context/sowerTools/git",
                 "label": "Git"
             }
         ],
@@ -218,76 +151,6 @@
                     "command": "sower-tools.debuggingEnhancement.debugProject",
                     "group": "001_debuggingEnhancement@002",
                     "when": "resourceLangId == typescript"
-                },
-                {
-                    "command": "sower-tools.databaseModel.generateModel",
-                    "group": "002_databaseModel@001",
-                    "when": "editorTextFocus && editorHasSelection"
-                },
-                {
-                    "command": "sower-tools.databaseModel.updateModel",
-                    "group": "002_databaseModel@002",
-                    "when": "resourceLangId == typescript && editorTextFocus  && !editorHasSelection"
-                },
-                {
-                    "command": "sower-tools.functionEnhancement.convertParametersToOptionsObject",
-                    "group": "003_functionEnhancement@001",
-                    "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
-                },
-                {
-                    "command": "sower-tools.functionEnhancement.syncParameterTypeMembers",
-                    "group": "003_functionEnhancement@002",
-                    "when": "resourceLangId == typescript && editorTextFocus"
-                },
-                {
-                    "command": "sower-tools.generateEnumAssertionFunctions",
-                    "group": "003_functionEnhancement@003",
-                    "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
-                },
-                {
-                    "command": "sower-tools.generateTypeOfZodSchema",
-                    "group": "003_functionEnhancement@004",
-                    "when": "resourceLangId == typescript && editorTextFocus && !editorHasSelection"
-                },
-                {
-                    "command": "sower-tools.timestampTool.covertTimestamp",
-                    "group": "004_timestampTool@001",
-                    "when": "editorTextFocus && editorHasSelection"
-                },
-                {
-                    "command": "sower-tools.timestampTool.insertTimestamp",
-                    "group": "004_timestampTool@002",
-                    "when": "editorTextFocus && !editorHasSelection"
-                },
-                {
-                    "command": "sower-tools.stringTools.base64Encode",
-                    "group": "005_stringTools@001",
-                    "when": "editorTextFocus && editorHasSelection"
-                },
-                {
-                    "command": "sower-tools.stringTools.base64Decode",
-                    "group": "005_stringTools@002",
-                    "when": "editorTextFocus && editorHasSelection"
-                },
-                {
-                    "command": "sower-tools.syncChangelog",
-                    "group": "006_changelog@001",
-                    "when": "resourceLangId == markdown && editorTextFocus"
-                },
-                {
-                    "command": "sower-tools.sortEnumsDeclaration",
-                    "group": "007_enumsDeclarationSort@001",
-                    "when": "resourceLangId == typescript && editorTextFocus"
-                },
-                {
-                    "command": "sower-tools.keyCryptoTools.keyEncrypt",
-                    "group": "008_keyCryptoTools@001",
-                    "when": "editorTextFocus && editorHasSelection"
-                },
-                {
-                    "command": "sower-tools.keyCryptoTools.keyDecrypt",
-                    "group": "008_keyCryptoTools@002",
-                    "when": "editorTextFocus && editorHasSelection"
                 }
             ],
             "editor/title": [
@@ -310,8 +173,8 @@
             ],
             "explorer/context/sowerTools": [
                 {
-                    "group": "001_Git@001",
-                    "submenu": "explorer/context/sowerTools/Git"
+                    "group": "001_git@001",
+                    "submenu": "explorer/context/sowerTools/git"
                 },
                 {
                     "command": "sower-tools.apiResourcesGeneration.generateAPIResources",
@@ -324,7 +187,7 @@
                     "when": "explorerResourceIsFolder == true"
                 }
             ],
-            "explorer/context/sowerTools/Git": [
+            "explorer/context/sowerTools/git": [
                 {
                     "command": "sower-tools.gitEnhancement.skipWorkTree",
                     "group": "001_gitEnhancement@001",
@@ -334,14 +197,6 @@
                     "command": "sower-tools.gitEnhancement.noSkipWorkTree",
                     "group": "001_gitEnhancement@002",
                     "when": "explorerResourceIsFolder == false && resourceLangId != ''"
-                },
-                {
-                    "command": "sower-tools.gitEnhancement.forcePush",
-                    "group": "001_gitEnhancement@003"
-                },
-                {
-                    "command": "sower-tools.gitEnhancement.listSkippedFiles",
-                    "group": "001_gitEnhancement@004"
                 }
             ],
             "scm/title": [
@@ -359,7 +214,7 @@
             "type": "object",
             "title": "Sower Tools",
             "properties": {
-                "sower-tools.uppercaseWordsMapping": {
+                "sower-tools.shared.uppercaseWordsMapping": {
                     "description": "Words pairs which will be used to map words when to uppercase, format: <originalWord>:<mappedWord>.",
                     "type": "array",
                     "items": {
@@ -711,6 +566,11 @@
                 },
                 "sower-tools.styleCheck.enumDeclaration.enable": {
                     "description": "If true, it will check the enum declaration style.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "sower-tools.styleCheck.tryStatement.enable": {
+                    "description": "If true, it will check the try statement style.",
                     "type": "boolean",
                     "default": true
                 }

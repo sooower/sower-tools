@@ -2,8 +2,8 @@ import path from "node:path";
 
 import { Client } from "minio";
 
-import { format, vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, format, logger, vscode } from "@/core";
+import { isMarkdownFile } from "@/utils/vscode";
 import { buildRangeByOffsets } from "@/utils/vscode/range";
 import { CommonUtils } from "@utils/common";
 
@@ -46,7 +46,7 @@ export function registerDiagnosticNoLocalImageLink() {
 }
 
 async function updateDiagnostics(document: vscode.TextDocument) {
-    if (document.languageId !== "markdown") {
+    if (!isMarkdownFile(document)) {
         return;
     }
 
@@ -142,11 +142,9 @@ async function uploadImage(document: vscode.TextDocument, range: vscode.Range) {
                 edit.replace(document.uri, range, remoteImageLink);
                 await vscode.workspace.applyEdit(edit);
 
-                vscode.window.showInformationMessage("Uploaded successfully!");
-            } catch (error) {
-                vscode.window.showErrorMessage(
-                    `Upload failed: ${(error as Error).message}`
-                );
+                logger.info("Uploaded successfully!");
+            } catch (e) {
+                logger.error(`Upload failed.`, e);
             }
         }
     );

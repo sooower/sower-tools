@@ -1,4 +1,4 @@
-import { vscode } from "@/core";
+import { logger, vscode } from "@/core";
 import { datetime } from "@utils/datetime";
 
 import { enableShowStatusBarNowTimestamp } from "./configs";
@@ -34,5 +34,5 @@ export function clearNowTimestampStatusBarItemTimer() {
     }
 
     clearInterval(timer);
-    console.log(`Timer "statusBarNowTimestampTimer" has clear.`);
+    logger.info(`Timer "statusBarNowTimestampTimer" has clear.`);
 }

@@ -1,5 +1,4 @@
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { findTypeDeclarationNode } from "@/utils/typescript";
 import { createSourceFileByDocument } from "@/utils/vscode";
 
@@ -60,7 +59,6 @@ class UpdateModelCodeActionProvider implements vscode.CodeActionProvider {
         updateModelCodeAction.command = {
             command: `${extensionName}.databaseModel.updateModel`,
             title: "",
-            arguments: [document, range],
         };
 
         return [updateModelCodeAction];

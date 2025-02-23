@@ -1,7 +1,6 @@
 import ts from "typescript";
 
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { createSourceFileByDocument } from "@/utils/vscode";
 
 export function registerCodeActionsProviders() {

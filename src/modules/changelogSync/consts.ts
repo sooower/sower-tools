@@ -1,3 +1,3 @@
-import { extensionName } from "@/core/context";
+import { extensionName } from "@/core";
 
 export const kCommandSyncChangelog = `${extensionName}.syncChangelog`;

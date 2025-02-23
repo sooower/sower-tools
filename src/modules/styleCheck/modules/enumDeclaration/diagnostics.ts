@@ -1,13 +1,12 @@
 import ts from "typescript";
 
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { findTopLevelEnumDeclarationNodes } from "@/utils/typescript";
 import { detectCommentKind } from "@/utils/typescript/comment";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
-import { hasValidLeadingSpaceBefore, isIgnoredFile } from "../../utils";
+import { hasValidLeadingSpaceBefore, isIgnoredFile } from "../shared/utils";
 import { enableStyleCheckEnumDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -29,7 +28,7 @@ export function registerDiagnosticEnumDeclaration() {
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
-    if (document.languageId !== "typescript") {
+    if (!isTypeScriptFile(document)) {
         return;
     }
 
@@ -47,45 +46,48 @@ function updateDiagnostics(document: vscode.TextDocument) {
 
     const diagnostics: vscode.Diagnostic[] = [];
 
-    findTopLevelEnumDeclarationNodes(
-        createSourceFileByDocument(document)
-    ).forEach(node => {
-        appendDiagnostic(node, document, diagnostics);
-    });
+    checkIsMissingBlankLineBeforeEnumDeclaration(document, diagnostics);
 
     diagnosticCollection.set(document.uri, diagnostics);
 }
 
-function appendDiagnostic(
-    node: ts.EnumDeclaration,
+function checkIsMissingBlankLineBeforeEnumDeclaration(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
-): vscode.Diagnostic | undefined {
-    const enumNodeStartPos = node.getStart();
-    const enumDeclNodeStartLineIndex =
-        document.positionAt(enumNodeStartPos).line;
+) {
+    const appendDiagnostic = (node: ts.EnumDeclaration) => {
+        const enumNodeStartPos = node.getStart();
+        const enumDeclNodeStartLineIndex =
+            document.positionAt(enumNodeStartPos).line;
 
-    // Skip if the enum declaration is the first line of the document
-    if (enumDeclNodeStartLineIndex === 0) {
-        return;
-    }
+        // Skip if the enum declaration is the first line of the document
+        if (enumDeclNodeStartLineIndex === 0) {
+            return;
+        }
 
-    if (hasValidLeadingSpaceBefore(document, enumDeclNodeStartLineIndex)) {
-        return;
-    }
+        if (hasValidLeadingSpaceBefore(document, enumDeclNodeStartLineIndex)) {
+            return;
+        }
 
-    // Skip if the previous line is a comment
-    const prevLine = document.lineAt(enumDeclNodeStartLineIndex - 1);
-    if (detectCommentKind(prevLine.text) !== null) {
-        return;
-    }
+        // Skip if the previous line is a comment
+        const prevLine = document.lineAt(enumDeclNodeStartLineIndex - 1);
+        if (detectCommentKind(prevLine.text) !== null) {
+            return;
+        }
 
-    const diagnostic = new vscode.Diagnostic(
-        buildRangeByLineIndex(document, enumDeclNodeStartLineIndex),
-        "Missing a blank line before the enum declaration.",
-        vscode.DiagnosticSeverity.Warning
-    );
-    diagnostic.code = `@${extensionName}/blank-line-before-enum-declaration`;
+        const diagnostic = new vscode.Diagnostic(
+            buildRangeByLineIndex(document, enumDeclNodeStartLineIndex),
+            "Missing a blank line before the enum declaration.",
+            vscode.DiagnosticSeverity.Warning
+        );
+        diagnostic.code = `@${extensionName}/blank-line-before-enum-declaration`;
 
-    diagnostics.push(diagnostic);
+        diagnostics.push(diagnostic);
+    };
+
+    findTopLevelEnumDeclarationNodes(
+        createSourceFileByDocument(document)
+    ).forEach(node => {
+        appendDiagnostic(node);
+    });
 }

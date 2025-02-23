@@ -1,5 +1,4 @@
-import { vscode } from "@/core";
-import { extensionCtx } from "@/core/context";
+import { extensionCtx, logger, vscode } from "@/core";
 
 import { refreshSelectedLines } from "./utils/selectedLines";
 import {
@@ -30,8 +29,7 @@ export function registerOnDidChangeTextEditorSelectionListener() {
 
                 refreshSelectedLines({ editor, selection });
             } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(`${e}`);
+                logger.error("Failed to refresh selected lines.", e);
             }
         })
     );

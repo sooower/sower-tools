@@ -1,5 +1,4 @@
-import { vscode } from "@/core";
-import { extensionCtx } from "@/core/context";
+import { extensionCtx, logger, vscode } from "@/core";
 import { textEditorUtils } from "@/utils/vscode";
 import { datetime } from "@utils/datetime";
 
@@ -21,8 +20,7 @@ export function registerCommandInsertTimestamp() {
                     lineBreak: "",
                 });
             } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(`${e}`);
+                logger.error("Failed to insert timestamp.", e);
             }
         })
     );

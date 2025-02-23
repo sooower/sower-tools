@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { vscode } from "@/core";
+import { logger, vscode } from "@/core";
 import { getWorkspaceFolderPath } from "@/utils/vscode";
 
 import { readmeDocumentNames } from "./configs";
@@ -15,7 +15,7 @@ export async function previewDocument() {
     }
 
     if (readmeDocumentNames.length === 0) {
-        console.warn(`No README document found in the workspace.`);
+        logger.warn(`No README document found in the workspace.`);
 
         return;
     }

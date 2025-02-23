@@ -1,7 +1,4 @@
-import { window } from "vscode";
-
-import { format, vscode } from "@/core";
-import { extensionCtx } from "@/core/context";
+import { extensionCtx, logger, vscode } from "@/core";
 import { textEditorUtils } from "@/utils/vscode";
 import { datetime } from "@utils/datetime";
 
@@ -27,18 +24,14 @@ export function registerCommandConvertTimestamp() {
                         .format("YYYY-MM-DD HH:mm:ss"); // TODO: update to load timestamp format from configuration
 
                     if (timestamp === "Invalid Date") {
-                        window.showWarningMessage(
-                            format(`Invalid timestamp: "%s".`, selectedText)
-                        );
+                        logger.warn(`Invalid timestamp: "${selectedText}".`);
 
                         return;
                     }
                 } else {
                     timestamp = String(datetime(selectedText).unix());
                     if (timestamp === "NaN") {
-                        window.showWarningMessage(
-                            format(`Invalid timestamp: "%s".`, selectedText)
-                        );
+                        logger.warn(`Invalid timestamp: "${selectedText}".`);
 
                         return;
                     }
@@ -50,8 +43,7 @@ export function registerCommandConvertTimestamp() {
                     newText: timestamp,
                 });
             } catch (e) {
-                console.error(e);
-                vscode.window.showErrorMessage(`${e}`);
+                logger.error("Failed to convert timestamp.", e);
             }
         })
     );

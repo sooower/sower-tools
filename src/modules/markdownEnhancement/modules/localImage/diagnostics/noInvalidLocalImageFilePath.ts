@@ -1,7 +1,7 @@
 import path from "node:path";
 
-import { fs, vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, fs, vscode } from "@/core";
+import { isMarkdownFile } from "@/utils/vscode";
 import { buildRangeByOffsets } from "@/utils/vscode/range";
 
 import { kLocalImageLinkRegex } from "../consts";
@@ -23,7 +23,7 @@ export function registerDiagnosticNoInvalidLocalImageFilePath() {
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
-    if (document.languageId !== "markdown") {
+    if (!isMarkdownFile(document)) {
         return;
     }
 

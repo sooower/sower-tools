@@ -1,19 +1,20 @@
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import ts from "typescript";
+
+import { extensionCtx, extensionName, vscode } from "@/core";
 import {
     findAllFuncOrCtorDeclarationNodes,
     isFunctionParameter,
     TFunc,
 } from "@/utils/typescript";
 import { detectCommentKind } from "@/utils/typescript/comment";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import {
     hasValidLeadingSpaceBefore,
     isFirstLineOfParent,
     isIgnoredFile,
-} from "../../utils";
+} from "../shared/utils";
 import { enableStyleCheckFunctionDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -36,7 +37,7 @@ export function registerDiagnosticFunctionDeclaration() {
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
-    if (document.languageId !== "typescript") {
+    if (!isTypeScriptFile(document)) {
         return;
     }
 
@@ -52,55 +53,73 @@ function updateDiagnostics(document: vscode.TextDocument) {
         return;
     }
 
+    // TODO: skip if there are override function declarations
+
     const diagnostics: vscode.Diagnostic[] = [];
 
-    findAllFuncOrCtorDeclarationNodes(
-        createSourceFileByDocument(document)
-    ).forEach(node => {
-        appendDiagnostic(node, document, diagnostics);
-    });
+    checkIsMissingBlankLineBeforeFunctionDeclaration(document, diagnostics);
 
     diagnosticCollection.set(document.uri, diagnostics);
 }
 
-function appendDiagnostic(
-    node: TFunc,
+function checkIsMissingBlankLineBeforeFunctionDeclaration(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
-): vscode.Diagnostic | undefined {
-    const funcNodeStartPos = node.getStart();
-    const funcDeclNodeStartLineIndex =
-        document.positionAt(funcNodeStartPos).line;
+) {
+    const appendDiagnostic = (node: TFunc) => {
+        const funcNodeStartPos = node.getStart();
+        const funcDeclNodeStartLineIndex =
+            document.positionAt(funcNodeStartPos).line;
 
-    // Skip if the function declaration is the first line of the document
-    if (funcDeclNodeStartLineIndex === 0) {
-        return;
-    }
+        // Skip if the function declaration is the first line of the document
+        if (funcDeclNodeStartLineIndex === 0) {
+            return;
+        }
 
-    if (isFirstLineOfParent(document, funcDeclNodeStartLineIndex)) {
-        return;
-    }
+        if (isFirstLineOfParent(document, funcDeclNodeStartLineIndex)) {
+            return;
+        }
 
-    if (isFunctionParameter(node)) {
-        return;
-    }
+        if (isFunctionParameter(node)) {
+            return;
+        }
 
-    if (hasValidLeadingSpaceBefore(document, funcDeclNodeStartLineIndex)) {
-        return;
-    }
+        if (isInAssignmentExpression(node)) {
+            return;
+        }
 
-    // Skip if the previous line is a comment
-    const prevLine = document.lineAt(funcDeclNodeStartLineIndex - 1);
-    if (detectCommentKind(prevLine.text) !== null) {
-        return;
-    }
+        if (hasValidLeadingSpaceBefore(document, funcDeclNodeStartLineIndex)) {
+            return;
+        }
 
-    const diagnostic = new vscode.Diagnostic(
-        buildRangeByLineIndex(document, funcDeclNodeStartLineIndex),
-        "Missing a blank line before the function declaration.",
-        vscode.DiagnosticSeverity.Warning
+        // Skip if the previous line is a comment
+        const prevLine = document.lineAt(funcDeclNodeStartLineIndex - 1);
+        if (detectCommentKind(prevLine.text) !== null) {
+            return;
+        }
+
+        const diagnostic = new vscode.Diagnostic(
+            buildRangeByLineIndex(document, funcDeclNodeStartLineIndex),
+            "Missing a blank line before the function declaration.",
+            vscode.DiagnosticSeverity.Warning
+        );
+        diagnostic.code = `@${extensionName}/blank-line-before-function-declaration`;
+
+        diagnostics.push(diagnostic);
+    };
+
+    findAllFuncOrCtorDeclarationNodes(
+        createSourceFileByDocument(document)
+    ).forEach(node => {
+        appendDiagnostic(node);
+    });
+}
+
+function isInAssignmentExpression(node: TFunc) {
+    // FIXME: this is not working
+    return (
+        ts.isBinaryExpression(node.parent) &&
+        node.parent.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
+        node.parent.right === node
     );
-    diagnostic.code = `@${extensionName}/blank-line-before-function-declaration`;
-
-    diagnostics.push(diagnostic);
 }

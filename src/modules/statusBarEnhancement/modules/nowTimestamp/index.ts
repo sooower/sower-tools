@@ -1,4 +1,4 @@
-import { defineModule } from "@/core/moduleManager";
+import { defineModule } from "@/core";
 
 import { parseShowStatusBarNowTimestampConfigs } from "./configs";
 import {

@@ -1,12 +1,11 @@
 import ts from "typescript";
 
-import { vscode } from "@/core";
-import { extensionCtx, extensionName } from "@/core/context";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { findAllBlockNodes } from "@/utils/typescript";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
-import { isIgnoredFile } from "../../utils";
+import { isIgnoredFile } from "../shared/utils";
 import { enableStyleCheckReturnStatement } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -27,7 +26,7 @@ export function registerDiagnosticReturnStatement() {
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
-    if (document.languageId !== "typescript") {
+    if (!isTypeScriptFile(document)) {
         return;
     }
 
@@ -44,39 +43,44 @@ function updateDiagnostics(document: vscode.TextDocument) {
     }
 
     const diagnostics: vscode.Diagnostic[] = [];
-    findAllBlockNodes(createSourceFileByDocument(document)).forEach(block => {
-        appendDiagnostic(block, document, diagnostics);
-    });
+
+    checkIsMissingBlankLineBeforeReturnStatement(document, diagnostics);
+
     diagnosticCollection.set(document.uri, diagnostics);
 }
 
-function appendDiagnostic(
-    block: ts.Block,
+function checkIsMissingBlankLineBeforeReturnStatement(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
 ) {
-    const stmts = block.statements;
-    if (stmts.length < 2) {
-        return;
-    }
+    const appendDiagnostic = (block: ts.Block) => {
+        const stmts = block.statements;
+        if (stmts.length < 2) {
+            return;
+        }
 
-    const lastStmt = stmts[stmts.length - 1];
-    if (!ts.isReturnStatement(lastStmt)) {
-        return;
-    }
+        const lastStmt = stmts[stmts.length - 1];
+        if (!ts.isReturnStatement(lastStmt)) {
+            return;
+        }
 
-    const prevStmt = stmts[stmts.length - 2];
-    const prevEndLine = document.positionAt(prevStmt.getEnd()).line;
-    const returnStartLine = document.positionAt(lastStmt.getStart()).line;
+        const prevStmt = stmts[stmts.length - 2];
+        const prevEndLine = document.positionAt(prevStmt.getEnd()).line;
+        const returnStartLine = document.positionAt(lastStmt.getStart()).line;
 
-    if (returnStartLine - prevEndLine < 2) {
-        const diagnostic = new vscode.Diagnostic(
-            buildRangeByLineIndex(document, returnStartLine),
-            "Missing blank line before return statement.",
-            vscode.DiagnosticSeverity.Warning
-        );
-        diagnostic.code = `@${extensionName}/blank-line-before-return-statement`;
+        if (returnStartLine - prevEndLine < 2) {
+            const diagnostic = new vscode.Diagnostic(
+                buildRangeByLineIndex(document, returnStartLine),
+                "Missing blank line before return statement.",
+                vscode.DiagnosticSeverity.Warning
+            );
+            diagnostic.code = `@${extensionName}/blank-line-before-return-statement`;
 
-        diagnostics.push(diagnostic);
-    }
+            diagnostics.push(diagnostic);
+        }
+    };
+
+    findAllBlockNodes(createSourceFileByDocument(document)).forEach(block => {
+        appendDiagnostic(block);
+    });
 }

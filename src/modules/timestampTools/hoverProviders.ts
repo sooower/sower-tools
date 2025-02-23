@@ -1,5 +1,4 @@
-import { vscode } from "@/core";
-import { extensionCtx } from "@/core/context";
+import { extensionCtx, logger, vscode } from "@/core";
 import { datetime } from "@utils/datetime";
 
 export function registerHoverProvider() {
@@ -43,7 +42,7 @@ export function registerHoverProvider() {
 
                     return new vscode.Hover(content);
                 } catch (e) {
-                    console.error("Error while processing timestamp hover:", e);
+                    logger.error("Failed to process timestamp hover.", e);
 
                     return;
                 }
