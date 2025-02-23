@@ -1,6 +1,6 @@
 import { Expression, Node } from "ts-morph";
 
-import { extensionCtx, project, vscode } from "@/core";
+import { extensionCtx, extensionName, project, vscode } from "@/core";
 import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
@@ -76,16 +76,17 @@ function checkUnAwaitedPromiseCallExpression(
                     return;
                 }
 
-                diagnostics.push(
-                    new vscode.Diagnostic(
-                        buildRangeByLineIndex(
-                            document,
-                            expr.getStartLineNumber() - 1
-                        ),
-                        "Missing await before async function call expression.",
-                        vscode.DiagnosticSeverity.Warning
-                    )
+                const diagnostic = new vscode.Diagnostic(
+                    buildRangeByLineIndex(
+                        document,
+                        expr.getStartLineNumber() - 1
+                    ),
+                    "Missing await before async function call expression.",
+                    vscode.DiagnosticSeverity.Warning
                 );
+                diagnostic.code = `@${extensionName}/un-awaited-promise-call-expression`;
+
+                diagnostics.push(diagnostic);
             });
         });
     };

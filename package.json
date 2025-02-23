@@ -118,6 +118,10 @@
             {
                 "command": "sower-tools.dirEnhancement.openFiles",
                 "title": "Open Files"
+            },
+            {
+                "command": "sower-tools.projectEnhancement.openProjects",
+                "title": "Open Projects"
             }
         ],
         "submenus": [
@@ -573,6 +577,32 @@
                     "description": "If true, it will check the try statement style.",
                     "type": "boolean",
                     "default": true
+                },
+                "sower-tools.projectsOpen.groups": {
+                    "description": "The groups of projects, each group contains a 'name' and a list of 'projects', and each project contains a 'name' and a 'fsPath'.",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "projects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "fsPath": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -127,12 +127,9 @@ class Logger {
     }
 
     private formatMessage(message: string, ...args: unknown[]) {
-        // Omitting the space between the message and the arguments
         return format(
-            message + "%s",
-            args
-                .map(arg => (arg instanceof Error ? arg.stack : arg ?? ""))
-                .join(" ")
+            message,
+            ...args.map(arg => (arg instanceof Error ? arg.stack : arg ?? ""))
         );
     }
 

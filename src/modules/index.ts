@@ -13,6 +13,7 @@ import { gitEnhancement } from "./gitEnhancement";
 import { keyCryptoTools } from "./keyCryptoTools";
 import { markdownEnhancement } from "./markdownEnhancement";
 import { nodeBuiltinModulesImportsUpdate } from "./nodeBuiltinModulesImportsUpdate";
+import { projectEnhancement } from "./projectEnhancement";
 import { readmeDocumentPreview } from "./readmeDocumentPreview";
 import { shared } from "./shared";
 import { statusBarEnhancement } from "./statusBarEnhancement";
@@ -42,4 +43,5 @@ export const modules = defineModule([
     statusBarEnhancement,
     styleCheck,
     completionItemEnhancement,
+    projectEnhancement,
 ]);
