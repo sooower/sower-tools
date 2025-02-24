@@ -93,9 +93,6 @@ export function isFunctionParameter(node: TFunc): boolean {
             return current.arguments?.some(arg => arg === node) ?? false;
         }
 
-        // TODO: Case 2: Function type parameter declaration
-        // TODO: Case 3: Default parameter value
-
         current = current.parent;
     }
 

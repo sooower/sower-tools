@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 
 import { vscode } from "@/core";
 import { CommonUtils } from "@utils/common";

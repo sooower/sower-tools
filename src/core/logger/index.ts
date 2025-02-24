@@ -19,7 +19,7 @@ enum ELevel {
     Error = "error",
 }
 
-const kSeeMoreDetails = "See More Details";
+const kSeeDetails = "See Details...";
 
 class Logger {
     private channel: vscode.LogOutputChannel;
@@ -34,18 +34,26 @@ class Logger {
     /**
      * Show trace level logs in the output channel, console ( in dev mode).
      *
+     * **NOTICE:** The message is only logged if configured displaying `trace` log level
+     * (open command palette and select "Developer: Set Log Level..." to configure).
+     *
      * @param message - The message to log
      * @param args - The arguments to log
      */
     trace(message: string, ...args: unknown[]) {
         const log = this.formatMessage(message, ...args);
 
+        // The log level of `trace` will append additional stack trace in
+        // console, use `debug` level to prevent.
         console.debug(this.addTimestamp(ELevel.Trace, log));
-        this.channel.info(log); // FIXME: trace level log is not working in output channel, replace with trace level
+        this.channel.trace(log);
     }
 
     /**
      * Show debug level logs in the output channel, console ( in dev mode).
+     *
+     * **NOTICE:** The message is only logged if configured displaying `debug` log level or
+     * lower log level (open command palette and select "Developer: Set Log Level..." to configure).
      *
      * @param message - The message to log
      * @param args - The arguments to log
@@ -54,13 +62,13 @@ class Logger {
         const log = this.formatMessage(message, ...args);
 
         console.debug(this.addTimestamp(ELevel.Debug, log));
-        this.channel.info(log); // FIXME: debug level log is not working in output channel, replace with debug level
+        this.channel.debug(log);
     }
 
     /**
      * Show info level logs in the output channel, console ( in dev mode) and window notification.
      *
-     * **NOTICE:** notification only show content of `message`, the content of `args` is omitted.
+     * **NOTICE:** The notification only show content of `message`, the content of `args` is omitted.
      *
      * @param message - The message to log
      * @param args - The arguments to log
@@ -72,9 +80,9 @@ class Logger {
         this.channel.info(log);
 
         vscode.window
-            .showInformationMessage(message, kSeeMoreDetails)
+            .showInformationMessage(message, kSeeDetails)
             .then(selection => {
-                if (selection === kSeeMoreDetails) {
+                if (selection === kSeeDetails) {
                     this.channel.show(true);
                 }
             });
@@ -83,7 +91,7 @@ class Logger {
     /**
      * Show warning level logs in the output channel, console ( in dev mode) and window notification.
      *
-     * **NOTICE:** notification only show content of `message`, the content of `args` is omitted.
+     * **NOTICE:** The notification only show content of `message`, the content of `args` is omitted.
      *
      * @param message - The message to log
      * @param args - The arguments to log
@@ -95,9 +103,9 @@ class Logger {
         this.channel.warn(log);
 
         vscode.window
-            .showWarningMessage(message, kSeeMoreDetails)
+            .showWarningMessage(message, kSeeDetails)
             .then(selection => {
-                if (selection === kSeeMoreDetails) {
+                if (selection === kSeeDetails) {
                     this.channel.show(true);
                 }
             });
@@ -106,7 +114,7 @@ class Logger {
     /**
      * Show error level logs in the output channel, console ( in dev mode) and window notification.
      *
-     * **NOTICE:** notification only show content of `message`, the content of `args` is omitted.
+     * **NOTICE:** The notification only show content of `message`, the content of `args` is omitted.
      *
      * @param message - The message to log
      * @param args - The arguments to log
@@ -117,13 +125,11 @@ class Logger {
         console.error(this.addTimestamp(ELevel.Error, log));
         this.channel.error(log);
 
-        vscode.window
-            .showErrorMessage(message, kSeeMoreDetails)
-            .then(selection => {
-                if (selection === kSeeMoreDetails) {
-                    this.channel.show(true);
-                }
-            });
+        vscode.window.showErrorMessage(message, kSeeDetails).then(selection => {
+            if (selection === kSeeDetails) {
+                this.channel.show(true);
+            }
+        });
     }
 
     private formatMessage(message: string, ...args: unknown[]) {

@@ -603,6 +603,11 @@
                             }
                         }
                     }
+                },
+                "sower-tools.timestampTools.timestampFormat": {
+                    "description": "The format of the timestamp, see https://day.js.org/docs/en/display/format.",
+                    "type": "string",
+                    "default": "YYYY-MM-DD HH:mm:ss"
                 }
             }
         }

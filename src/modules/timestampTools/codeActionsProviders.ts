@@ -1,56 +1,63 @@
 import { extensionCtx, vscode } from "@/core";
+import { datetime } from "@utils/datetime";
 
-import { kCommandConvertTimestamp, kCommandInsertTimestamp } from "./consts";
+import { timestampFormat } from "./configs";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
-        vscode.languages.registerCodeActionsProvider(
-            "*", // All languages
-            new TimestampToolsCodeActionProvider()
-        )
+        vscode.languages.registerCodeActionsProvider("*", {
+            provideCodeActions(document, range, context, token) {
+                if (range.isEmpty) {
+                    // Insert timestamp
+
+                    const codeAction = new vscode.CodeAction(
+                        "Insert timestamp",
+                        vscode.CodeActionKind.Empty
+                    );
+                    codeAction.edit = new vscode.WorkspaceEdit();
+                    codeAction.edit.insert(
+                        document.uri,
+                        range.start,
+                        datetime().format(timestampFormat)
+                    );
+
+                    return [codeAction];
+                }
+
+                // Convert to timestamp or unix
+
+                let timestamp: string;
+                const selectedText = document.getText(range).trim();
+                if (/^\d+$/.test(selectedText)) {
+                    timestamp = datetime
+                        .unix(Number(selectedText))
+                        .format(timestampFormat);
+
+                    if (timestamp === "Invalid Date") {
+                        throw new Error(
+                            `Invalid timestamp: "${selectedText}".`
+                        );
+                    }
+                } else {
+                    timestamp = String(datetime(selectedText).unix());
+
+                    if (timestamp === "NaN") {
+                        throw new Error(
+                            `Invalid timestamp: "${selectedText}".`
+                        );
+                    }
+                }
+
+                const codeAction = new vscode.CodeAction(
+                    `Convert timestamp to: ${timestamp}`,
+                    vscode.CodeActionKind.RefactorRewrite
+                );
+
+                codeAction.edit = new vscode.WorkspaceEdit();
+                codeAction.edit.replace(document.uri, range, timestamp);
+
+                return [codeAction];
+            },
+        })
     );
-}
-
-class TimestampToolsCodeActionProvider implements vscode.CodeActionProvider {
-    provideCodeActions(
-        document: vscode.TextDocument,
-        range: vscode.Range | vscode.Selection,
-        context: vscode.CodeActionContext,
-        token: vscode.CancellationToken
-    ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        const codeActions: (vscode.CodeAction | vscode.Command)[] = [];
-
-        if (isSelectedContent(document, range)) {
-            const covertTimestampCodeAction = new vscode.CodeAction(
-                "Convert timestamp",
-                vscode.CodeActionKind.RefactorRewrite
-            );
-            covertTimestampCodeAction.command = {
-                command: kCommandConvertTimestamp,
-                title: "",
-                arguments: [document, range],
-            };
-            codeActions.push(covertTimestampCodeAction);
-        }
-
-        if (!isSelectedContent(document, range)) {
-            const insertTimestampCodeAction = new vscode.CodeAction(
-                "Insert timestamp",
-                vscode.CodeActionKind.Empty
-            );
-            insertTimestampCodeAction.command = {
-                command: kCommandInsertTimestamp,
-                title: "",
-                arguments: [document, range],
-            };
-
-            codeActions.push(insertTimestampCodeAction);
-        }
-
-        return codeActions;
-    }
-}
-
-function isSelectedContent(document: vscode.TextDocument, range: vscode.Range) {
-    return document.getText(range).trim() !== "";
 }

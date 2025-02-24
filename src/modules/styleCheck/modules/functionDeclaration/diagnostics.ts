@@ -53,8 +53,6 @@ function updateDiagnostics(document: vscode.TextDocument) {
         return;
     }
 
-    // TODO: skip if there are override function declarations
-
     const diagnostics: vscode.Diagnostic[] = [];
 
     checkIsMissingBlankLineBeforeFunctionDeclaration(document, diagnostics);
@@ -67,6 +65,16 @@ function checkIsMissingBlankLineBeforeFunctionDeclaration(
     diagnostics: vscode.Diagnostic[]
 ) {
     const appendDiagnostic = (node: TFunc) => {
+        // Skip if the function declaration is a duplicate (function or method
+        // overload), else add the function name to the set
+        if (node.name !== undefined) {
+            if (funcNames.has(node.name.getText())) {
+                return;
+            }
+
+            funcNames.add(node.name.getText());
+        }
+
         const funcNodeStartPos = node.getStart();
         const funcDeclNodeStartLineIndex =
             document.positionAt(funcNodeStartPos).line;
@@ -108,6 +116,8 @@ function checkIsMissingBlankLineBeforeFunctionDeclaration(
         diagnostics.push(diagnostic);
     };
 
+    const funcNames = new Set<string>();
+
     findAllFuncOrCtorDeclarationNodes(
         createSourceFileByDocument(document)
     ).forEach(node => {
@@ -115,8 +125,7 @@ function checkIsMissingBlankLineBeforeFunctionDeclaration(
     });
 }
 
-function isInAssignmentExpression(node: TFunc) {
-    // FIXME: this is not working
+export function isInAssignmentExpression(node: TFunc) {
     return (
         ts.isBinaryExpression(node.parent) &&
         node.parent.operatorToken.kind === ts.SyntaxKind.EqualsToken &&

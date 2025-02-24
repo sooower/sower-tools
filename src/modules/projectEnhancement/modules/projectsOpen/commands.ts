@@ -26,40 +26,33 @@ async function openProjects() {
         })
     );
 
-    if (groupOptions.length === 0) {
-        // Open configuration settings to add groups.
+    // Select one group of projects
 
-        const kOpenConfigurations = "Open Configurations";
-        vscode.window
-            .showInformationMessage(
-                "No groups found, open the configurations to add groups?",
-                {
-                    title: kOpenConfigurations,
-                } satisfies vscode.MessageItem
-            )
-            .then(selected => {
-                if (selected?.title === kOpenConfigurations) {
-                    vscode.commands.executeCommand(
-                        "workbench.action.openSettings",
-                        `${extensionName}.projectsOpen.groups`
-                    );
-                }
-            });
+    const kAddGroup = "$(plus) Add groups...";
 
-        return;
-    }
+    const selectedGroup = await vscode.window.showQuickPick(
+        appendItem(groupOptions, kAddGroup),
+        {
+            canPickMany: false,
+            placeHolder: "[1/2] Select group of projects to open",
+        }
+    );
 
-    // Select one group of projects.
-
-    const selectedGroup = await vscode.window.showQuickPick(groupOptions, {
-        canPickMany: false,
-        placeHolder: "[1/2] Select one group of projects",
-    });
     if (selectedGroup === undefined) {
         return;
     }
 
-    // Select projects in the group.
+    if (selectedGroup.label === kAddGroup) {
+        // Add groups
+        vscode.commands.executeCommand(
+            "workbench.action.openSettings",
+            `${extensionName}.projectsOpen.groups`
+        );
+
+        return;
+    }
+
+    // Select projects in the group
 
     const projectOptions: vscode.QuickPickItem[] =
         projectsOpenGroups
@@ -76,7 +69,7 @@ async function openProjects() {
         return;
     }
 
-    // Open projects.
+    // Open projects
 
     await Promise.all(
         selectedProjects.map(async ({ label: name, description: fsPath }) => {
@@ -100,4 +93,14 @@ async function openProjects() {
             }
         })
     );
+}
+
+function appendItem(items: vscode.QuickPickItem[], label: string) {
+    return [
+        ...items,
+        {
+            label,
+            alwaysShow: true,
+        },
+    ];
 }

@@ -16,10 +16,9 @@ export function parseConfigs() {
                 z.string().transform(it => {
                     const [originalWord, mappedWord] = it.split(":");
 
-                    // TODO: need to check if the error can be catch correctly
                     CommonUtils.assert(
                         originalWord !== "" && mappedWord !== "",
-                        `Invalid uppercase words mapping: ${it}, formatting should be "<originalWord>:<mappedWord>".`
+                        `Invalid uppercase words mapping: "${it}", formatting should be "<originalWord>:<mappedWord>".`
                     );
 
                     return [originalWord, mappedWord] satisfies [

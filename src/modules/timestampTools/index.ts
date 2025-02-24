@@ -1,17 +1,15 @@
 import { defineModule } from "@/core";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
-import {
-    registerCommandConvertTimestamp,
-    registerCommandInsertTimestamp,
-} from "./commands";
+import { parseConfigs } from "./configs";
 import { registerHoverProvider } from "./hoverProviders";
 
 export const timestampTools = defineModule({
     onActive() {
-        registerCommandConvertTimestamp();
-        registerCommandInsertTimestamp();
         registerHoverProvider();
         registerCodeActionsProviders();
+    },
+    onReloadConfiguration() {
+        parseConfigs();
     },
 });

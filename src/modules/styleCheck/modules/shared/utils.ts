@@ -1,12 +1,10 @@
-import path from "path";
+import path from "node:path";
 
-import ignore from "ignore";
-
-import { fs, vscode } from "@/core";
+import { vscode } from "@/core";
 import { getWorkspaceFolderPath } from "@/utils/vscode";
-import { readFile } from "@utils/fs";
+import { CommonUtils } from "@utils/common";
 
-import { ignoreCompatibleConfigFilenames, ignorePatterns } from "./configs";
+import { ignoreManager } from "./configs";
 
 /**
  * Check if the line has a valid leading space before it.
@@ -155,34 +153,15 @@ function isLastParameterOfFunction(text: string): boolean {
 }
 
 export function isIgnoredFile(document: vscode.TextDocument): boolean {
-    const ignoreManager = ignore();
-
-    // TODO: reload ignore patterns every time when calling this function now,
-    // need to optimize it only when the ignore patterns are changed, like
-    // config file or configuration item is changed
-    loadIgnorePatterns(ignoreManager);
-
     const relativePath = path.relative(
         getWorkspaceFolderPath(),
         document.uri.fsPath
     );
 
-    const res = ignoreManager.ignores(relativePath);
+    CommonUtils.assert(
+        !relativePath.startsWith("../"),
+        `Invalid relative path: "${relativePath}".`
+    );
 
-    return res;
-}
-
-function loadIgnorePatterns(ignoreManager: ignore.Ignore) {
-    // Read configured glob patterns
-    ignoreManager.add(ignorePatterns);
-
-    // Read patterns from compatible config files
-    for (const filename of ignoreCompatibleConfigFilenames) {
-        const filePath = path.join(getWorkspaceFolderPath(), filename);
-        if (!fs.existsSync(filePath)) {
-            continue;
-        }
-
-        ignoreManager.add(readFile(filePath).split("\n"));
-    }
+    return ignoreManager.ignores(relativePath);
 }

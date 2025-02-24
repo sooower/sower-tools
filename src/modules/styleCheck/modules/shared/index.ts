@@ -1,9 +1,14 @@
 import { defineModule } from "@/core";
 
-import { parseConfigs } from "./configs";
+import { loadIgnorePatterns, parseConfigs } from "./configs";
+import { registerOnDidSaveTextDocumentListener } from "./listeners";
 
 export const shared = defineModule({
+    onActive() {
+        registerOnDidSaveTextDocumentListener();
+    },
     onReloadConfiguration() {
         parseConfigs();
+        loadIgnorePatterns();
     },
 });
