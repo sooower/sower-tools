@@ -1,10 +1,8 @@
 import ts from "typescript";
 
-import { extensionCtx, vscode } from "@/core";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { findFuncOrCtorDeclarationNodeAtOffset } from "@/utils/typescript";
 import { createSourceFileByDocument } from "@/utils/vscode";
-
-import { kCommandConvertParametersToOptionsObject } from "./consts";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
@@ -34,7 +32,7 @@ class ConvertParametersToObjectOptionsCodeActionProvider
                 vscode.CodeActionKind.RefactorExtract
             );
         convertParametersToOptionsObjectCodeAction.command = {
-            command: kCommandConvertParametersToOptionsObject,
+            command: `${extensionName}.functionEnhancement.convertParametersToOptionsObject`,
             title: "",
             arguments: [document, range],
         };

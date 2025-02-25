@@ -1,30 +1,32 @@
-import { extensionCtx, logger, vscode } from "@/core";
+import { extensionCtx, extensionName, logger, vscode } from "@/core";
 import { textEditorUtils } from "@/utils/vscode";
 
 import { enableReplaceText } from "../configs";
-import { kCommandBase64Decode } from "../consts";
 
 export function registerCommandBase64Decode() {
     extensionCtx.subscriptions.push(
-        vscode.commands.registerCommand(kCommandBase64Decode, async () => {
-            try {
-                const editor = vscode.window.activeTextEditor;
-                if (editor === undefined) {
-                    return;
+        vscode.commands.registerCommand(
+            `${extensionName}.stringTools.base64Decode`,
+            async () => {
+                try {
+                    const editor = vscode.window.activeTextEditor;
+                    if (editor === undefined) {
+                        return;
+                    }
+
+                    const selectedText = editor.document
+                        .getText(editor.selection)
+                        .trim();
+
+                    await base64Decode({
+                        editor,
+                        text: selectedText,
+                    });
+                } catch (e) {
+                    logger.error("Failed to decode base64.", e);
                 }
-
-                const selectedText = editor.document
-                    .getText(editor.selection)
-                    .trim();
-
-                await base64Decode({
-                    editor,
-                    text: selectedText,
-                });
-            } catch (e) {
-                logger.error("Failed to decode base64.", e);
             }
-        })
+        )
     );
 }
 

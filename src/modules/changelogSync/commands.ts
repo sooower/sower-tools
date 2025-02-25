@@ -3,33 +3,34 @@ import path from "node:path";
 import markdownIt from "markdown-it";
 import z from "zod";
 
-import { extensionCtx, fs, logger, vscode } from "@/core";
+import { extensionCtx, extensionName, fs, logger, vscode } from "@/core";
 import { getWorkspaceFolderPath, isMarkdownFile } from "@/utils/vscode";
 import { readJsonFile } from "@utils/fs";
 
-import { kCommandSyncChangelog } from "./consts";
-
 export function registerCommandSyncChangelog() {
     extensionCtx.subscriptions.push(
-        vscode.commands.registerCommand(kCommandSyncChangelog, async () => {
-            try {
-                const editor = vscode.window.activeTextEditor;
-                if (editor === undefined) {
-                    return;
+        vscode.commands.registerCommand(
+            `${extensionName}.changelogSync.syncChangelog`,
+            async () => {
+                try {
+                    const editor = vscode.window.activeTextEditor;
+                    if (editor === undefined) {
+                        return;
+                    }
+
+                    if (!isMarkdownFile(editor.document)) {
+                        return;
+                    }
+
+                    // Save modified content in opened document before syncing the changelog
+                    await vscode.workspace.save(editor.document.uri);
+
+                    await syncChangelog();
+                } catch (e) {
+                    logger.error("Failed to sync changelog.", e);
                 }
-
-                if (!isMarkdownFile(editor.document)) {
-                    return;
-                }
-
-                // Save modified content in opened document before syncing the changelog
-                await vscode.workspace.save(editor.document.uri);
-
-                await syncChangelog();
-            } catch (e) {
-                logger.error("Failed to sync changelog.", e);
             }
-        })
+        )
     );
 }
 

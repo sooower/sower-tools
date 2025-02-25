@@ -1,6 +1,4 @@
-import { extensionCtx, vscode } from "@/core";
-
-import { kCommandBase64Decode, kCommandBase64Encode } from "./consts";
+import { extensionCtx, extensionName, vscode } from "@/core";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
@@ -27,7 +25,7 @@ class StringToolsCodeActionProvider implements vscode.CodeActionProvider {
             vscode.CodeActionKind.RefactorRewrite
         );
         base64EncodeCodeAction.command = {
-            command: kCommandBase64Encode,
+            command: `${extensionName}.stringTools.base64Encode`,
             title: "",
             arguments: [document, range],
         };
@@ -37,7 +35,7 @@ class StringToolsCodeActionProvider implements vscode.CodeActionProvider {
             vscode.CodeActionKind.RefactorRewrite
         );
         base64DecodeCodeAction.command = {
-            command: kCommandBase64Decode,
+            command: `${extensionName}.stringTools.base64Decode`,
             title: "",
             arguments: [document, range],
         };

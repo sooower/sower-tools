@@ -1,6 +1,6 @@
 import ts from "typescript";
 
-import { extensionCtx, format, logger, vscode } from "@/core";
+import { extensionCtx, extensionName, format, logger, vscode } from "@/core";
 import { findAllTypeDeclarationNodes } from "@/utils/typescript";
 import {
     createSourceFileByEditor,
@@ -9,12 +9,10 @@ import {
 } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
-import { kCommandSyncParameterTypeMembers } from "./consts";
-
 export function registerCommandSyncTypeMembers() {
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
-            kCommandSyncParameterTypeMembers,
+            `${extensionName}.functionEnhancement.syncParameterTypeMembers`,
             async () => {
                 try {
                     const editor = vscode.window.activeTextEditor;

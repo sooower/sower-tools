@@ -1,6 +1,4 @@
-import { extensionCtx, vscode } from "@/core";
-
-import { kGenerateModelCodeAction } from "./consts";
+import { extensionCtx, extensionName, vscode } from "@/core";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
@@ -15,7 +13,7 @@ export function registerCodeActionsProviders() {
                     vscode.CodeActionKind.RefactorExtract
                 );
                 codeAction.command = {
-                    command: kGenerateModelCodeAction,
+                    command: `${extensionName}.databaseModel.generateModel`,
                     title: "",
                     arguments: [document, range],
                 };

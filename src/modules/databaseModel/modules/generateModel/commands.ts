@@ -7,7 +7,14 @@ import {
 
 import { ETsType } from "@/types";
 
-import { extensionCtx, format, fs, logger, vscode } from "@/core";
+import {
+    extensionCtx,
+    extensionName,
+    format,
+    fs,
+    logger,
+    vscode,
+} from "@/core";
 import { prettierFormatText } from "@/utils/common";
 import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
@@ -18,12 +25,11 @@ import {
     ignoredUpdatingColumns,
 } from "../shared/configs";
 import { mapAssertionMethod, TColumnDetail } from "../shared/utils";
-import { kGenerateModelCodeAction } from "./consts";
 
 export function registerCommandGenerateModel() {
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
-            kGenerateModelCodeAction,
+            `${extensionName}.databaseModel.generateModel`,
             async (document: vscode.TextDocument, range: vscode.Range) => {
                 vscode.window.withProgress(
                     {

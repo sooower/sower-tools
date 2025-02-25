@@ -1,8 +1,6 @@
 import path from "node:path";
 
-import { extensionCtx, vscode } from "@/core";
-
-import { kCommandSyncChangelog } from "./consts";
+import { extensionCtx, extensionName, vscode } from "@/core";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
@@ -29,7 +27,7 @@ class SyncChangelogCodeActionProvider implements vscode.CodeActionProvider {
             vscode.CodeActionKind.QuickFix
         );
         syncChangelogCodeAction.command = {
-            command: kCommandSyncChangelog,
+            command: `${extensionName}.changelogSync.syncChangelog`,
             title: "",
             arguments: [document, range],
         };

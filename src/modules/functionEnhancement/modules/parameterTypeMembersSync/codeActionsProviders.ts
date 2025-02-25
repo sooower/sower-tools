@@ -1,8 +1,6 @@
-import { extensionCtx, vscode } from "@/core";
+import { extensionCtx, extensionName, vscode } from "@/core";
 import { findTypeDeclarationNodeAtOffset } from "@/utils/typescript";
 import { createSourceFileByDocument } from "@/utils/vscode";
-
-import { kCommandSyncParameterTypeMembers } from "./consts";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
@@ -29,7 +27,7 @@ class SyncTypeMembersCodeActionProvider implements vscode.CodeActionProvider {
             vscode.CodeActionKind.QuickFix
         );
         syncTypeMembersCodeAction.command = {
-            command: kCommandSyncParameterTypeMembers,
+            command: `${extensionName}.functionEnhancement.syncParameterTypeMembers`,
             title: "",
             arguments: [document, range],
         };

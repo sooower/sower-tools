@@ -4,24 +4,22 @@ import { toUpperCamelCase } from "@/modules/shared/modules/configuration/utils";
 
 import { ETsType } from "@/types";
 
-import { extensionCtx, format, logger, vscode } from "@/core";
+import { extensionCtx, extensionName, format, logger, vscode } from "@/core";
 import {
     findFuncOrCtorDeclarationNodeAtOffset,
     findTypeDeclarationNode,
 } from "@/utils/typescript";
 import {
     createSourceFileByEditor,
-    isMarkdownFile,
+    isTypeScriptFile,
     textEditorUtils,
 } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
-import { kCommandConvertParametersToOptionsObject } from "./consts";
-
 export function registerCommandConvertParametersToOptionsObject() {
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
-            kCommandConvertParametersToOptionsObject,
+            `${extensionName}.functionEnhancement.convertParametersToOptionsObject`,
             async () => {
                 try {
                     const editor = vscode.window.activeTextEditor;
@@ -29,7 +27,7 @@ export function registerCommandConvertParametersToOptionsObject() {
                         return;
                     }
 
-                    if (!isMarkdownFile(editor.document)) {
+                    if (!isTypeScriptFile(editor.document)) {
                         return;
                     }
 
