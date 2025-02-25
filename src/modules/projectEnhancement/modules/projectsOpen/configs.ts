@@ -22,8 +22,6 @@ export let projectsOpenGroups: ProjectsOpenGroup[];
 export function parseConfigs() {
     projectsOpenGroups = z
         .array(groupSchema)
-        .default([]) // Default value is an empty array.
+        .default([])
         .parse(getConfigurationItem(`${extensionName}.projectsOpen.groups`));
 }
-
-// FIXME: error when there no workspace folder opened

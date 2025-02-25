@@ -12,7 +12,7 @@ export function registerCommandDebugCurrentFile() {
             async () => {
                 try {
                     const debugCurrentFileConfiguration =
-                        getDebuggingConfigurations().find(it =>
+                        getDebuggingConfigurations()?.find(it =>
                             debugCurrentFileConfigurationNames.includes(it.name)
                         );
                     CommonUtils.assert(

@@ -9,15 +9,20 @@ export function registerCommandNoSkipWorkTree() {
         vscode.commands.registerCommand(
             `${extensionName}.gitEnhancement.noSkipWorkTree`,
             async (uri: vscode.Uri) => {
+                const workspaceFolderPath = getWorkspaceFolderPath();
+                if (workspaceFolderPath === undefined) {
+                    return;
+                }
+
                 const relativePath = path.relative(
-                    getWorkspaceFolderPath(),
+                    workspaceFolderPath,
                     uri.path
                 );
 
                 try {
                     await execCommand({
                         command: `git update-index --no-skip-worktree ${uri.path}`,
-                        cwd: getWorkspaceFolderPath(),
+                        cwd: workspaceFolderPath,
                     });
                     logger.info(
                         `Recovery to track changes for file "${relativePath}".`

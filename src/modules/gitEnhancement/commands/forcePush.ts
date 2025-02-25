@@ -24,11 +24,16 @@ export function registerCommandForcePush() {
 }
 
 async function doGitForcePush() {
+    const workspaceFolderPath = getWorkspaceFolderPath();
+    if (workspaceFolderPath === undefined) {
+        return;
+    }
+
     // Get current branch and remote repositories
 
     const currBranch = await execCommand({
         command: `git branch --show-current`,
-        cwd: getWorkspaceFolderPath(),
+        cwd: workspaceFolderPath,
         interactive: false,
     });
     if (currBranch === undefined) {
@@ -39,7 +44,7 @@ async function doGitForcePush() {
 
     const res = await execCommand({
         command: `git remote -v`,
-        cwd: getWorkspaceFolderPath(),
+        cwd: workspaceFolderPath,
         interactive: false,
     });
 
@@ -73,13 +78,17 @@ async function doGitForcePush() {
     try {
         upstreamBranch = await execCommand({
             command: `git rev-parse --abbrev-ref ${currBranch}@{upstream}`,
-            cwd: getWorkspaceFolderPath(),
+            cwd: workspaceFolderPath,
             interactive: false,
         });
     } catch (e) {
         if (CommonUtils.assertString(e).includes("unknown revision")) {
             // If the upstream branch is not found, set it and force push
-            await setUpstreamBranchAndForcePush(currBranch, upstreamName);
+            await setUpstreamBranchAndForcePush({
+                currBranch,
+                upstreamName,
+                workspaceFolderPath,
+            });
 
             return;
         }
@@ -93,13 +102,22 @@ async function doGitForcePush() {
     }
 
     // Force push to the upstream branch
-    await forcePush(upstreamName, CommonUtils.mandatory(upstreamBranch));
+    await forcePush({
+        upstreamName,
+        upstreamBranch: CommonUtils.mandatory(upstreamBranch),
+        workspaceFolderPath,
+    });
 }
 
-async function setUpstreamBranchAndForcePush(
-    currBranch: string,
-    upstreamName: string
-) {
+async function setUpstreamBranchAndForcePush({
+    currBranch,
+    upstreamName,
+    workspaceFolderPath,
+}: {
+    currBranch: string;
+    upstreamName: string;
+    workspaceFolderPath: string;
+}) {
     const kSetUpstreamBranch = "Set upstream branch and force push";
 
     const confirm = await vscode.window.showWarningMessage(
@@ -114,7 +132,7 @@ async function setUpstreamBranchAndForcePush(
 
     await execCommand({
         command: `git push -f -u ${upstreamName} ${currBranch}`,
-        cwd: getWorkspaceFolderPath(),
+        cwd: workspaceFolderPath,
         interactive: false,
     });
 
@@ -123,9 +141,16 @@ async function setUpstreamBranchAndForcePush(
     );
 }
 
-async function forcePush(upstreamName: string, upstreamBranch: string) {
+async function forcePush({
+    upstreamName,
+    upstreamBranch,
+    workspaceFolderPath,
+}: {
+    upstreamName: string;
+    upstreamBranch: string;
+    workspaceFolderPath: string;
+}) {
     const kForcePush = "Force push";
-
     const confirm = await vscode.window.showWarningMessage(
         `This will override the remote branch "${upstreamBranch}" and not be able to rollback. Are you sure you want to force push to?`,
         { modal: true },
@@ -138,7 +163,7 @@ async function forcePush(upstreamName: string, upstreamBranch: string) {
 
     await execCommand({
         command: `git push -f -u ${upstreamName}`,
-        cwd: getWorkspaceFolderPath(),
+        cwd: workspaceFolderPath,
         interactive: false,
     });
 

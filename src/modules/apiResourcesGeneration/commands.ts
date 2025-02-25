@@ -139,8 +139,13 @@ function generate({
             Buffer.from(fileContent)
         );
 
+        const workspaceFolderPath = getWorkspaceFolderPath();
+        if (workspaceFolderPath === undefined) {
+            return;
+        }
+
         const relativeFilePath = path.relative(
-            getWorkspaceFolderPath(),
+            workspaceFolderPath,
             absFilePath
         );
         generatedFiles.push(relativeFilePath);

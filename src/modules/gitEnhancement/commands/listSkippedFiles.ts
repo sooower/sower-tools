@@ -8,9 +8,14 @@ export function registerCommandListSkippedFiles() {
             `${extensionName}.gitEnhancement.listSkippedFiles`,
             async () => {
                 try {
+                    const workspaceFolderPath = getWorkspaceFolderPath();
+                    if (workspaceFolderPath === undefined) {
+                        return;
+                    }
+
                     const skippedFiles = await execCommand({
                         command: `git ls-files -v | grep '^S' || echo ''`,
-                        cwd: getWorkspaceFolderPath(),
+                        cwd: workspaceFolderPath,
                         interactive: false,
                     });
 

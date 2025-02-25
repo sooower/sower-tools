@@ -82,8 +82,8 @@ export function registerCodeActionsProviders() {
     );
 }
 
-function isZodSchema(variable: VariableDeclaration): boolean {
-    const type = variable.getType();
+function isZodSchema(variableDeclaration: VariableDeclaration): boolean {
+    const type = variableDeclaration.getType();
 
     // Check if the direct symbol source is from zod
     if (

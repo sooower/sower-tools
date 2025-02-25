@@ -10,9 +10,14 @@ import { Json } from "@utils/json";
 
 export function getDebuggingConfigurations() {
     try {
+        const workspaceFolderPath = getWorkspaceFolderPath();
+        if (workspaceFolderPath === undefined) {
+            return;
+        }
+
         const launchConfigFilePath = "./.vscode/launch.json";
         const launchConfigFileAbsPath = path.resolve(
-            getWorkspaceFolderPath(),
+            workspaceFolderPath,
             launchConfigFilePath
         );
         CommonUtils.assert(

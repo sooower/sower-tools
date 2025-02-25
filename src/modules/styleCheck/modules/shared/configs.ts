@@ -48,9 +48,14 @@ export function loadIgnorePatterns() {
     // Read configured glob patterns
     ignoreManager.add(ignorePatterns);
 
+    const workspaceFolderPath = getWorkspaceFolderPath();
+    if (workspaceFolderPath === undefined) {
+        return;
+    }
+
     // Read patterns from compatible config files
     for (const filename of ignoreCompatibleConfigFilenames) {
-        const filePath = path.join(getWorkspaceFolderPath(), filename);
+        const filePath = path.join(workspaceFolderPath, filename);
         if (!fs.existsSync(filePath)) {
             continue;
         }

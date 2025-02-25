@@ -2,7 +2,7 @@ import path from "node:path";
 
 import { Project, SourceFile } from "ts-morph";
 
-import { getWorkspaceFolderPathSafe, isTypeScriptFile } from "@/utils/vscode";
+import { getWorkspaceFolderPath, isTypeScriptFile } from "@/utils/vscode";
 
 import { fs, logger, vscode } from "..";
 
@@ -25,8 +25,7 @@ export function initializeProjectAnalyser() {
 }
 
 function createProjectAnalyser() {
-    const workspaceFolderPath = getWorkspaceFolderPathSafe();
-
+    const workspaceFolderPath = getWorkspaceFolderPath();
     if (workspaceFolderPath === undefined) {
         logger.trace("No workspace folder found, skipping project analysis.");
         project = undefined;

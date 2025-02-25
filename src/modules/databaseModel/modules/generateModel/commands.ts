@@ -33,13 +33,17 @@ export function registerCommandGenerateModel() {
                     },
                     async (progress, token) => {
                         try {
-                            const generatedFils =
+                            const generatedFiles =
                                 await parseSqlAndGenerateFiles(
                                     document.getText(range)
                                 );
+                            if (generatedFiles === undefined) {
+                                return;
+                            }
+
                             logger.info(
-                                `Generated ${generatedFils.length} files.\n`,
-                                generatedFils.map(it => `- '${it}'`).join("\n")
+                                `Generated ${generatedFiles.length} files.\n`,
+                                generatedFiles.map(it => `- '${it}'`).join("\n")
                             );
 
                             return;
@@ -62,10 +66,12 @@ async function parseSqlAndGenerateFiles(text: string) {
 
     // Generate "src.models.index" file
 
-    const modelFilePath = path.join(
-        getWorkspaceFolderPath(),
-        "src/models/index.ts"
-    );
+    const workspaceFolderPath = getWorkspaceFolderPath();
+    if (workspaceFolderPath === undefined) {
+        return;
+    }
+
+    const modelFilePath = path.join(workspaceFolderPath, "src/models/index.ts");
     if (!fs.existsSync(modelFilePath)) {
         const modelFilePathContent = fs.readFileSync(
             path.join(
@@ -77,15 +83,13 @@ async function parseSqlAndGenerateFiles(text: string) {
         fs.mkdirSync(path.dirname(modelFilePath), { recursive: true });
         fs.writeFileSync(modelFilePath, modelFilePathContent);
 
-        generatedFiles.push(
-            path.relative(getWorkspaceFolderPath(), modelFilePath)
-        );
+        generatedFiles.push(path.relative(workspaceFolderPath, modelFilePath));
     }
 
     // Generate "src.models.schema.index.ts" file
 
     const schemaFilePath = path.join(
-        getWorkspaceFolderPath(),
+        workspaceFolderPath,
         "src/models",
         schemaName,
         "index.ts"
@@ -107,14 +111,12 @@ async function parseSqlAndGenerateFiles(text: string) {
     fs.mkdirSync(path.dirname(schemaFilePath), { recursive: true });
     fs.writeFileSync(schemaFilePath, schemaFileContent);
 
-    generatedFiles.push(
-        path.relative(getWorkspaceFolderPath(), schemaFilePath)
-    );
+    generatedFiles.push(path.relative(workspaceFolderPath, schemaFilePath));
 
     // Generate "src.models.schema.table.index.ts" file
 
     const tableFilePath = path.join(
-        getWorkspaceFolderPath(),
+        workspaceFolderPath,
         "src/models",
         schemaName,
         tableName,
@@ -245,7 +247,7 @@ async function parseSqlAndGenerateFiles(text: string) {
     // Open model file in editor
     await vscode.window.showTextDocument(vscode.Uri.file(tableFilePath));
 
-    generatedFiles.push(path.relative(getWorkspaceFolderPath(), tableFilePath));
+    generatedFiles.push(path.relative(workspaceFolderPath, tableFilePath));
 
     return generatedFiles;
 }

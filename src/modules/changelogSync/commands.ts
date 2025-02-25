@@ -34,7 +34,12 @@ export function registerCommandSyncChangelog() {
 }
 
 export async function syncChangelog() {
-    const { newVersion, newAddedItems } = await findNewVersionAndAddItems();
+    const result = await findNewVersionAndAddItems();
+    if (result === undefined) {
+        return;
+    }
+
+    const { newVersion, newAddedItems } = result;
 
     if (newVersion !== undefined) {
         await updatePackageFile(newVersion);
@@ -46,8 +51,13 @@ export async function syncChangelog() {
 }
 
 async function findNewVersionAndAddItems(changelogFilename = "CHANGELOG.md") {
+    const workspaceFolderPath = getWorkspaceFolderPath();
+    if (workspaceFolderPath === undefined) {
+        return;
+    }
+
     const changelogContent = fs.readFileSync(
-        path.join(getWorkspaceFolderPath(), changelogFilename),
+        path.join(workspaceFolderPath, changelogFilename),
         "utf-8"
     );
     const tokens = markdownIt().parse(changelogContent, {});
@@ -118,7 +128,12 @@ async function updatePackageFile(
     lastVersion: string,
     filename = "package.json"
 ) {
-    const packageFilePath = path.join(getWorkspaceFolderPath(), filename);
+    const workspaceFolderPath = getWorkspaceFolderPath();
+    if (workspaceFolderPath === undefined) {
+        return;
+    }
+
+    const packageFilePath = path.join(workspaceFolderPath, filename);
     if (!fs.existsSync(packageFilePath)) {
         return;
     }
@@ -148,7 +163,12 @@ async function updatePm2ConfigFile(
     newVersion: string,
     filename = "pm2.config.json"
 ) {
-    const pm2ConfigFilePath = path.join(getWorkspaceFolderPath(), filename);
+    const workspaceFolderPath = getWorkspaceFolderPath();
+    if (workspaceFolderPath === undefined) {
+        return;
+    }
+
+    const pm2ConfigFilePath = path.join(workspaceFolderPath, filename);
     if (!fs.existsSync(pm2ConfigFilePath)) {
         return;
     }
@@ -179,7 +199,12 @@ async function updateReadmeFile(
     newAddedItems: string[],
     filename = "README.md"
 ) {
-    const readmeFilePath = path.join(getWorkspaceFolderPath(), filename);
+    const workspaceFolderPath = getWorkspaceFolderPath();
+    if (workspaceFolderPath === undefined) {
+        return;
+    }
+
+    const readmeFilePath = path.join(workspaceFolderPath, filename);
     if (!fs.existsSync(readmeFilePath)) {
         return;
     }

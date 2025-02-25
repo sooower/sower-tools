@@ -153,8 +153,13 @@ function isLastParameterOfFunction(text: string): boolean {
 }
 
 export function isIgnoredFile(document: vscode.TextDocument): boolean {
+    const workspaceFolderPath = getWorkspaceFolderPath();
+    if (workspaceFolderPath === undefined) {
+        return false;
+    }
+
     const relativePath = path.relative(
-        getWorkspaceFolderPath(),
+        workspaceFolderPath,
         document.uri.fsPath
     );
 

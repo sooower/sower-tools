@@ -22,8 +22,13 @@ export async function previewDocument() {
 
     for (const docName of readmeDocumentNames) {
         try {
+            const workspaceFolderPath = getWorkspaceFolderPath();
+            if (workspaceFolderPath === undefined) {
+                return;
+            }
+
             const doc = await vscode.workspace.openTextDocument(
-                path.join(getWorkspaceFolderPath(), docName)
+                path.join(workspaceFolderPath, docName)
             );
             await vscode.window.showTextDocument(doc, {
                 preview: true,
@@ -31,7 +36,7 @@ export async function previewDocument() {
             });
             await vscode.commands.executeCommand(
                 "markdown-preview-enhanced.openPreview",
-                vscode.Uri.file(path.join(getWorkspaceFolderPath(), docName))
+                vscode.Uri.file(path.join(workspaceFolderPath, docName))
             );
 
             return;

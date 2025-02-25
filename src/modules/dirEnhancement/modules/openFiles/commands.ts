@@ -21,11 +21,16 @@ export async function registerCommandOpenFiles() {
 }
 
 async function openFiles(uri: vscode.Uri) {
+    const workspaceFolderPath = getWorkspaceFolderPath();
+    if (workspaceFolderPath === undefined) {
+        return;
+    }
+
     const files = (await getFilesInFolder(uri)).filter(
         it => !ignoredFilenames.includes(path.basename(it.path))
     );
 
-    const relativePath = path.relative(getWorkspaceFolderPath(), uri.path);
+    const relativePath = path.relative(workspaceFolderPath, uri.path);
 
     let openedFilesCount = 0;
     await vscode.window.withProgress(
