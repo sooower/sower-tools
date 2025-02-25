@@ -12,13 +12,15 @@ export function registerDiagnosticNoInvalidLocalImageFilePath() {
     diagnosticCollection = vscode.languages.createDiagnosticCollection(
         "markdown-local-image"
     );
-    extensionCtx.subscriptions.push(diagnosticCollection);
-
     extensionCtx.subscriptions.push(
-        vscode.workspace.onDidOpenTextDocument(updateDiagnostics)
-    );
-    extensionCtx.subscriptions.push(
-        vscode.workspace.onDidSaveTextDocument(updateDiagnostics)
+        diagnosticCollection,
+        vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
+        vscode.workspace.onDidSaveTextDocument(updateDiagnostics),
+        vscode.window.onDidChangeActiveTextEditor(e => {
+            if (e?.document !== undefined) {
+                updateDiagnostics(e.document);
+            }
+        })
     );
 }
 

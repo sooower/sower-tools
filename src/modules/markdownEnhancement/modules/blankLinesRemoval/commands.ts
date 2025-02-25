@@ -5,10 +5,10 @@ import { isMarkdownFile } from "@/utils/vscode";
 
 import { languageIds, skipFirstLine } from "./configs";
 
-export function registerCommandRemoveBlankLines() {
+export function registerCommands() {
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
-            `${extensionName}.markdownEnhancement.removeBlankLines`,
+            `${extensionName}.markdownEnhancement.removeBlankLinesAndOpenInNewDocument`,
             async (document: vscode.TextDocument) => {
                 try {
                     if (!isMarkdownFile(document)) {
@@ -23,14 +23,36 @@ export function registerCommandRemoveBlankLines() {
                         ViewColumn.Beside
                     );
                 } catch (e) {
-                    logger.error("Failed to remove blank lines.", e);
+                    logger.error(
+                        "Failed to remove blank lines and open in new document.",
+                        e
+                    );
+                }
+            }
+        ),
+        vscode.commands.registerCommand(
+            `${extensionName}.markdownEnhancement.removeBlankLinesAndCopyToClipboard`,
+            async (document: vscode.TextDocument) => {
+                try {
+                    if (!isMarkdownFile(document)) {
+                        return;
+                    }
+
+                    await vscode.env.clipboard.writeText(
+                        await filterBlankLines(document)
+                    );
+                } catch (e) {
+                    logger.error(
+                        "Failed to remove blank lines and copy to clipboard.",
+                        e
+                    );
                 }
             }
         )
     );
 }
 
-async function filterBlankLines(
+export async function filterBlankLines(
     document: vscode.TextDocument
 ): Promise<string> {
     const lines = document.getText().split("\n");
@@ -54,7 +76,6 @@ async function filterBlankLines(
 
             continue;
         }
-
         if (line.match(`^\\s*\`\`\`(\\s|$)`) !== null) {
             outputLines.push(line);
             isInsideCodeBlock = false;

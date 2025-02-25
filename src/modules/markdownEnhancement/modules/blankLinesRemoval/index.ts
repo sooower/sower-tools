@@ -1,13 +1,12 @@
 import { defineModule } from "@/core";
 
 import { registerCodeActionsProviders } from "./codeActionsProviders";
-import { registerCommandRemoveBlankLines } from "./commands";
+import { registerCommands } from "./commands";
 import { parseConfigs } from "./configs";
 
 export const blankLinesRemoval = defineModule({
     onActive() {
-        parseConfigs();
-        registerCommandRemoveBlankLines();
+        registerCommands();
         registerCodeActionsProviders();
     },
     onReloadConfiguration() {
