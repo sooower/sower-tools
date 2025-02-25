@@ -8,91 +8,92 @@ export function registerCommandForcePush() {
         vscode.commands.registerCommand(
             `${extensionName}.gitEnhancement.forcePush`,
             async () => {
-                try {
-                    // Get current branch and remote repositories
-
-                    const currBranch = await execCommand({
-                        command: `git branch --show-current`,
-                        cwd: getWorkspaceFolderPath(),
-                        interactive: false,
-                    });
-                    if (currBranch === undefined) {
-                        logger.error(`No current branch found.`);
-
-                        return;
-                    }
-
-                    const res = await execCommand({
-                        command: `git remote -v`,
-                        cwd: getWorkspaceFolderPath(),
-                        interactive: false,
-                    });
-
-                    const remoteRepositories: vscode.QuickPickItem[] = [];
-                    for (const line of res?.trim().split("\n") ?? []) {
-                        const [name, url, type] = line.split(/\s+/);
-                        if (type === "(push)") {
-                            remoteRepositories.push({
-                                label: name,
-                                description: url,
-                            });
+                await vscode.window.withProgress(
+                    { location: vscode.ProgressLocation.SourceControl },
+                    async (progress, token) => {
+                        try {
+                            await doGitForcePush();
+                        } catch (e) {
+                            logger.error(`Failed to force push.`, e);
                         }
                     }
-
-                    // Select a remote repository to push the branch to
-
-                    const selectedRemoteRepository =
-                        await vscode.window.showQuickPick(remoteRepositories, {
-                            canPickMany: false,
-                            placeHolder: `Pick a remote repository to push the branch ${currBranch} to:`,
-                        });
-
-                    if (selectedRemoteRepository === undefined) {
-                        return;
-                    }
-
-                    const { label: upstreamName } = selectedRemoteRepository;
-                    let upstreamBranch: string | undefined;
-                    try {
-                        upstreamBranch = await execCommand({
-                            command: `git rev-parse --abbrev-ref ${currBranch}@{upstream}`,
-                            cwd: getWorkspaceFolderPath(),
-                            interactive: false,
-                        });
-                    } catch (e) {
-                        if (
-                            CommonUtils.assertString(e).includes(
-                                "unknown revision"
-                            )
-                        ) {
-                            // If the upstream branch is not found, set it and force push
-                            await setUpstreamBranchAndForcePush(
-                                currBranch,
-                                upstreamName
-                            );
-
-                            return;
-                        }
-
-                        logger.error(
-                            `Failed to get upstream branch for branch "${currBranch}".`,
-                            e
-                        );
-
-                        return;
-                    }
-
-                    // Force push to the upstream branch
-                    await forcePush(
-                        upstreamName,
-                        CommonUtils.mandatory(upstreamBranch)
-                    );
-                } catch (e) {
-                    logger.error("Failed to force push.", e);
-                }
+                );
             }
         )
     );
+}
+
+async function doGitForcePush() {
+    // Get current branch and remote repositories
+
+    const currBranch = await execCommand({
+        command: `git branch --show-current`,
+        cwd: getWorkspaceFolderPath(),
+        interactive: false,
+    });
+    if (currBranch === undefined) {
+        logger.error(`No current branch found.`);
+
+        return;
+    }
+
+    const res = await execCommand({
+        command: `git remote -v`,
+        cwd: getWorkspaceFolderPath(),
+        interactive: false,
+    });
+
+    const remoteRepositories: vscode.QuickPickItem[] = [];
+    for (const line of res?.trim().split("\n") ?? []) {
+        const [name, url, type] = line.split(/\s+/);
+        if (type === "(push)") {
+            remoteRepositories.push({
+                label: name,
+                description: url,
+            });
+        }
+    }
+
+    // Select a remote repository to push the branch to
+
+    const selectedRemoteRepository = await vscode.window.showQuickPick(
+        remoteRepositories,
+        {
+            canPickMany: false,
+            placeHolder: `Pick a remote repository to push the branch ${currBranch} to:`,
+        }
+    );
+
+    if (selectedRemoteRepository === undefined) {
+        return;
+    }
+
+    const { label: upstreamName } = selectedRemoteRepository;
+    let upstreamBranch: string | undefined;
+    try {
+        upstreamBranch = await execCommand({
+            command: `git rev-parse --abbrev-ref ${currBranch}@{upstream}`,
+            cwd: getWorkspaceFolderPath(),
+            interactive: false,
+        });
+    } catch (e) {
+        if (CommonUtils.assertString(e).includes("unknown revision")) {
+            // If the upstream branch is not found, set it and force push
+            await setUpstreamBranchAndForcePush(currBranch, upstreamName);
+
+            return;
+        }
+
+        logger.error(
+            `Failed to get upstream branch for branch "${currBranch}".`,
+            e
+        );
+
+        return;
+    }
+
+    // Force push to the upstream branch
+    await forcePush(upstreamName, CommonUtils.mandatory(upstreamBranch));
 }
 
 async function setUpstreamBranchAndForcePush(
