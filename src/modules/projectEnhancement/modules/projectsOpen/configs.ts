@@ -25,3 +25,5 @@ export function parseConfigs() {
         .default([]) // Default value is an empty array.
         .parse(getConfigurationItem(`${extensionName}.projectsOpen.groups`));
 }
+
+// FIXME: error when there no workspace folder opened

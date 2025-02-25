@@ -7,14 +7,7 @@ import {
 
 import { ETsType } from "@/types";
 
-import {
-    extensionCtx,
-    extensionName,
-    format,
-    fs,
-    logger,
-    vscode,
-} from "@/core";
+import { extensionCtx, format, fs, logger, vscode } from "@/core";
 import { prettierFormatText } from "@/utils/common";
 import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
@@ -23,29 +16,14 @@ import {
     enableOverwriteFile,
     ignoredInsertionColumns,
     ignoredUpdatingColumns,
-} from "../configs";
-import { mapAssertionMethod, TColumnDetail } from "../utils";
-
-enum ESqlType {
-    Integer = "integer",
-    IntegerArr = "integer[]",
-    Bigint = "bigint",
-    Serial = "serial",
-    Bigserial = "bigserial",
-    Char = "char",
-    Varchar = "varchar",
-    Text = "text",
-    TextArr = "text[]",
-    Timestamp = "timestamp",
-    Boolean = "boolean",
-    Bytea = "bytea",
-    Smallint = "smallint",
-}
+} from "../shared/configs";
+import { mapAssertionMethod, TColumnDetail } from "../shared/utils";
+import { kGenerateModelCodeAction } from "./consts";
 
 export function registerCommandGenerateModel() {
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
-            `${extensionName}.databaseModel.generateModel`,
+            kGenerateModelCodeAction,
             async (document: vscode.TextDocument, range: vscode.Range) => {
                 vscode.window.withProgress(
                     {
@@ -60,7 +38,7 @@ export function registerCommandGenerateModel() {
                                     document.getText(range)
                                 );
                             logger.info(
-                                `Generated files.\n`,
+                                `Generated ${generatedFils.length} files.\n`,
                                 generatedFils.map(it => `- '${it}'`).join("\n")
                             );
 
@@ -80,7 +58,9 @@ async function parseSqlAndGenerateFiles(text: string) {
 
     const { schemaName, tableName, detail } = await parseCreateStmt(text);
 
-    // Check "src.models.index" file exits
+    const generatedFiles: string[] = [];
+
+    // Generate "src.models.index" file
 
     const modelFilePath = path.join(
         getWorkspaceFolderPath(),
@@ -94,9 +74,11 @@ async function parseSqlAndGenerateFiles(text: string) {
             ),
             "utf-8"
         );
-        await vscode.workspace.fs.writeFile(
-            vscode.Uri.file(modelFilePath),
-            Buffer.from(modelFilePathContent)
+        fs.mkdirSync(path.dirname(modelFilePath), { recursive: true });
+        fs.writeFileSync(modelFilePath, modelFilePathContent);
+
+        generatedFiles.push(
+            path.relative(getWorkspaceFolderPath(), modelFilePath)
         );
     }
 
@@ -122,13 +104,12 @@ async function parseSqlAndGenerateFiles(text: string) {
         )
         .replace(/{{schemaName}}/g, toLowerCamelCase(schemaName));
 
-    await vscode.workspace.fs.writeFile(
-        vscode.Uri.file(schemaFilePath),
-        Buffer.from(schemaFileContent)
+    fs.mkdirSync(path.dirname(schemaFilePath), { recursive: true });
+    fs.writeFileSync(schemaFilePath, schemaFileContent);
+
+    generatedFiles.push(
+        path.relative(getWorkspaceFolderPath(), schemaFilePath)
     );
-    const generatedFiles = [
-        path.relative(getWorkspaceFolderPath(), schemaFilePath),
-    ];
 
     // Generate "src.models.schema.table.index.ts" file
 
@@ -258,10 +239,8 @@ async function parseSqlAndGenerateFiles(text: string) {
         .replace(/{{tableName}}/g, tableName)
         .replace(/{{modelName}}/g, toLowerCamelCase(tableName));
 
-    await vscode.workspace.fs.writeFile(
-        vscode.Uri.file(tableFilePath),
-        Buffer.from(prettierFormatText(modelFileContent))
-    );
+    fs.mkdirSync(path.dirname(tableFilePath), { recursive: true });
+    fs.writeFileSync(tableFilePath, prettierFormatText(modelFileContent));
 
     // Open model file in editor
     await vscode.window.showTextDocument(vscode.Uri.file(tableFilePath));
@@ -377,6 +356,22 @@ async function parseCreateStmt(text: string) {
         tableName: CommonUtils.mandatory(createStmt.table?.tableName),
         detail: detailMap,
     } satisfies TParsedCreateTableStmt;
+}
+
+enum ESqlType {
+    Integer = "integer",
+    IntegerArr = "integer[]",
+    Bigint = "bigint",
+    Serial = "serial",
+    Bigserial = "bigserial",
+    Char = "char",
+    Varchar = "varchar",
+    Text = "text",
+    TextArr = "text[]",
+    Timestamp = "timestamp",
+    Boolean = "boolean",
+    Bytea = "bytea",
+    Smallint = "smallint",
 }
 
 function mapTsType(columnType: string) {

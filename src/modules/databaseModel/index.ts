@@ -1,19 +1,7 @@
 import { defineModule } from "@/core";
 
-import { registerCodeActionsProviders } from "./codeActionsProviders";
-import {
-    registerCommandGenerateModel,
-    registerCommandUpdateModel,
-} from "./commands";
-import { parseConfigs } from "./configs";
+import { generateModel } from "./modules/generateModel";
+import { shared } from "./modules/shared";
+import { updateModel } from "./modules/updateModel";
 
-export const databaseModel = defineModule({
-    onActive() {
-        registerCommandGenerateModel();
-        registerCommandUpdateModel();
-        registerCodeActionsProviders();
-    },
-    onReloadConfiguration() {
-        parseConfigs();
-    },
-});
+export const databaseModel = defineModule([shared, generateModel, updateModel]);

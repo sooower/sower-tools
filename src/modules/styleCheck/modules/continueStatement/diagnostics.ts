@@ -1,8 +1,7 @@
-import ts from "typescript";
+import { Node } from "ts-morph";
 
-import { extensionCtx, extensionName, vscode } from "@/core";
-import { findAllBlockNodes } from "@/utils/typescript";
-import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
+import { extensionCtx, extensionName, project, vscode } from "@/core";
+import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import { isIgnoredFile } from "../shared/utils";
@@ -53,14 +52,18 @@ function checkIsMissingBlankLineBeforeContinueStatement(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
 ) {
-    const appendDiagnostic = (block: ts.Block) => {
-        const stmts = block.statements;
+    project?.getSourceFile(document.uri.fsPath)?.forEachDescendant(node => {
+        if (!Node.isBlock(node)) {
+            return;
+        }
+
+        const stmts = node.getStatements();
         if (stmts.length < 2) {
             return;
         }
 
         const lastStmt = stmts[stmts.length - 1];
-        if (!ts.isContinueStatement(lastStmt)) {
+        if (!Node.isContinueStatement(lastStmt)) {
             return;
         }
 
@@ -78,9 +81,5 @@ function checkIsMissingBlankLineBeforeContinueStatement(
 
             diagnostics.push(diagnostic);
         }
-    };
-
-    findAllBlockNodes(createSourceFileByDocument(document)).forEach(block => {
-        appendDiagnostic(block);
     });
 }

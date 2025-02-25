@@ -1,9 +1,8 @@
-import ts from "typescript";
+import { Node } from "ts-morph";
 
-import { extensionCtx, extensionName, vscode } from "@/core";
-import { findAllClassDeclarationNodes } from "@/utils/typescript";
+import { extensionCtx, extensionName, project, vscode } from "@/core";
 import { detectCommentKind } from "@/utils/typescript/comment";
-import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
+import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import { hasValidLeadingSpaceBefore, isIgnoredFile } from "../shared/utils";
@@ -55,39 +54,36 @@ function checkIsMissingBlankLineBeforeClassDeclaration(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
 ) {
-    const appendDiagnostic = (node: ts.ClassDeclaration) => {
-        const classNodeStartPos = node.getStart();
-        const classDeclNodeStartLineIndex =
-            document.positionAt(classNodeStartPos).line;
-
-        // Skip if the class declaration is the first line of the document
-        if (classDeclNodeStartLineIndex === 0) {
+    project?.getSourceFile(document.uri.fsPath)?.forEachDescendant(node => {
+        if (!Node.isClassDeclaration(node)) {
             return;
         }
 
-        if (hasValidLeadingSpaceBefore(document, classDeclNodeStartLineIndex)) {
+        const nodeStartPos = node.getStart();
+        const nodeStartLineIndex = document.positionAt(nodeStartPos).line;
+
+        // Skip if the class declaration is the first line of the document
+        if (nodeStartLineIndex === 0) {
+            return;
+        }
+
+        if (hasValidLeadingSpaceBefore(document, nodeStartLineIndex)) {
             return;
         }
 
         // Skip if the previous line is a comment
-        const prevLine = document.lineAt(classDeclNodeStartLineIndex - 1);
+        const prevLine = document.lineAt(nodeStartLineIndex - 1);
         if (detectCommentKind(prevLine.text) !== null) {
             return;
         }
 
         const diagnostic = new vscode.Diagnostic(
-            buildRangeByLineIndex(document, classDeclNodeStartLineIndex),
+            buildRangeByLineIndex(document, nodeStartLineIndex),
             "Missing a blank line before the class declaration.",
             vscode.DiagnosticSeverity.Warning
         );
         diagnostic.code = `@${extensionName}/blank-line-before-class-declaration`;
 
         diagnostics.push(diagnostic);
-    };
-
-    findAllClassDeclarationNodes(createSourceFileByDocument(document)).forEach(
-        node => {
-            appendDiagnostic(node);
-        }
-    );
+    });
 }

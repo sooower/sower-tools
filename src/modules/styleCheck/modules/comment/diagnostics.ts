@@ -93,18 +93,14 @@ function checkIsMissingBlankLineBeforeComment(
             continue;
         }
 
-        const appendDiagnostic = () => {
-            const diagnostic = new vscode.Diagnostic(
-                buildRangeByLineIndex(document, lineIndex),
-                "Missing a blank line before the comment.",
-                vscode.DiagnosticSeverity.Warning
-            );
-            diagnostic.code = `@${extensionName}/blank-line-before-comment`;
+        const diagnostic = new vscode.Diagnostic(
+            buildRangeByLineIndex(document, lineIndex),
+            "Missing a blank line before the comment.",
+            vscode.DiagnosticSeverity.Warning
+        );
+        diagnostic.code = `@${extensionName}/blank-line-before-comment`;
 
-            diagnostics.push(diagnostic);
-        };
-
-        appendDiagnostic();
+        diagnostics.push(diagnostic);
     }
 }
 

@@ -1,9 +1,8 @@
-import ts from "typescript";
+import { Node } from "ts-morph";
 
-import { extensionCtx, extensionName, vscode } from "@/core";
-import { findTopLevelEnumDeclarationNodes } from "@/utils/typescript";
+import { extensionCtx, extensionName, project, vscode } from "@/core";
 import { detectCommentKind } from "@/utils/typescript/comment";
-import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
+import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import { hasValidLeadingSpaceBefore, isIgnoredFile } from "../shared/utils";
@@ -55,39 +54,36 @@ function checkIsMissingBlankLineBeforeEnumDeclaration(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
 ) {
-    const appendDiagnostic = (node: ts.EnumDeclaration) => {
-        const enumNodeStartPos = node.getStart();
-        const enumDeclNodeStartLineIndex =
-            document.positionAt(enumNodeStartPos).line;
-
-        // Skip if the enum declaration is the first line of the document
-        if (enumDeclNodeStartLineIndex === 0) {
+    project?.getSourceFile(document.uri.fsPath)?.forEachChild(node => {
+        if (!Node.isEnumDeclaration(node)) {
             return;
         }
 
-        if (hasValidLeadingSpaceBefore(document, enumDeclNodeStartLineIndex)) {
+        const nodeStartPos = node.getStart();
+        const nodeStartLineIndex = document.positionAt(nodeStartPos).line;
+
+        // Skip if the enum declaration is the first line of the document
+        if (nodeStartLineIndex === 0) {
+            return;
+        }
+
+        if (hasValidLeadingSpaceBefore(document, nodeStartLineIndex)) {
             return;
         }
 
         // Skip if the previous line is a comment
-        const prevLine = document.lineAt(enumDeclNodeStartLineIndex - 1);
+        const prevLine = document.lineAt(nodeStartLineIndex - 1);
         if (detectCommentKind(prevLine.text) !== null) {
             return;
         }
 
         const diagnostic = new vscode.Diagnostic(
-            buildRangeByLineIndex(document, enumDeclNodeStartLineIndex),
+            buildRangeByLineIndex(document, nodeStartLineIndex),
             "Missing a blank line before the enum declaration.",
             vscode.DiagnosticSeverity.Warning
         );
         diagnostic.code = `@${extensionName}/blank-line-before-enum-declaration`;
 
         diagnostics.push(diagnostic);
-    };
-
-    findTopLevelEnumDeclarationNodes(
-        createSourceFileByDocument(document)
-    ).forEach(node => {
-        appendDiagnostic(node);
     });
 }

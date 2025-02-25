@@ -51,47 +51,31 @@ function checkUnAwaitedPromiseCallExpression(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
 ) {
-    if (project === undefined) {
-        return;
-    }
+    project?.getSourceFile(document.uri.fsPath)?.forEachDescendant(node => {
+        if (!Node.isTryStatement(node)) {
+            return;
+        }
 
-    const sourceFile = project.getSourceFile(document.uri.fsPath);
-    if (sourceFile === undefined) {
-        return;
-    }
-
-    const appendDiagnostic = () => {
-        sourceFile.forEachDescendant(node => {
-            if (!Node.isTryStatement(node)) {
+        node.getTryBlock().forEachChild(child => {
+            if (!Node.isExpressionStatement(child)) {
                 return;
             }
 
-            node.getTryBlock().forEachChild(child => {
-                if (!Node.isExpressionStatement(child)) {
-                    return;
-                }
+            const expr = child.getExpression();
+            if (!isUnAwaitedPromise(expr)) {
+                return;
+            }
 
-                const expr = child.getExpression();
-                if (!isUnAwaitedPromise(expr)) {
-                    return;
-                }
+            const diagnostic = new vscode.Diagnostic(
+                buildRangeByLineIndex(document, expr.getStartLineNumber() - 1),
+                "Missing await before async function call expression in try statement.",
+                vscode.DiagnosticSeverity.Warning
+            );
+            diagnostic.code = `@${extensionName}/un-awaited-promise-call-expression`;
 
-                const diagnostic = new vscode.Diagnostic(
-                    buildRangeByLineIndex(
-                        document,
-                        expr.getStartLineNumber() - 1
-                    ),
-                    "Missing await before async function call expression.",
-                    vscode.DiagnosticSeverity.Warning
-                );
-                diagnostic.code = `@${extensionName}/un-awaited-promise-call-expression`;
-
-                diagnostics.push(diagnostic);
-            });
+            diagnostics.push(diagnostic);
         });
-    };
-
-    appendDiagnostic();
+    });
 }
 
 function isUnAwaitedPromise(expr: Expression): boolean {

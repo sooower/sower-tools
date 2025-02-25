@@ -1,36 +1,46 @@
-import ts from "typescript";
+import { Node } from "ts-morph";
 
-import { extensionCtx, extensionName, vscode } from "@/core";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { extensionCtx, project, vscode } from "@/core";
+import { buildRangeByOffsets } from "@/utils/vscode/range";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
         vscode.languages.registerCodeActionsProvider("typescript", {
             provideCodeActions(document, range, context, token) {
-                if (!isCurrentFileOnlyContainsEnumsDeclarations(document)) {
+                const sourceFile = project?.getSourceFile(document.uri.fsPath);
+                if (sourceFile === undefined) {
                     return [];
                 }
 
-                const sortEnumsCodeAction = new vscode.CodeAction(
+                const isContainsNonEnumDeclarations = sourceFile
+                    .getStatements()
+                    .some(it => !Node.isEnumDeclaration(it));
+                if (isContainsNonEnumDeclarations) {
+                    return [];
+                }
+
+                // Replace the top level enums declaration of the current file with the sorted enums declaration.
+
+                const sortedEnumsDeclarationsTexts =
+                    sourceFile
+                        .getEnums()
+                        .sort((a, b) => a.getName().localeCompare(b.getName()))
+                        .map(node => node.getFullText().trim())
+                        .join("\n\n") + "\n";
+
+                const codeAction = new vscode.CodeAction(
                     "Sort enums declaration",
                     vscode.CodeActionKind.QuickFix
                 );
-                sortEnumsCodeAction.command = {
-                    command: `${extensionName}.sortEnumsDeclaration`,
-                    title: "",
-                    arguments: [document, range],
-                };
+                codeAction.edit = new vscode.WorkspaceEdit();
+                codeAction.edit.replace(
+                    document.uri,
+                    buildRangeByOffsets(document, 0, document.getText().length),
+                    sortedEnumsDeclarationsTexts
+                );
 
-                return [sortEnumsCodeAction];
+                return [codeAction];
             },
         })
-    );
-}
-
-function isCurrentFileOnlyContainsEnumsDeclarations(
-    document: vscode.TextDocument
-): boolean {
-    return createSourceFileByDocument(document).statements.every(it =>
-        ts.isEnumDeclaration(it)
     );
 }

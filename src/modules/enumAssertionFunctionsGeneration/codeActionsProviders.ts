@@ -1,6 +1,6 @@
-import { extensionCtx, extensionName, vscode } from "@/core";
-import { findEnumDeclarationNodeAtOffset } from "@/utils/typescript";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { SyntaxKind } from "ts-morph";
+
+import { extensionCtx, extensionName, project, vscode } from "@/core";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
@@ -20,7 +20,7 @@ class GenerationEnumAssertionFunctionsCodeActionProvider
         context: vscode.CodeActionContext,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        if (!isCursorInEnumDeclaration(document, range)) {
+        if (!hasEnumDeclarationInRange(document, range)) {
             return [];
         }
 
@@ -31,22 +31,24 @@ class GenerationEnumAssertionFunctionsCodeActionProvider
         generateEnumAssertionFunctionsCodeAction.command = {
             command: `${extensionName}.generateEnumAssertionFunctions`,
             title: "",
-            arguments: [document, range],
         };
 
         return [generateEnumAssertionFunctionsCodeAction];
     }
 }
 
-function isCursorInEnumDeclaration(
+function hasEnumDeclarationInRange(
     document: vscode.TextDocument,
     range: vscode.Range
-): boolean {
-    const sourceFile = createSourceFileByDocument(document);
-    const node = findEnumDeclarationNodeAtOffset({
-        sourceFile,
-        offset: document.offsetAt(range.start),
-    });
+) {
+    const enumDeclarationInRange = project
+        ?.getSourceFile(document.uri.fsPath)
+        ?.getDescendantsOfKind(SyntaxKind.EnumDeclaration)
+        .some(
+            it =>
+                it.getFullStart() <= range.start.line &&
+                it.getTrailingTriviaEnd() >= range.end.line
+        );
 
-    return node !== undefined;
+    return enumDeclarationInRange ?? false;
 }

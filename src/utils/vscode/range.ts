@@ -1,3 +1,4 @@
+import { Node } from "ts-morph";
 import ts from "typescript";
 
 import { vscode } from "@/core";
@@ -13,7 +14,10 @@ export function buildRangeByOffsets(
     );
 }
 
-export function buildRangeByNode(document: vscode.TextDocument, node: ts.Node) {
+export function buildRangeByNode(
+    document: vscode.TextDocument,
+    node: ts.Node | Node
+) {
     return new vscode.Range(
         document.positionAt(node.getStart()),
         document.positionAt(node.getEnd())

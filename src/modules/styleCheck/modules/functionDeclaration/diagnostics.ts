@@ -1,13 +1,14 @@
-import ts from "typescript";
-
-import { extensionCtx, extensionName, vscode } from "@/core";
 import {
-    findAllFuncOrCtorDeclarationNodes,
-    isFunctionParameter,
-    TFunc,
-} from "@/utils/typescript";
+    ArrowFunction,
+    FunctionDeclaration,
+    MethodDeclaration,
+    Node,
+    SyntaxKind,
+} from "ts-morph";
+
+import { extensionCtx, extensionName, project, vscode } from "@/core";
 import { detectCommentKind } from "@/utils/typescript/comment";
-import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
+import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import {
@@ -64,31 +65,45 @@ function checkIsMissingBlankLineBeforeFunctionDeclaration(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
 ) {
-    const appendDiagnostic = (node: TFunc) => {
+    const funcNames = new Set<string>();
+
+    project?.getSourceFile(document.uri.fsPath)?.forEachDescendant(node => {
+        if (
+            (Node.isArrowFunction(node) || Node.isFunctionDeclaration(node)) &&
+            isFunctionParameter(node)
+        ) {
+            return;
+        }
+
+        if (
+            !Node.isFunctionDeclaration(node) &&
+            !Node.isMethodDeclaration(node)
+        ) {
+            return;
+        }
+
+        const name = node.getName();
+        if (name === undefined) {
+            return;
+        }
+
         // Skip if the function declaration is a duplicate (function or method
         // overload), else add the function name to the set
-        if (node.name !== undefined) {
-            if (funcNames.has(node.name.getText())) {
-                return;
-            }
-
-            funcNames.add(node.name.getText());
+        if (funcNames.has(name)) {
+            return;
         }
 
-        const funcNodeStartPos = node.getStart();
-        const funcDeclNodeStartLineIndex =
-            document.positionAt(funcNodeStartPos).line;
+        funcNames.add(name);
+
+        const nodeStartPos = node.getStart();
+        const nodeStartLineIndex = document.positionAt(nodeStartPos).line;
 
         // Skip if the function declaration is the first line of the document
-        if (funcDeclNodeStartLineIndex === 0) {
+        if (nodeStartLineIndex === 0) {
             return;
         }
 
-        if (isFirstLineOfParent(document, funcDeclNodeStartLineIndex)) {
-            return;
-        }
-
-        if (isFunctionParameter(node)) {
+        if (isFirstLineOfParent(document, nodeStartLineIndex)) {
             return;
         }
 
@@ -96,39 +111,46 @@ function checkIsMissingBlankLineBeforeFunctionDeclaration(
             return;
         }
 
-        if (hasValidLeadingSpaceBefore(document, funcDeclNodeStartLineIndex)) {
+        if (hasValidLeadingSpaceBefore(document, nodeStartLineIndex)) {
             return;
         }
 
         // Skip if the previous line is a comment
-        const prevLine = document.lineAt(funcDeclNodeStartLineIndex - 1);
+        const prevLine = document.lineAt(nodeStartLineIndex - 1);
         if (detectCommentKind(prevLine.text) !== null) {
             return;
         }
 
         const diagnostic = new vscode.Diagnostic(
-            buildRangeByLineIndex(document, funcDeclNodeStartLineIndex),
+            buildRangeByLineIndex(document, nodeStartLineIndex),
             "Missing a blank line before the function declaration.",
             vscode.DiagnosticSeverity.Warning
         );
         diagnostic.code = `@${extensionName}/blank-line-before-function-declaration`;
 
         diagnostics.push(diagnostic);
-    };
-
-    const funcNames = new Set<string>();
-
-    findAllFuncOrCtorDeclarationNodes(
-        createSourceFileByDocument(document)
-    ).forEach(node => {
-        appendDiagnostic(node);
     });
 }
 
-export function isInAssignmentExpression(node: TFunc) {
-    return (
-        ts.isBinaryExpression(node.parent) &&
-        node.parent.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
-        node.parent.right === node
-    );
+function isFunctionParameter(node: FunctionDeclaration | ArrowFunction) {
+    return Node.isCallExpression(node.getParent());
+}
+
+function isInAssignmentExpression(
+    node: FunctionDeclaration | MethodDeclaration
+) {
+    const parent = node.getParent();
+    if (!Node.isBinaryExpression(parent)) {
+        return false;
+    }
+
+    if (parent.getOperatorToken().getKind() !== SyntaxKind.EqualsToken) {
+        return false;
+    }
+
+    if (parent.getRight().getText() !== node.getText()) {
+        return false;
+    }
+
+    return true;
 }

@@ -1,10 +1,9 @@
-import ts from "typescript";
+import { Node } from "ts-morph";
 
 import { isIgnoredFile } from "@/modules/styleCheck/modules/shared/utils";
 
-import { extensionCtx, extensionName, vscode } from "@/core";
-import { findAllTopLevelStatements } from "@/utils/typescript/statement";
-import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
+import { extensionCtx, extensionName, project, vscode } from "@/core";
+import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByNode } from "@/utils/vscode/range";
 
 import { enableStyleCheckImportStatement } from "../configs";
@@ -56,30 +55,29 @@ function checkIsImportStatementsTopOfFile(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
 ) {
-    const appendDiagnostic = (node: ts.Statement) => {
-        const diagnostic = new vscode.Diagnostic(
-            buildRangeByNode(document, node),
-            "Import statements should always be at the top of the file.",
-            vscode.DiagnosticSeverity.Warning
-        );
-        diagnostic.code = `@${extensionName}/import-statements-top-of-file`;
-
-        diagnostics.push(diagnostic);
-    };
-
-    const topLevelStatements = findAllTopLevelStatements(
-        createSourceFileByDocument(document)
-    );
     let foundNonImportStatement = false;
-    for (const stmt of topLevelStatements) {
-        if (!ts.isImportDeclaration(stmt)) {
-            foundNonImportStatement = true;
 
-            continue;
-        }
+    project
+        ?.getSourceFile(document.uri.fsPath)
+        ?.getStatements()
+        .forEach(stmt => {
+            if (!Node.isImportDeclaration(stmt)) {
+                foundNonImportStatement = true;
 
-        if (ts.isImportDeclaration(stmt) && foundNonImportStatement) {
-            appendDiagnostic(stmt);
-        }
-    }
+                return;
+            }
+
+            if (!foundNonImportStatement) {
+                return;
+            }
+
+            const diagnostic = new vscode.Diagnostic(
+                buildRangeByNode(document, stmt),
+                "Import statements should always be at the top of the file.",
+                vscode.DiagnosticSeverity.Warning
+            );
+            diagnostic.code = `@${extensionName}/import-statements-top-of-file`;
+
+            diagnostics.push(diagnostic);
+        });
 }

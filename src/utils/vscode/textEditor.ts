@@ -1,3 +1,4 @@
+import { Node } from "ts-morph";
 import ts from "typescript";
 
 import { vscode } from "@/core";
@@ -11,7 +12,7 @@ type TReplaceTextOfSourceFileOptions = {
 
 type TReplaceTextOfNodeOptions = {
     editor: vscode.TextEditor;
-    node: ts.Node;
+    node: ts.Node | Node;
     newText: string;
 };
 
@@ -21,11 +22,6 @@ type TReplaceTextRangeOffsetOptions = {
     end: number;
     newText: string;
     endPlusOne?: boolean;
-};
-
-type TDeleteTextOfNodeOptions = {
-    editor: vscode.TextEditor;
-    node: ts.Node;
 };
 
 type TInsertTextBeforeNodeOptions = {
@@ -99,12 +95,6 @@ class TextEditorUtils {
                 ),
                 newText
             );
-        });
-    }
-
-    async deleteTextOfNode({ editor, node }: TDeleteTextOfNodeOptions) {
-        await editor.edit(editBuilder => {
-            editBuilder.delete(buildRangeByNode(editor.document, node));
         });
     }
 

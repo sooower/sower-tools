@@ -124,20 +124,6 @@
                 "title": "Open Projects"
             }
         ],
-        "submenus": [
-            {
-                "id": "editor/context/sowerTools",
-                "label": "Sower Tools"
-            },
-            {
-                "id": "explorer/context/sowerTools",
-                "label": "Sower Tools"
-            },
-            {
-                "id": "explorer/context/sowerTools/git",
-                "label": "Git"
-            }
-        ],
         "menus": {
             "editor/context": [
                 {
@@ -214,6 +200,20 @@
                 }
             ]
         },
+        "submenus": [
+            {
+                "id": "editor/context/sowerTools",
+                "label": "Sower Tools"
+            },
+            {
+                "id": "explorer/context/sowerTools",
+                "label": "Sower Tools"
+            },
+            {
+                "id": "explorer/context/sowerTools/git",
+                "label": "Git"
+            }
+        ],
         "configuration": {
             "type": "object",
             "title": "Sower Tools",
@@ -229,12 +229,12 @@
                     ]
                 },
                 "sower-tools.databaseModel.enableOverwriteFile": {
-                    "description": "If true, it will replace file content with new generated text if the file exists.",
+                    "description": "If true, it will replace file content with generated text if the file exists.",
                     "type": "boolean",
                     "default": false
                 },
                 "sower-tools.databaseModel.ignoredInsertionColumns": {
-                    "description": "Column names which will be ignored when calling models `insert()` method.",
+                    "description": "Column names which will be ignored when generating method `insert()` in database model.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -245,7 +245,7 @@
                     ]
                 },
                 "sower-tools.databaseModel.ignoredUpdatingColumns": {
-                    "description": "Column names which will be ignored when calling models `update()` method.",
+                    "description": "Column names which will be ignored when generating method `update()` in database model.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -257,7 +257,7 @@
                     ]
                 },
                 "sower-tools.debuggingEnhancement.debugProjectConfigurationNames": {
-                    "description": "Configuration names of debugging the current opened project. The priority depends on the array element order, location is <projectRootDir>/.vscode/launch.json.",
+                    "description": "Array of name (location at <projectRootDir>/.vscode/launch.json#configurations) of debugging the project. The priority depends on the array element order, the first element has the highest priority.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -267,7 +267,7 @@
                     ]
                 },
                 "sower-tools.debuggingEnhancement.debugCurrentFileConfigurationNames": {
-                    "description": "Configuration names of debugging the current opened file. The priority depends on the array element order, location is <projectRootDir>/.vscode/launch.json.",
+                    "description": "Array of name (location at <projectRootDir>/.vscode/launch.json#configurations) of debugging the opened file. The priority depends on the array element order, the first element has the highest priority.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -277,12 +277,12 @@
                     ]
                 },
                 "sower-tools.readmeDocumentPreview.enable": {
-                    "description": "If true, it will show project README document when open workspace.",
+                    "description": "If true, it will show project README file (configured in 'sower-tools.readmeDocumentPreview.documentNames') when open workspace.",
                     "type": "boolean",
                     "default": true
                 },
                 "sower-tools.readmeDocumentPreview.documentNames": {
-                    "description": "Project README filenames, priority is by the order you placed in this array, configurations usually are README.md, CHANGELOG.md, etc.",
+                    "description": "Array of project README filenames, priority depends on the array element order, the first element has the highest priority.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -294,8 +294,13 @@
                         "changelog.md"
                     ]
                 },
+                "sower-tools.nodeBuiltinModulesImportsUpdate.enable": {
+                    "description": "If true, it will update node builtin modules imports with prefix \"node:\" after saving a opened file.",
+                    "type": "boolean",
+                    "default": true
+                },
                 "sower-tools.nodeBuiltinModulesImportsUpdate.nodeBuiltinModules": {
-                    "description": "Node builtin modules names.",
+                    "description": "Array of node builtin modules names which will be updated with prefix \"node:\", others will be ignored.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -342,11 +347,6 @@
                         "zlib"
                     ]
                 },
-                "sower-tools.nodeBuiltinModulesImportsUpdate.enable": {
-                    "description": "If true, it will update node builtin modules imports with prefix \"node:\" automatically when saving file.",
-                    "type": "boolean",
-                    "default": true
-                },
                 "sower-tools.stringTools.enableReplaceText": {
                     "description": "If true, it will replace the selected text with converted text when encoding/decoding base64 string, otherwise it will insert the converted text after next line.",
                     "type": "boolean",
@@ -358,7 +358,7 @@
                     "default": false
                 },
                 "sower-tools.statusBarEnhancement.countdownTimer.options": {
-                    "description": "The options of countdown timer.",
+                    "description": "Array of options of countdown timer, each option contains a 'label' (displayed in select list) and a 'duration' (used to calculate the countdown timer, time in seconds).",
                     "type": "array",
                     "items": {
                         "type": "object",
@@ -401,12 +401,12 @@
                     ]
                 },
                 "sower-tools.keyCryptoTools.key": {
-                    "description": "The default key for encrypt/decrypt text.",
+                    "description": "The key for encrypting/decrypting text you selected in the editor.",
                     "type": "string",
                     "default": ""
                 },
                 "sower-tools.dirEnhancement.openFiles.ignoredFilenames": {
-                    "description": "The filenames of files that will be ignored when opening all files in a directory.",
+                    "description": "Array of filenames that will be ignored when clicked 'Open Files' in the context menu of explorer.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -421,12 +421,12 @@
                     "default": true
                 },
                 "sower-tools.markdownEnhancement.localImage.uploadImageConfigFilePath": {
-                    "description": "The path of the config file for uploading images to file server. Supports user home directory alias \"~\".",
+                    "description": "The config file path for uploading images to file server. Supports path alias \"~\".",
                     "type": "string",
                     "default": "~/.config/sower-tools/.upload-image-config.json"
                 },
                 "sower-tools.markdownEnhancement.blankLinesRemoval.languageIds": {
-                    "description": "The supported markdown code blocks language ids (case sensitive), others languages will remove blank lines in code blocks.",
+                    "description": "Array of supported markdown code blocks language ids (case sensitive) which will maintain the blank lines in code blocks, others languages will remove blank lines in code blocks.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -451,7 +451,7 @@
                     ]
                 },
                 "sower-tools.markdownEnhancement.blankLinesRemoval.skipFirstLine": {
-                    "description": "If true, it will skip the first line of the document.",
+                    "description": "If true, it will skip copying the first line text of the document when removing blank lines in markdown file.",
                     "type": "boolean",
                     "default": true
                 },
@@ -495,7 +495,7 @@
                     ]
                 },
                 "sower-tools.styleCheck.ignore.patterns": {
-                    "description": "The 'glob' patterns of files or directories that will be ignored when checking style. The priority is higher than compatibility config files.",
+                    "description": "The 'glob' patterns of files or directories that will be ignored when checking style. The priority is higher than configured items in 'sower-tools.styleCheck.ignore.compatibleConfigFilenames'.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -507,7 +507,7 @@
                     ]
                 },
                 "sower-tools.styleCheck.ignore.compatibleConfigFilenames": {
-                    "description": "The compatible config filenames that will be used to ignore style check files. The priority is lower than configured items in '.styleCheck.ignore.patterns'.",
+                    "description": "The compatible config filenames that their contents will be split by line and added to the ignore list of style check. The priority is lower than configured items in 'sower-tools.styleCheck.ignore.patterns'.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -519,84 +519,88 @@
                     ]
                 },
                 "sower-tools.styleCheck.comment.enable": {
-                    "description": "If true, it will check the comment style.",
+                    "description": "If true, the comment style of the opened file will be checked.",
                     "type": "boolean",
                     "default": true
                 },
                 "sower-tools.styleCheck.comment.skipCheckCharacter": {
-                    "description": "The character that will be used to skip the comment check.",
+                    "description": "The character that will be used to skip the comment check. For example, if you set this value to '?', it will ignore checking the comment like '//? <text>', '/*? <text> */' or '/**? <text> */'.",
                     "type": "string",
                     "default": "?"
                 },
                 "sower-tools.styleCheck.classDeclaration.enable": {
-                    "description": "If true, it will check the class declaration style.",
+                    "description": "If true, the class declaration style of the opened file will be checked.",
                     "type": "boolean",
                     "default": true
                 },
                 "sower-tools.styleCheck.functionDeclaration.enable": {
-                    "description": "If true, it will check the function declaration style.",
+                    "description": "If true, the function declaration style of the opened file will be checked.",
                     "type": "boolean",
                     "default": true
                 },
                 "sower-tools.styleCheck.importStatement.enable": {
-                    "description": "If true, it will check the import statement style.",
+                    "description": "If true, the import statement style of the opened file will be checked.",
                     "type": "boolean",
                     "default": true
                 },
                 "sower-tools.styleCheck.interfaceDeclaration.enable": {
-                    "description": "If true, it will check the interface declaration style.",
+                    "description": "If true, the interface declaration style of the opened file will be checked.",
                     "type": "boolean",
                     "default": true
                 },
                 "sower-tools.styleCheck.returnStatement.enable": {
-                    "description": "If true, it will check the return statement style.",
+                    "description": "If true, the return statement style of the opened file will be checked.",
                     "type": "boolean",
                     "default": true
                 },
                 "sower-tools.styleCheck.typeDeclaration.enable": {
-                    "description": "If true, it will check the type declaration style.",
+                    "description": "If true, the type declaration style of the opened file will be checked.",
                     "type": "boolean",
                     "default": true
                 },
                 "sower-tools.styleCheck.continueStatement.enable": {
-                    "description": "If true, it will check the continue statement style.",
+                    "description": "If true, the continue statement style of the opened file will be checked.",
                     "type": "boolean",
                     "default": true
                 },
                 "sower-tools.styleCheck.breakStatement.enable": {
-                    "description": "If true, it will check the break statement style.",
+                    "description": "If true, the break statement style of the opened file will be checked.",
                     "type": "boolean",
                     "default": true
                 },
                 "sower-tools.styleCheck.enumDeclaration.enable": {
-                    "description": "If true, it will check the enum declaration style.",
+                    "description": "If true, the enum declaration style of the opened file will be checked.",
                     "type": "boolean",
                     "default": true
                 },
                 "sower-tools.styleCheck.tryStatement.enable": {
-                    "description": "If true, it will check the try statement style.",
+                    "description": "If true, the try statement style of the opened file will be checked.",
                     "type": "boolean",
                     "default": true
                 },
                 "sower-tools.projectsOpen.groups": {
-                    "description": "The groups of projects, each group contains a 'name' and a list of 'projects', and each project contains a 'name' and a 'fsPath'.",
+                    "description": "Array of groups used to open projects (by selecting 'Open Projects' in command palette), each group contains a 'name' and a list of 'projects', and each project contains a 'name' and a 'fsPath'.",
                     "type": "array",
                     "items": {
                         "type": "object",
                         "properties": {
                             "name": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "The name of the group. Used to show in the select list."
                             },
                             "projects": {
                                 "type": "array",
+                                "description": "The projects in the group.",
                                 "items": {
                                     "type": "object",
                                     "properties": {
                                         "name": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "description": "The name of the project. Used to show in the select list."
                                         },
                                         "fsPath": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "description": "The path of the project which will be opened."
                                         }
                                     }
                                 }
@@ -605,7 +609,7 @@
                     }
                 },
                 "sower-tools.timestampTools.timestampFormat": {
-                    "description": "The format of the timestamp, see https://day.js.org/docs/en/display/format.",
+                    "description": "The timestamp format used in timestamp insertion or conversion. See more details in https://day.js.org/docs/en/display/format.",
                     "type": "string",
                     "default": "YYYY-MM-DD HH:mm:ss"
                 }

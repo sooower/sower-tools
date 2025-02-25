@@ -10,13 +10,6 @@ type TReplaceTextOfNodeOptions = {
     newText: string;
 };
 
-type TInsertTextAfterNodeOptions = {
-    editor: vscode.TextEditor;
-    node: ts.Node;
-    text: string;
-    lineBreak?: string;
-};
-
 type TReplaceTextRangeOffsetOptions = {
     editor: vscode.TextEditor;
     start: number;
@@ -30,18 +23,6 @@ class TextEditUtils {
         return vscode.TextEdit.replace(
             buildRangeByNode(editor.document, node),
             newText
-        );
-    }
-
-    insertTextAfterNode({
-        editor,
-        node,
-        text,
-        lineBreak = "\n\n",
-    }: TInsertTextAfterNodeOptions) {
-        return vscode.TextEdit.insert(
-            editor.document.positionAt(node.getEnd()),
-            lineBreak + text
         );
     }
 

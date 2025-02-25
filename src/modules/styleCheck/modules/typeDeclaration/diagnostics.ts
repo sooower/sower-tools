@@ -1,6 +1,7 @@
+import { Node } from "ts-morph";
 import ts from "typescript";
 
-import { extensionCtx, extensionName, vscode } from "@/core";
+import { extensionCtx, extensionName, project, vscode } from "@/core";
 import { findAllTypeDeclarationNodes } from "@/utils/typescript";
 import { detectCommentKind } from "@/utils/typescript/comment";
 import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
@@ -97,4 +98,46 @@ function checkIsMissingBlankLineBeforeTypeDeclaration(
         .forEach(node => {
             appendDiagnostic(node);
         });
+
+    project?.getSourceFile(document.uri.fsPath)?.forEachDescendant(node => {
+        if (!Node.isTypeAliasDeclaration(node)) {
+            return;
+        }
+
+        if (Node.isParenthesizedTypeNode(node)) {
+            return;
+        }
+
+        const nodeStartPos = node.getStart();
+        const nodeStartLineIndex = document.positionAt(nodeStartPos).line;
+
+        // Skip if the type declaration is the first line of the document
+        if (nodeStartLineIndex === 0) {
+            return;
+        }
+
+        // Skip if the type declaration only contains a single line
+        if (node.getStartLineNumber() === node.getEndLineNumber()) {
+            return;
+        }
+
+        if (hasValidLeadingSpaceBefore(document, nodeStartLineIndex)) {
+            return;
+        }
+
+        // Skip if the previous line is not a comment
+        const prevLine = document.lineAt(nodeStartLineIndex - 1);
+        if (detectCommentKind(prevLine.text) !== null) {
+            return;
+        }
+
+        const diagnostic = new vscode.Diagnostic(
+            buildRangeByLineIndex(document, nodeStartLineIndex),
+            "Missing a blank line before the type declaration.",
+            vscode.DiagnosticSeverity.Warning
+        );
+        diagnostic.code = `@${extensionName}/blank-line-before-type-declaration`;
+
+        diagnostics.push(diagnostic);
+    });
 }
