@@ -1,6 +1,14 @@
 import { QuickInputButton } from "vscode";
 
-import { extensionCtx, extensionName, fs, logger, os, vscode } from "@/core";
+import {
+    extensionCtx,
+    extensionName,
+    fs,
+    logger,
+    os,
+    updateConfigurationItem,
+    vscode,
+} from "@/core";
 import { CommonUtils } from "@utils/common";
 
 import {
@@ -76,14 +84,10 @@ async function openProjectsInGroupsStyle() {
     groupsQuickPick.onDidTriggerButton(async ({ tooltip }) => {
         switch (tooltip) {
             case EQuickPickButton.ShowInFlatStyle: {
-                await vscode.workspace
-                    .getConfiguration()
-                    .update(
-                        `${extensionName}.projectsOpen.style`,
-                        EProjectDisplayStyle.Flat,
-                        vscode.ConfigurationTarget.Global
-                    );
-
+                await updateConfigurationItem(
+                    `${extensionName}.projectsOpen.style`,
+                    EProjectDisplayStyle.Flat
+                );
                 await vscode.commands.executeCommand(
                     `${extensionName}.projectEnhancement.openProjects`
                 );
@@ -125,14 +129,10 @@ async function selectProjectsToOpen(
     projectsQuickPick.onDidTriggerButton(async ({ tooltip }) => {
         switch (tooltip) {
             case EQuickPickButton.ShowInFlatStyle: {
-                await vscode.workspace
-                    .getConfiguration()
-                    .update(
-                        `${extensionName}.projectsOpen.style`,
-                        EProjectDisplayStyle.Flat,
-                        vscode.ConfigurationTarget.Global
-                    );
-
+                await updateConfigurationItem(
+                    `${extensionName}.projectsOpen.style`,
+                    EProjectDisplayStyle.Flat
+                );
                 await vscode.commands.executeCommand(
                     `${extensionName}.projectEnhancement.openProjects`
                 );
@@ -221,14 +221,10 @@ async function openProjectsInFlatStyle() {
         try {
             switch (tooltip) {
                 case EQuickPickButton.ShowInGroupsStyle: {
-                    await vscode.workspace
-                        .getConfiguration()
-                        .update(
-                            `${extensionName}.projectsOpen.style`,
-                            EProjectDisplayStyle.Groups,
-                            vscode.ConfigurationTarget.Global
-                        );
-
+                    await updateConfigurationItem(
+                        `${extensionName}.projectsOpen.style`,
+                        EProjectDisplayStyle.Groups
+                    );
                     await vscode.commands.executeCommand(
                         `${extensionName}.projectEnhancement.openProjects`
                     );

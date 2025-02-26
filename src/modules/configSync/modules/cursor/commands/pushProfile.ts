@@ -2,7 +2,15 @@ import path from "node:path";
 
 import vscode from "vscode";
 
-import { extensionCtx, extensionName, format, fs, logger, os } from "@/core";
+import {
+    extensionCtx,
+    extensionName,
+    format,
+    fs,
+    logger,
+    os,
+    updateConfigurationItem,
+} from "@/core";
 import { execCommand } from "@utils/command";
 import { CommonUtils } from "@utils/common";
 
@@ -45,14 +53,10 @@ async function pushCursorProfile() {
 
         // If user confirm, enable sync cursor files and push profile again
         if (confirm === kEnableSyncCursorFiles) {
-            await vscode.workspace
-                .getConfiguration()
-                .update(
-                    `${extensionName}.configSync.cursor.enable`,
-                    true,
-                    vscode.ConfigurationTarget.Global
-                );
-
+            await updateConfigurationItem(
+                `${extensionName}.configSync.cursor.enable`,
+                true
+            );
             await pushCursorProfile();
 
             return;
@@ -60,8 +64,6 @@ async function pushCursorProfile() {
 
         return;
     }
-
-    // Copy cursor profile to storage project
 
     const profileDirPath = profile.profileDirPath
         .trim()
@@ -79,43 +81,32 @@ async function pushCursorProfile() {
         `Cannot found storage project root directory "${storageProjectRootDirPath}".`
     );
 
+    // Copy cursor profile to storage project and push to remote repository
+
     const storageDirPath = path.join(
         storageProjectRootDirPath,
         profile.storage.dirName.trim()
     );
-
     await execCommand({
         command: `tar -zcvf ${kProfileTarGzFileName} .`,
         cwd: profileDirPath,
         interactive: false,
     });
-
     await fs.promises.cp(
         path.join(profileDirPath, kProfileTarGzFileName),
         path.join(storageDirPath, kProfileTarGzFileName),
         { recursive: true }
     );
-
-    // Push storage project to remote repository
-
     await execCommand({
         command: `git add .`,
         cwd: storageProjectRootDirPath,
         interactive: false,
     });
-
-    const deviceName =
-        (
-            await execCommand({
-                command: `system_profiler SPHardwareDataType | grep "Model Name" | awk '{print $3 $4}' && system_profiler SPHardwareDataType | grep "Chip" | awk '{print $3}'`,
-                cwd: storageProjectRootDirPath,
-                interactive: false,
-            })
-        )
-            ?.split("\n")
-            .map(line => line.trim())
-            .join(" ") ?? "";
-
+    const deviceName = await execCommand({
+        command: `system_profiler SPHardwareDataType | awk '/Model Name/ {printf $3 $4 " "} /Chip/ {print $3}'`,
+        cwd: storageProjectRootDirPath,
+        interactive: false,
+    });
     await execCommand({
         command: format(
             `git commit -m "feat: update cursor profile%s"`,
@@ -124,7 +115,6 @@ async function pushCursorProfile() {
         cwd: storageProjectRootDirPath,
         interactive: false,
     });
-
     await execCommand({
         command: `git push`,
         cwd: storageProjectRootDirPath,

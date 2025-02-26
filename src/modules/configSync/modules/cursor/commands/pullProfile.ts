@@ -1,6 +1,14 @@
 import path from "node:path";
 
-import { extensionCtx, extensionName, fs, logger, os, vscode } from "@/core";
+import {
+    extensionCtx,
+    extensionName,
+    fs,
+    logger,
+    os,
+    updateConfigurationItem,
+    vscode,
+} from "@/core";
 import { execCommand } from "@utils/command";
 import { CommonUtils } from "@utils/common";
 
@@ -43,14 +51,10 @@ async function pullCursorProfile() {
 
         // If user confirm, enable sync cursor files and pull profile again
         if (confirm === kEnableSyncCursorFiles) {
-            await vscode.workspace
-                .getConfiguration()
-                .update(
-                    `${extensionName}.configSync.cursor.enable`,
-                    true,
-                    vscode.ConfigurationTarget.Global
-                );
-
+            await updateConfigurationItem(
+                `${extensionName}.configSync.cursor.enable`,
+                true
+            );
             await pullCursorProfile();
 
             return;
@@ -58,8 +62,6 @@ async function pullCursorProfile() {
 
         return;
     }
-
-    // Pull profile from remote repository
 
     const profileDirPath = profile.profileDirPath
         .trim()
@@ -77,17 +79,17 @@ async function pullCursorProfile() {
         `Cannot found storage project root directory "${storageProjectRootDirPath}".`
     );
 
+    // Pull profile from remote repository and update to cursor profile
+
     const storageDirPath = path.join(
         storageProjectRootDirPath,
         profile.storage.dirName.trim()
     );
-
     await execCommand({
         command: `git pull`,
         cwd: storageProjectRootDirPath,
         interactive: false,
     });
-
     await fs.promises.cp(
         path.join(storageDirPath, kProfileTarGzFileName),
         path.join(path.dirname(profileDirPath), kProfileTarGzFileName),

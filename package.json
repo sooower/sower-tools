@@ -429,7 +429,7 @@
                     "default": true
                 },
                 "sower-tools.markdownEnhancement.localImage.uploadImageConfigFilePath": {
-                    "description": "The config file path for uploading images to file server. Supports path alias '~'.",
+                    "description": "The config file path for uploading images to file server, supports path alias '~'.",
                     "type": "string",
                     "default": "~/.config/sower-tools/.upload-image-config.json"
                 },
@@ -608,7 +608,7 @@
                                         },
                                         "fsPath": {
                                             "type": "string",
-                                            "description": "The path of the project which will be opened. Supports path alias '~'."
+                                            "description": "The path of the project which will be opened, supports path alias '~'."
                                         }
                                     }
                                 }
@@ -645,7 +645,7 @@
                     "properties": {
                         "profileDirPath": {
                             "type": "string",
-                            "description": "The path of the cursor profile. Supports path alias '~'."
+                            "description": "The path of the cursor profile, supports path alias '~'."
                         },
                         "storage": {
                             "type": "object",
@@ -653,11 +653,11 @@
                             "properties": {
                                 "projectRootDirPath": {
                                     "type": "string",
-                                    "description": "The path of the storage project root directory. Supports path alias '~'."
+                                    "description": "The path of the storage project root directory, supports path alias '~'."
                                 },
                                 "dirName": {
                                     "type": "string",
-                                    "description": "The name of the storage directory. Supports multiple directories separated by '/'."
+                                    "description": "The name of the storage directory, supports multiple directories separated by '/'."
                                 }
                             }
                         }
