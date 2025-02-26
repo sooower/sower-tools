@@ -79,13 +79,7 @@ class Logger {
         console.info(this.addTimestamp(ELevel.Info, log));
         this.channel.info(log);
 
-        vscode.window
-            .showInformationMessage(message, kSeeDetails)
-            .then(selection => {
-                if (selection === kSeeDetails) {
-                    this.channel.show(true);
-                }
-            });
+        vscode.window.showInformationMessage(message);
     }
 
     /**
