@@ -1,11 +1,10 @@
 import { Node } from "ts-morph";
 
-import { isIgnoredFile } from "@/modules/styleCheck/modules/shared/utils";
-
 import { extensionCtx, extensionName, project, vscode } from "@/core";
 import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByNode } from "@/utils/vscode/range";
 
+import { isDiffView, isIgnoredFile } from "../../shared/utils";
 import { enableStyleCheckImportStatement } from "../configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -39,6 +38,12 @@ function updateDiagnostics(document: vscode.TextDocument) {
     }
 
     if (isIgnoredFile(document)) {
+        diagnosticCollection.delete(document.uri);
+
+        return;
+    }
+
+    if (isDiffView(document)) {
         diagnosticCollection.delete(document.uri);
 
         return;

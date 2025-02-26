@@ -170,3 +170,7 @@ export function isIgnoredFile(document: vscode.TextDocument): boolean {
 
     return ignoreManager.ignores(relativePath);
 }
+
+export function isDiffView(document: vscode.TextDocument) {
+    return ["git", "git-index", "vscode-scm"].includes(document.uri.scheme);
+}

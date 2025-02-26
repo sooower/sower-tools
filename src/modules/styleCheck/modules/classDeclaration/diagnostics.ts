@@ -5,7 +5,11 @@ import { detectCommentKind } from "@/utils/typescript/comment";
 import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
-import { hasValidLeadingSpaceBefore, isIgnoredFile } from "../shared/utils";
+import {
+    hasValidLeadingSpaceBefore,
+    isDiffView,
+    isIgnoredFile,
+} from "../shared/utils";
 import { enableStyleCheckClassDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -38,6 +42,12 @@ function updateDiagnostics(document: vscode.TextDocument) {
     }
 
     if (isIgnoredFile(document)) {
+        diagnosticCollection.delete(document.uri);
+
+        return;
+    }
+
+    if (isDiffView(document)) {
         diagnosticCollection.delete(document.uri);
 
         return;

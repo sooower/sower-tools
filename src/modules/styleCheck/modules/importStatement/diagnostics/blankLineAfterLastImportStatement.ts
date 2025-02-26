@@ -1,5 +1,6 @@
 import {
     hasValidLeadingSpaceAfter,
+    isDiffView,
     isIgnoredFile,
 } from "@/modules/styleCheck/modules/shared/utils";
 
@@ -41,6 +42,12 @@ function updateDiagnostics(document: vscode.TextDocument) {
     }
 
     if (isIgnoredFile(document)) {
+        diagnosticCollection.delete(document.uri);
+
+        return;
+    }
+
+    if (isDiffView(document)) {
         diagnosticCollection.delete(document.uri);
 
         return;

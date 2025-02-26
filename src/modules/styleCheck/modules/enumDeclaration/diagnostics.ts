@@ -5,7 +5,11 @@ import { detectCommentKind } from "@/utils/typescript/comment";
 import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
-import { hasValidLeadingSpaceBefore, isIgnoredFile } from "../shared/utils";
+import {
+    hasValidLeadingSpaceBefore,
+    isDiffView,
+    isIgnoredFile,
+} from "../shared/utils";
 import { enableStyleCheckEnumDeclaration } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -43,6 +47,11 @@ function updateDiagnostics(document: vscode.TextDocument) {
         return;
     }
 
+    if (isDiffView(document)) {
+        diagnosticCollection.delete(document.uri);
+
+        return;
+    }
     const diagnostics: vscode.Diagnostic[] = [];
 
     checkIsMissingBlankLineBeforeEnumDeclaration(document, diagnostics);

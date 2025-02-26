@@ -4,7 +4,7 @@ import { extensionCtx, extensionName, project, vscode } from "@/core";
 import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
-import { isIgnoredFile } from "../shared/utils";
+import { isDiffView, isIgnoredFile } from "../shared/utils";
 import { enableStyleCheckReturnStatement } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
@@ -36,6 +36,12 @@ function updateDiagnostics(document: vscode.TextDocument) {
     }
 
     if (isIgnoredFile(document)) {
+        diagnosticCollection.delete(document.uri);
+
+        return;
+    }
+
+    if (isDiffView(document)) {
         diagnosticCollection.delete(document.uri);
 
         return;

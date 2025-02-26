@@ -5,6 +5,7 @@ import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import {
     hasValidLeadingSpaceBefore,
+    isDiffView,
     isFirstLineOfParent,
     isIgnoredFile,
     isLastLineOfParent,
@@ -41,6 +42,12 @@ function updateDiagnostics(document: vscode.TextDocument) {
     }
 
     if (isIgnoredFile(document)) {
+        diagnosticCollection.delete(document.uri);
+
+        return;
+    }
+
+    if (isDiffView(document)) {
         diagnosticCollection.delete(document.uri);
 
         return;
