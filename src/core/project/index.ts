@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { Project, SourceFile } from "ts-morph";
+import { Project } from "ts-morph";
 
 import { getWorkspaceFolderPath, isTypeScriptFile } from "@/utils/vscode";
 
@@ -10,11 +10,6 @@ import { fs, logger, vscode } from "..";
  * TypeScript project, built by ts-morph.
  */
 export let project: Project | undefined;
-
-/**
- * Cache of source files, keyed by file path.
- */
-const sourceFileCache = new Map<string, SourceFile>();
 
 /**
  * Initialize project analyser when there is a TypeScript project opened in the workspace.
@@ -45,11 +40,6 @@ function createProjectAnalyser() {
     }
 
     project = new Project({ tsConfigFilePath });
-
-    // Initialize source file cache
-    project.getSourceFiles().forEach(file => {
-        sourceFileCache.set(file.getFilePath(), file);
-    });
 }
 
 /**
@@ -84,29 +74,18 @@ async function refreshSourceFileCache(document: vscode.TextDocument) {
             return;
         }
 
-        const sourceFile = sourceFileCache.get(document.fileName);
-
-        if (sourceFile !== undefined) {
-            // Refresh file AST
+        const sourceFile = project.getSourceFile(document.fileName);
+        if (sourceFile === undefined) {
+            project.createSourceFile(document.fileName, document.getText(), {
+                overwrite: true,
+            });
+            logger.trace(`[AST] added source file '${document.fileName}'.`);
+        } else {
             sourceFile.replaceText(
                 [0, sourceFile.getFullText().length],
                 document.getText()
             );
             logger.trace(`[AST] refreshed file '${document.fileName}'.`);
-        } else {
-            let sourceFile = project.getSourceFile(document.fileName);
-            if (sourceFile === undefined) {
-                // Add new source file to project
-                sourceFile = project.createSourceFile(
-                    document.fileName,
-                    document.getText(),
-                    {
-                        overwrite: true,
-                    }
-                );
-            }
-            sourceFileCache.set(document.fileName, sourceFile);
-            logger.trace(`[AST] added source file '${document.fileName}'.`);
         }
     } catch (error) {
         logger.error(
