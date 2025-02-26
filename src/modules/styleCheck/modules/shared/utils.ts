@@ -172,5 +172,7 @@ export function isIgnoredFile(document: vscode.TextDocument): boolean {
 }
 
 export function isDiffView(document: vscode.TextDocument) {
-    return ["git", "git-index", "vscode-scm"].includes(document.uri.scheme);
+    return ["git", "git-index", "vscode-scm", "gitlens"].includes(
+        document.uri.scheme
+    );
 }
