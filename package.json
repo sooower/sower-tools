@@ -600,13 +600,26 @@
                                         },
                                         "fsPath": {
                                             "type": "string",
-                                            "description": "The path of the project which will be opened."
+                                            "description": "The path of the project which will be opened. Supports path alias \"~\"."
                                         }
                                     }
                                 }
                             }
                         }
                     }
+                },
+                "sower-tools.projectsOpen.style": {
+                    "description": "The view style of the projects shown in the select list.",
+                    "type": "string",
+                    "enum": [
+                        "groups",
+                        "flat"
+                    ],
+                    "enumDescriptions": [
+                        "Show groups at first, after selecting a group, show projects in the group.",
+                        "Show projects of all groups in a flat list and a separator between groups."
+                    ],
+                    "default": "flat"
                 },
                 "sower-tools.timestampTools.timestampFormat": {
                     "description": "The timestamp format used in timestamp insertion or conversion. See more details in https://day.js.org/docs/en/display/format.",

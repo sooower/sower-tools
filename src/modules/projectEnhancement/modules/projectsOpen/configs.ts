@@ -19,9 +19,24 @@ export type ProjectsOpenGroup = z.infer<typeof groupSchema>;
  */
 export let projectsOpenGroups: ProjectsOpenGroup[];
 
+export enum EProjectDisplayStyle {
+    Groups = "groups",
+    Flat = "flat",
+}
+
+/**
+ * Whether to open projects in flat style.
+ */
+export let projectDisplayStyle: EProjectDisplayStyle;
+
 export function parseConfigs() {
     projectsOpenGroups = z
         .array(groupSchema)
         .default([])
         .parse(getConfigurationItem(`${extensionName}.projectsOpen.groups`));
+
+    projectDisplayStyle = z
+        .nativeEnum(EProjectDisplayStyle)
+        .default(EProjectDisplayStyle.Groups)
+        .parse(getConfigurationItem(`${extensionName}.projectsOpen.style`));
 }
