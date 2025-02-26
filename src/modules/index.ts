@@ -3,6 +3,7 @@ import { defineModule } from "@/core";
 import { apiResourcesGeneration } from "./apiResourcesGeneration";
 import { changelogSync } from "./changelogSync";
 import { completionItemEnhancement } from "./completionItemEnhancement";
+import { configSync } from "./configSync";
 import { databaseModel } from "./databaseModel";
 import { debuggingEnhancement } from "./debuggingEnhancement";
 import { dirEnhancement } from "./dirEnhancement";
@@ -44,4 +45,5 @@ export const modules = defineModule([
     styleCheck,
     completionItemEnhancement,
     projectEnhancement,
+    configSync,
 ]);

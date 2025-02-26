@@ -122,6 +122,14 @@
             {
                 "command": "sower-tools.projectEnhancement.openProjects",
                 "title": "Open Projects"
+            },
+            {
+                "command": "sower-tools.configSync.cursor.pushProfile",
+                "title": "Push Cursor Profile"
+            },
+            {
+                "command": "sower-tools.configSync.cursor.pullProfile",
+                "title": "Pull Cursor Profile"
             }
         ],
         "menus": {
@@ -295,12 +303,12 @@
                     ]
                 },
                 "sower-tools.nodeBuiltinModulesImportsUpdate.enable": {
-                    "description": "If true, it will update node builtin modules imports with prefix \"node:\" after saving a opened file.",
+                    "description": "If true, it will update node builtin modules imports with prefix 'node:' after saving a opened file.",
                     "type": "boolean",
                     "default": true
                 },
                 "sower-tools.nodeBuiltinModulesImportsUpdate.nodeBuiltinModules": {
-                    "description": "Array of node builtin modules names which will be updated with prefix \"node:\", others will be ignored.",
+                    "description": "Array of node builtin modules names which will be updated with prefix 'node:', others will be ignored.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -421,7 +429,7 @@
                     "default": true
                 },
                 "sower-tools.markdownEnhancement.localImage.uploadImageConfigFilePath": {
-                    "description": "The config file path for uploading images to file server. Supports path alias \"~\".",
+                    "description": "The config file path for uploading images to file server. Supports path alias '~'.",
                     "type": "string",
                     "default": "~/.config/sower-tools/.upload-image-config.json"
                 },
@@ -600,7 +608,7 @@
                                         },
                                         "fsPath": {
                                             "type": "string",
-                                            "description": "The path of the project which will be opened. Supports path alias \"~\"."
+                                            "description": "The path of the project which will be opened. Supports path alias '~'."
                                         }
                                     }
                                 }
@@ -625,6 +633,35 @@
                     "description": "The timestamp format used in timestamp insertion or conversion. See more details in https://day.js.org/docs/en/display/format.",
                     "type": "string",
                     "default": "YYYY-MM-DD HH:mm:ss"
+                },
+                "sower-tools.configSync.cursor.enable": {
+                    "description": "Whether to enable sync cursor files.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "sower-tools.configSync.cursor.profile": {
+                    "description": "The profile information of the cursor.",
+                    "type": "object",
+                    "properties": {
+                        "profileDirPath": {
+                            "type": "string",
+                            "description": "The path of the cursor profile. Supports path alias '~'."
+                        },
+                        "storage": {
+                            "type": "object",
+                            "description": "The project which will used to store the cursor profile and sync it with remote repository.",
+                            "properties": {
+                                "projectRootDirPath": {
+                                    "type": "string",
+                                    "description": "The path of the storage project root directory. Supports path alias '~'."
+                                },
+                                "dirName": {
+                                    "type": "string",
+                                    "description": "The name of the storage directory. Supports multiple directories separated by '/'."
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
