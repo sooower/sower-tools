@@ -77,7 +77,7 @@ async function doGitForcePush() {
     let upstreamBranch: string | undefined;
     try {
         upstreamBranch = await execCommand({
-            command: `git rev-parse --abbrev-ref ${currBranch}@{upstream}`,
+            command: `git rev-parse --abbrev-ref ${upstreamName}`,
             cwd: workspaceFolderPath,
             interactive: false,
         });
