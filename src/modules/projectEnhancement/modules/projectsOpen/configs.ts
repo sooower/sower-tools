@@ -6,7 +6,7 @@ const groupSchema = z.object({
     name: z.string(),
     projects: z.array(
         z.object({
-            name: z.string(),
+            name: z.string().optional(),
             fsPath: z.string(),
         })
     ),

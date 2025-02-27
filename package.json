@@ -379,7 +379,11 @@
                                 "type": "number",
                                 "description": "The duration of the option in seconds."
                             }
-                        }
+                        },
+                        "required": [
+                            "label",
+                            "duration"
+                        ]
                     },
                     "default": [
                         {
@@ -477,7 +481,11 @@
                                 "type": "string",
                                 "description": "The replacement of the log printing."
                             }
-                        }
+                        },
+                        "required": [
+                            "trigger",
+                            "replacement"
+                        ]
                     },
                     "default": [
                         {
@@ -610,10 +618,17 @@
                                             "type": "string",
                                             "description": "The path of the project which will be opened, supports path alias '~'."
                                         }
-                                    }
+                                    },
+                                    "required": [
+                                        "fsPath"
+                                    ]
                                 }
                             }
-                        }
+                        },
+                        "required": [
+                            "name",
+                            "projects"
+                        ]
                     }
                 },
                 "sower-tools.projectsOpen.style": {
@@ -659,9 +674,17 @@
                                     "type": "string",
                                     "description": "The name of the storage directory, supports multiple directories separated by '/'."
                                 }
-                            }
+                            },
+                            "required": [
+                                "projectRootDirPath",
+                                "dirName"
+                            ]
                         }
-                    }
+                    },
+                    "required": [
+                        "profileDirPath",
+                        "storage"
+                    ]
                 }
             }
         }

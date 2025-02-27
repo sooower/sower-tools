@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import { QuickInputButton } from "vscode";
 
 import {
@@ -119,7 +121,7 @@ async function selectProjectsToOpen(
         projectsOpenGroups
             .find(it => it.name === selectedGroup.label)
             ?.projects.map(({ name, fsPath }) => ({
-                label: name,
+                label: name ?? path.basename(fsPath),
                 description: fsPath,
             })) ?? [];
     projectsQuickPick.canSelectMany = true;
@@ -193,7 +195,7 @@ async function openProjectsInFlatStyle() {
             ...group.projects.map(
                 ({ name, fsPath }) =>
                     ({
-                        label: name,
+                        label: name ?? path.basename(fsPath),
                         description: fsPath,
                     } satisfies vscode.QuickPickItem)
             )
