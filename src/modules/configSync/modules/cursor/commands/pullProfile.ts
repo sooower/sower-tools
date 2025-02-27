@@ -41,6 +41,19 @@ export function registerCommandPullCursorProfile() {
 }
 
 async function pullCursorProfile() {
+    // Show alert to double check if user want to pull cursor profile
+
+    const kPullProfile = "Pull and override";
+    const confirm = await vscode.window.showWarningMessage(
+        "This action will pull cursor profile from remote repository and override the local cursor profile. Do you want to continue?",
+        { modal: true },
+        kPullProfile
+    );
+    if (confirm !== kPullProfile) {
+        return;
+    }
+
+    // If sync cursor files is not enabled, enable it and pull profile again
     if (!enableSyncCursorFiles) {
         const kEnableSyncCursorFiles = "Enable";
 
@@ -63,6 +76,8 @@ async function pullCursorProfile() {
         return;
     }
 
+    // Pull profile from remote repository and update to cursor profile
+
     const profileDirPath = profile.profileDirPath
         .trim()
         .replace(/^~/, os.homedir());
@@ -78,8 +93,6 @@ async function pullCursorProfile() {
         fs.existsSync(storageProjectRootDirPath),
         `Cannot found storage project root directory "${storageProjectRootDirPath}".`
     );
-
-    // Pull profile from remote repository and update to cursor profile
 
     const storageDirPath = path.join(
         storageProjectRootDirPath,

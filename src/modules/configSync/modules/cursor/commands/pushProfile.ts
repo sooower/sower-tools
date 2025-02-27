@@ -43,6 +43,19 @@ export function registerCommandPushCursorProfile() {
 }
 
 async function pushCursorProfile() {
+    // Show alert to double check if user want to push cursor profile
+
+    const kPushProfile = "Push";
+    const confirm = await vscode.window.showWarningMessage(
+        "This action will push local cursor profile to remote repository. Do you want to continue?",
+        { modal: true },
+        kPushProfile
+    );
+    if (confirm !== kPushProfile) {
+        return;
+    }
+
+    // If sync cursor files is not enabled, enable it and push profile again
     if (!enableSyncCursorFiles) {
         const kEnableSyncCursorFiles = "Enable";
 
@@ -51,7 +64,6 @@ async function pushCursorProfile() {
             kEnableSyncCursorFiles
         );
 
-        // If user confirm, enable sync cursor files and push profile again
         if (confirm === kEnableSyncCursorFiles) {
             await updateConfigurationItem(
                 `${extensionName}.configSync.cursor.enable`,
@@ -64,6 +76,8 @@ async function pushCursorProfile() {
 
         return;
     }
+
+    // Copy cursor profile to storage project and push to remote repository
 
     const profileDirPath = profile.profileDirPath
         .trim()
@@ -80,8 +94,6 @@ async function pushCursorProfile() {
         fs.existsSync(storageProjectRootDirPath),
         `Cannot found storage project root directory "${storageProjectRootDirPath}".`
     );
-
-    // Copy cursor profile to storage project and push to remote repository
 
     const storageDirPath = path.join(
         storageProjectRootDirPath,
