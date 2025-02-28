@@ -103,7 +103,7 @@
             },
             {
                 "command": "sower-tools.gitEnhancement.forcePush",
-                "title": "Force Push"
+                "title": "Force Push to..."
             },
             {
                 "command": "sower-tools.apiResourcesGeneration.generateAPIResources",

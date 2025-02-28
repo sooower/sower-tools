@@ -1,7 +1,6 @@
 import { extensionCtx, extensionName, logger, vscode } from "@/core";
 import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { execCommand } from "@utils/command";
-import { CommonUtils } from "@utils/common";
 
 export function registerCommandForcePush() {
     extensionCtx.subscriptions.push(
@@ -42,17 +41,17 @@ async function doGitForcePush() {
         return;
     }
 
-    const res = await execCommand({
+    const resRemoteRepos = await execCommand({
         command: `git remote -v`,
         cwd: workspaceFolderPath,
         interactive: false,
     });
 
-    const remoteRepositories: vscode.QuickPickItem[] = [];
-    for (const line of res?.trim().split("\n") ?? []) {
+    const remoteRepos: vscode.QuickPickItem[] = [];
+    for (const line of resRemoteRepos?.trim().split("\n") ?? []) {
         const [name, url, type] = line.split(/\s+/);
         if (type === "(push)") {
-            remoteRepositories.push({
+            remoteRepos.push({
                 label: name,
                 description: url,
             });
@@ -61,50 +60,39 @@ async function doGitForcePush() {
 
     // Select a remote repository to push the branch to
 
-    const selectedRemoteRepository = await vscode.window.showQuickPick(
-        remoteRepositories,
-        {
-            canPickMany: false,
-            placeHolder: `Pick a remote repository to push the branch ${currBranch} to:`,
-        }
-    );
+    const selectedRemoteRepo = await vscode.window.showQuickPick(remoteRepos, {
+        canPickMany: false,
+        placeHolder: `Pick a remote repository to push the branch ${currBranch} to:`,
+    });
 
-    if (selectedRemoteRepository === undefined) {
+    if (selectedRemoteRepo === undefined) {
         return;
     }
 
-    const { label: upstreamName } = selectedRemoteRepository;
-    let upstreamBranch: string | undefined;
-    try {
-        upstreamBranch = await execCommand({
-            command: `git rev-parse --abbrev-ref ${upstreamName}`,
+    const { label: upstreamName } = selectedRemoteRepo;
+    const remoteBranch =
+        (await execCommand({
+            command: `git ls-remote --heads ${upstreamName} ${currBranch} | awk '{print $2}' | awk -F'/' '{print $3}'`,
             cwd: workspaceFolderPath,
             interactive: false,
+        })) ?? "";
+
+    // If the upstream branch is not found, set it and force push
+    if (remoteBranch.trim() === "") {
+        await setUpstreamBranchAndForcePush({
+            currBranch,
+            upstreamName,
+            workspaceFolderPath,
         });
-    } catch (e) {
-        if (CommonUtils.assertString(e).includes("unknown revision")) {
-            // If the upstream branch is not found, set it and force push
-            await setUpstreamBranchAndForcePush({
-                currBranch,
-                upstreamName,
-                workspaceFolderPath,
-            });
-
-            return;
-        }
-
-        logger.error(
-            `Failed to get upstream branch for branch "${currBranch}".`,
-            e
-        );
 
         return;
     }
 
     // Force push to the upstream branch
     await forcePush({
+        currBranch,
         upstreamName,
-        upstreamBranch: CommonUtils.mandatory(upstreamBranch),
+        upstreamBranch: remoteBranch,
         workspaceFolderPath,
     });
 }
@@ -121,8 +109,11 @@ async function setUpstreamBranchAndForcePush({
     const kSetUpstreamBranch = "Set upstream branch and force push";
 
     const confirm = await vscode.window.showWarningMessage(
-        `No upstream branch found for branch "${currBranch}". Are you want to set upstream branch "${upstreamName}/${currBranch}" and force push to?`,
-        { modal: true },
+        `No upstream branch found, this will to set upstream branch "${upstreamName}/${currBranch}" for branch "${currBranch}" and force push to. Are you sure you want to continue?`,
+        {
+            modal: true,
+            detail: `This will execute command "git push -f -u ${upstreamName} ${currBranch}" and not be able to rollback.`,
+        },
         kSetUpstreamBranch
     );
 
@@ -142,18 +133,23 @@ async function setUpstreamBranchAndForcePush({
 }
 
 async function forcePush({
+    currBranch,
     upstreamName,
     upstreamBranch,
     workspaceFolderPath,
 }: {
+    currBranch: string;
     upstreamName: string;
     upstreamBranch: string;
     workspaceFolderPath: string;
 }) {
     const kForcePush = "Force push";
     const confirm = await vscode.window.showWarningMessage(
-        `This will override the remote branch "${upstreamBranch}" and not be able to rollback. Are you sure you want to force push to?`,
-        { modal: true },
+        `This will force push branch "${currBranch}" to "${upstreamName}/${upstreamBranch}". Are you sure you want to continue?`,
+        {
+            modal: true,
+            detail: `This will execute command "git push -f -u ${upstreamName}" and not be able to rollback.`,
+        },
         kForcePush
     );
 
