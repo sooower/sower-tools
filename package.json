@@ -5,11 +5,11 @@
     "version": "0.17.3",
     "publisher": "Sower",
     "icon": "assets/icon.png",
+    "license": "UNLICENSED",
     "repository": {
-        "type": "git",
-        "url": "https://github.com/sooower/sower-tools"
+        "type": "gitea",
+        "url": "https://gitea.sower.fun/sower/sower-tools"
     },
-    "license": "MIT",
     "main": "./dist/extension.js",
     "scripts": {
         "vscode:prepublish": "yarn run package",
@@ -52,6 +52,7 @@
         "@utils/datetime": "^0.2.4",
         "@utils/fs": "^0.3.2",
         "@utils/json": "^0.4.2",
+        "chokidar": "^4.0.3",
         "ignore": "^7.0.3",
         "markdown-it": "^14.1.0",
         "minio": "^8.0.4",
@@ -684,6 +685,33 @@
                     "required": [
                         "profileDirPath",
                         "storage"
+                    ]
+                },
+                "sower-tools.projectEnhancement.projectSnapshot.enable": {
+                    "description": "Whether to enable project snapshot.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "sower-tools.projectEnhancement.projectSnapshot.maxLegacyVersions": {
+                    "description": "Max legacy versions, if the file snapshots exceed this value, the older legacy versions will be deleted.",
+                    "type": "number",
+                    "default": 50
+                },
+                "sower-tools.projectEnhancement.projectSnapshot.snapshotRootPath": {
+                    "description": "The root path of the project snapshot, each project snapshots saved in a sub-folder named according to project folder path, supports path alias '~'.",
+                    "type": "string",
+                    "default": "~/.project-snapshots"
+                },
+                "sower-tools.projectEnhancement.projectSnapshot.ignorePatterns": {
+                    "description": "The ignore patterns of the project snapshot, supports 'glob' patterns.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "node_modules/**",
+                        "dist/**",
+                        "build/**"
                     ]
                 }
             }
