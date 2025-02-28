@@ -38,7 +38,7 @@ export function parseConfigs() {
 /**
  * The ignore manager instance.
  *
- * **NOTE:** This instance is only used in the style check module.
+ * **NOTE:** This instance is only used in the 'style check' module.
  */
 export let ignoreManager: ignore.Ignore;
 
@@ -67,5 +67,5 @@ export function loadIgnorePatterns() {
         );
     }
 
-    logger.trace("Loaded ignore patterns.");
+    logger.trace("[style-check] loaded ignore patterns.");
 }

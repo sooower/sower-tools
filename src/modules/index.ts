@@ -1,5 +1,6 @@
 import { defineModule } from "@/core";
 
+import { apiRequestAssistant } from "./apiRequestAssistant";
 import { apiResourcesGeneration } from "./apiResourcesGeneration";
 import { changelogSync } from "./changelogSync";
 import { completionItemEnhancement } from "./completionItemEnhancement";
@@ -46,4 +47,5 @@ export const modules = defineModule([
     completionItemEnhancement,
     projectEnhancement,
     configSync,
+    apiRequestAssistant,
 ]);

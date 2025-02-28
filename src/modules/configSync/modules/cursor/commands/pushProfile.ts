@@ -8,9 +8,9 @@ import {
     format,
     fs,
     logger,
-    os,
     updateConfigurationItem,
 } from "@/core";
+import { formatHomeDirAlias } from "@/utils/common";
 import { execCommand } from "@utils/command";
 import { CommonUtils } from "@utils/common";
 
@@ -31,7 +31,6 @@ export function registerCommandPushCursorProfile() {
                     async (progress, token) => {
                         try {
                             await pushCursorProfile();
-                            logger.info("Push cursor profile successfully.");
                         } catch (e) {
                             logger.error("Failed to push cursor profile.", e);
                         }
@@ -79,12 +78,10 @@ async function pushCursorProfile() {
 
     // Copy cursor profile to storage project and push to remote repository
 
-    const profileDirPath = profile.profileDirPath
-        .trim()
-        .replace(/^~/, os.homedir());
-    const storageProjectRootDirPath = profile.storage.projectRootDirPath
-        .trim()
-        .replace(/^~/, os.homedir());
+    const profileDirPath = formatHomeDirAlias(profile.profileDirPath);
+    const storageProjectRootDirPath = formatHomeDirAlias(
+        profile.storage.projectRootDirPath
+    );
 
     CommonUtils.assert(
         fs.existsSync(profileDirPath),
@@ -132,4 +129,6 @@ async function pushCursorProfile() {
         cwd: storageProjectRootDirPath,
         interactive: false,
     });
+
+    logger.info("Push cursor profile successfully.");
 }

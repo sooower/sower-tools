@@ -5,10 +5,10 @@ import {
     extensionName,
     fs,
     logger,
-    os,
     updateConfigurationItem,
     vscode,
 } from "@/core";
+import { formatHomeDirAlias } from "@/utils/common";
 import { execCommand } from "@utils/command";
 import { CommonUtils } from "@utils/common";
 
@@ -29,7 +29,6 @@ export function registerCommandPullCursorProfile() {
                     async (progress, token) => {
                         try {
                             await pullCursorProfile();
-                            logger.info("Pull cursor profile successfully.");
                         } catch (e) {
                             logger.error("Failed to pull cursor profile.", e);
                         }
@@ -78,12 +77,10 @@ async function pullCursorProfile() {
 
     // Pull profile from remote repository and update to cursor profile
 
-    const profileDirPath = profile.profileDirPath
-        .trim()
-        .replace(/^~/, os.homedir());
-    const storageProjectRootDirPath = profile.storage.projectRootDirPath
-        .trim()
-        .replace(/^~/, os.homedir());
+    const profileDirPath = formatHomeDirAlias(profile.profileDirPath);
+    const storageProjectRootDirPath = formatHomeDirAlias(
+        profile.storage.projectRootDirPath
+    );
 
     CommonUtils.assert(
         fs.existsSync(profileDirPath),
@@ -133,4 +130,6 @@ async function pullCursorProfile() {
         cwd: profileDirPath,
         interactive: false,
     });
+
+    logger.info("Pull cursor profile successfully.");
 }

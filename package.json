@@ -52,7 +52,6 @@
         "@utils/datetime": "^0.2.4",
         "@utils/fs": "^0.3.2",
         "@utils/json": "^0.4.2",
-        "chokidar": "^4.0.3",
         "ignore": "^7.0.3",
         "markdown-it": "^14.1.0",
         "minio": "^8.0.4",
@@ -83,18 +82,12 @@
             {
                 "command": "sower-tools.debuggingEnhancement.debugProject",
                 "title": "Debug Project",
-                "icon": {
-                    "dark": "./assets/debugProject-dark.svg",
-                    "light": "./assets/debugProject-light.svg"
-                }
+                "icon": "$(bug)"
             },
             {
                 "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
                 "title": "Debug Current File",
-                "icon": {
-                    "dark": "./assets/debugCurrentFile-dark.svg",
-                    "light": "./assets/debugCurrentFile-light.svg"
-                }
+                "icon": "$(debug-alt)"
             },
             {
                 "command": "sower-tools.gitEnhancement.skipWorkTree",
@@ -131,6 +124,11 @@
             {
                 "command": "sower-tools.configSync.cursor.pullProfile",
                 "title": "Pull Cursor Profile"
+            },
+            {
+                "command": "sower-tools.apiRequestAssistant.referToEnvVariables",
+                "title": "Refer to Env Variables",
+                "icon": "$(zap)"
             }
         ],
         "menus": {
@@ -142,25 +140,35 @@
             ],
             "editor/context/sowerTools": [
                 {
+                    "command": "sower-tools.apiRequestAssistant.referToEnvVariables",
+                    "group": "001_apiRequestAssistant@001",
+                    "when": "resourceLangId == typescript"
+                },
+                {
                     "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
-                    "group": "001_debuggingEnhancement@001",
+                    "group": "002_debuggingEnhancement@001",
                     "when": "resourceLangId == typescript"
                 },
                 {
                     "command": "sower-tools.debuggingEnhancement.debugProject",
-                    "group": "001_debuggingEnhancement@002",
+                    "group": "002_debuggingEnhancement@002",
                     "when": "resourceLangId == typescript"
                 }
             ],
             "editor/title": [
                 {
-                    "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
+                    "command": "sower-tools.apiRequestAssistant.referToEnvVariables",
                     "group": "navigation@001",
                     "when": "resourceLangId == typescript"
                 },
                 {
-                    "command": "sower-tools.debuggingEnhancement.debugProject",
+                    "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
                     "group": "navigation@002",
+                    "when": "resourceLangId == typescript"
+                },
+                {
+                    "command": "sower-tools.debuggingEnhancement.debugProject",
+                    "group": "navigation@003",
                     "when": "resourceLangId == typescript"
                 }
             ],
@@ -518,9 +526,9 @@
                         "type": "string"
                     },
                     "default": [
-                        "node_modules/**",
-                        "dist/**",
-                        "build/**"
+                        "node_modules/",
+                        "dist/",
+                        "build/"
                     ]
                 },
                 "sower-tools.styleCheck.ignore.compatibleConfigFilenames": {
@@ -690,7 +698,7 @@
                 "sower-tools.projectEnhancement.projectSnapshot.enable": {
                     "description": "Whether to enable project snapshot.",
                     "type": "boolean",
-                    "default": true
+                    "default": false
                 },
                 "sower-tools.projectEnhancement.projectSnapshot.maxLegacyVersions": {
                     "description": "Max legacy versions, if the file snapshots exceed this value, the older legacy versions will be deleted.",
@@ -703,16 +711,55 @@
                     "default": "~/.project-snapshots"
                 },
                 "sower-tools.projectEnhancement.projectSnapshot.ignorePatterns": {
-                    "description": "The ignore patterns of the project snapshot, supports 'glob' patterns.",
+                    "description": "The 'glob' patterns of files or directories that will be ignored when saving project snapshot, the priority is higher than configured items in 'sower-tools.projectEnhancement.projectSnapshot.ignoreCompatibleConfigFilenames'.",
                     "type": "array",
                     "items": {
                         "type": "string"
                     },
                     "default": [
-                        "node_modules/**",
-                        "dist/**",
-                        "build/**"
+                        "node_modules/",
+                        "dist/",
+                        "build/",
+                        ".git/"
                     ]
+                },
+                "sower-tools.projectEnhancement.projectSnapshot.ignoreCompatibleConfigFilenames": {
+                    "description": "The compatible config filenames that their contents will be split by line and added to the ignore list of project snapshot. The priority is lower than configured items in 'sower-tools.projectEnhancement.projectSnapshot.ignorePatterns'.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        ".gitignore"
+                    ]
+                },
+                "sower-tools.apiRequestAssistant.envVariablesReference.enable": {
+                    "description": "Whether to enable env variables reference.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "sower-tools.apiRequestAssistant.envVariablesReference.envVariablesDirRelativePath": {
+                    "description": "The relative path of the env variables directory to the project root directory.",
+                    "type": "string",
+                    "default": ".cached/envVariables"
+                },
+                "sower-tools.apiRequestAssistant.envVariablesReference.supportedProjectNames": {
+                    "description": "The supported project names which will be used to find the env variables file.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "api-request"
+                    ]
+                },
+                "sower-tools.apiRequestAssistant.envVariablesReference.ignoreProjectNames": {
+                    "description": "The project names which will be ignored when showing the env variables reference.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": []
                 }
             }
         }

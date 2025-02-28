@@ -5,7 +5,7 @@ import { nextTick } from "node:process";
 import ignore from "ignore";
 import * as prettier from "prettier";
 
-import { fs } from "@/core";
+import { fs, os } from "@/core";
 import { CommonUtils } from "@utils/common";
 
 /**
@@ -156,4 +156,14 @@ export async function calcFileContentMd5(filePath: string) {
     const content = await fs.promises.readFile(filePath, "utf-8");
 
     return crypto.createHash("md5").update(content).digest("hex");
+}
+
+/**
+ * Trim if necessary and parse the home directory alias in the file path.
+ *
+ * @param filePath - The file path to format.
+ * @returns The formatted file path.
+ */
+export function formatHomeDirAlias(filePath: string) {
+    return filePath.trim().replace(/^~/, os.homedir());
 }

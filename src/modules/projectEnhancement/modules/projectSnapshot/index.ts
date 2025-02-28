@@ -1,13 +1,14 @@
 import { defineModule } from "@/core";
 
-import { parseConfigs } from "./configs";
-import { watchWorkspaceFiles } from "./watchers";
+import { loadIgnorePatterns, parseConfigs } from "./configs";
+import { registerListeners } from "./listeners";
 
 export const projectSnapshot = defineModule({
-    async onActive() {
-        await watchWorkspaceFiles();
+    onActive() {
+        registerListeners();
     },
     onReloadConfiguration() {
         parseConfigs();
+        loadIgnorePatterns();
     },
 });

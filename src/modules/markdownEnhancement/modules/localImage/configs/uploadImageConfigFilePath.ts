@@ -2,7 +2,8 @@ import path from "node:path";
 
 import z from "zod";
 
-import { extensionName, fs, getConfigurationItem, os } from "@/core";
+import { extensionName, fs, getConfigurationItem } from "@/core";
+import { formatHomeDirAlias } from "@/utils/common";
 import { readJsonFile } from "@utils/fs";
 
 import { enableUploadImage } from "./uploadImageEnable";
@@ -23,14 +24,15 @@ export function parseUploadImageConfigFilePath() {
     }
 
     const configFilePath = path.resolve(
-        z
-            .string()
-            .parse(
-                getConfigurationItem(
-                    `${extensionName}.markdownEnhancement.localImage.uploadImageConfigFilePath`
+        formatHomeDirAlias(
+            z
+                .string()
+                .parse(
+                    getConfigurationItem(
+                        `${extensionName}.markdownEnhancement.localImage.uploadImageConfigFilePath`
+                    )
                 )
-            )
-            .replace(/^~/, os.homedir())
+        )
     );
 
     if (!fs.existsSync(configFilePath)) {

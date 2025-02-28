@@ -7,10 +7,10 @@ import {
     extensionName,
     fs,
     logger,
-    os,
     updateConfigurationItem,
     vscode,
 } from "@/core";
+import { formatHomeDirAlias } from "@/utils/common";
 import { CommonUtils } from "@utils/common";
 
 import {
@@ -160,11 +160,11 @@ async function batchOpenProjects(projects: vscode.QuickPickItem[]) {
     await Promise.all(
         projects.map(async ({ label: name, description: fsPath }) => {
             try {
-                fsPath = fsPath?.trim().replace(/^~/, os.homedir());
                 CommonUtils.assert(
                     fsPath !== undefined,
                     `'fsPath' of project "${name}" is undefined.`
                 );
+                fsPath = formatHomeDirAlias(fsPath);
                 CommonUtils.assert(
                     fs.existsSync(fsPath),
                     `'fsPath' "${fsPath}" of project "${name}" does not exist.`
