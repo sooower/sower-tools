@@ -10,7 +10,7 @@ export function parseConfigs() {
         .array()
         .parse(
             getConfigurationItem(
-                `${extensionName}.dirEnhancement.openFiles.ignoredFilenames`
+                `${extensionName}.folderEnhancement.expandFolder.ignoredFilenames`
             )
         );
 }

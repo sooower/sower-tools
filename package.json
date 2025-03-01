@@ -110,8 +110,9 @@
                 "title": "Generate API Resources"
             },
             {
-                "command": "sower-tools.dirEnhancement.openFiles",
-                "title": "Open Files"
+                "command": "sower-tools.folderEnhancement.expandFolder",
+                "title": "Expand Folder...",
+                "icon": "$(expand-all)"
             },
             {
                 "command": "sower-tools.projectEnhancement.openProjects",
@@ -184,13 +185,13 @@
                     "submenu": "explorer/context/sowerTools/git"
                 },
                 {
-                    "command": "sower-tools.apiResourcesGeneration.generateAPIResources",
-                    "group": "001_apiResourcesGeneration@001",
+                    "command": "sower-tools.folderEnhancement.expandFolder",
+                    "group": "002_folderEnhancement@001",
                     "when": "explorerResourceIsFolder == true"
                 },
                 {
-                    "command": "sower-tools.dirEnhancement.openFiles",
-                    "group": "001_dirEnhancement@001",
+                    "command": "sower-tools.apiResourcesGeneration.generateAPIResources",
+                    "group": "003_apiResourcesGeneration@001",
                     "when": "explorerResourceIsFolder == true"
                 }
             ],
@@ -426,8 +427,8 @@
                     "type": "string",
                     "default": ""
                 },
-                "sower-tools.dirEnhancement.openFiles.ignoredFilenames": {
-                    "description": "Array of filenames that will be ignored when clicked 'Open Files' in the context menu of explorer.",
+                "sower-tools.folderEnhancement.expandFolder.ignoredFilenames": {
+                    "description": "Array of filenames that will be ignored to open when clicked 'Expand Folder...' in the context menu of explorer.",
                     "type": "array",
                     "items": {
                         "type": "string"

@@ -1,11 +1,11 @@
 import { defineModule } from "@/core";
 
-import { registerCommandOpenFiles } from "./commands";
+import { registerCommandExpandFolder } from "./commands";
 import { parseConfigs } from "./configs";
 
-export const openFiles = defineModule({
+export const expandFolder = defineModule({
     onActive() {
-        registerCommandOpenFiles();
+        registerCommandExpandFolder();
     },
     onReloadConfiguration() {
         parseConfigs();

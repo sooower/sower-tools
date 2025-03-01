@@ -7,9 +7,9 @@ import { completionItemEnhancement } from "./completionItemEnhancement";
 import { configSync } from "./configSync";
 import { databaseModel } from "./databaseModel";
 import { debuggingEnhancement } from "./debuggingEnhancement";
-import { dirEnhancement } from "./dirEnhancement";
 import { enumAssertionFunctionsGeneration } from "./enumAssertionFunctionsGeneration";
 import { enumsDeclarationSort } from "./enumsDeclarationSort";
+import { folderEnhancement } from "./folderEnhancement";
 import { functionEnhancement } from "./functionEnhancement";
 import { gitEnhancement } from "./gitEnhancement";
 import { keyCryptoTools } from "./keyCryptoTools";
@@ -38,7 +38,7 @@ export const modules = defineModule([
     typeOfZodSchemaGeneration,
     databaseModel,
     keyCryptoTools,
-    dirEnhancement,
+    folderEnhancement,
     debuggingEnhancement,
     gitEnhancement,
     apiResourcesGeneration,
