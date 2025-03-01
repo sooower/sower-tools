@@ -1,4 +1,4 @@
-import { Node } from "ts-morph";
+import { Node, SyntaxKind } from "ts-morph";
 
 import { extensionCtx, extensionName, project, vscode } from "@/core";
 import { detectCommentKind } from "@/utils/typescript/comment";
@@ -82,9 +82,20 @@ function checkIsMissingBlankLineBeforeInterfaceDeclaration(
             return;
         }
 
-        // Skip if the previous line is not a comment
+        // Skip if the previous line is a comment
         const prevLine = document.lineAt(nodeStartLineIndex - 1);
         if (detectCommentKind(prevLine.text) !== null) {
+            return;
+        }
+
+        // Skip if the node is the first interface declaration in a module block
+        if (
+            Node.isModuleBlock(node.getParent()) &&
+            node
+                .getParent()
+                .getChildrenOfKind(SyntaxKind.InterfaceDeclaration)
+                .at(0) === node
+        ) {
             return;
         }
 

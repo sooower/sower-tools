@@ -73,7 +73,7 @@ async function expandFolder(uri: vscode.Uri) {
 
             if (openedFilesCount === fileUris.length) {
                 logger.info(
-                    `Total of ${fileUris.length} files in folder "${relPath}" were opened.`
+                    `Opened [${openedFilesCount}/${fileUris.length}] files in folder "${relPath}".`
                 );
             }
         }

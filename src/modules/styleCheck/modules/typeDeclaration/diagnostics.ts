@@ -87,7 +87,7 @@ function checkIsMissingBlankLineBeforeTypeDeclaration(
             return;
         }
 
-        // Skip if the previous line is not a comment
+        // Skip if the previous line is a comment
         const prevLine = document.lineAt(typeDeclNodeStartLineIndex - 1);
         if (detectCommentKind(prevLine.text) !== null) {
             return;
@@ -135,7 +135,7 @@ function checkIsMissingBlankLineBeforeTypeDeclaration(
             return;
         }
 
-        // Skip if the previous line is not a comment
+        // Skip if the previous line is a comment
         const prevLine = document.lineAt(nodeStartLineIndex - 1);
         if (detectCommentKind(prevLine.text) !== null) {
             return;

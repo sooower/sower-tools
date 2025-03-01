@@ -1,9 +1,14 @@
-import { extensionCtx, extensionName, vscode } from "@/core";
+import { extensionCtx, extensionName, project, vscode } from "@/core";
 
 export function registerCodeActionsProviderImportStatementsTopOfFile() {
     extensionCtx.subscriptions.push(
         vscode.languages.registerCodeActionsProvider("typescript", {
             provideCodeActions(document, range, context, token) {
+                const importStmtsCount =
+                    project
+                        ?.getSourceFile(document.uri.fsPath)
+                        ?.getImportDeclarations().length ?? 0;
+
                 return context.diagnostics
                     .filter(
                         d =>
@@ -31,9 +36,9 @@ export function registerCodeActionsProviderImportStatementsTopOfFile() {
                         codeAction.edit.insert(
                             document.uri,
                             new vscode.Position(0, 0),
-                            document.getText(diagnostic.range) + "\n"
+                            document.getText(diagnostic.range) +
+                                (importStmtsCount > 1 ? "\n" : "\n\n") // Keep a blank line after the import statement if there are no import statements
                         );
-                        //? FIXME: Remove the blank line after move the import statement to the top of the file
 
                         return codeAction;
                     });
