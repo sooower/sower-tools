@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 
 import { extensionName } from "@/core";
-import { detectCommentKind, ECommentKind } from "@/utils/typescript";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
+import { detectCommentKind, ECommentKind } from "../../shared/utils";
 import { skipCheckCharacter } from "../configs";
 
 export function registerCodeActionsProviderSuppressCommentWarning() {

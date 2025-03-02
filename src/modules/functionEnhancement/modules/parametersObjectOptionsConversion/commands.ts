@@ -1,48 +1,30 @@
-import ts from "typescript";
+import {
+    ConstructorDeclaration,
+    FunctionDeclaration,
+    MethodDeclaration,
+    Node,
+} from "ts-morph";
 
 import { toUpperCamelCase } from "@/modules/shared/modules/configuration/utils";
 
-import { ETsType } from "@/types";
-
 import { extensionCtx, extensionName, format, logger, vscode } from "@/core";
-import {
-    findFuncOrCtorDeclarationNodeAtOffset,
-    findTypeDeclarationNode,
-} from "@/utils/typescript";
-import {
-    createSourceFileByEditor,
-    isTypeScriptFile,
-    textEditorUtils,
-} from "@/utils/vscode";
+import { buildRangeByNode, buildRangeByOffsets } from "@/utils/vscode/range";
 import { CommonUtils } from "@utils/common";
 
 export function registerCommandConvertParametersToOptionsObject() {
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
             `${extensionName}.functionEnhancement.convertParametersToOptionsObject`,
-            async () => {
+            async (
+                document: vscode.TextDocument,
+                node:
+                    | FunctionDeclaration
+                    | ConstructorDeclaration
+                    | MethodDeclaration
+            ) => {
                 try {
-                    const editor = vscode.window.activeTextEditor;
-                    if (editor === undefined) {
-                        return;
-                    }
-
-                    if (!isTypeScriptFile(editor.document)) {
-                        return;
-                    }
-
-                    const node = findFuncOrCtorDeclarationNodeAtOffset({
-                        sourceFile: createSourceFileByEditor(editor),
-                        offset: editor.document.offsetAt(
-                            editor.selection.active
-                        ),
-                    });
-                    if (node === undefined) {
-                        return;
-                    }
-
                     await convertParametersToOptionsObject({
-                        editor,
+                        document,
                         node,
                     });
                 } catch (e) {
@@ -56,89 +38,50 @@ export function registerCommandConvertParametersToOptionsObject() {
     );
 }
 
-type TConvertParametersToOptionsObjectOptions = {
-    editor: vscode.TextEditor;
-    node:
-        | ts.FunctionDeclaration
-        | ts.ArrowFunction
-        | ts.MethodDeclaration
-        | ts.ConstructorDeclaration;
-};
-
 async function convertParametersToOptionsObject({
-    editor,
+    document,
     node,
-}: TConvertParametersToOptionsObjectOptions) {
-    if (node.parameters.length === 0) {
-        return;
-    }
-
-    if (!ts.isConstructorDeclaration(node) && node.name === undefined) {
-        return;
-    }
-
-    // Build new typeDeclarationText
-
+}: {
+    document: vscode.TextDocument;
+    node: FunctionDeclaration | ConstructorDeclaration | MethodDeclaration;
+}) {
     const typeName = format(
         `T%sOptions`,
-        ts.isConstructorDeclaration(node)
-            ? CommonUtils.mandatory(node.parent.name).getText() + "Ctor"
-            : toUpperCamelCase(CommonUtils.mandatory(node.name).getText())
+        Node.isConstructorDeclaration(node)
+            ? CommonUtils.mandatory(node.getParent().getName()) + "Ctor"
+            : toUpperCamelCase(CommonUtils.mandatory(node.getName()))
     );
-
     let typeDeclarationText: string | undefined;
+    const workspaceEdit = new vscode.WorkspaceEdit();
 
-    // Refactor literal type parameter to named type parameter
-    if (node.parameters.length === 1) {
-        const [parameter] = node.parameters;
-        if (
-            parameter.type !== undefined &&
-            ts.isTypeLiteralNode(parameter.type)
-        ) {
-            const typeMembersText = parameter.type.members.map(it => {
-                if (ts.isPropertySignature(it)) {
-                    const memberName = it.name.getText();
-                    const memberType = it.type?.getText() ?? ETsType.Unknown;
-                    const optional = it.questionToken !== undefined;
+    if (node.getParameters().length === 1) {
+        // Refactor it to named type parameter if the function only has one
+        // type literal type parameter
 
-                    return format(
-                        `%s%s: %s;`,
-                        memberName,
-                        optional ? "?" : "",
-                        memberType
-                    );
-                }
-
-                return "";
-            });
-
+        const firstParam = node.getParameters().at(0);
+        const typeNode = firstParam?.getTypeNode();
+        if (Node.isTypeLiteral(typeNode)) {
             typeDeclarationText = format(
-                `type %s = {\n\t%s\n};`,
+                `type %s = %s;`,
                 typeName,
-                typeMembersText.join("\n\t")
+                typeNode.getText()
             );
 
-            await textEditorUtils.replaceTextOfNode({
-                editor,
-                node: parameter.type,
-                newText: typeName,
-            });
+            workspaceEdit.replace(
+                document.uri,
+                buildRangeByNode(document, typeNode),
+                typeName
+            );
         }
     } else {
         // Refactor multiple parameters to named type parameter
 
-        const paramNames = node.parameters.map(it =>
-            !it.getText().includes("=>") && it.getText().includes("=")
-                ? it.getText()
-                : it.name.getText()
-        );
+        const paramNames = node.getParameters().map(it => it.getName());
 
-        const typeMembersText = node.parameters.map(it => {
-            const paramName = it.name.getText();
-            const paramType = it.type?.getText() ?? mapTsType(it);
-            const optional =
-                it.questionToken !== undefined || // param is optional
-                it.getText().includes("="); //param have default value
+        const typeMembersText = node.getParameters().map(it => {
+            const paramName = it.getName();
+            const paramType = it.getType().getText();
+            const optional = it.hasQuestionToken() || Node.isDefaultClause(it);
 
             return format(
                 `%s%s: %s;`,
@@ -147,60 +90,36 @@ async function convertParametersToOptionsObject({
                 paramType
             );
         });
+
         const newParamsText = `{ ${paramNames.join(", ")} }: ${typeName}`;
 
-        const firstParam = node.parameters[0];
-        const lastParam = node.parameters[node.parameters.length - 1];
-        await textEditorUtils.replaceTextRangeOffset({
-            editor,
-            start: firstParam.getStart(),
-            end: lastParam.getEnd(),
-            newText: newParamsText,
-        });
+        workspaceEdit.replace(
+            document.uri,
+            buildRangeByOffsets(
+                document,
+                node.getParameters().at(0)?.getStart() ?? 0,
+                node.getParameters().at(-1)?.getEnd() ?? 0
+            ),
+            newParamsText
+        );
 
         typeDeclarationText = format(
-            `type ${typeName} = {\n\t%s\n};`,
-            typeMembersText.join("\n\t")
+            `type ${typeName} = { %s };`,
+            typeMembersText.join(" ")
         );
     }
 
-    // Insert new typeDeclarationText
+    const position =
+        Node.isMethodDeclaration(node) || Node.isConstructorDeclaration(node)
+            ? document.positionAt(node.getParent().getFullStart())
+            : document.positionAt(node.getFullStart());
 
-    const sourceFile = createSourceFileByEditor(editor);
-    if (
-        findTypeDeclarationNode({
-            sourceFile,
-            typeName,
-        }) === undefined &&
-        typeDeclarationText !== undefined
-    ) {
-        await textEditorUtils.insertTextBeforeNode({
-            editor,
-            sourceFile,
-            node:
-                ts.isMethodDeclaration(node) ||
-                ts.isConstructorDeclaration(node)
-                    ? node.parent
-                    : node,
-            text: typeDeclarationText,
-        });
+    if (typeDeclarationText !== undefined) {
+        workspaceEdit.insert(
+            document.uri,
+            position,
+            `${typeDeclarationText}\n\n`
+        );
     }
-}
-
-function mapTsType(node: ts.Node) {
-    const varDefaultValue = node.getText().split("=")[1].trim();
-
-    if (/^[`'"].*[`'"]$/.test(varDefaultValue)) {
-        return ETsType.String;
-    }
-
-    if (/^\d+$/.test(varDefaultValue)) {
-        return ETsType.Number;
-    }
-
-    if (/true|false/.test(varDefaultValue)) {
-        return ETsType.Boolean;
-    }
-
-    return ETsType.Unknown;
+    await vscode.workspace.applyEdit(workspaceEdit);
 }

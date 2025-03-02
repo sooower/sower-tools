@@ -1,13 +1,11 @@
 import { Node } from "ts-morph";
-import ts from "typescript";
 
 import { extensionCtx, extensionName, project, vscode } from "@/core";
-import { findAllTypeDeclarationNodes } from "@/utils/typescript";
-import { detectCommentKind } from "@/utils/typescript/comment";
-import { createSourceFileByDocument, isTypeScriptFile } from "@/utils/vscode";
+import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import {
+    detectCommentKind,
     hasValidLeadingSpaceBefore,
     isDiffView,
     isIgnoredFile,
@@ -65,89 +63,44 @@ function checkIsMissingBlankLineBeforeTypeDeclaration(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
 ) {
-    const appendDiagnostic = (node: ts.TypeAliasDeclaration) => {
-        const typeDeclNodeStartPos = node.getStart();
-        const typeDeclNodeStartLineIndex =
-            document.positionAt(typeDeclNodeStartPos).line;
+    project
+        ?.getSourceFile(document.uri.fsPath)
+        ?.getDescendants()
+        .filter(
+            it =>
+                Node.isTypeAliasDeclaration(it) &&
+                !Node.isParenthesizedTypeNode(it)
+        )
+        .forEach(it => {
+            const nodeStartLineIndex = document.positionAt(it.getStart()).line;
 
-        // Skip if the type declaration is the first line of the document
-        if (typeDeclNodeStartLineIndex === 0) {
-            return;
-        }
+            // Skip if the type declaration is the first line of the document
+            if (nodeStartLineIndex === 0) {
+                return;
+            }
 
-        // Skip if the type declaration only contains a single line
-        if (
-            document.positionAt(node.getStart()).line ===
-            document.positionAt(node.getEnd()).line
-        ) {
-            return;
-        }
+            // Skip if the type declaration only contains a single line
+            if (it.getStartLineNumber() === it.getEndLineNumber()) {
+                return;
+            }
 
-        if (hasValidLeadingSpaceBefore(document, typeDeclNodeStartLineIndex)) {
-            return;
-        }
+            if (hasValidLeadingSpaceBefore(document, nodeStartLineIndex)) {
+                return;
+            }
 
-        // Skip if the previous line is a comment
-        const prevLine = document.lineAt(typeDeclNodeStartLineIndex - 1);
-        if (detectCommentKind(prevLine.text) !== null) {
-            return;
-        }
+            // Skip if the previous line is a comment
+            const prevLine = document.lineAt(nodeStartLineIndex - 1);
+            if (detectCommentKind(prevLine.text) !== null) {
+                return;
+            }
 
-        const diagnostic = new vscode.Diagnostic(
-            buildRangeByLineIndex(document, typeDeclNodeStartLineIndex),
-            "Missing a blank line before the type declaration.",
-            vscode.DiagnosticSeverity.Warning
-        );
-        diagnostic.code = `@${extensionName}/blank-line-before-type-declaration`;
+            const diagnostic = new vscode.Diagnostic(
+                buildRangeByLineIndex(document, nodeStartLineIndex),
+                "Missing a blank line before the type declaration.",
+                vscode.DiagnosticSeverity.Warning
+            );
+            diagnostic.code = `@${extensionName}/blank-line-before-type-declaration`;
 
-        diagnostics.push(diagnostic);
-    };
-
-    findAllTypeDeclarationNodes(createSourceFileByDocument(document))
-        .filter(node => !ts.isParenthesizedTypeNode(node))
-        .forEach(node => {
-            appendDiagnostic(node);
+            diagnostics.push(diagnostic);
         });
-
-    project?.getSourceFile(document.uri.fsPath)?.forEachDescendant(node => {
-        if (!Node.isTypeAliasDeclaration(node)) {
-            return;
-        }
-
-        if (Node.isParenthesizedTypeNode(node)) {
-            return;
-        }
-
-        const nodeStartPos = node.getStart();
-        const nodeStartLineIndex = document.positionAt(nodeStartPos).line;
-
-        // Skip if the type declaration is the first line of the document
-        if (nodeStartLineIndex === 0) {
-            return;
-        }
-
-        // Skip if the type declaration only contains a single line
-        if (node.getStartLineNumber() === node.getEndLineNumber()) {
-            return;
-        }
-
-        if (hasValidLeadingSpaceBefore(document, nodeStartLineIndex)) {
-            return;
-        }
-
-        // Skip if the previous line is a comment
-        const prevLine = document.lineAt(nodeStartLineIndex - 1);
-        if (detectCommentKind(prevLine.text) !== null) {
-            return;
-        }
-
-        const diagnostic = new vscode.Diagnostic(
-            buildRangeByLineIndex(document, nodeStartLineIndex),
-            "Missing a blank line before the type declaration.",
-            vscode.DiagnosticSeverity.Warning
-        );
-        diagnostic.code = `@${extensionName}/blank-line-before-type-declaration`;
-
-        diagnostics.push(diagnostic);
-    });
 }

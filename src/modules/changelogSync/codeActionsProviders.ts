@@ -4,38 +4,28 @@ import { extensionCtx, extensionName, vscode } from "@/core";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
-        vscode.languages.registerCodeActionsProvider(
-            "markdown",
-            new SyncChangelogCodeActionProvider()
-        )
+        vscode.languages.registerCodeActionsProvider("markdown", {
+            provideCodeActions(document, range, context, token) {
+                if (!isChangelogFile(document)) {
+                    return [];
+                }
+
+                const syncChangelogCodeAction = new vscode.CodeAction(
+                    "Sync changelog",
+                    vscode.CodeActionKind.QuickFix
+                );
+                syncChangelogCodeAction.command = {
+                    command: `${extensionName}.changelogSync.syncChangelog`,
+                    title: "",
+                    arguments: [document],
+                };
+
+                return [syncChangelogCodeAction];
+            },
+        })
     );
 }
 
-class SyncChangelogCodeActionProvider implements vscode.CodeActionProvider {
-    provideCodeActions(
-        document: vscode.TextDocument,
-        range: vscode.Range | vscode.Selection,
-        context: vscode.CodeActionContext,
-        token: vscode.CancellationToken
-    ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        if (!isChangelogFile(document)) {
-            return [];
-        }
-
-        const syncChangelogCodeAction = new vscode.CodeAction(
-            "Sync changelog",
-            vscode.CodeActionKind.QuickFix
-        );
-        syncChangelogCodeAction.command = {
-            command: `${extensionName}.changelogSync.syncChangelog`,
-            title: "",
-            arguments: [document, range],
-        };
-
-        return [syncChangelogCodeAction];
-    }
-}
-
 function isChangelogFile(document: vscode.TextDocument) {
-    return path.basename(document.fileName).toUpperCase() === "CHANGELOG.MD";
+    return path.basename(document.fileName).toLowerCase() === "changelog.md";
 }

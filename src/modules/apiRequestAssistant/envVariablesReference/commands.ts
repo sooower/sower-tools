@@ -56,7 +56,7 @@ async function showEnvVariablesReference(document: vscode.TextDocument) {
         const kAddToSupport = "Add to support";
         const kNeverShowItAgain = "Never show it again";
         const confirm = await vscode.window.showWarningMessage(
-            `The project name "${projectName}" is not supported. Do you want to add it to the supported project list?`,
+            `The project name "${projectName}" is not supported to refer to env variables. Do you want to add it to the supported project list?`,
             kAddToSupport,
             kNeverShowItAgain
         );
@@ -216,42 +216,44 @@ function findEnvFilename(filePath: string) {
 
     const envClassName = envClassDeclaration.getName();
     const firstCtorDeclaration = envClassDeclaration.getConstructors().at(0);
-    firstCtorDeclaration?.getBody()?.forEachDescendant(node => {
-        if (!Node.isExpressionStatement(node)) {
-            return;
-        }
+    firstCtorDeclaration
+        ?.getBody()
+        ?.getDescendants()
+        .filter(it => Node.isExpressionStatement(it))
+        .forEach(node => {
+            // Get 'envFilename' property from super call
 
-        // Get 'envFilename' property from super call
-        const expr = node.getExpression();
-        if (
-            Node.isCallExpression(expr) &&
-            expr.getExpression().getText() === "super"
-        ) {
-            // Get 'envFilename' property from object literal parameter
-            const superCallExprArgs = expr.getArguments();
-            superCallExprArgs.forEach(arg => {
-                if (Node.isObjectLiteralExpression(arg)) {
-                    arg.getProperties().forEach(prop => {
-                        if (
-                            Node.isPropertyAssignment(prop) &&
-                            prop.getName() === "envFileName"
-                        ) {
-                            const initializer = prop.getInitializer();
-                            if (!Node.isStringLiteral(initializer)) {
-                                logger.trace(
-                                    `The "envFileName" property of class "${envClassName}" is not a string literal, file: "${envClassFilePath}".`
-                                );
+            // Get 'envFilename' property from super call
+            const expr = node.getExpression();
+            if (
+                Node.isCallExpression(expr) &&
+                expr.getExpression().getText() === "super"
+            ) {
+                // Get 'envFilename' property from object literal parameter
+                const superCallExprArgs = expr.getArguments();
+                superCallExprArgs.forEach(arg => {
+                    if (Node.isObjectLiteralExpression(arg)) {
+                        arg.getProperties().forEach(prop => {
+                            if (
+                                Node.isPropertyAssignment(prop) &&
+                                prop.getName() === "envFileName"
+                            ) {
+                                const initializer = prop.getInitializer();
+                                if (!Node.isStringLiteral(initializer)) {
+                                    logger.trace(
+                                        `The "envFileName" property of class "${envClassName}" is not a string literal, file: "${envClassFilePath}".`
+                                    );
 
-                                return;
+                                    return;
+                                }
+
+                                envFilename = initializer.getLiteralText();
                             }
-
-                            envFilename = initializer.getLiteralText();
-                        }
-                    });
-                }
-            });
-        }
-    });
+                        });
+                    }
+                });
+            }
+        });
 
     if (envFilename === undefined) {
         logger.warn(

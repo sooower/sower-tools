@@ -112,7 +112,7 @@ async function setUpstreamBranchAndForcePush({
         `No upstream branch found, this will to set upstream branch "${upstreamName}/${currBranch}" for branch "${currBranch}" and force push to. Are you sure you want to continue?`,
         {
             modal: true,
-            detail: `This will execute command "git push -f -u ${upstreamName} ${currBranch}" and not be able to rollback.`,
+            detail: `It will execute command "git push -f -u ${upstreamName} ${currBranch}" and not be able to rollback.`,
         },
         kSetUpstreamBranch
     );
@@ -148,7 +148,7 @@ async function forcePush({
         `This will force push branch "${currBranch}" to "${upstreamName}/${upstreamBranch}". Are you sure you want to continue?`,
         {
             modal: true,
-            detail: `This will execute command "git push -f -u ${upstreamName}" and not be able to rollback.`,
+            detail: `It will execute command "git push -f -u ${upstreamName}" and not be able to rollback.`,
         },
         kForcePush
     );

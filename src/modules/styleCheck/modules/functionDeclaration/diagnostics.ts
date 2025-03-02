@@ -1,5 +1,6 @@
 import {
     ArrowFunction,
+    ConstructorDeclaration,
     FunctionDeclaration,
     MethodDeclaration,
     Node,
@@ -7,11 +8,11 @@ import {
 } from "ts-morph";
 
 import { extensionCtx, extensionName, project, vscode } from "@/core";
-import { detectCommentKind } from "@/utils/typescript/comment";
 import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import {
+    detectCommentKind,
     hasValidLeadingSpaceBefore,
     isDiffView,
     isFirstLineOfParent,
@@ -74,77 +75,93 @@ function checkIsMissingBlankLineBeforeFunctionDeclaration(
 ) {
     const funcNames = new Set<string>();
 
-    project?.getSourceFile(document.uri.fsPath)?.forEachDescendant(node => {
-        if (
-            (Node.isArrowFunction(node) || Node.isFunctionDeclaration(node)) &&
-            isFunctionParameter(node)
-        ) {
-            return;
-        }
+    project
+        ?.getSourceFile(document.uri.fsPath)
+        ?.getDescendants()
+        .filter(
+            it =>
+                Node.isArrowFunction(it) ||
+                Node.isFunctionDeclaration(it) ||
+                Node.isConstructorDeclaration(it) ||
+                Node.isMethodDeclaration(it)
+        )
+        .forEach(it => {
+            if (isFunctionParameter(it)) {
+                return;
+            }
 
-        if (
-            !Node.isFunctionDeclaration(node) &&
-            !Node.isMethodDeclaration(node)
-        ) {
-            return;
-        }
+            // Only function and method declarations have a name, skip other
+            // declarations
+            if (
+                Node.isFunctionDeclaration(it) ||
+                Node.isMethodDeclaration(it)
+            ) {
+                const funcOrMethodName = it.getName();
+                if (funcOrMethodName === undefined) {
+                    return;
+                }
 
-        const name = node.getName();
-        if (name === undefined) {
-            return;
-        }
+                // Skip if the function declaration is a duplicate (function or method
+                // overload), else add the function name to the set
+                if (funcNames.has(funcOrMethodName)) {
+                    return;
+                }
 
-        // Skip if the function declaration is a duplicate (function or method
-        // overload), else add the function name to the set
-        if (funcNames.has(name)) {
-            return;
-        }
+                funcNames.add(funcOrMethodName);
+            }
 
-        funcNames.add(name);
+            const nodeStartLineIndex = document.positionAt(it.getStart()).line;
 
-        const nodeStartPos = node.getStart();
-        const nodeStartLineIndex = document.positionAt(nodeStartPos).line;
+            // Skip if the function declaration is the first line of the document
+            if (nodeStartLineIndex === 0) {
+                return;
+            }
 
-        // Skip if the function declaration is the first line of the document
-        if (nodeStartLineIndex === 0) {
-            return;
-        }
+            if (isFirstLineOfParent(document, nodeStartLineIndex)) {
+                return;
+            }
 
-        if (isFirstLineOfParent(document, nodeStartLineIndex)) {
-            return;
-        }
+            if (isInAssignmentExpression(it)) {
+                return;
+            }
 
-        if (isInAssignmentExpression(node)) {
-            return;
-        }
+            if (hasValidLeadingSpaceBefore(document, nodeStartLineIndex)) {
+                return;
+            }
 
-        if (hasValidLeadingSpaceBefore(document, nodeStartLineIndex)) {
-            return;
-        }
+            // Skip if the previous line is a comment
+            const prevLine = document.lineAt(nodeStartLineIndex - 1);
+            if (detectCommentKind(prevLine.text) !== null) {
+                return;
+            }
 
-        // Skip if the previous line is a comment
-        const prevLine = document.lineAt(nodeStartLineIndex - 1);
-        if (detectCommentKind(prevLine.text) !== null) {
-            return;
-        }
+            const diagnostic = new vscode.Diagnostic(
+                buildRangeByLineIndex(document, nodeStartLineIndex),
+                "Missing a blank line before the function declaration.",
+                vscode.DiagnosticSeverity.Warning
+            );
+            diagnostic.code = `@${extensionName}/blank-line-before-function-declaration`;
 
-        const diagnostic = new vscode.Diagnostic(
-            buildRangeByLineIndex(document, nodeStartLineIndex),
-            "Missing a blank line before the function declaration.",
-            vscode.DiagnosticSeverity.Warning
-        );
-        diagnostic.code = `@${extensionName}/blank-line-before-function-declaration`;
-
-        diagnostics.push(diagnostic);
-    });
+            diagnostics.push(diagnostic);
+        });
 }
 
-function isFunctionParameter(node: FunctionDeclaration | ArrowFunction) {
+function isFunctionParameter(
+    node:
+        | FunctionDeclaration
+        | ArrowFunction
+        | MethodDeclaration
+        | ConstructorDeclaration
+) {
     return Node.isCallExpression(node.getParent());
 }
 
 function isInAssignmentExpression(
-    node: FunctionDeclaration | MethodDeclaration
+    node:
+        | FunctionDeclaration
+        | ArrowFunction
+        | ConstructorDeclaration
+        | MethodDeclaration
 ) {
     const parent = node.getParent();
     if (!Node.isBinaryExpression(parent)) {

@@ -1,16 +1,16 @@
-import ts from "typescript";
+import { EnumDeclaration } from "ts-morph";
 
-import { extensionCtx, extensionName, format, logger, vscode } from "@/core";
-import { mapEnumNameWithoutPrefix, prettierFormatFile } from "@/utils/common";
 import {
-    findEnumDeclarationNodeAtOffset,
-    findFuncDeclarationNode,
-} from "@/utils/typescript";
-import {
-    createSourceFileByEditor,
-    isTypeScriptFile,
-    textEditorUtils,
-} from "@/utils/vscode";
+    extensionCtx,
+    extensionName,
+    format,
+    logger,
+    project,
+    vscode,
+} from "@/core";
+import { mapEnumNameWithoutPrefix } from "@/utils/common";
+import { formatDocument } from "@/utils/vscode";
+import { buildRangeByNode } from "@/utils/vscode/range";
 import { CommonUtils } from "@utils/common";
 
 import { toLowerCamelCase } from "../shared/modules/configuration/utils";
@@ -18,29 +18,14 @@ import { toLowerCamelCase } from "../shared/modules/configuration/utils";
 export function registerCommandGenerateEnumAssertionFunctions() {
     const command = vscode.commands.registerCommand(
         `${extensionName}.generateEnumAssertionFunctions`,
-        async () => {
+        async (
+            document: vscode.TextDocument,
+            enumDeclaration: EnumDeclaration
+        ) => {
             try {
-                const editor = vscode.window.activeTextEditor;
-                if (editor === undefined) {
-                    return;
-                }
-
-                if (!isTypeScriptFile(editor.document)) {
-                    return;
-                }
-
-                const enumNode = findEnumDeclarationNodeAtOffset({
-                    sourceFile: createSourceFileByEditor(editor),
-                    offset: editor.document.offsetAt(editor.selection.active),
-                });
-                CommonUtils.assert(
-                    enumNode !== undefined,
-                    `Can not found enum declaration, please check your code to generate one first.`
-                );
-
                 await generateEnumAssertionFunctions({
-                    editor,
-                    node: enumNode,
+                    document,
+                    enumDeclaration,
                 });
             } catch (e) {
                 logger.error("Failed to generate enum assertion functions.", e);
@@ -52,22 +37,24 @@ export function registerCommandGenerateEnumAssertionFunctions() {
 }
 
 type TGenerateEnumAssertionFunctionsOptions = {
-    editor: vscode.TextEditor;
-    node: ts.EnumDeclaration;
+    document: vscode.TextDocument;
+    enumDeclaration: EnumDeclaration;
 };
 
 async function generateEnumAssertionFunctions({
-    editor,
-    node,
+    document,
+    enumDeclaration,
 }: TGenerateEnumAssertionFunctionsOptions) {
-    const nodeName = node.name.text;
-    const enumMemberNames = node.members.map(it =>
-        it.name.getText(createSourceFileByEditor(editor))
-    );
-    const enumNameWithoutPrefix = mapEnumNameWithoutPrefix(nodeName);
+    const enumName = enumDeclaration.getName();
+    const enumNameWithoutPrefix = mapEnumNameWithoutPrefix(enumName);
+    const enumMemberNames = enumDeclaration
+        .getMembers()
+        .map(it => it.getName());
     const valName = toLowerCamelCase(enumNameWithoutPrefix);
 
-    /* Update text */
+    const sourceFile = project?.getSourceFile(document.uri.fsPath);
+
+    // Upsert 'assertEXxx' function
 
     const assertFuncText = format(
         `
@@ -82,33 +69,36 @@ async function generateEnumAssertionFunctions({
         `,
         enumNameWithoutPrefix,
         valName,
-        nodeName,
+        enumName,
         valName,
         enumMemberNames
-            .map(memberName => `case ${nodeName}.${memberName}:`)
+            .map(memberName => `case ${enumName}.${memberName}:`)
             .join("\n"),
         valName,
         valName,
         valName
     );
-    const assertFuncDeclarationNode = findFuncDeclarationNode({
-        sourceFile: createSourceFileByEditor(editor),
-        funcName: `assert${enumNameWithoutPrefix}`,
-    });
-    if (assertFuncDeclarationNode !== undefined) {
-        await textEditorUtils.replaceTextOfNode({
-            editor,
-            node: assertFuncDeclarationNode,
-            newText: assertFuncText,
-        });
+    const assertFuncDeclaration = sourceFile?.getFunction(
+        `assert${enumNameWithoutPrefix}`
+    );
+    const assertFuncWorkspaceEdit = new vscode.WorkspaceEdit();
+    if (assertFuncDeclaration === undefined) {
+        assertFuncWorkspaceEdit.insert(
+            document.uri,
+            document.positionAt(enumDeclaration.getEnd()),
+            "\n\n" + assertFuncText
+        );
     } else {
-        await textEditorUtils.insertTextAfterNode({
-            editor,
-            sourceFile: createSourceFileByEditor(editor),
-            node,
-            text: assertFuncText,
-        });
+        assertFuncWorkspaceEdit.replace(
+            document.uri,
+            buildRangeByNode(document, assertFuncDeclaration),
+            assertFuncText
+        );
     }
+    await vscode.workspace.applyEdit(assertFuncWorkspaceEdit);
+    await vscode.workspace.save(document.uri);
+
+    // Upsert 'assertOptionalEXxx' function
 
     const assertOptionalFuncText = format(
         `
@@ -122,27 +112,28 @@ async function generateEnumAssertionFunctions({
         `,
         enumNameWithoutPrefix,
         valName,
-        nodeName,
+        enumName,
         valName,
         enumNameWithoutPrefix,
         valName
     );
-    const assertOptionalFuncDeclarationNode = findFuncDeclarationNode({
-        sourceFile: createSourceFileByEditor(editor),
-        funcName: `assertOptional${enumNameWithoutPrefix}`,
-    });
-    if (assertOptionalFuncDeclarationNode === undefined) {
-        await textEditorUtils.insertTextAfterNode({
-            editor,
-            sourceFile: createSourceFileByEditor(editor),
-            node: CommonUtils.mandatory(
-                findFuncDeclarationNode({
-                    sourceFile: createSourceFileByEditor(editor),
-                    funcName: `assert${enumNameWithoutPrefix}`,
-                })
+    const funcDeclarationOfAssertOptional = sourceFile?.getFunction(
+        `assertOptional${enumNameWithoutPrefix}`
+    );
+    if (funcDeclarationOfAssertOptional === undefined) {
+        const assertFuncDeclaration = sourceFile?.getFunction(
+            `assert${enumNameWithoutPrefix}`
+        );
+        const assertOptionalFuncWorkspaceEdit = new vscode.WorkspaceEdit();
+        assertOptionalFuncWorkspaceEdit.insert(
+            document.uri,
+            document.positionAt(
+                CommonUtils.mandatory(assertFuncDeclaration).getEnd()
             ),
-            text: assertOptionalFuncText,
-        });
+            "\n\n" + assertOptionalFuncText
+        );
+        await vscode.workspace.applyEdit(assertOptionalFuncWorkspaceEdit);
+        await vscode.workspace.save(document.uri);
     }
 
     const assertNullableFuncText = format(
@@ -157,35 +148,30 @@ async function generateEnumAssertionFunctions({
         `,
         enumNameWithoutPrefix,
         valName,
-        nodeName,
+        enumName,
         valName,
         enumNameWithoutPrefix,
         valName
     );
-    const assertNullableFuncDeclarationNode = findFuncDeclarationNode({
-        sourceFile: createSourceFileByEditor(editor),
-        funcName: `assertNullable${enumNameWithoutPrefix}`,
-    });
-    if (assertNullableFuncDeclarationNode === undefined) {
-        await textEditorUtils.insertTextAfterNode({
-            editor,
-            sourceFile: createSourceFileByEditor(editor),
-            node: CommonUtils.mandatory(
-                findFuncDeclarationNode({
-                    sourceFile: createSourceFileByEditor(editor),
-                    funcName: `assertOptional${enumNameWithoutPrefix}`,
-                })
+    const funcDeclarationOfAssertNullable = sourceFile?.getFunction(
+        `assertNullable${enumNameWithoutPrefix}`
+    );
+    if (funcDeclarationOfAssertNullable === undefined) {
+        const assertOptionalFuncDeclaration = sourceFile?.getFunction(
+            `assertOptional${enumNameWithoutPrefix}`
+        );
+        const assertNullableFuncWorkspaceEdit = new vscode.WorkspaceEdit();
+        assertNullableFuncWorkspaceEdit.insert(
+            document.uri,
+            document.positionAt(
+                CommonUtils.mandatory(assertOptionalFuncDeclaration).getEnd()
             ),
-            text: assertNullableFuncText,
-        });
+            "\n\n" + assertNullableFuncText
+        );
+        await vscode.workspace.applyEdit(assertNullableFuncWorkspaceEdit);
+        await vscode.workspace.save(document.uri);
     }
 
-    await vscode.workspace.save(editor.document.uri);
-
-    await textEditorUtils.replaceTextOfSourceFile({
-        editor,
-        newText: await prettierFormatFile(
-            createSourceFileByEditor(editor).fileName
-        ),
-    });
+    // Format the document
+    await formatDocument(document);
 }

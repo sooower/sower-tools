@@ -1,7 +1,6 @@
 import { ViewColumn } from "vscode";
 
 import { extensionCtx, extensionName, logger, vscode } from "@/core";
-import { isMarkdownFile } from "@/utils/vscode";
 
 import { languageIds, skipFirstLine } from "./configs";
 
@@ -11,10 +10,6 @@ export function registerCommands() {
             `${extensionName}.markdownEnhancement.removeBlankLinesAndOpenInNewDocument`,
             async (document: vscode.TextDocument) => {
                 try {
-                    if (!isMarkdownFile(document)) {
-                        return;
-                    }
-
                     await vscode.window.showTextDocument(
                         await vscode.workspace.openTextDocument({
                             content: await filterBlankLines(document),
@@ -34,10 +29,6 @@ export function registerCommands() {
             `${extensionName}.markdownEnhancement.removeBlankLinesAndCopyToClipboard`,
             async (document: vscode.TextDocument) => {
                 try {
-                    if (!isMarkdownFile(document)) {
-                        return;
-                    }
-
                     await vscode.env.clipboard.writeText(
                         await filterBlankLines(document)
                     );

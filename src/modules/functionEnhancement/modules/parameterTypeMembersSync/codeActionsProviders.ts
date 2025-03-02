@@ -1,51 +1,47 @@
-import { extensionCtx, extensionName, vscode } from "@/core";
-import { findTypeDeclarationNodeAtOffset } from "@/utils/typescript";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { SyntaxKind } from "ts-morph";
+
+import { extensionCtx, extensionName, project, vscode } from "@/core";
+import { isNodeInRange } from "@/utils/vscode";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
-        vscode.languages.registerCodeActionsProvider(
-            "typescript",
-            new SyncTypeMembersCodeActionProvider()
-        )
+        vscode.languages.registerCodeActionsProvider("typescript", {
+            provideCodeActions: (document, range, context, token) => {
+                const typeDeclaration = findInRangeOptionsTypeDeclaration(
+                    document,
+                    range
+                );
+                if (typeDeclaration === undefined) {
+                    return [];
+                }
+
+                const syncTypeMembersCodeAction = new vscode.CodeAction(
+                    "Sync type members",
+                    vscode.CodeActionKind.QuickFix
+                );
+                syncTypeMembersCodeAction.command = {
+                    command: `${extensionName}.functionEnhancement.syncParameterTypeMembers`,
+                    title: "",
+                    arguments: [document, typeDeclaration],
+                };
+                syncTypeMembersCodeAction.isPreferred = true;
+
+                return [syncTypeMembersCodeAction];
+            },
+        })
     );
 }
 
-class SyncTypeMembersCodeActionProvider implements vscode.CodeActionProvider {
-    provideCodeActions(
-        document: vscode.TextDocument,
-        range: vscode.Range | vscode.Selection,
-        context: vscode.CodeActionContext,
-        token: vscode.CancellationToken
-    ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        if (!isCursorInOptionsTypeDeclaration(document, range)) {
-            return [];
-        }
-
-        const syncTypeMembersCodeAction = new vscode.CodeAction(
-            "Sync type members",
-            vscode.CodeActionKind.QuickFix
-        );
-        syncTypeMembersCodeAction.command = {
-            command: `${extensionName}.functionEnhancement.syncParameterTypeMembers`,
-            title: "",
-            arguments: [document, range],
-        };
-        syncTypeMembersCodeAction.isPreferred = true;
-
-        return [syncTypeMembersCodeAction];
-    }
-}
-
-function isCursorInOptionsTypeDeclaration(
+function findInRangeOptionsTypeDeclaration(
     document: vscode.TextDocument,
     range: vscode.Range | vscode.Selection
 ) {
-    const sourceFile = createSourceFileByDocument(document);
-    const node = findTypeDeclarationNodeAtOffset({
-        sourceFile,
-        offset: document.offsetAt(range.start),
-    });
-
-    return node !== undefined && node.name.text.endsWith("Options");
+    return project
+        ?.getSourceFile(document.uri.fsPath)
+        ?.getDescendantsOfKind(SyntaxKind.TypeAliasDeclaration)
+        .find(
+            node =>
+                isNodeInRange(document, range, node) &&
+                node.getName().endsWith("Options")
+        );
 }

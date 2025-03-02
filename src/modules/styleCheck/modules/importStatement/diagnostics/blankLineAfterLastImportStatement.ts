@@ -1,11 +1,11 @@
 import {
+    detectCommentKind,
     hasValidLeadingSpaceAfter,
     isDiffView,
     isIgnoredFile,
 } from "@/modules/styleCheck/modules/shared/utils";
 
 import { extensionCtx, extensionName, project, vscode } from "@/core";
-import { detectCommentKind } from "@/utils/typescript/comment";
 import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByNode } from "@/utils/vscode/range";
 

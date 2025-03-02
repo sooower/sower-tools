@@ -4,26 +4,17 @@ import markdownIt from "markdown-it";
 import z from "zod";
 
 import { extensionCtx, extensionName, fs, logger, vscode } from "@/core";
-import { getWorkspaceFolderPath, isMarkdownFile } from "@/utils/vscode";
+import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { readJsonFile } from "@utils/fs";
 
 export function registerCommandSyncChangelog() {
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
             `${extensionName}.changelogSync.syncChangelog`,
-            async () => {
+            async (document: vscode.TextDocument) => {
                 try {
-                    const editor = vscode.window.activeTextEditor;
-                    if (editor === undefined) {
-                        return;
-                    }
-
-                    if (!isMarkdownFile(editor.document)) {
-                        return;
-                    }
-
                     // Save modified content in opened document before syncing the changelog
-                    await vscode.workspace.save(editor.document.uri);
+                    await vscode.workspace.save(document.uri);
 
                     await syncChangelog();
                 } catch (e) {

@@ -1,34 +1,21 @@
-import ts from "typescript";
+import { Node } from "ts-morph";
 
 import { toUpperCamelCase } from "@/modules/shared/modules/configuration/utils";
 
-import { extensionCtx, format, logger, vscode } from "@/core";
-import { findTypeDeclarationNode } from "@/utils/typescript";
-import {
-    createSourceFileByEditor,
-    isTypeScriptFile,
-    textEditUtils,
-} from "@/utils/vscode";
+import { extensionCtx, format, logger, project, vscode } from "@/core";
+import { isNodeInRange, isTypeScriptFile } from "@/utils/vscode";
+import { buildRangeByNode } from "@/utils/vscode/range";
 import { CommonUtils } from "@utils/common";
 
 export function registerOnDidSaveTextDocumentListener() {
     extensionCtx.subscriptions.push(
-        vscode.workspace.onDidSaveTextDocument(async doc => {
+        vscode.workspace.onDidSaveTextDocument(async document => {
             try {
-                const editor = vscode.window.activeTextEditor;
-                if (editor === undefined) {
+                if (!isTypeScriptFile(document)) {
                     return;
                 }
 
-                if (doc !== editor.document) {
-                    return;
-                }
-
-                if (!isTypeScriptFile(editor.document)) {
-                    return;
-                }
-
-                await syncFunctionParameterTypeName({ editor });
+                await syncFunctionParameterTypeName(document);
             } catch (e) {
                 logger.error("Failed to sync function parameter type name.", e);
             }
@@ -36,92 +23,68 @@ export function registerOnDidSaveTextDocumentListener() {
     );
 }
 
-type TSyncFunctionParameterTypeNameOptions = {
-    editor: vscode.TextEditor;
-};
-
 /**
  * Sync the type name of the function parameter with the function name.
  *
- * If the function has only one parameter with format `T${functionName}Options`,
- * then the type name of the parameter will be synced with the function name when
- * rename the function.
+ * If the function has only one parameter with type name `T${camelCase(functionName)}Options`,
+ * then the type name will be synced with the function name when the function is renamed.
  */
-async function syncFunctionParameterTypeName({
-    editor,
-}: TSyncFunctionParameterTypeNameOptions) {
-    const doSyncFunctionParameterTypeName = (
-        node: ts.Node
-    ):
-        | ts.FunctionDeclaration
-        | ts.ArrowFunction
-        | ts.MethodDeclaration
-        | undefined => {
-        if (
-            !ts.isFunctionDeclaration(node) &&
-            !ts.isArrowFunction(node) &&
-            !ts.isMethodDeclaration(node)
-        ) {
-            return ts.forEachChild(node, doSyncFunctionParameterTypeName);
-        }
+async function syncFunctionParameterTypeName(document: vscode.TextDocument) {
+    const workspaceEdit = new vscode.WorkspaceEdit();
+    const editor = CommonUtils.mandatory(vscode.window.activeTextEditor);
 
-        if (node.name === undefined || node.parameters.length !== 1) {
-            return;
-        }
+    project
+        ?.getSourceFile(document.uri.fsPath)
+        ?.getDescendants()
+        .filter(
+            it => Node.isFunctionDeclaration(it) || Node.isMethodDeclaration(it)
+        )
+        .filter(it => isNodeInRange(document, editor.selection, it)) // Only sync the function in the selection
+        .forEach(it => {
+            if (it.getName() === undefined || it.getParameters().length !== 1) {
+                return;
+            }
 
-        const [parameter] = node.parameters;
+            const param = CommonUtils.mandatory(it.getParameters().at(0));
+            if (Node.isTypeLiteral(param.getTypeNode())) {
+                return;
+            }
 
-        if (
-            parameter.type === undefined ||
-            !ts.isTypeReferenceNode(parameter.type)
-        ) {
-            return;
-        }
+            const paramTypeName = param.getType().getText();
+            const expectedParamTypeName = format(
+                `T%sOptions`,
+                toUpperCamelCase(it.getName() ?? "")
+            );
+            if (
+                !paramTypeName.toLowerCase().includes("option") ||
+                paramTypeName === "TOptions" ||
+                paramTypeName === expectedParamTypeName
+            ) {
+                return;
+            }
 
-        const paramTypeName = parameter.type.typeName.getText();
-        const expectedParamTypeName = format(
-            `T%sOptions`,
-            toUpperCamelCase(node.name.getText())
-        );
-        if (
-            !paramTypeName.toLowerCase().includes("option") ||
-            paramTypeName === "TOptions" ||
-            paramTypeName === expectedParamTypeName
-        ) {
-            return;
-        }
+            const typeDeclarationNode = it
+                .getSourceFile()
+                .getTypeAlias(paramTypeName);
+            CommonUtils.assert(
+                typeDeclarationNode !== undefined,
+                `Cannot find type declaration for ${paramTypeName} in current file.`
+            );
 
-        const typeDeclarationNode = findTypeDeclarationNode({
-            sourceFile,
-            typeName: paramTypeName,
+            workspaceEdit.replace(
+                document.uri,
+                buildRangeByNode(document, typeDeclarationNode.getNameNode()),
+                expectedParamTypeName
+            );
+            workspaceEdit.replace(
+                document.uri,
+                buildRangeByNode(
+                    document,
+                    CommonUtils.mandatory(param.getTypeNode())
+                ),
+                expectedParamTypeName
+            );
         });
-        CommonUtils.assert(
-            typeDeclarationNode !== undefined,
-            `Cannot find type declaration for ${paramTypeName} in current file.`
-        );
 
-        edits.push(
-            textEditUtils.replaceTextOfNode({
-                editor,
-                node: typeDeclarationNode.name,
-                newText: expectedParamTypeName,
-            }),
-            textEditUtils.replaceTextOfNode({
-                editor,
-                node: parameter.type,
-                newText: expectedParamTypeName,
-            })
-        );
-    };
-
-    const edits: vscode.TextEdit[] = [];
-
-    const sourceFile = createSourceFileByEditor(editor);
-    ts.forEachChild(sourceFile, doSyncFunctionParameterTypeName);
-
-    if (edits.length > 0) {
-        const edit = new vscode.WorkspaceEdit();
-        edit.set(editor.document.uri, edits);
-        await vscode.workspace.applyEdit(edit);
-    }
+    await vscode.workspace.applyEdit(workspaceEdit);
 }

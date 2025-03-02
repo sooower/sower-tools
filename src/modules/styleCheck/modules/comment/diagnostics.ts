@@ -1,9 +1,10 @@
 import { extensionCtx, extensionName, vscode } from "@/core";
-import { detectCommentKind, ECommentKind } from "@/utils/typescript/comment";
 import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
 import {
+    detectCommentKind,
+    ECommentKind,
     hasValidLeadingSpaceBefore,
     isDiffView,
     isFirstLineOfParent,

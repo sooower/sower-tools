@@ -20,7 +20,7 @@ export function registerCommandListSkippedFiles() {
                     });
 
                     if (skippedFiles?.length === 0) {
-                        logger.warn("No skipped files found.");
+                        logger.info("No skipped files found.");
 
                         return;
                     }

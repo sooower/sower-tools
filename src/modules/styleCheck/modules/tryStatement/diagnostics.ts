@@ -57,31 +57,33 @@ function checkUnAwaitedPromiseCallExpression(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
 ) {
-    project?.getSourceFile(document.uri.fsPath)?.forEachDescendant(node => {
-        if (!Node.isTryStatement(node)) {
-            return;
-        }
+    project
+        ?.getSourceFile(document.uri.fsPath)
+        ?.getDescendants()
+        .filter(it => Node.isTryStatement(it))
+        .forEach(it => {
+            it.getTryBlock()
+                .getDescendants()
+                .filter(it => Node.isExpressionStatement(it))
+                .forEach(it => {
+                    const expr = it.getExpression();
+                    if (!isUnAwaitedPromise(expr)) {
+                        return;
+                    }
 
-        node.getTryBlock().forEachChild(child => {
-            if (!Node.isExpressionStatement(child)) {
-                return;
-            }
+                    const diagnostic = new vscode.Diagnostic(
+                        buildRangeByLineIndex(
+                            document,
+                            expr.getStartLineNumber() - 1
+                        ),
+                        "Missing await before async function call expression in try statement.",
+                        vscode.DiagnosticSeverity.Warning
+                    );
+                    diagnostic.code = `@${extensionName}/un-awaited-promise-call-expression`;
 
-            const expr = child.getExpression();
-            if (!isUnAwaitedPromise(expr)) {
-                return;
-            }
-
-            const diagnostic = new vscode.Diagnostic(
-                buildRangeByLineIndex(document, expr.getStartLineNumber() - 1),
-                "Missing await before async function call expression in try statement.",
-                vscode.DiagnosticSeverity.Warning
-            );
-            diagnostic.code = `@${extensionName}/un-awaited-promise-call-expression`;
-
-            diagnostics.push(diagnostic);
+                    diagnostics.push(diagnostic);
+                });
         });
-    });
 }
 
 function isUnAwaitedPromise(expr: Expression): boolean {

@@ -1,85 +1,73 @@
-import ts from "typescript";
+import { Node } from "ts-morph";
 
-import { extensionCtx, extensionName, vscode } from "@/core";
-import { findFuncOrCtorDeclarationNodeAtOffset } from "@/utils/typescript";
-import { createSourceFileByDocument } from "@/utils/vscode";
+import { extensionCtx, extensionName, project, vscode } from "@/core";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
-        vscode.languages.registerCodeActionsProvider(
-            "typescript",
-            new ConvertParametersToObjectOptionsCodeActionProvider()
-        )
+        vscode.languages.registerCodeActionsProvider("typescript", {
+            provideCodeActions(document, range, context, token) {
+                const funcOrMethodOrCtorDeclaration =
+                    findValidFuncOrMethodOrCtorDeclaration(document, range);
+                if (funcOrMethodOrCtorDeclaration === undefined) {
+                    return [];
+                }
+
+                const codeAction = new vscode.CodeAction(
+                    "Convert parameters to options object",
+                    vscode.CodeActionKind.RefactorExtract
+                );
+                codeAction.command = {
+                    command: `${extensionName}.functionEnhancement.convertParametersToOptionsObject`,
+                    title: "",
+                    arguments: [document, funcOrMethodOrCtorDeclaration],
+                };
+                codeAction.isPreferred = true;
+
+                return [codeAction];
+            },
+        })
     );
 }
 
-class ConvertParametersToObjectOptionsCodeActionProvider
-    implements vscode.CodeActionProvider
-{
-    provideCodeActions(
-        document: vscode.TextDocument,
-        range: vscode.Range | vscode.Selection,
-        context: vscode.CodeActionContext,
-        token: vscode.CancellationToken
-    ): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-        if (!isValidFunctionOrConstructorDeclaration(document, range)) {
-            return [];
-        }
-
-        const convertParametersToOptionsObjectCodeAction =
-            new vscode.CodeAction(
-                "Convert parameters to options object",
-                vscode.CodeActionKind.RefactorExtract
-            );
-        convertParametersToOptionsObjectCodeAction.command = {
-            command: `${extensionName}.functionEnhancement.convertParametersToOptionsObject`,
-            title: "",
-            arguments: [document, range],
-        };
-        convertParametersToOptionsObjectCodeAction.isPreferred = true;
-
-        return [convertParametersToOptionsObjectCodeAction];
-    }
-}
-
-/**
- * Check if the cursor is in the function declaration and the function has
- * only one parameter which type is object and the parameter name is ends with
- * `Options`
- *
- * @param document - The document to check
- * @param range - The range to check
- * @returns True if the function satisfies the conditions, otherwise false
- */
-function isValidFunctionOrConstructorDeclaration(
+function findValidFuncOrMethodOrCtorDeclaration(
     document: vscode.TextDocument,
     range: vscode.Range | vscode.Selection
-): boolean {
-    const node = findFuncOrCtorDeclarationNodeAtOffset({
-        sourceFile: createSourceFileByDocument(document),
-        offset: document.offsetAt(range.start),
-    });
+) {
+    const node = project
+        ?.getSourceFile(document.uri.fsPath)
+        ?.getDescendants()
+        .filter(
+            node =>
+                Node.isFunctionDeclaration(node) ||
+                Node.isConstructorDeclaration(node) ||
+                Node.isMethodDeclaration(node)
+        )
+        .find(node => {
+            return (
+                node.getStart() <= document.offsetAt(range.start) &&
+                node.getEnd() >= document.offsetAt(range.end)
+            );
+        });
 
     if (node === undefined) {
-        return false;
+        return;
     }
 
-    if (node.parameters.length === 1) {
-        return false;
+    if (
+        node.getParameters().length === 1 &&
+        !Node.isTypeLiteral(node.getParameters().at(0)?.getTypeNode())
+    ) {
+        return;
     }
 
-    const parameter = node.parameters[0];
-    if (parameter.type === undefined) {
-        return false;
+    const firstParam = node.getParameters().at(0);
+    if (firstParam === undefined) {
+        return;
     }
 
-    if (ts.isTypeLiteralNode(parameter.type)) {
-        return false;
+    if (firstParam.getTypeNode()?.getFullText().endsWith("Options") ?? false) {
+        return;
     }
 
-    if (parameter.type.getText().endsWith("Options")) {
-        return false;
-    }
-
-    return true;
+    return node;
 }

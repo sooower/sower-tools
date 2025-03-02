@@ -15,8 +15,8 @@ import {
     project,
     vscode,
 } from "@/core";
-import { prettierFormatText } from "@/utils/common";
-import { buildRangeByNode, buildRangeByOffsets } from "@/utils/vscode/range";
+import { formatDocument } from "@/utils/vscode";
+import { buildRangeByNode } from "@/utils/vscode/range";
 import { CommonUtils } from "@utils/common";
 
 import {
@@ -337,13 +337,7 @@ async function createEditAndApply(document: vscode.TextDocument) {
     await vscode.workspace.applyEdit(workspaceEdit);
 
     // Format the document
-    const newWorkspaceEdit = new vscode.WorkspaceEdit();
-    newWorkspaceEdit.replace(
-        document.uri,
-        buildRangeByOffsets(document, 0, document.getText().length),
-        prettierFormatText(document.getText())
-    );
-    await vscode.workspace.applyEdit(newWorkspaceEdit);
+    await formatDocument(document);
 }
 
 function extractTypeMemberMap(node: TypeAliasDeclaration) {

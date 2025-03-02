@@ -58,34 +58,36 @@ function checkIsMissingBlankLineBeforeBreakStatement(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[]
 ) {
-    project?.getSourceFile(document.uri.fsPath)?.forEachDescendant(node => {
-        if (!Node.isBlock(node)) {
-            return;
-        }
+    project
+        ?.getSourceFile(document.uri.fsPath)
+        ?.getDescendants()
+        .filter(it => Node.isBlock(it))
+        .forEach(it => {
+            const stmts = it.getStatements();
+            if (stmts.length < 2) {
+                return;
+            }
 
-        const stmts = node.getStatements();
-        if (stmts.length < 2) {
-            return;
-        }
+            const lastStmt = stmts[stmts.length - 1];
+            if (!Node.isBreakStatement(lastStmt)) {
+                return;
+            }
 
-        const lastStmt = stmts[stmts.length - 1];
-        if (!Node.isBreakStatement(lastStmt)) {
-            return;
-        }
+            const prevStmt = stmts[stmts.length - 2];
+            const prevEndLine = document.positionAt(prevStmt.getEnd()).line;
+            const breakStartLine = document.positionAt(
+                lastStmt.getStart()
+            ).line;
 
-        const prevStmt = stmts[stmts.length - 2];
-        const prevEndLine = document.positionAt(prevStmt.getEnd()).line;
-        const breakStartLine = document.positionAt(lastStmt.getStart()).line;
+            if (breakStartLine - prevEndLine < 2) {
+                const diagnostic = new vscode.Diagnostic(
+                    buildRangeByLineIndex(document, breakStartLine),
+                    "Missing blank line before break statement.",
+                    vscode.DiagnosticSeverity.Warning
+                );
+                diagnostic.code = `@${extensionName}/blank-line-before-break-statement`;
 
-        if (breakStartLine - prevEndLine < 2) {
-            const diagnostic = new vscode.Diagnostic(
-                buildRangeByLineIndex(document, breakStartLine),
-                "Missing blank line before break statement.",
-                vscode.DiagnosticSeverity.Warning
-            );
-            diagnostic.code = `@${extensionName}/blank-line-before-break-statement`;
-
-            diagnostics.push(diagnostic);
-        }
-    });
+                diagnostics.push(diagnostic);
+            }
+        });
 }
