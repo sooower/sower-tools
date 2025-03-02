@@ -5,6 +5,48 @@ All notable changes to "sower-tools" will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.4] - 2025-03-02
+
+### Added
+
+-   Enhance git force push with select remote repositories.
+-   Add option item Add group for configuring project groups.
+-   Loading ignore pattern for style check module dynamically.
+-   Add configuration item timestampFormat for configure timestamp convert/insert format.
+-   Improve git force push command with progress indication.
+-   Add new code actions for removing blank lines and copying to clipboard.
+-   Implement command to upload local images to Minio storage.
+-   Add new configuration option sower-tools.projectsOpen.style to control project view style.
+-   Implement two display modes: groups and flat list with group separators.
+-   Support path alias "~" for project paths configuration.
+-   Add quick pick buttons to switch between display styles and add groups.
+-   Add cursor profile sync configuration and commands.
+-   Add user confirmation for cursor profile sync actions.
+-   Add project snapshot feature with configuration and file watching.
+-   Add API request assistant with env variables reference and fix save file snapshots.
+
+### Changed
+
+-   Enhance type of zod schema for checking if the direct symbol source is from zod and remove redundant commands.
+-   Improve package.json configuration descriptions and structure.
+-   Update code actions providers for local image diagnostics.
+-   Improve diagnostic triggers for markdown modules.
+-   Enhance project opening command with more flexible selection and error handling.
+-   Prevents style check diagnostics from being generated in git, git-index, and SCM views.
+-   Remove "See Details" option from information message.
+-   Update package.json descriptions to use consistent comma-separated formatting.
+-   Update configuration to make project name optional.
+-   Rename `dirEnhancement` to `folderEnhancement` and optimized performance of command 'expandFolder'.
+
+### Fixed
+
+-   Fix override function in function declaration style check.
+-   Update constant with using dynamic command registration(causing the 'extensionName' is undefined).
+-   Correct upstream branch detection in git force push command.
+-   Loading project AST and remove redundant 'sourceFileCache'.
+-   Add GitLens diff view support to style check detection.
+-   Fix force push command with improved remote branch selection and confirmation.
+
 ## [0.17.3] - 2025-02-23
 
 ### Added

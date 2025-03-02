@@ -50,6 +50,21 @@
 -   Add module `tryStatement` for try statement style check.
 -   Add logger for enhancing log printing and removed redundant commands in package.json.
 -   Add module `projectsOpen` for project enhancement with project group configuration and add command `openProjects` to batch open projects.
+-   Enhance git force push with select remote repositories.
+-   Add option item Add group for configuring project groups.
+-   Loading ignore pattern for style check module dynamically.
+-   Add configuration item timestampFormat for configure timestamp convert/insert format.
+-   Improve git force push command with progress indication.
+-   Add new code actions for removing blank lines and copying to clipboard.
+-   Implement command to upload local images to Minio storage.
+-   Add new configuration option sower-tools.projectsOpen.style to control project view style.
+-   Implement two display modes: groups and flat list with group separators.
+-   Support path alias "~" for project paths configuration.
+-   Add quick pick buttons to switch between display styles and add groups.
+-   Add cursor profile sync configuration and commands.
+-   Add user confirmation for cursor profile sync actions.
+-   Add project snapshot feature with configuration and file watching.
+-   Add API request assistant with env variables reference and fix save file snapshots.
 
 ## Usage
 
