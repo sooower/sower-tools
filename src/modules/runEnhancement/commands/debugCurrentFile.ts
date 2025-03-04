@@ -2,22 +2,22 @@ import { extensionCtx, extensionName, logger, vscode } from "@/core";
 import { getWorkspaceFolder } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
-import { debugProjectConfigurationNames } from "../configs";
-import { getDebuggingConfigurations } from "./utils";
+import { debugCurrentFileConfigurationNames } from "../configs";
+import { getDebuggingConfigurations } from "../utils";
 
-export function registerCommandDebugProject() {
+export function registerCommandDebugCurrentFile() {
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
-            `${extensionName}.debuggingEnhancement.debugProject`,
+            `${extensionName}.runEnhancement.debugCurrentFile`,
             async () => {
                 try {
-                    const debugProjectConfiguration =
+                    const debugCurrentFileConfiguration =
                         getDebuggingConfigurations()?.find(it =>
-                            debugProjectConfigurationNames.includes(it.name)
+                            debugCurrentFileConfigurationNames.includes(it.name)
                         );
                     CommonUtils.assert(
-                        debugProjectConfiguration !== undefined,
-                        `Can not found project debugging config.`
+                        debugCurrentFileConfiguration !== undefined,
+                        `Can not found current ts file debugging config.`
                     );
 
                     if (vscode.debug.activeDebugSession !== undefined) {
@@ -27,10 +27,10 @@ export function registerCommandDebugProject() {
                     }
 
                     await vscode.debug.startDebugging(getWorkspaceFolder(), {
-                        ...debugProjectConfiguration,
+                        ...debugCurrentFileConfiguration,
                     });
                 } catch (e) {
-                    logger.error("Failed to debug project.", e);
+                    logger.error("Failed to debug current file.", e);
                 }
             }
         )

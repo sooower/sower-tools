@@ -4,6 +4,7 @@ import { extensionCtx, extensionName, project, vscode } from "@/core";
 import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
+import { debouncedStyleCheck } from "../../utils";
 import { isDiffView, isIgnoredFile } from "../shared/utils";
 import { enableStyleCheckTryStatement } from "./configs";
 
@@ -12,16 +13,8 @@ let diagnosticCollection: vscode.DiagnosticCollection;
 export function registerDiagnosticTryStatement() {
     diagnosticCollection =
         vscode.languages.createDiagnosticCollection("try-statement");
-    extensionCtx.subscriptions.push(
-        diagnosticCollection,
-        vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
-        vscode.workspace.onDidSaveTextDocument(updateDiagnostics),
-        vscode.window.onDidChangeActiveTextEditor(e => {
-            if (e?.document !== undefined) {
-                updateDiagnostics(e.document);
-            }
-        })
-    );
+    extensionCtx.subscriptions.push(diagnosticCollection);
+    debouncedStyleCheck(updateDiagnostics);
 }
 
 async function updateDiagnostics(document: vscode.TextDocument) {
@@ -58,7 +51,7 @@ function checkUnAwaitedPromiseCallExpression(
     diagnostics: vscode.Diagnostic[]
 ) {
     project
-        ?.getSourceFile(document.uri.fsPath)
+        ?.getSourceFile(document.fileName)
         ?.getDescendants()
         .filter(it => Node.isTryStatement(it))
         .forEach(it => {

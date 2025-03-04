@@ -19,7 +19,7 @@ export function toUpperCamelCase(input: string) {
     let res =
         camelCaseInput.slice(0, 1).toUpperCase() + camelCaseInput.slice(1);
 
-    // Replace special words
+    // Map uppercase words
     if (uppercaseWordsMapping.has(res)) {
         res = CommonUtils.mandatory(uppercaseWordsMapping.get(res));
     }

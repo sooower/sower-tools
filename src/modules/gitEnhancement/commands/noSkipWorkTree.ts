@@ -1,7 +1,8 @@
-import path from "node:path";
-
 import { extensionCtx, extensionName, logger, vscode } from "@/core";
-import { getWorkspaceFolderPath } from "@/utils/vscode";
+import {
+    getWorkspaceFolderPath,
+    getWorkspaceRelativePath,
+} from "@/utils/vscode";
 import { execCommand } from "@utils/command";
 
 export function registerCommandNoSkipWorkTree() {
@@ -14,18 +15,15 @@ export function registerCommandNoSkipWorkTree() {
                     return;
                 }
 
-                const relativePath = path.relative(
-                    workspaceFolderPath,
-                    uri.path
-                );
-
                 try {
                     await execCommand({
                         command: `git update-index --no-skip-worktree ${uri.path}`,
                         cwd: workspaceFolderPath,
                     });
                     logger.info(
-                        `Recovery to track changes for file "${relativePath}".`
+                        `Recovery to track changes for file "${getWorkspaceRelativePath(
+                            uri
+                        )}".`
                     );
                 } catch (e) {
                     logger.error(

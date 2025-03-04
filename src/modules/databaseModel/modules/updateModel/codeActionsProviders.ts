@@ -29,7 +29,7 @@ function isCursorInTDefinitionsDeclaration(
     range: vscode.Range | vscode.Selection
 ) {
     const node = project
-        ?.getSourceFile(document.uri.fsPath)
+        ?.getSourceFile(document.fileName)
         ?.getTypeAlias("TDefinitions");
 
     if (node === undefined) {

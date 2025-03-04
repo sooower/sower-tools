@@ -80,14 +80,19 @@
     "contributes": {
         "commands": [
             {
-                "command": "sower-tools.debuggingEnhancement.debugProject",
+                "command": "sower-tools.runEnhancement.debugProject",
                 "title": "Debug Project",
-                "icon": "$(bug)"
+                "icon": "$(debug-all)"
             },
             {
-                "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
+                "command": "sower-tools.runEnhancement.debugCurrentFile",
                 "title": "Debug Current File",
                 "icon": "$(debug-alt)"
+            },
+            {
+                "command": "sower-tools.runEnhancement.runProject",
+                "title": "Run Project",
+                "icon": "$(play)"
             },
             {
                 "command": "sower-tools.gitEnhancement.skipWorkTree",
@@ -136,23 +141,23 @@
             "editor/context": [
                 {
                     "group": "001_sowerTools@001",
-                    "submenu": "editor/context/sowerTools"
+                    "submenu": "editor.context.sowerTools"
                 }
             ],
-            "editor/context/sowerTools": [
+            "editor.context.sowerTools": [
                 {
                     "command": "sower-tools.apiRequestAssistant.referToEnvVariables",
                     "group": "001_apiRequestAssistant@001",
                     "when": "resourceLangId == typescript"
                 },
                 {
-                    "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
-                    "group": "002_debuggingEnhancement@001",
+                    "command": "sower-tools.runEnhancement.debugCurrentFile",
+                    "group": "002_runEnhancement@001",
                     "when": "resourceLangId == typescript"
                 },
                 {
-                    "command": "sower-tools.debuggingEnhancement.debugProject",
-                    "group": "002_debuggingEnhancement@002",
+                    "command": "sower-tools.runEnhancement.debugProject",
+                    "group": "002_runEnhancement@002",
                     "when": "resourceLangId == typescript"
                 }
             ],
@@ -160,29 +165,36 @@
                 {
                     "command": "sower-tools.apiRequestAssistant.referToEnvVariables",
                     "group": "navigation@001",
+                    "when": "resourceLangId == typescript && sower-tools.referToEnvVariables.ifShowReferToEnvVariables"
+                }
+            ],
+            "editor/title/run": [
+                {
+                    "command": "sower-tools.runEnhancement.debugCurrentFile",
+                    "group": "001_debugging@001",
                     "when": "resourceLangId == typescript"
                 },
                 {
-                    "command": "sower-tools.debuggingEnhancement.debugCurrentFile",
-                    "group": "navigation@002",
-                    "when": "resourceLangId == typescript"
+                    "command": "sower-tools.runEnhancement.debugProject",
+                    "group": "001_debugging@002",
+                    "when": "resourceLangId == typescript && sower-tools.runEnhancement.ifShowDebugProject"
                 },
                 {
-                    "command": "sower-tools.debuggingEnhancement.debugProject",
-                    "group": "navigation@003",
+                    "command": "sower-tools.runEnhancement.runProject",
+                    "group": "002_run@001",
                     "when": "resourceLangId == typescript"
                 }
             ],
             "explorer/context": [
                 {
                     "group": "001_sowerTools@001",
-                    "submenu": "explorer/context/sowerTools"
+                    "submenu": "explorer.context.sowerTools"
                 }
             ],
-            "explorer/context/sowerTools": [
+            "explorer.context.sowerTools": [
                 {
                     "group": "001_git@001",
-                    "submenu": "explorer/context/sowerTools/git"
+                    "submenu": "explorer.context.sowerTools.git"
                 },
                 {
                     "command": "sower-tools.folderEnhancement.expandFolder",
@@ -195,7 +207,7 @@
                     "when": "explorerResourceIsFolder == true"
                 }
             ],
-            "explorer/context/sowerTools/git": [
+            "explorer.context.sowerTools.git": [
                 {
                     "command": "sower-tools.gitEnhancement.skipWorkTree",
                     "group": "001_gitEnhancement@001",
@@ -220,15 +232,15 @@
         },
         "submenus": [
             {
-                "id": "editor/context/sowerTools",
+                "id": "editor.context.sowerTools",
                 "label": "Sower Tools"
             },
             {
-                "id": "explorer/context/sowerTools",
+                "id": "explorer.context.sowerTools",
                 "label": "Sower Tools"
             },
             {
-                "id": "explorer/context/sowerTools/git",
+                "id": "explorer.context.sowerTools.git",
                 "label": "Git"
             }
         ],
@@ -245,6 +257,16 @@
                     "default": [
                         "Id:ID"
                     ]
+                },
+                "sower-tools.shared.enableShowAddedASTProjectSourceFiles": {
+                    "description": "If true, it will show added AST project source files after AST project is initialized in output channel.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "sower-tools.shared.refreshSourceFileCacheDelay": {
+                    "description": "The delay (in milliseconds) of refreshing AST project source file cache, the smaller the value, the faster the refresh, but it may cause performance issues, minimum value is 0.",
+                    "type": "number",
+                    "default": 100
                 },
                 "sower-tools.databaseModel.enableOverwriteFile": {
                     "description": "If true, it will replace file content with generated text if the file exists.",
@@ -274,7 +296,7 @@
                         "updatedAt"
                     ]
                 },
-                "sower-tools.debuggingEnhancement.debugProjectConfigurationNames": {
+                "sower-tools.runEnhancement.debugProjectConfigurationNames": {
                     "description": "Array of name (location at <projectRootDir>/.vscode/launch.json#configurations) of debugging the project. The priority depends on the array element order, the first element has the highest priority.",
                     "type": "array",
                     "items": {
@@ -284,7 +306,7 @@
                         "Debug Project"
                     ]
                 },
-                "sower-tools.debuggingEnhancement.debugCurrentFileConfigurationNames": {
+                "sower-tools.runEnhancement.debugCurrentFileConfigurationNames": {
                     "description": "Array of name (location at <projectRootDir>/.vscode/launch.json#configurations) of debugging the opened file. The priority depends on the array element order, the first element has the highest priority.",
                     "type": "array",
                     "items": {
@@ -543,6 +565,11 @@
                         ".prettierignore",
                         ".gitignore"
                     ]
+                },
+                "sower-tools.styleCheck.diagnoseUpdateDelay": {
+                    "description": "The delay (in milliseconds) of updating style check diagnostics, the smaller the value, the faster the update, but it may cause performance issues, minimum value is 0.",
+                    "type": "number",
+                    "default": 200
                 },
                 "sower-tools.styleCheck.comment.enable": {
                     "description": "If true, the comment style of the opened file will be checked.",

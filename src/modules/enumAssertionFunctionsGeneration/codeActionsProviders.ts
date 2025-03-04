@@ -35,7 +35,7 @@ function getEnumDeclarationInRange(
     range: vscode.Range
 ) {
     const enumDeclaration = project
-        ?.getSourceFile(document.uri.fsPath)
+        ?.getSourceFile(document.fileName)
         ?.getDescendantsOfKind(SyntaxKind.EnumDeclaration)
         .find(
             it =>

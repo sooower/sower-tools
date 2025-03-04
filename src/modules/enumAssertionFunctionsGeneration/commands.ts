@@ -52,7 +52,7 @@ async function generateEnumAssertionFunctions({
         .map(it => it.getName());
     const valName = toLowerCamelCase(enumNameWithoutPrefix);
 
-    const sourceFile = project?.getSourceFile(document.uri.fsPath);
+    const sourceFile = project?.getSourceFile(document.fileName);
 
     // Upsert 'assertEXxx' function
 

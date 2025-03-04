@@ -37,7 +37,7 @@ function findInRangeOptionsTypeDeclaration(
     range: vscode.Range | vscode.Selection
 ) {
     return project
-        ?.getSourceFile(document.uri.fsPath)
+        ?.getSourceFile(document.fileName)
         ?.getDescendantsOfKind(SyntaxKind.TypeAliasDeclaration)
         .find(
             node =>

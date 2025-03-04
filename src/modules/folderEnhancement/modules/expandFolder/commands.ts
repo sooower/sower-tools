@@ -8,7 +8,10 @@ import {
     logger,
     vscode,
 } from "@/core";
-import { getWorkspaceFolderPath } from "@/utils/vscode";
+import {
+    getWorkspaceFolderPath,
+    getWorkspaceRelativePath,
+} from "@/utils/vscode";
 
 import { ignoredFilenames } from "./configs";
 
@@ -42,7 +45,7 @@ async function expandFolder(uri: vscode.Uri) {
             const fileUris = (await getFilesInDir(uri)).filter(
                 it => !ignoredFilenames.includes(path.basename(it.fsPath))
             );
-            const relPath = path.relative(workspaceFolderPath, uri.fsPath);
+            const relPath = getWorkspaceRelativePath(uri);
 
             let openedFilesCount = 0;
             for (const fileUri of fileUris) {

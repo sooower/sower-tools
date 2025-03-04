@@ -50,7 +50,7 @@ export function registerCommandUpdateModel() {
 }
 
 async function createEditAndApply(document: vscode.TextDocument) {
-    const sourceFile = project?.getSourceFile(document.uri.fsPath);
+    const sourceFile = project?.getSourceFile(document.fileName);
     if (sourceFile === undefined) {
         return;
     }

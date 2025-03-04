@@ -7,17 +7,9 @@ import { extensionName, fs, getConfigurationItem, logger } from "@/core";
 import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { readFile } from "@utils/fs";
 
-/**
- * The 'glob' patterns of files that will be ignored when checking style.
- * The priority is higher than compatibility config files.
- */
 export let ignorePatterns: string[];
-
-/**
- * The compatible config filenames (not including paths) that will be used to ignore style check
- * files. The priority is lower than patterns.
- */
 export let ignoreCompatibleConfigFilenames: string[];
+export let diagnoseUpdateDelay: number;
 
 export function parseConfigs() {
     ignorePatterns = z
@@ -25,12 +17,19 @@ export function parseConfigs() {
         .parse(
             getConfigurationItem(`${extensionName}.styleCheck.ignore.patterns`)
         );
-
     ignoreCompatibleConfigFilenames = z
         .array(z.string().min(1))
         .parse(
             getConfigurationItem(
                 `${extensionName}.styleCheck.ignore.compatibleConfigFilenames`
+            )
+        );
+    diagnoseUpdateDelay = z
+        .number()
+        .min(0)
+        .parse(
+            getConfigurationItem(
+                `${extensionName}.styleCheck.diagnoseUpdateDelay`
             )
         );
 }

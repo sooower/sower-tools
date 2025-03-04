@@ -3,11 +3,9 @@ import z from "zod";
 import { extensionName, getConfigurationItem } from "@/core";
 import { CommonUtils } from "@utils/common";
 
-/**
- * Words mapping with format: `<originalWord>:<mappedWord>`, for example: "Id:ID".
- * It will be used to map words when to uppercase.
- */
 export let uppercaseWordsMapping: Map<string, string>;
+export let enableShowAddedASTProjectSourceFiles: boolean;
+export let refreshSourceFileCacheDelay: number;
 
 export function parseConfigs() {
     uppercaseWordsMapping = new Map(
@@ -33,4 +31,19 @@ export function parseConfigs() {
                 )
             )
     );
+    enableShowAddedASTProjectSourceFiles = z
+        .boolean()
+        .parse(
+            getConfigurationItem(
+                `${extensionName}.shared.enableShowAddedASTProjectSourceFiles`
+            )
+        );
+    refreshSourceFileCacheDelay = z
+        .number()
+        .min(0)
+        .parse(
+            getConfigurationItem(
+                `${extensionName}.shared.refreshSourceFileCacheDelay`
+            )
+        );
 }

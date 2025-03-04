@@ -6,7 +6,6 @@ import { changelogSync } from "./changelogSync";
 import { completionItemEnhancement } from "./completionItemEnhancement";
 import { configSync } from "./configSync";
 import { databaseModel } from "./databaseModel";
-import { debuggingEnhancement } from "./debuggingEnhancement";
 import { enumAssertionFunctionsGeneration } from "./enumAssertionFunctionsGeneration";
 import { enumsDeclarationSort } from "./enumsDeclarationSort";
 import { folderEnhancement } from "./folderEnhancement";
@@ -17,6 +16,7 @@ import { markdownEnhancement } from "./markdownEnhancement";
 import { nodeBuiltinModulesImportsUpdate } from "./nodeBuiltinModulesImportsUpdate";
 import { projectEnhancement } from "./projectEnhancement";
 import { readmeDocumentPreview } from "./readmeDocumentPreview";
+import { runEnhancement } from "./runEnhancement";
 import { shared } from "./shared";
 import { statusBarEnhancement } from "./statusBarEnhancement";
 import { stringTools } from "./stringTools";
@@ -39,7 +39,7 @@ export const modules = defineModule([
     databaseModel,
     keyCryptoTools,
     folderEnhancement,
-    debuggingEnhancement,
+    runEnhancement,
     gitEnhancement,
     apiResourcesGeneration,
     statusBarEnhancement,

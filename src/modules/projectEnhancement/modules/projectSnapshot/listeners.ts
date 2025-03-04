@@ -2,7 +2,10 @@ import path from "node:path";
 
 import { extensionCtx, format, fs, logger, vscode } from "@/core";
 import { calcFileContentMd5 } from "@/utils/common";
-import { getWorkspaceFolderPath } from "@/utils/vscode";
+import {
+    getWorkspaceFolderPath,
+    getWorkspaceRelativePath,
+} from "@/utils/vscode";
 import { datetime } from "@utils/datetime";
 
 import {
@@ -15,7 +18,7 @@ import {
 export function registerListeners() {
     extensionCtx.subscriptions.push(
         vscode.workspace.onDidSaveTextDocument(async document => {
-            await saveFileSnapshot(document.uri.fsPath);
+            await saveFileSnapshot(document.fileName);
         }),
         vscode.workspace.onDidCreateFiles(async e => {
             await Promise.all(
@@ -37,7 +40,7 @@ async function saveFileSnapshot(filePath: string) {
         return;
     }
 
-    const relPath = path.relative(workspaceFolderPath, filePath);
+    const relPath = getWorkspaceRelativePath(filePath);
 
     if (ignoreManager.ignores(relPath)) {
         logger.trace(`File "${relPath}" is ignored, skipped to save snapshot.`);

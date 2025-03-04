@@ -34,7 +34,7 @@ function findValidFuncOrMethodOrCtorDeclaration(
     range: vscode.Range | vscode.Selection
 ) {
     const node = project
-        ?.getSourceFile(document.uri.fsPath)
+        ?.getSourceFile(document.fileName)
         ?.getDescendants()
         .filter(
             node =>

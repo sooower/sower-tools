@@ -4,6 +4,7 @@ import { extensionCtx, extensionName, project, vscode } from "@/core";
 import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
+import { debouncedStyleCheck } from "../../utils";
 import { isDiffView, isIgnoredFile } from "../shared/utils";
 import { enableStyleCheckContinueStatement } from "./configs";
 
@@ -12,16 +13,8 @@ let diagnosticCollection: vscode.DiagnosticCollection;
 export function registerDiagnosticContinueStatement() {
     diagnosticCollection =
         vscode.languages.createDiagnosticCollection("continue-statement");
-    extensionCtx.subscriptions.push(
-        diagnosticCollection,
-        vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
-        vscode.workspace.onDidSaveTextDocument(updateDiagnostics),
-        vscode.window.onDidChangeActiveTextEditor(e => {
-            if (e?.document !== undefined) {
-                updateDiagnostics(e.document);
-            }
-        })
-    );
+    extensionCtx.subscriptions.push(diagnosticCollection);
+    debouncedStyleCheck(updateDiagnostics);
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
@@ -59,7 +52,7 @@ function checkIsMissingBlankLineBeforeContinueStatement(
     diagnostics: vscode.Diagnostic[]
 ) {
     project
-        ?.getSourceFile(document.uri.fsPath)
+        ?.getSourceFile(document.fileName)
         ?.getDescendants()
         .filter(it => Node.isBlock(it))
         .forEach(it => {

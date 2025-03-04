@@ -6,7 +6,7 @@ export function registerCodeActionsProviderImportStatementsTopOfFile() {
             provideCodeActions(document, range, context, token) {
                 const importStmtsCount =
                     project
-                        ?.getSourceFile(document.uri.fsPath)
+                        ?.getSourceFile(document.fileName)
                         ?.getImportDeclarations().length ?? 0;
 
                 return context.diagnostics

@@ -1,4 +1,4 @@
-import { extensionCtx, logger, vscode } from "@/core";
+import { extensionCtx, vscode } from "@/core";
 import { datetime } from "@utils/datetime";
 
 import { timestampFormat } from "./configs";
@@ -25,8 +25,6 @@ export function registerHoverProvider() {
                     .format(timestampFormat);
 
                 if (timestamp === "Invalid Date") {
-                    logger.error(`Invalid timestamp: "${selectedWord}".`);
-
                     return;
                 }
 

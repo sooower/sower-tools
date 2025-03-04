@@ -10,7 +10,7 @@ export function parseConfigs() {
         .array(z.string())
         .parse(
             getConfigurationItem(
-                `${extensionName}.debuggingEnhancement.debugCurrentFileConfigurationNames`
+                `${extensionName}.runEnhancement.debugCurrentFileConfigurationNames`
             )
         );
 
@@ -18,7 +18,7 @@ export function parseConfigs() {
         .array(z.string())
         .parse(
             getConfigurationItem(
-                `${extensionName}.debuggingEnhancement.debugProjectConfigurationNames`
+                `${extensionName}.runEnhancement.debugProjectConfigurationNames`
             )
         );
 }

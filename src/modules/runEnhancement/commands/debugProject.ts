@@ -2,22 +2,22 @@ import { extensionCtx, extensionName, logger, vscode } from "@/core";
 import { getWorkspaceFolder } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
-import { debugCurrentFileConfigurationNames } from "../configs";
-import { getDebuggingConfigurations } from "./utils";
+import { debugProjectConfigurationNames } from "../configs";
+import { getDebuggingConfigurations } from "../utils";
 
-export function registerCommandDebugCurrentFile() {
+export function registerCommandDebugProject() {
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
-            `${extensionName}.debuggingEnhancement.debugCurrentFile`,
+            `${extensionName}.runEnhancement.debugProject`,
             async () => {
                 try {
-                    const debugCurrentFileConfiguration =
+                    const debugProjectConfiguration =
                         getDebuggingConfigurations()?.find(it =>
-                            debugCurrentFileConfigurationNames.includes(it.name)
+                            debugProjectConfigurationNames.includes(it.name)
                         );
                     CommonUtils.assert(
-                        debugCurrentFileConfiguration !== undefined,
-                        `Can not found current ts file debugging config.`
+                        debugProjectConfiguration !== undefined,
+                        `Can not found project debugging config.`
                     );
 
                     if (vscode.debug.activeDebugSession !== undefined) {
@@ -27,10 +27,10 @@ export function registerCommandDebugCurrentFile() {
                     }
 
                     await vscode.debug.startDebugging(getWorkspaceFolder(), {
-                        ...debugCurrentFileConfiguration,
+                        ...debugProjectConfiguration,
                     });
                 } catch (e) {
-                    logger.error("Failed to debug current file.", e);
+                    logger.error("Failed to debug project.", e);
                 }
             }
         )

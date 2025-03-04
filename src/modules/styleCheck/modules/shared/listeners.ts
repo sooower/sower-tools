@@ -10,7 +10,7 @@ export function registerOnDidSaveTextDocumentListener() {
             try {
                 const isIgnoreCompatibleConfigFile =
                     ignoreCompatibleConfigFilenames.includes(
-                        path.basename(document.uri.fsPath)
+                        path.basename(document.fileName)
                     );
                 if (!isIgnoreCompatibleConfigFile) {
                     return;

@@ -4,6 +4,7 @@ import {
     isDiffView,
     isIgnoredFile,
 } from "@/modules/styleCheck/modules/shared/utils";
+import { debouncedStyleCheck } from "@/modules/styleCheck/utils";
 
 import { extensionCtx, extensionName, project, vscode } from "@/core";
 import { isTypeScriptFile } from "@/utils/vscode";
@@ -17,17 +18,8 @@ export function registerDiagnosticBlankLineAfterLastImportStatement() {
     diagnosticCollection = vscode.languages.createDiagnosticCollection(
         "blank-line-after-last-import-statement"
     );
-
-    extensionCtx.subscriptions.push(
-        diagnosticCollection,
-        vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
-        vscode.workspace.onDidSaveTextDocument(updateDiagnostics),
-        vscode.window.onDidChangeActiveTextEditor(e => {
-            if (e?.document !== undefined) {
-                updateDiagnostics(e.document);
-            }
-        })
-    );
+    extensionCtx.subscriptions.push(diagnosticCollection);
+    debouncedStyleCheck(updateDiagnostics);
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
@@ -65,7 +57,7 @@ function checkIsMissingBlankLineAfterLastImportStatement(
     diagnostics: vscode.Diagnostic[]
 ) {
     const lastImportStatementNode = project
-        ?.getSourceFile(document.uri.fsPath)
+        ?.getSourceFile(document.fileName)
         ?.getImportDeclarations()
         .pop();
 

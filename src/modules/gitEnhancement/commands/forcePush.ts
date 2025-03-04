@@ -70,15 +70,24 @@ async function doGitForcePush() {
     }
 
     const { label: upstreamName } = selectedRemoteRepo;
-    const remoteBranch =
-        (await execCommand({
-            command: `git ls-remote --heads ${upstreamName} ${currBranch} | awk '{print $2}' | awk -F'/' '{print $3}'`,
-            cwd: workspaceFolderPath,
-            interactive: false,
-        })) ?? "";
+    const branchesDetails = await execCommand({
+        command: `git fetch --all && git branch -vv`,
+        cwd: workspaceFolderPath,
+        interactive: false,
+    });
+
+    const branchDetails = branchesDetails
+        ?.trim()
+        .split("\n")
+        .filter(it => new RegExp(`^(\\*\\s+)?${currBranch}\\s+`).test(it))
+        .at(0);
+    const remoteBranch = branchDetails?.slice(
+        branchDetails.indexOf("[") + 1,
+        branchDetails.indexOf("]")
+    );
 
     // If the upstream branch is not found, set it and force push
-    if (remoteBranch.trim() === "") {
+    if (remoteBranch === undefined) {
         await setUpstreamBranchAndForcePush({
             currBranch,
             upstreamName,
@@ -145,7 +154,7 @@ async function forcePush({
 }) {
     const kForcePush = "Force push";
     const confirm = await vscode.window.showWarningMessage(
-        `This will force push branch "${currBranch}" to "${upstreamName}/${upstreamBranch}". Are you sure you want to continue?`,
+        `This will force push branch "${currBranch}" to "${upstreamBranch}". Are you sure you want to continue?`,
         {
             modal: true,
             detail: `It will execute command "git push -f -u ${upstreamName}" and not be able to rollback.`,

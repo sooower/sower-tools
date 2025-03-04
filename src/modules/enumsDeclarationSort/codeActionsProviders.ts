@@ -7,7 +7,7 @@ export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
         vscode.languages.registerCodeActionsProvider("typescript", {
             provideCodeActions(document, range, context, token) {
-                const sourceFile = project?.getSourceFile(document.uri.fsPath);
+                const sourceFile = project?.getSourceFile(document.fileName);
                 if (sourceFile === undefined) {
                     return [];
                 }

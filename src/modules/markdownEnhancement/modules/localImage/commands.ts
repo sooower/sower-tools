@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 
 import { Client } from "minio";
 
@@ -36,7 +36,7 @@ async function uploadImage(document: vscode.TextDocument, range: vscode.Range) {
         uploadImageConfig;
 
     const imageAbsPath = path.resolve(
-        path.dirname(document.uri.fsPath),
+        path.dirname(document.fileName),
         document.getText(range)
     );
 

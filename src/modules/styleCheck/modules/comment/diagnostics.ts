@@ -2,6 +2,7 @@ import { extensionCtx, extensionName, vscode } from "@/core";
 import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
+import { debouncedStyleCheck } from "../../utils";
 import {
     detectCommentKind,
     ECommentKind,
@@ -18,17 +19,8 @@ let diagnosticCollection: vscode.DiagnosticCollection;
 export function registerDiagnosticComment() {
     diagnosticCollection =
         vscode.languages.createDiagnosticCollection("comment");
-
-    extensionCtx.subscriptions.push(
-        diagnosticCollection,
-        vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
-        vscode.workspace.onDidSaveTextDocument(updateDiagnostics),
-        vscode.window.onDidChangeActiveTextEditor(e => {
-            if (e?.document !== undefined) {
-                updateDiagnostics(e.document);
-            }
-        })
-    );
+    extensionCtx.subscriptions.push(diagnosticCollection);
+    debouncedStyleCheck(updateDiagnostics);
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {

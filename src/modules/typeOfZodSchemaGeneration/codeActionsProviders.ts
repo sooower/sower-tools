@@ -9,7 +9,7 @@ export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(
         vscode.languages.registerCodeActionsProvider("typescript", {
             async provideCodeActions(document, range, context, token) {
-                const sourceFile = project?.getSourceFile(document.uri.fsPath);
+                const sourceFile = project?.getSourceFile(document.fileName);
 
                 // Find the variable declaration that contains the cursor start position
 

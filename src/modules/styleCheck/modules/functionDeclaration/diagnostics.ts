@@ -11,6 +11,7 @@ import { extensionCtx, extensionName, project, vscode } from "@/core";
 import { isTypeScriptFile } from "@/utils/vscode";
 import { buildRangeByLineIndex } from "@/utils/vscode/range";
 
+import { debouncedStyleCheck } from "../../utils";
 import {
     detectCommentKind,
     hasValidLeadingSpaceBefore,
@@ -26,17 +27,8 @@ export function registerDiagnosticFunctionDeclaration() {
     diagnosticCollection = vscode.languages.createDiagnosticCollection(
         "function-declaration"
     );
-
-    extensionCtx.subscriptions.push(
-        diagnosticCollection,
-        vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
-        vscode.workspace.onDidSaveTextDocument(updateDiagnostics),
-        vscode.window.onDidChangeActiveTextEditor(e => {
-            if (e?.document !== undefined) {
-                updateDiagnostics(e.document);
-            }
-        })
-    );
+    extensionCtx.subscriptions.push(diagnosticCollection);
+    debouncedStyleCheck(updateDiagnostics);
 }
 
 function updateDiagnostics(document: vscode.TextDocument) {
@@ -76,7 +68,7 @@ function checkIsMissingBlankLineBeforeFunctionDeclaration(
     const funcNames = new Set<string>();
 
     project
-        ?.getSourceFile(document.uri.fsPath)
+        ?.getSourceFile(document.fileName)
         ?.getDescendants()
         .filter(
             it =>

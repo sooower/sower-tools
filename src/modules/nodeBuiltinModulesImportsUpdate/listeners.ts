@@ -36,7 +36,7 @@ export async function refactorNodeBuiltinModulesImports(
 ) {
     const workspaceEdit = new vscode.WorkspaceEdit();
     project
-        ?.getSourceFile(document.uri.fsPath)
+        ?.getSourceFile(document.fileName)
         ?.getImportDeclarations()
         .forEach(it => {
             const moduleName = it.getModuleSpecifier().getLiteralValue();

@@ -167,3 +167,47 @@ export async function calcFileContentMd5(filePath: string) {
 export function formatHomeDirAlias(filePath: string) {
     return filePath.trim().replace(/^~/, os.homedir());
 }
+
+/**
+ * Debounce a function, delaying the execution of the function until the delay time has passed.
+ *
+ * @param fn - The function to debounce.
+ * @param delay - The delay time in milliseconds.
+ * @param options.immediate - If `true`, the function will be executed immediately
+ * if it is called during the delay time, default is `false`.
+ * @returns The debounced function.
+ */
+export function debounce<F extends (...args: any[]) => any>(
+    fn: F,
+    delay: number,
+    options?: { immediate?: boolean }
+) {
+    const { immediate = false } = options ?? {};
+
+    let timeoutId: NodeJS.Timeout | null = null;
+
+    return async function (
+        this: ThisParameterType<F>,
+        ...args: Parameters<F>
+    ): Promise<ReturnType<F> | undefined> {
+        const context = this;
+
+        let result: ReturnType<F> | undefined;
+
+        const laterExecFn = async () => {
+            timeoutId = null;
+            if (!immediate) {
+                result = await fn.apply(context, args);
+            }
+        };
+
+        if (immediate && timeoutId === null) {
+            result = await fn.apply(context, args);
+        }
+
+        timeoutId !== null && clearTimeout(timeoutId);
+        timeoutId = setTimeout(laterExecFn, delay);
+
+        return result;
+    };
+}

@@ -34,7 +34,7 @@ async function syncFunctionParameterTypeName(document: vscode.TextDocument) {
     const editor = CommonUtils.mandatory(vscode.window.activeTextEditor);
 
     project
-        ?.getSourceFile(document.uri.fsPath)
+        ?.getSourceFile(document.fileName)
         ?.getDescendants()
         .filter(
             it => Node.isFunctionDeclaration(it) || Node.isMethodDeclaration(it)

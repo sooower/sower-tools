@@ -1,7 +1,8 @@
-import path from "node:path";
-
 import { extensionCtx, extensionName, logger, vscode } from "@/core";
-import { getWorkspaceFolderPath } from "@/utils/vscode";
+import {
+    getWorkspaceFolderPath,
+    getWorkspaceRelativePath,
+} from "@/utils/vscode";
 import { execCommand } from "@utils/command";
 
 export function registerCommandSkipWorkTree() {
@@ -14,11 +15,6 @@ export function registerCommandSkipWorkTree() {
                     return;
                 }
 
-                const relativePath = path.relative(
-                    workspaceFolderPath,
-                    uri.path
-                );
-
                 try {
                     await execCommand({
                         command: `git update-index --skip-worktree ${uri.path}`,
@@ -26,7 +22,9 @@ export function registerCommandSkipWorkTree() {
                     });
 
                     logger.info(
-                        `Skipped work tree for file "${relativePath}".`
+                        `Skipped work tree for file "${getWorkspaceRelativePath(
+                            uri
+                        )}".`
                     );
                 } catch (e) {
                     logger.error("Failed to skip work tree for file.", e);

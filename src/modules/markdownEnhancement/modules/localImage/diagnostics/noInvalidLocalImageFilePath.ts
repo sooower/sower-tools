@@ -39,7 +39,7 @@ function updateDiagnostics(document: vscode.TextDocument) {
         const [imageLink, imagePath] = match;
 
         const imageAbsPath = path.resolve(
-            path.dirname(document.uri.fsPath),
+            path.dirname(document.fileName),
             imagePath
         );
         if (!fs.existsSync(imageAbsPath)) {

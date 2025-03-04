@@ -3,7 +3,7 @@ import { initializeConfigurations } from "./core/configuration";
 import { extensionName, initializeContext } from "./core/context";
 import { initializeLogger, logger } from "./core/logger";
 import { moduleManager } from "./core/moduleManager";
-import { initializeProjectAnalyser } from "./core/project";
+import { initializeASTProject } from "./core/project";
 import { modules } from "./modules";
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -14,9 +14,6 @@ export async function activate(context: vscode.ExtensionContext) {
         initializeLogger();
         logger.trace("Logger initialized.");
 
-        initializeProjectAnalyser();
-        logger.trace("Project analyser initialized.");
-
         // Register extension modules
         moduleManager.registerModules(modules);
         logger.trace("Modules registered.");
@@ -24,6 +21,10 @@ export async function activate(context: vscode.ExtensionContext) {
         // NOTICE: Initialize configurations must be called after modules are registered.
         await initializeConfigurations();
         logger.trace("Configurations initialized.");
+
+        // NOTICE: Initialize AST project must be called after configurations are initialized.
+        initializeASTProject();
+        logger.trace("Project analyser initialized.");
 
         await moduleManager.activateModules();
         logger.trace("Modules activated.");

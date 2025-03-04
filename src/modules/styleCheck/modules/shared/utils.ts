@@ -1,7 +1,8 @@
-import path from "node:path";
-
 import { vscode } from "@/core";
-import { getWorkspaceFolderPath } from "@/utils/vscode";
+import {
+    getWorkspaceFolderPath,
+    getWorkspaceRelativePath,
+} from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 import { ignoreManager } from "./configs";
@@ -158,17 +159,14 @@ export function isIgnoredFile(document: vscode.TextDocument): boolean {
         return false;
     }
 
-    const relativePath = path.relative(
-        workspaceFolderPath,
-        document.uri.fsPath
-    );
+    const relPath = getWorkspaceRelativePath(document);
 
     CommonUtils.assert(
-        !relativePath.startsWith("../"),
-        `Invalid relative path: "${relativePath}".`
+        !relPath.startsWith("../"),
+        `Invalid relative path: "${relPath}".`
     );
 
-    return ignoreManager.ignores(relativePath);
+    return ignoreManager.ignores(relPath);
 }
 
 export function isDiffView(document: vscode.TextDocument) {
