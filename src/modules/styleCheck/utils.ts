@@ -18,6 +18,13 @@ export function debouncedStyleCheck(
         }),
         vscode.workspace.onDidChangeTextDocument(e => {
             debounce(diagnosticFunc, diagnoseUpdateDelay)(e.document);
+        }),
+        vscode.window.onDidChangeActiveTextEditor(editor => {
+            if (editor === undefined) {
+                return;
+            }
+
+            debounce(diagnosticFunc, diagnoseUpdateDelay)(editor.document);
         })
     );
     vscode.workspace.textDocuments

@@ -15,6 +15,7 @@ import {
 import { CommonUtils } from "@utils/common";
 
 import {
+    enableEnvDocumentReference,
     envVariablesDirRelativePath,
     ignoreProjectNames,
     supportedProjectNames,
@@ -44,6 +45,10 @@ export function registerCommandReferToEnvVariables() {
 async function showEnvVariablesReference(document: vscode.TextDocument) {
     const workspaceFolderPath = getWorkspaceFolderPath();
     if (workspaceFolderPath === undefined) {
+        return;
+    }
+
+    if (!enableEnvDocumentReference) {
         return;
     }
 

@@ -135,6 +135,14 @@
                 "command": "sower-tools.apiRequestAssistant.referToEnvVariables",
                 "title": "Refer to Env Variables",
                 "icon": "$(zap)"
+            },
+            {
+                "command": "sower-tools.apiRequestAssistant.referToApiDocument",
+                "title": "Refer to API Document",
+                "icon": {
+                    "dark": "./assets/referToApiDocument-dark.svg",
+                    "light": "./assets/referToApiDocument-light.svg"
+                }
             }
         ],
         "menus": {
@@ -148,7 +156,12 @@
                 {
                     "command": "sower-tools.apiRequestAssistant.referToEnvVariables",
                     "group": "001_apiRequestAssistant@001",
-                    "when": "resourceLangId == typescript"
+                    "when": "resourceLangId == typescript && sower-tools.referToEnvVariables.ifShowReferToEnvVariables"
+                },
+                {
+                    "command": "sower-tools.apiRequestAssistant.referToApiDocument",
+                    "group": "001_apiRequestAssistant@002",
+                    "when": "resourceLangId == typescript && sower-tools.referToApiDocument.ifShowReferToApiDocument"
                 },
                 {
                     "command": "sower-tools.runEnhancement.debugCurrentFile",
@@ -166,6 +179,11 @@
                     "command": "sower-tools.apiRequestAssistant.referToEnvVariables",
                     "group": "navigation@001",
                     "when": "resourceLangId == typescript && sower-tools.referToEnvVariables.ifShowReferToEnvVariables"
+                },
+                {
+                    "command": "sower-tools.apiRequestAssistant.referToApiDocument",
+                    "group": "navigation@002",
+                    "when": "resourceLangId == typescript && sower-tools.referToApiDocument.ifShowReferToApiDocument"
                 }
             ],
             "editor/title/run": [
@@ -543,7 +561,7 @@
                     ]
                 },
                 "sower-tools.styleCheck.ignore.patterns": {
-                    "description": "The 'glob' patterns of files or directories that will be ignored when checking style. The priority is higher than configured items in 'sower-tools.styleCheck.ignore.compatibleConfigFilenames'.",
+                    "description": "The 'glob' patterns of files or directories that will be ignored when checking style. The priority is lower than configured items in 'sower-tools.styleCheck.ignore.compatibleConfigFilenames'.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -551,11 +569,20 @@
                     "default": [
                         "node_modules/",
                         "dist/",
-                        "build/"
+                        "build/",
+                        ".git/"
                     ]
                 },
+                "sower-tools.styleCheck.ignore.filePaths": {
+                    "description": "The file paths (full or partial path of a file, not supported directories or 'glob' patterns) that will be ignored when checking style, the priority is higher than configured items in 'sower-tools.styleCheck.ignore.compatibleConfigFilenames'.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": []
+                },
                 "sower-tools.styleCheck.ignore.compatibleConfigFilenames": {
-                    "description": "The compatible config filenames that their contents will be split by line and added to the ignore list of style check. The priority is lower than configured items in 'sower-tools.styleCheck.ignore.patterns'.",
+                    "description": "The compatible config filenames that their contents will be split by line and added to the ignore list of style check. The priority is higher than configured items in 'sower-tools.styleCheck.ignore.patterns'.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -739,7 +766,7 @@
                     "default": "~/.project-snapshots"
                 },
                 "sower-tools.projectEnhancement.projectSnapshot.ignorePatterns": {
-                    "description": "The 'glob' patterns of files or directories that will be ignored when saving project snapshot, the priority is higher than configured items in 'sower-tools.projectEnhancement.projectSnapshot.ignoreCompatibleConfigFilenames'.",
+                    "description": "The 'glob' patterns of files or directories that will be ignored when saving project snapshot, the priority is lower than configured items in 'sower-tools.projectEnhancement.projectSnapshot.ignoreCompatibleConfigFilenames'.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -752,7 +779,7 @@
                     ]
                 },
                 "sower-tools.projectEnhancement.projectSnapshot.ignoreCompatibleConfigFilenames": {
-                    "description": "The compatible config filenames that their contents will be split by line and added to the ignore list of project snapshot. The priority is lower than configured items in 'sower-tools.projectEnhancement.projectSnapshot.ignorePatterns'.",
+                    "description": "The compatible config filenames that their contents will be split by line and added to the ignore list of project snapshot. The priority is higher than configured items in 'sower-tools.projectEnhancement.projectSnapshot.ignorePatterns'.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -764,7 +791,7 @@
                 "sower-tools.apiRequestAssistant.envVariablesReference.enable": {
                     "description": "Whether to enable env variables reference.",
                     "type": "boolean",
-                    "default": false
+                    "default": true
                 },
                 "sower-tools.apiRequestAssistant.envVariablesReference.envVariablesDirRelativePath": {
                     "description": "The relative path of the env variables directory to the project root directory.",
@@ -783,6 +810,34 @@
                 },
                 "sower-tools.apiRequestAssistant.envVariablesReference.ignoreProjectNames": {
                     "description": "The project names which will be ignored when showing the env variables reference.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": []
+                },
+                "sower-tools.apiRequestAssistant.apiDocumentReference.enable": {
+                    "description": "Whether to enable api document reference.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "sower-tools.apiRequestAssistant.apiDocumentReference.apiDirRelativePath": {
+                    "description": "The relative path of the api document directory to the project root directory.",
+                    "type": "string",
+                    "default": ".cached/docs"
+                },
+                "sower-tools.apiRequestAssistant.apiDocumentReference.supportedProjectNames": {
+                    "description": "The supported project names which will be used to find the api document file.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "api-request"
+                    ]
+                },
+                "sower-tools.apiRequestAssistant.apiDocumentReference.ignoreProjectNames": {
+                    "description": "The project names which will be ignored when showing the api document reference.",
                     "type": "array",
                     "items": {
                         "type": "string"

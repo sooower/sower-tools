@@ -11,6 +11,8 @@ import {
 } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
+import { enableEnvDocumentReference } from "./configs";
+
 export let envFilename: string | undefined;
 
 export function registerListeners() {
@@ -33,6 +35,10 @@ export function registerListeners() {
 
 async function referToEnvVariables(document: vscode.TextDocument) {
     if (!isTypeScriptFile(document)) {
+        return;
+    }
+
+    if (!enableEnvDocumentReference) {
         return;
     }
 

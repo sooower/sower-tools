@@ -1,12 +1,13 @@
 import path from "node:path";
 
-import { logger, vscode } from "@/core";
+import { fs, logger, vscode } from "@/core";
 import { getWorkspaceFolderPath } from "@/utils/vscode";
 
 import { readmeDocumentNames } from "./configs";
 
 export async function previewDocument() {
-    if (vscode.workspace.workspaceFolders === undefined) {
+    const workspaceFolderPath = getWorkspaceFolderPath();
+    if (workspaceFolderPath === undefined) {
         return;
     }
 
@@ -21,27 +22,23 @@ export async function previewDocument() {
     }
 
     for (const docName of readmeDocumentNames) {
-        try {
-            const workspaceFolderPath = getWorkspaceFolderPath();
-            if (workspaceFolderPath === undefined) {
-                return;
-            }
+        const readmeFilePath = path.join(workspaceFolderPath, docName);
+        if (!fs.existsSync(readmeFilePath)) {
+            continue;
+        }
 
-            const doc = await vscode.workspace.openTextDocument(
-                path.join(workspaceFolderPath, docName)
+        try {
+            await vscode.window.showTextDocument(
+                await vscode.workspace.openTextDocument(readmeFilePath)
             );
-            await vscode.window.showTextDocument(doc, {
-                preview: true,
-                viewColumn: vscode.ViewColumn.One,
-            });
             await vscode.commands.executeCommand(
                 "markdown-preview-enhanced.openPreview",
-                vscode.Uri.file(path.join(workspaceFolderPath, docName))
+                vscode.Uri.file(readmeFilePath)
             );
 
             return;
-        } catch (_e) {
-            continue;
+        } catch (e) {
+            logger.error(`Failed to preview README document: "${docName}".`, e);
         }
     }
 }

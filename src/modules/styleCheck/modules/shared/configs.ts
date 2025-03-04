@@ -8,6 +8,7 @@ import { getWorkspaceFolderPath } from "@/utils/vscode";
 import { readFile } from "@utils/fs";
 
 export let ignorePatterns: string[];
+export let ignoreFilePaths: string[];
 export let ignoreCompatibleConfigFilenames: string[];
 export let diagnoseUpdateDelay: number;
 
@@ -16,6 +17,11 @@ export function parseConfigs() {
         .array(z.string().min(1))
         .parse(
             getConfigurationItem(`${extensionName}.styleCheck.ignore.patterns`)
+        );
+    ignoreFilePaths = z
+        .array(z.string())
+        .parse(
+            getConfigurationItem(`${extensionName}.styleCheck.ignore.filePaths`)
         );
     ignoreCompatibleConfigFilenames = z
         .array(z.string().min(1))
@@ -45,7 +51,7 @@ export function loadIgnorePatterns() {
     ignoreManager = ignore();
 
     // Read configured glob patterns
-    ignoreManager.add(ignorePatterns);
+    ignoreManager.add(ignorePatterns.filter(it => it.trim() !== ""));
 
     const workspaceFolderPath = getWorkspaceFolderPath();
     if (workspaceFolderPath === undefined) {
@@ -62,7 +68,7 @@ export function loadIgnorePatterns() {
         ignoreManager.add(
             readFile(filePath)
                 .split("\n")
-                .filter(it => it !== "")
+                .filter(it => it.trim() !== "")
         );
     }
 

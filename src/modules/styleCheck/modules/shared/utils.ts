@@ -5,7 +5,7 @@ import {
 } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
-import { ignoreManager } from "./configs";
+import { ignoreFilePaths, ignoreManager } from "./configs";
 
 /**
  * Check if the line has a valid leading space before it.
@@ -156,7 +156,13 @@ function isLastParameterOfFunction(text: string): boolean {
 export function isIgnoredFile(document: vscode.TextDocument): boolean {
     const workspaceFolderPath = getWorkspaceFolderPath();
     if (workspaceFolderPath === undefined) {
-        return false;
+        return true;
+    }
+
+    for (const filePath of ignoreFilePaths) {
+        if (document.fileName.includes(filePath)) {
+            return true;
+        }
     }
 
     const relPath = getWorkspaceRelativePath(document);
