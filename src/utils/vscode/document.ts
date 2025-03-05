@@ -13,6 +13,12 @@ export enum ELanguageId {
     Markdown = "markdown",
 }
 
+/**
+ * Get the trimmed line text of the given document and line index.
+ * @param document - The document to get the trimmed line text.
+ * @param lineIndex - The line index(zero-based) to get the trimmed line text.
+ * @returns The trimmed line text of the given document and line index.
+ */
 export function getTrimmedLineText(
     document: vscode.TextDocument,
     lineIndex: number
@@ -20,7 +26,17 @@ export function getTrimmedLineText(
     return document.lineAt(lineIndex).text.trim();
 }
 
+/**
+ * Check if the given file path or document is a TypeScript file.
+ * @param filePath - The file path to check if it is a TypeScript file.
+ * @returns True if the given file path is a TypeScript file, false otherwise.
+ */
 export function isTypeScriptFile(filePath: string): boolean;
+/**
+ * Check if the given document is a TypeScript file.
+ * @param document - The document to check if it is a TypeScript file.
+ * @returns True if the given document is a TypeScript file, false otherwise.
+ */
 export function isTypeScriptFile(document: vscode.TextDocument): boolean;
 export function isTypeScriptFile(arg: string | vscode.TextDocument): boolean {
     if (CommonUtils.isString(arg)) {
@@ -30,7 +46,17 @@ export function isTypeScriptFile(arg: string | vscode.TextDocument): boolean {
     return arg.languageId === ELanguageId.TypeScript;
 }
 
+/**
+ * Check if the given file path or document is a Markdown file.
+ * @param filePath - The file path to check if it is a Markdown file.
+ * @returns True if the given file path is a Markdown file, false otherwise.
+ */
 export function isMarkdownFile(filePath: string): boolean;
+/**
+ * Check if the given document is a Markdown file.
+ * @param document - The document to check if it is a Markdown file.
+ * @returns True if the given document is a Markdown file, false otherwise.
+ */
 export function isMarkdownFile(document: vscode.TextDocument): boolean;
 export function isMarkdownFile(arg: string | vscode.TextDocument): boolean {
     if (CommonUtils.isString(arg)) {
@@ -55,6 +81,13 @@ export async function formatDocument(document: vscode.TextDocument) {
     await vscode.workspace.applyEdit(workspaceEdit);
 }
 
+/**
+ * Check if the given node is in the given range.
+ * @param document - The document to check if the given node is in the given range.
+ * @param range - The range to check if the given node is in the given range.
+ * @param node - The node to check if it is in the given range.
+ * @returns `true` if the given node is in the given range, `false` otherwise.
+ */
 export function isNodeInRange(
     document: vscode.TextDocument,
     range: vscode.Range | vscode.Selection,
