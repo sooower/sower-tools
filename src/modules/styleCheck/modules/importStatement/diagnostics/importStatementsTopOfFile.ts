@@ -3,8 +3,7 @@ import { Node } from "ts-morph";
 import { debouncedStyleCheck } from "@/modules/styleCheck/utils";
 
 import { extensionCtx, extensionName, project, vscode } from "@/core";
-import { isTypeScriptFile } from "@/utils/vscode";
-import { buildRangeByNode } from "@/utils/vscode/range";
+import { buildRangeByNode, isTypeScriptFile } from "@/utils/vscode";
 
 import { isDiffView, isIgnoredFile } from "../../shared/utils";
 import { enableStyleCheckImportStatement } from "../configs";

@@ -15,8 +15,7 @@ import {
     project,
     vscode,
 } from "@/core";
-import { formatDocument } from "@/utils/vscode";
-import { buildRangeByNode } from "@/utils/vscode/range";
+import { buildRangeByNode, formatDocument } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 import {

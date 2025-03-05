@@ -1,7 +1,7 @@
 import { Node, TypeAliasDeclaration } from "ts-morph";
 
 import { extensionCtx, extensionName, format, logger, vscode } from "@/core";
-import { buildRangeByNode } from "@/utils/vscode/range";
+import { buildRangeByNode } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 export function registerCommandSyncTypeMembers() {

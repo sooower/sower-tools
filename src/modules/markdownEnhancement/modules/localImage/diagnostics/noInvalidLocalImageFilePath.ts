@@ -1,8 +1,7 @@
 import path from "node:path";
 
 import { extensionCtx, extensionName, fs, vscode } from "@/core";
-import { isMarkdownFile } from "@/utils/vscode";
-import { buildRangeByOffsets } from "@/utils/vscode/range";
+import { buildRangeByOffsets, isMarkdownFile } from "@/utils/vscode";
 
 import { kLocalImageLinkRegex } from "../consts";
 

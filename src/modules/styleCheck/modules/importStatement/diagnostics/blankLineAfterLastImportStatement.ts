@@ -7,8 +7,7 @@ import {
 import { debouncedStyleCheck } from "@/modules/styleCheck/utils";
 
 import { extensionCtx, extensionName, project, vscode } from "@/core";
-import { isTypeScriptFile } from "@/utils/vscode";
-import { buildRangeByNode } from "@/utils/vscode/range";
+import { buildRangeByNode, isTypeScriptFile } from "@/utils/vscode";
 
 import { enableStyleCheckImportStatement } from "../configs";
 

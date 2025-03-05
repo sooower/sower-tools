@@ -1,8 +1,7 @@
 import { Node } from "ts-morph";
 
 import { extensionCtx, extensionName, project, vscode } from "@/core";
-import { isTypeScriptFile } from "@/utils/vscode";
-import { buildRangeByLineIndex } from "@/utils/vscode/range";
+import { buildRangeByLineIndex, isTypeScriptFile } from "@/utils/vscode";
 
 import { debouncedStyleCheck } from "../../utils";
 import {

@@ -3,7 +3,11 @@ import path from "node:path";
 import pluralize from "pluralize";
 
 import { extensionCtx, extensionName, fs, logger, vscode } from "@/core";
-import { getWorkspaceFolderPath } from "@/utils/vscode";
+import { renderTemplateFile } from "@/utils/template";
+import {
+    getWorkspaceFolderPath,
+    getWorkspaceRelativePath,
+} from "@/utils/vscode";
 
 import { toUpperCamelCase } from "../shared/modules/configuration/utils";
 
@@ -62,31 +66,31 @@ async function generateAPIResources(dirPath: string) {
     const apiName = path.basename(dirPath);
     const fileTemplateData: TemplateData[] = [
         {
-            templatePath: "templates/api/src.api.index.ts.tpl",
+            templatePath: "templates/api/src.api.index.ts.hbs",
             outputFilePath: "index.ts",
         },
         {
-            templatePath: "templates/api/src.api.list.ts.tpl",
+            templatePath: "templates/api/src.api.list.ts.hbs",
             outputFilePath: `${pluralize.singular(apiName)}ListGet.ts`,
         },
         {
-            templatePath: "templates/api/src.api.create.ts.tpl",
+            templatePath: "templates/api/src.api.create.ts.hbs",
             outputFilePath: `${pluralize.singular(apiName)}Create.ts`,
         },
         {
-            templatePath: "templates/api/@id/src.api.index.ts.tpl",
+            templatePath: "templates/api/@id/src.api.index.ts.hbs",
             outputFilePath: `@id/index.ts`,
         },
         {
-            templatePath: "templates/api/@id/src.api.get.ts.tpl",
+            templatePath: "templates/api/@id/src.api.get.ts.hbs",
             outputFilePath: `@id/${pluralize.singular(apiName)}Get.ts`,
         },
         {
-            templatePath: "templates/api/@id/src.api.update.ts.tpl",
+            templatePath: "templates/api/@id/src.api.update.ts.hbs",
             outputFilePath: `@id/${pluralize.singular(apiName)}Update.ts`,
         },
         {
-            templatePath: "templates/api/@id/src.api.delete.ts.tpl",
+            templatePath: "templates/api/@id/src.api.delete.ts.hbs",
             outputFilePath: `@id/${pluralize.singular(apiName)}Delete.ts`,
         },
     ];
@@ -119,35 +123,26 @@ function generate({
             return;
         }
 
-        const fileContent = fs
-            .readFileSync(
-                path.join(extensionCtx.extensionPath, templatePath),
-                "utf-8"
-            )
-            .replace(/{{apiName}}/g, pluralize.singular(apiName))
-            .replace(
-                /{{apiNameCapital}}/g,
-                pluralize.singular(toUpperCamelCase(apiName))
-            )
-            .replace(
-                /{{apiNameCapitalPluralize}}/g,
-                pluralize.plural(toUpperCamelCase(apiName))
-            );
-
-        await vscode.workspace.fs.writeFile(
-            vscode.Uri.file(absFilePath),
-            Buffer.from(fileContent)
-        );
+        await renderTemplateFile({
+            templateFilePath: path.join(
+                extensionCtx.extensionPath,
+                templatePath
+            ),
+            outputFilePath: absFilePath,
+            data: {
+                apiName: pluralize.singular(apiName),
+                apiNameCapital: pluralize.singular(toUpperCamelCase(apiName)),
+                apiNameCapitalPluralize: pluralize.plural(
+                    toUpperCamelCase(apiName)
+                ),
+            },
+        });
 
         const workspaceFolderPath = getWorkspaceFolderPath();
         if (workspaceFolderPath === undefined) {
             return;
         }
 
-        const relativeFilePath = path.relative(
-            workspaceFolderPath,
-            absFilePath
-        );
-        generatedFiles.push(relativeFilePath);
+        generatedFiles.push(getWorkspaceRelativePath(absFilePath));
     };
 }

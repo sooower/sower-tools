@@ -1,6 +1,5 @@
 import { extensionCtx, logger, project, vscode } from "@/core";
-import { isTypeScriptFile } from "@/utils/vscode";
-import { buildRangeByNode } from "@/utils/vscode/range";
+import { buildRangeByNode, isTypeScriptFile } from "@/utils/vscode";
 
 import {
     enableUpdateNodeBuiltinModulesImports,

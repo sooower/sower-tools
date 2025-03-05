@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 import { extensionName } from "@/core";
-import { buildRangeByLineIndex } from "@/utils/vscode/range";
+import { buildRangeByLineIndex } from "@/utils/vscode";
 
 import { detectCommentKind, ECommentKind } from "../../shared/utils";
 import { skipCheckCharacter } from "../configs";

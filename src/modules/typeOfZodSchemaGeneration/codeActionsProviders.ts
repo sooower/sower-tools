@@ -1,7 +1,7 @@
 import { VariableDeclaration } from "ts-morph";
 
 import { extensionCtx, format, project, vscode } from "@/core";
-import { buildRangeByOffsets } from "@/utils/vscode/range";
+import { buildRangeByOffsets } from "@/utils/vscode";
 
 import { toUpperCamelCase } from "../shared/modules/configuration/utils";
 

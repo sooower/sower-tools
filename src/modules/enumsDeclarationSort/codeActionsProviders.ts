@@ -1,7 +1,7 @@
 import { Node } from "ts-morph";
 
 import { extensionCtx, project, vscode } from "@/core";
-import { buildRangeByOffsets } from "@/utils/vscode/range";
+import { buildRangeByOffsets } from "@/utils/vscode";
 
 export function registerCodeActionsProviders() {
     extensionCtx.subscriptions.push(

@@ -3,8 +3,11 @@ import { Node } from "ts-morph";
 import { toUpperCamelCase } from "@/modules/shared/modules/configuration/utils";
 
 import { extensionCtx, format, logger, project, vscode } from "@/core";
-import { isNodeInRange, isTypeScriptFile } from "@/utils/vscode";
-import { buildRangeByNode } from "@/utils/vscode/range";
+import {
+    buildRangeByNode,
+    isNodeInRange,
+    isTypeScriptFile,
+} from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 export function registerOnDidSaveTextDocumentListener() {

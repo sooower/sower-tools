@@ -1,5 +1,3 @@
-import path from "node:path";
-
 import { Node } from "ts-morph";
 
 import { extensionCtx, extensionName, logger, project, vscode } from "@/core";
@@ -124,8 +122,7 @@ function findEnvFilename(filePath: string) {
         .filter(it => Node.isClassDeclaration(it))
         .at(0);
 
-    const envClassFilePath = path.relative(
-        workspaceFolderPath,
+    const envClassFilePath = getWorkspaceRelativePath(
         CommonUtils.mandatory(
             envDeclarations.at(0)?.getSourceFile().getFilePath()
         )

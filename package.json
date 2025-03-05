@@ -52,6 +52,7 @@
         "@utils/datetime": "^0.2.4",
         "@utils/fs": "^0.3.2",
         "@utils/json": "^0.4.2",
+        "handlebars": "^4.7.8",
         "ignore": "^7.0.3",
         "markdown-it": "^14.1.0",
         "minio": "^8.0.4",
@@ -134,7 +135,10 @@
             {
                 "command": "sower-tools.apiRequestAssistant.referToEnvVariables",
                 "title": "Refer to Env Variables",
-                "icon": "$(zap)"
+                "icon": {
+                    "dark": "./assets/referToEnvVariables-dark.svg",
+                    "light": "./assets/referToEnvVariables-light.svg"
+                }
             },
             {
                 "command": "sower-tools.apiRequestAssistant.referToApiDocument",

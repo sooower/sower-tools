@@ -8,7 +8,7 @@ import {
 import { toUpperCamelCase } from "@/modules/shared/modules/configuration/utils";
 
 import { extensionCtx, extensionName, format, logger, vscode } from "@/core";
-import { buildRangeByNode, buildRangeByOffsets } from "@/utils/vscode/range";
+import { buildRangeByNode, buildRangeByOffsets } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 export function registerCommandConvertParametersToOptionsObject() {
@@ -104,21 +104,23 @@ async function convertParametersToOptionsObject({
         );
 
         typeDeclarationText = format(
-            `type ${typeName} = { %s };`,
+            `type %s = { %s };`,
+            typeName,
             typeMembersText.join(" ")
         );
     }
 
-    const position =
+    const typeStartOffset =
         Node.isMethodDeclaration(node) || Node.isConstructorDeclaration(node)
-            ? document.positionAt(node.getParent().getFullStart())
-            : document.positionAt(node.getFullStart());
-
+            ? node.getParent().getFullStart()
+            : node.getFullStart();
     if (typeDeclarationText !== undefined) {
         workspaceEdit.insert(
             document.uri,
-            position,
-            `${typeDeclarationText}\n\n`
+            document.positionAt(typeStartOffset),
+            typeStartOffset === 0
+                ? `${typeDeclarationText}\n\n`
+                : `\n\n${typeDeclarationText}`
         );
     }
     await vscode.workspace.applyEdit(workspaceEdit);

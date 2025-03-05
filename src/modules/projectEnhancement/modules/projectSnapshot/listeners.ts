@@ -128,7 +128,7 @@ async function isSnapshotContentChanged(
         return true;
     }
 
-    const relPath = path.relative(workspaceFolderPath, filePath);
+    const relPath = getWorkspaceRelativePath(filePath);
 
     const files = await fs.promises.readdir(snapshotDirPath);
     const currFilename = path.basename(relPath);

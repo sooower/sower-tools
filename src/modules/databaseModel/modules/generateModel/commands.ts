@@ -15,8 +15,11 @@ import {
     logger,
     vscode,
 } from "@/core";
-import { prettierFormatText } from "@/utils/common";
-import { getWorkspaceFolderPath } from "@/utils/vscode";
+import { renderTemplateFile } from "@/utils/template";
+import {
+    getWorkspaceFolderPath,
+    getWorkspaceRelativePath,
+} from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 import {
@@ -79,17 +82,14 @@ async function parseSqlAndGenerateFiles(text: string) {
 
     const modelFilePath = path.join(workspaceFolderPath, "src/models/index.ts");
     if (!fs.existsSync(modelFilePath)) {
-        const modelFilePathContent = fs.readFileSync(
-            path.join(
+        await renderTemplateFile({
+            templateFilePath: path.join(
                 extensionCtx.extensionPath,
-                "templates/models/src.models.index.ts.tpl"
+                "templates/models/src.models.index.ts.hbs"
             ),
-            "utf-8"
-        );
-        fs.mkdirSync(path.dirname(modelFilePath), { recursive: true });
-        fs.writeFileSync(modelFilePath, modelFilePathContent);
-
-        generatedFiles.push(path.relative(workspaceFolderPath, modelFilePath));
+            outputFilePath: modelFilePath,
+        });
+        generatedFiles.push(getWorkspaceRelativePath(modelFilePath));
     }
 
     // Generate "src.models.schema.index.ts" file
@@ -104,20 +104,18 @@ async function parseSqlAndGenerateFiles(text: string) {
         assertFileNotEmpty(schemaFilePath);
     }
 
-    const schemaFileContent = fs
-        .readFileSync(
-            path.join(
-                extensionCtx.extensionPath,
-                "templates/models/src.models.schema.index.ts.tpl"
-            ),
-            "utf-8"
-        )
-        .replace(/{{schemaName}}/g, toLowerCamelCase(schemaName));
+    await renderTemplateFile({
+        templateFilePath: path.join(
+            extensionCtx.extensionPath,
+            "templates/models/src.models.schema.index.ts.hbs"
+        ),
+        outputFilePath: schemaFilePath,
+        data: {
+            schemaName: toLowerCamelCase(schemaName),
+        },
+    });
 
-    fs.mkdirSync(path.dirname(schemaFilePath), { recursive: true });
-    fs.writeFileSync(schemaFilePath, schemaFileContent);
-
-    generatedFiles.push(path.relative(workspaceFolderPath, schemaFilePath));
+    generatedFiles.push(getWorkspaceRelativePath(schemaFilePath));
 
     // Generate "src.models.schema.table.index.ts" file
 
@@ -223,37 +221,30 @@ async function parseSqlAndGenerateFiles(text: string) {
             );
         }
     }
-    const modelFileContent = fs
-        .readFileSync(
-            path.join(
-                extensionCtx.extensionPath,
-                "templates/models/src.models.schema.table.index.ts.tpl"
-            ),
-            "utf-8"
-        )
-        .replace(/{{EColumnContent}}/g, enumEColumnContent.join("\n"))
-        .replace(/{{TDefinitionsContent}}/g, typeTDefinitionsContent.join("\n"))
-        .replace(/{{kResolverContent}}/g, varkResolverContent.join("\n"))
-        .replace(
-            /{{TInsertOptionsContent}}/g,
-            typeTInsertOptionsContent.join("\n")
-        )
-        .replace(/{{insertContent}}/g, funcInsertContent.join("\n"))
-        .replace(
-            /{{TUpdateOptionsContent}}/g,
-            typeTUpdateOptionsContent.join("\n")
-        )
-        .replace(/{{updateContent}}/g, funcUpdateContent.join("\n"))
-        .replace(/{{tableName}}/g, tableName)
-        .replace(/{{modelName}}/g, toLowerCamelCase(tableName));
 
-    fs.mkdirSync(path.dirname(tableFilePath), { recursive: true });
-    fs.writeFileSync(tableFilePath, prettierFormatText(modelFileContent));
+    await renderTemplateFile({
+        templateFilePath: path.join(
+            extensionCtx.extensionPath,
+            "templates/models/src.models.schema.table.index.ts.hbs"
+        ),
+        outputFilePath: tableFilePath,
+        data: {
+            EColumnContent: enumEColumnContent.join("\n"),
+            TDefinitionsContent: typeTDefinitionsContent.join("\n"),
+            kResolverContent: varkResolverContent.join("\n"),
+            TInsertOptionsContent: typeTInsertOptionsContent.join("\n"),
+            insertContent: funcInsertContent.join("\n"),
+            TUpdateOptionsContent: typeTUpdateOptionsContent.join("\n"),
+            updateContent: funcUpdateContent.join("\n"),
+            tableName,
+            modelName: toLowerCamelCase(tableName),
+        },
+    });
 
     // Open model file in editor
     await vscode.window.showTextDocument(vscode.Uri.file(tableFilePath));
 
-    generatedFiles.push(path.relative(workspaceFolderPath, tableFilePath));
+    generatedFiles.push(getWorkspaceRelativePath(tableFilePath));
 
     return generatedFiles;
 }

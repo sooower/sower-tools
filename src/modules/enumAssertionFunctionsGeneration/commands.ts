@@ -9,8 +9,7 @@ import {
     vscode,
 } from "@/core";
 import { mapEnumNameWithoutPrefix } from "@/utils/common";
-import { formatDocument } from "@/utils/vscode";
-import { buildRangeByNode } from "@/utils/vscode/range";
+import { buildRangeByNode, formatDocument } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 import { toLowerCamelCase } from "../shared/modules/configuration/utils";

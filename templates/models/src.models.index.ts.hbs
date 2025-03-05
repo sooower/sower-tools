@@ -21,6 +21,7 @@ export function asyncCursorRead(
         cursor.read(length, (err, rows) => {
             if (err) {
                 reject(err);
+
                 return;
             }
             resolve(rows);
@@ -155,6 +156,7 @@ export function generateSelectStatement(
             columnConditions.push(
                 `"${escapePGIdentifier(condition.column)}" IS NULL`
             );
+
             continue;
         }
         vars.push(condition.value);

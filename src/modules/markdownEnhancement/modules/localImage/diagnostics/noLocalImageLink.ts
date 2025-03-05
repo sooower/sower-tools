@@ -1,6 +1,5 @@
 import { extensionCtx, extensionName, vscode } from "@/core";
-import { isMarkdownFile } from "@/utils/vscode";
-import { buildRangeByOffsets } from "@/utils/vscode/range";
+import { buildRangeByOffsets, isMarkdownFile } from "@/utils/vscode";
 
 import { enableUploadImage } from "../configs/uploadImageEnable";
 import { kLocalImageLinkRegex } from "../consts";
