@@ -81,58 +81,71 @@
     "contributes": {
         "commands": [
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.runEnhancement.debugProject",
                 "title": "Debug Project",
                 "icon": "$(debug-all)"
             },
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.runEnhancement.debugCurrentFile",
                 "title": "Debug Current File",
                 "icon": "$(debug-alt)"
             },
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.runEnhancement.runProject",
                 "title": "Run Project",
                 "icon": "$(play)"
             },
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.gitEnhancement.skipWorkTree",
                 "title": "Skip Work Tree"
             },
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.gitEnhancement.noSkipWorkTree",
                 "title": "No Skip Work Tree"
             },
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.gitEnhancement.listSkippedFiles",
                 "title": "List Skipped Files"
             },
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.gitEnhancement.forcePush",
                 "title": "Force Push to..."
             },
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.apiResourcesGeneration.generateAPIResources",
                 "title": "Generate API Resources"
             },
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.folderEnhancement.expandFolder",
                 "title": "Expand Folder...",
                 "icon": "$(expand-all)"
             },
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.projectEnhancement.openProjects",
                 "title": "Open Projects"
             },
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.configSync.cursor.pushProfile",
                 "title": "Push Cursor Profile"
             },
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.configSync.cursor.pullProfile",
                 "title": "Pull Cursor Profile"
             },
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.apiRequestAssistant.referToEnvVariables",
                 "title": "Refer to Env Variables",
                 "icon": {
@@ -141,6 +154,7 @@
                 }
             },
             {
+                "category": "Sower Tools",
                 "command": "sower-tools.apiRequestAssistant.referToApiDocument",
                 "title": "Refer to API Document",
                 "icon": {

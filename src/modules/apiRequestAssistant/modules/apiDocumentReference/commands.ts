@@ -96,7 +96,10 @@ async function showApiDocumentReference(document: vscode.TextDocument) {
         );
     } else {
         await vscode.window.showTextDocument(
-            await vscode.workspace.openTextDocument(apiDocFilePath)
+            await vscode.workspace.openTextDocument(apiDocFilePath),
+            {
+                viewColumn: vscode.ViewColumn.Two,
+            }
         );
     }
 }

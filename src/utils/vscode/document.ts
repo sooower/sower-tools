@@ -32,6 +32,7 @@ export function getTrimmedLineText(
  * @returns True if the given file path is a TypeScript file, false otherwise.
  */
 export function isTypeScriptFile(filePath: string): boolean;
+
 /**
  * Check if the given document is a TypeScript file.
  * @param document - The document to check if it is a TypeScript file.
@@ -52,6 +53,7 @@ export function isTypeScriptFile(arg: string | vscode.TextDocument): boolean {
  * @returns True if the given file path is a Markdown file, false otherwise.
  */
 export function isMarkdownFile(filePath: string): boolean;
+
 /**
  * Check if the given document is a Markdown file.
  * @param document - The document to check if it is a Markdown file.

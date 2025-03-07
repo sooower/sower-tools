@@ -122,7 +122,7 @@ async function selectProjectsToOpen(
             .find(it => it.name === selectedGroup.label)
             ?.projects.map(({ name, fsPath }) => ({
                 label: name ?? path.basename(fsPath),
-                description: fsPath,
+                description: formatDescription(fsPath),
             })) ?? [];
     projectsQuickPick.canSelectMany = true;
     projectsQuickPick.placeholder = "[2/2] Select projects to open";
@@ -154,6 +154,15 @@ async function selectProjectsToOpen(
     projectsQuickPick.onDidAccept(async () => {
         await batchOpenProjects([...projectsQuickPick.selectedItems]);
     });
+}
+
+function formatDescription(fsPath: string) {
+    const isProjectOpened =
+        vscode.workspace.workspaceFolders?.some(
+            it => it.uri.fsPath === formatHomeDirAlias(fsPath)
+        ) ?? false;
+
+    return isProjectOpened ? `(opened) ${fsPath}` : fsPath;
 }
 
 async function batchOpenProjects(projects: vscode.QuickPickItem[]) {
@@ -196,7 +205,7 @@ async function openProjectsInFlatStyle() {
                 ({ name, fsPath }) =>
                     ({
                         label: name ?? path.basename(fsPath),
-                        description: fsPath,
+                        description: formatDescription(fsPath),
                     } satisfies vscode.QuickPickItem)
             )
         );

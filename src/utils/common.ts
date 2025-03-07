@@ -173,7 +173,7 @@ export function formatHomeDirAlias(filePath: string) {
  *
  * @param fn - The function to debounce.
  * @param delay - The delay time in milliseconds.
- * @param options.immediate - If `true`, the function will be executed immediately
+ * @param immediate - If `true`, the function will be executed immediately
  * if it is called during the delay time, default is `false`.
  * @returns The debounced function.
  */

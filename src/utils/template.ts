@@ -6,24 +6,40 @@ import { fs } from "@/core";
 
 import { prettierFormatText } from "./common";
 
+type TRenderTextOptions = {
+    /**
+     * The template text.
+     */
+    text: string;
+
+    /**
+     * The data to render the template text.
+     */
+    data: unknown;
+
+    /**
+     * Whether to escape html characters in the output text, default is `true`.
+     */
+    noEscape?: boolean;
+
+    /**
+     * Whether to format the output text with 'prettier', default is `true`.
+     */
+    formatText?: boolean;
+};
+
 /**
  * Render a template text with handlebars.
- * @param text - The template text.
- * @param data - The data to render the template text.
- * @param noEscape - Whether to escape html characters in the output text, default is `true`.
- * @param formatText - Whether to format the output text with 'prettier', default is `true`.
+ *
+ * @param options - options for rendering template text, see {@link TRenderTextOptions}.
+ * @returns The rendered text.
  */
 export function renderText({
     text,
     data,
     noEscape = true,
     formatText = true,
-}: {
-    text: string;
-    data: unknown;
-    noEscape?: boolean;
-    formatText?: boolean;
-}) {
+}: TRenderTextOptions) {
     try {
         const template = Handlebars.compile(text, {
             strict: true,
@@ -38,13 +54,38 @@ export function renderText({
     }
 }
 
+type TRenderTemplateFileOptions = {
+    /**
+     * The path to the template file.
+     */
+    templateFilePath: string;
+
+    /**
+     * The path to the output file.
+     */
+    outputFilePath: string;
+
+    /**
+     * The data to render the template file.
+     */
+    data?: unknown;
+
+    /**
+     * Whether to escape html characters in the output text, default is `true`.
+     */
+    noEscape?: boolean;
+
+    /**
+     * Whether to format the output text with 'prettier', default is `true`.
+     */
+    formatText?: boolean;
+};
+
 /**
  * Render a template file and save the result to the output file.
- * @param templateFilePath - The path to the template file.
- * @param outputFilePath - The path to the output file.
- * @param data - The data to render the template file.
- * @param noEscape - Whether to escape html characters in the output text, default is `true`.
- * @param formatText - Whether to format the output text with 'prettier', default is `true`.
+ *
+ * @param options - options for rendering template file, see {@link TRenderTemplateFileOptions}.
+ * @returns void.
  */
 export async function renderTemplateFile({
     templateFilePath,
@@ -52,13 +93,7 @@ export async function renderTemplateFile({
     data,
     noEscape = true,
     formatText = true,
-}: {
-    templateFilePath: string;
-    outputFilePath: string;
-    data?: unknown;
-    noEscape?: boolean;
-    formatText?: boolean;
-}) {
+}: TRenderTemplateFileOptions) {
     try {
         if (!fs.existsSync(templateFilePath)) {
             throw new Error(`Template file "${templateFilePath}" not exits.`);
