@@ -1,5 +1,5 @@
 import { defineModule } from "@/core";
 
-import { expandFolder } from "./modules/expandFolder";
+import { folderExpansion } from "./modules/folderExpansion";
 
-export const folderEnhancement = defineModule([expandFolder]);
+export const folderEnhancement = defineModule([folderExpansion]);

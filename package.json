@@ -485,7 +485,7 @@
                     "type": "string",
                     "default": ""
                 },
-                "sower-tools.folderEnhancement.expandFolder.ignoredFilenames": {
+                "sower-tools.folderEnhancement.folderExpansion.ignoredFilenames": {
                     "description": "Array of filenames that will be ignored to open when clicked 'Expand Folder...' in the context menu of explorer.",
                     "type": "array",
                     "items": {
@@ -494,6 +494,11 @@
                     "default": [
                         ".DS_Store"
                     ]
+                },
+                "sower-tools.folderEnhancement.folderExpansion.openFileDelay": {
+                    "description": "The delay (in milliseconds) of opening a file when clicked 'Expand Folder...' in the context menu of explorer. It is used to smooth the opening file process, the smaller the value, the faster the opening, but it may cause performance issues, minimum value is 0.",
+                    "type": "number",
+                    "default": 20
                 },
                 "sower-tools.markdownEnhancement.localImage.enableUploadImage": {
                     "description": "If true, it will check local image links in markdown files and provide a code action to upload them to file server.",

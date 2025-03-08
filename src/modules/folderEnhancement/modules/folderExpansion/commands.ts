@@ -12,8 +12,9 @@ import {
     getWorkspaceFolderPath,
     getWorkspaceRelativePath,
 } from "@/utils/vscode";
+import { sleep } from "@utils/datetime";
 
-import { ignoredFilenames } from "./configs";
+import { ignoredFilenames, openFileDelay } from "./configs";
 
 export async function registerCommandExpandFolder() {
     extensionCtx.subscriptions.push(
@@ -53,6 +54,9 @@ async function expandFolder(uri: vscode.Uri) {
                     if (token.isCancellationRequested) {
                         break;
                     }
+
+                    // Sleep a while to open file smoothly
+                    await sleep(openFileDelay);
 
                     // Open document for diagnostic and reveal in explorer
                     await vscode.window.showTextDocument(
