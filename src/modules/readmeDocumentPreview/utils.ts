@@ -29,7 +29,7 @@ export async function previewDocument() {
 
         try {
             await vscode.window.showTextDocument(
-                await vscode.workspace.openTextDocument(readmeFilePath)
+                vscode.Uri.file(readmeFilePath)
             );
             await vscode.commands.executeCommand(
                 "markdown-preview-enhanced.openPreview",

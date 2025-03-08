@@ -493,15 +493,16 @@
   resolved "https://registry.npmmirror.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@utils/command@^0.2.2":
-  version "0.2.2"
-  resolved "https://verdaccio.sower.fun/@utils/command/-/command-0.2.2.tgz#bd19a8131f0f6a83fcd8757e7ea156fe66204984"
-  integrity sha512-Hm4YUoy98a730ymmK35IUhwwjfcOg26RxBTnBwqLBuvKYkkAUcRv2AcBMYIlhhsfe/g+U5ImxF2oJcnAETFpwQ==
+"@utils/command@^0.2.5":
+  version "0.2.5"
+  resolved "https://verdaccio.sower.fun/@utils/command/-/command-0.2.5.tgz#f00832706dcbe77d2906c558c25ad920079c6b49"
+  integrity sha512-rYp12y1J9psI9UEZHZa2nc30/EVJFRJx5YOT96DEp2wgBf2ZPkL0F/z7BYQe1l0ezokbe33rFTRDPa5ni7xyFQ==
   dependencies:
-    "@utils/common" "^0.2.0"
+    "@utils/common" "^0.2.6"
+    "@utils/json" "^0.4.2"
     tsconfig-paths "^4.2.0"
 
-"@utils/common@^0.2.0", "@utils/common@^0.2.5", "@utils/common@^0.2.6":
+"@utils/common@^0.2.5", "@utils/common@^0.2.6":
   version "0.2.6"
   resolved "https://verdaccio.sower.fun/@utils/common/-/common-0.2.6.tgz#dbecb22ad77a5cb2f115fbe49f21bf845d848c53"
   integrity sha512-wcwAfFMs/Y4QonfaJORMqLH7e+6QSP+m05wXJ2jZlpgkwTeOO5QosGKCAaLCWieanjTyw0XxfQ7HB0dQBeFDOw==

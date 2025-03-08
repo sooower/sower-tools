@@ -10,12 +10,12 @@ import {
     logger,
     updateConfigurationItem,
 } from "@/core";
-import { formatHomeDirAlias } from "@/utils/common";
+import { parseHomeDirAlias } from "@/utils/common";
 import { execCommand } from "@utils/command";
 import { CommonUtils } from "@utils/common";
 
 import { enableSyncCursorFiles, profile } from "../configs";
-import { kProfileTarGzFileName } from "./const";
+import { kProfileTarGzFileName } from "../const";
 
 export function registerCommandPushCursorProfile() {
     extensionCtx.subscriptions.push(
@@ -78,8 +78,8 @@ async function pushCursorProfile() {
 
     // Copy cursor profile to storage project and push to remote repository
 
-    const profileDirPath = formatHomeDirAlias(profile.profileDirPath);
-    const storageProjectRootDirPath = formatHomeDirAlias(
+    const profileDirPath = parseHomeDirAlias(profile.profileDirPath);
+    const storageProjectRootDirPath = parseHomeDirAlias(
         profile.storage.projectRootDirPath
     );
 

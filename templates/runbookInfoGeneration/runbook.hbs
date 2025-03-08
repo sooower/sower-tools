@@ -1,0 +1,49 @@
+######################################### System & Version #########################################
+Current:
+  Branch: {{currentVersion.branch}}
+  Version: {{currentVersion.version}}
+  Commit: {{currentVersion.commitId}}
+New:
+  Branch: {{newVersion.branch}}
+  Version: {{newVersion.version}}
+  Commit: {{newVersion.commitId}}
+
+############################################ Update Env ############################################
+{{#each addedEnvKeys}}
+{{this}}
+{{/each}}
+
+######################################## Database Migration ########################################
+{{#each migrationFiles}}
+{{this}}
+{{/each}}
+
+######################################## Build Docker Image ########################################
+fetch & pull the latest code from git
+rm -r dist && rm -r node_modules
+npm install
+npm run build
+[] checkpoint: verify the branch is {{newVersion.branch}}
+[] checkpoint: verify the version is {{newVersion.version}}
+[] checkpoint: verify commit hash is {{newVersion.commitId}}
+docker build --platform=linux/amd64 -t {{serviceName}}:{{newVersion.version}} <local file location>
+docker save -o <xxx.tar> {{serviceName}}:{{newVersion.version}}
+ssh to production server
+upload build image to production server
+
+########################################## Restart Service ##########################################
+sudo podman load -i /home/feifei_xu_fomopay_com/<xxx.tar>
+sudo vi /etc/systemd/system/container-app-{{serviceName}}.service
+update docker image in /etc/systemd/system/container-app-{{serviceName}}.service
+sudo systemctl daemon-reload
+sudo systemctl restart container-app-{{serviceName}}.service
+sudo podman ps -a
+[] checkpoint: verify the image is {{serviceName}}:{{newVersion.version}}
+
+######################################## Rollback Docker Image ########################################
+sudo vi /etc/systemd/system/container-app-{{serviceName}}.service
+update docker image in /etc/systemd/system/container-app-{{serviceName}}.service
+sudo systemctl daemon-reload
+sudo systemctl restart container-app-{{serviceName}}.service
+sudo podman ps -a
+[] checkpoint: verify the image is {{serviceName}}:{{currentVersion.version}}

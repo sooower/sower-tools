@@ -2,7 +2,7 @@ import path from "node:path";
 
 import Handlebars from "handlebars";
 
-import { fs } from "@/core";
+import { fs, logger } from "@/core";
 
 import { prettierFormatText } from "./common";
 
@@ -23,7 +23,7 @@ type TRenderTextOptions = {
     noEscape?: boolean;
 
     /**
-     * Whether to format the output text with 'prettier', default is `true`.
+     * Whether to format the output text with 'prettier', default is `false`.
      */
     formatText?: boolean;
 };
@@ -38,7 +38,7 @@ export function renderText({
     text,
     data,
     noEscape = true,
-    formatText = true,
+    formatText = false,
 }: TRenderTextOptions) {
     try {
         const template = Handlebars.compile(text, {
@@ -49,7 +49,7 @@ export function renderText({
 
         return formatText ? prettierFormatText(outputText) : outputText;
     } catch (e) {
-        console.error(`Error rendering text.`, e);
+        logger.error(`Error rendering text.`, e);
         throw e;
     }
 }
@@ -76,7 +76,7 @@ type TRenderTemplateFileOptions = {
     noEscape?: boolean;
 
     /**
-     * Whether to format the output text with 'prettier', default is `true`.
+     * Whether to format the output text with 'prettier', default is `false`.
      */
     formatText?: boolean;
 };
@@ -92,7 +92,7 @@ export async function renderTemplateFile({
     outputFilePath,
     data,
     noEscape = true,
-    formatText = true,
+    formatText = false,
 }: TRenderTemplateFileOptions) {
     try {
         if (!fs.existsSync(templateFilePath)) {
@@ -111,10 +111,7 @@ export async function renderTemplateFile({
         });
         await fs.promises.writeFile(outputFilePath, outputText);
     } catch (e) {
-        console.error(
-            `Error rendering template file "%s".`,
-            templateFilePath,
-            e
-        );
+        logger.error(`Error rendering template file "${templateFilePath}".`, e);
+        throw e;
     }
 }

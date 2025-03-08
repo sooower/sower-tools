@@ -10,7 +10,7 @@ import {
     updateConfigurationItem,
     vscode,
 } from "@/core";
-import { formatHomeDirAlias } from "@/utils/common";
+import { parseHomeDirAlias } from "@/utils/common";
 import { CommonUtils } from "@utils/common";
 
 import {
@@ -159,7 +159,7 @@ async function selectProjectsToOpen(
 function formatDescription(fsPath: string) {
     const isProjectOpened =
         vscode.workspace.workspaceFolders?.some(
-            it => it.uri.fsPath === formatHomeDirAlias(fsPath)
+            it => it.uri.fsPath === parseHomeDirAlias(fsPath)
         ) ?? false;
 
     return isProjectOpened ? `(opened) ${fsPath}` : fsPath;
@@ -173,7 +173,7 @@ async function batchOpenProjects(projects: vscode.QuickPickItem[]) {
                     fsPath !== undefined,
                     `'fsPath' of project "${name}" is undefined.`
                 );
-                fsPath = formatHomeDirAlias(fsPath);
+                fsPath = parseHomeDirAlias(fsPath);
                 CommonUtils.assert(
                     fs.existsSync(fsPath),
                     `'fsPath' "${fsPath}" of project "${name}" does not exist.`

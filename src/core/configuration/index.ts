@@ -1,5 +1,5 @@
 import { logger, vscode } from "..";
-import { extensionCtx, extensionName } from "../context";
+import { extensionCtx, extensionDisplayName, extensionName } from "../context";
 import { moduleManager } from "../moduleManager";
 
 /**
@@ -36,7 +36,7 @@ async function reloadConfiguration() {
     await vscode.window.withProgress(
         {
             location: vscode.ProgressLocation.Notification,
-            title: "Loading configuration",
+            title: `[${extensionDisplayName}] Loading configuration`,
             cancellable: false,
         },
         async (progress, token) => {

@@ -130,11 +130,8 @@ async function showEnvVariablesReference(document: vscode.TextDocument) {
             vscode.TextEditorRevealType.InCenter
         );
     } else {
-        await vscode.window.showTextDocument(
-            await vscode.workspace.openTextDocument(envFilePath),
-            {
-                viewColumn: vscode.ViewColumn.Beside,
-            }
-        );
+        await vscode.window.showTextDocument(vscode.Uri.file(envFilePath), {
+            viewColumn: vscode.ViewColumn.Beside,
+        });
     }
 }

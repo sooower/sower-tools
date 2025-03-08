@@ -4,7 +4,7 @@ import ignore from "ignore";
 import z from "zod";
 
 import { extensionName, fs, getConfigurationItem, logger } from "@/core";
-import { formatHomeDirAlias } from "@/utils/common";
+import { parseHomeDirAlias } from "@/utils/common";
 import { getWorkspaceFolderPath } from "@/utils/vscode/workspace";
 import { readFile } from "@utils/fs";
 
@@ -32,7 +32,7 @@ export function parseConfigs() {
             )
         );
 
-    snapshotRootPath = formatHomeDirAlias(
+    snapshotRootPath = parseHomeDirAlias(
         z
             .string()
             .parse(

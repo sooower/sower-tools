@@ -5,7 +5,8 @@ import { nextTick } from "node:process";
 import ignore from "ignore";
 import * as prettier from "prettier";
 
-import { fs, os } from "@/core";
+import { fs, logger, os } from "@/core";
+import { execCommand } from "@utils/command";
 import { CommonUtils } from "@utils/common";
 
 /**
@@ -161,11 +162,16 @@ export async function calcFileContentMd5(filePath: string) {
 /**
  * Trim if necessary and parse the home directory alias in the file path.
  *
- * @param filePath - The file path to format.
- * @returns The formatted file path.
+ * @param filePath - The file path to parse.
+ * @returns The parsed file path.
  */
-export function formatHomeDirAlias(filePath: string) {
-    return filePath.trim().replace(/^~/, os.homedir());
+export function parseHomeDirAlias(filePath: string) {
+    const filePathTrimmed = filePath.trim();
+    if (filePathTrimmed.startsWith("~")) {
+        return path.resolve(os.homedir(), filePathTrimmed.slice(2));
+    }
+
+    return filePathTrimmed;
 }
 
 /**
@@ -210,4 +216,45 @@ export function debounce<F extends (...args: any[]) => any>(
 
         return result;
     };
+}
+
+type TExecCmdOptions = {
+    /**
+     * The command to execute.
+     */
+    command: string | [string, ...string[]];
+
+    /**
+     * The working directory of the command.
+     */
+    cwd: string;
+
+    /**
+     * Whether to interact with the command, if `false`, the command will return
+     * the output of the command to the caller.
+     */
+    interactive: boolean;
+};
+
+/**
+ * Execute a command, redirect the command output to the logger, if the parameter
+ * `interactive` is `false`, the command output will not be redirected to the logger.
+ *
+ * @param options - The options of the command, see {@link TExecCmdOptions}.
+ * @returns The output of the command.
+ */
+export async function execCmd({ command, cwd, interactive }: TExecCmdOptions) {
+    return await execCommand({
+        command,
+        cwd,
+        interactive,
+        redirectHandle: {
+            onData: data => {
+                logger.trace(data);
+            },
+            onError: e => {
+                logger.trace(e.message);
+            },
+        },
+    });
 }

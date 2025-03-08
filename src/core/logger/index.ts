@@ -22,7 +22,7 @@ enum ELevel {
 const kSeeDetails = "See Details...";
 
 class Logger {
-    private channel: vscode.LogOutputChannel;
+    channel: vscode.LogOutputChannel;
 
     constructor() {
         this.channel = vscode.window.createOutputChannel(extensionDisplayName, {

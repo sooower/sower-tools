@@ -85,9 +85,10 @@ async function parseSqlAndGenerateFiles(text: string) {
         await renderTemplateFile({
             templateFilePath: path.join(
                 extensionCtx.extensionPath,
-                "templates/models/src.models.index.ts.hbs"
+                "templates/databaseModel/models/src.models.index.ts.hbs"
             ),
             outputFilePath: modelFilePath,
+            formatText: true,
         });
         generatedFiles.push(getWorkspaceRelativePath(modelFilePath));
     }
@@ -107,12 +108,13 @@ async function parseSqlAndGenerateFiles(text: string) {
     await renderTemplateFile({
         templateFilePath: path.join(
             extensionCtx.extensionPath,
-            "templates/models/src.models.schema.index.ts.hbs"
+            "templates/databaseModel/models/src.models.schema.index.ts.hbs"
         ),
         outputFilePath: schemaFilePath,
         data: {
             schemaName: toLowerCamelCase(schemaName),
         },
+        formatText: true,
     });
 
     generatedFiles.push(getWorkspaceRelativePath(schemaFilePath));
@@ -225,7 +227,7 @@ async function parseSqlAndGenerateFiles(text: string) {
     await renderTemplateFile({
         templateFilePath: path.join(
             extensionCtx.extensionPath,
-            "templates/models/src.models.schema.table.index.ts.hbs"
+            "templates/databaseModel/models/src.models.schema.table.index.ts.hbs"
         ),
         outputFilePath: tableFilePath,
         data: {
@@ -239,6 +241,7 @@ async function parseSqlAndGenerateFiles(text: string) {
             tableName,
             modelName: toLowerCamelCase(tableName),
         },
+        formatText: true,
     });
 
     // Open model file in editor

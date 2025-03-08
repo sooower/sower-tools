@@ -66,31 +66,38 @@ async function generateAPIResources(dirPath: string) {
     const apiName = path.basename(dirPath);
     const fileTemplateData: TemplateData[] = [
         {
-            templatePath: "templates/api/src.api.index.ts.hbs",
+            templatePath:
+                "templates/apiResourcesGeneration/api/src.api.index.ts.hbs",
             outputFilePath: "index.ts",
         },
         {
-            templatePath: "templates/api/src.api.list.ts.hbs",
+            templatePath:
+                "templates/apiResourcesGeneration/api/src.api.list.ts.hbs",
             outputFilePath: `${pluralize.singular(apiName)}ListGet.ts`,
         },
         {
-            templatePath: "templates/api/src.api.create.ts.hbs",
+            templatePath:
+                "templates/apiResourcesGeneration/api/src.api.create.ts.hbs",
             outputFilePath: `${pluralize.singular(apiName)}Create.ts`,
         },
         {
-            templatePath: "templates/api/@id/src.api.index.ts.hbs",
+            templatePath:
+                "templates/apiResourcesGeneration/api/@id/src.api.index.ts.hbs",
             outputFilePath: `@id/index.ts`,
         },
         {
-            templatePath: "templates/api/@id/src.api.get.ts.hbs",
+            templatePath:
+                "templates/apiResourcesGeneration/api/@id/src.api.get.ts.hbs",
             outputFilePath: `@id/${pluralize.singular(apiName)}Get.ts`,
         },
         {
-            templatePath: "templates/api/@id/src.api.update.ts.hbs",
+            templatePath:
+                "templates/apiResourcesGeneration/api/@id/src.api.update.ts.hbs",
             outputFilePath: `@id/${pluralize.singular(apiName)}Update.ts`,
         },
         {
-            templatePath: "templates/api/@id/src.api.delete.ts.hbs",
+            templatePath:
+                "templates/apiResourcesGeneration/api/@id/src.api.delete.ts.hbs",
             outputFilePath: `@id/${pluralize.singular(apiName)}Delete.ts`,
         },
     ];
@@ -136,6 +143,7 @@ function generate({
                     toUpperCamelCase(apiName)
                 ),
             },
+            formatText: true,
         });
 
         const workspaceFolderPath = getWorkspaceFolderPath();

@@ -47,7 +47,7 @@
         "typescript": "^5.4.5"
     },
     "dependencies": {
-        "@utils/command": "^0.2.2",
+        "@utils/command": "^0.2.5",
         "@utils/common": "^0.2.6",
         "@utils/datetime": "^0.2.4",
         "@utils/fs": "^0.3.2",
@@ -161,6 +161,11 @@
                     "dark": "./assets/referToApiDocument-dark.svg",
                     "light": "./assets/referToApiDocument-light.svg"
                 }
+            },
+            {
+                "category": "Sower Tools",
+                "command": "sower-tools.runbookInfoGeneration.generateRunbookInfo",
+                "title": "Generate Runbook Info"
             }
         ],
         "menus": {
@@ -506,7 +511,7 @@
                     "default": true
                 },
                 "sower-tools.markdownEnhancement.localImage.uploadImageConfigFilePath": {
-                    "description": "The config file path for uploading images to file server, supports path alias '~'.",
+                    "description": "The config file path for uploading images to file server, must be absolute path, supports path alias '~'.",
                     "type": "string",
                     "default": "~/.config/sower-tools/.upload-image-config.json"
                 },
@@ -703,7 +708,7 @@
                                         },
                                         "fsPath": {
                                             "type": "string",
-                                            "description": "The path of the project which will be opened, supports path alias '~'."
+                                            "description": "The path of the project which will be opened, must be absolute path, supports path alias '~'."
                                         }
                                     },
                                     "required": [
@@ -747,7 +752,7 @@
                     "properties": {
                         "profileDirPath": {
                             "type": "string",
-                            "description": "The path of the cursor profile, supports path alias '~'."
+                            "description": "The path of the cursor profile, must be absolute path, supports path alias '~'."
                         },
                         "storage": {
                             "type": "object",
@@ -755,7 +760,7 @@
                             "properties": {
                                 "projectRootDirPath": {
                                     "type": "string",
-                                    "description": "The path of the storage project root directory, supports path alias '~'."
+                                    "description": "The path of the storage project root directory, must be absolute path, supports path alias '~'."
                                 },
                                 "dirName": {
                                     "type": "string",
@@ -784,7 +789,7 @@
                     "default": 50
                 },
                 "sower-tools.projectEnhancement.projectSnapshot.snapshotRootPath": {
-                    "description": "The root path of the project snapshot, each project snapshots saved in a sub-folder named according to project folder path, supports path alias '~'.",
+                    "description": "The root path of the project snapshot, each project snapshots saved in a sub-folder named according to project folder path, must be absolute path, supports path alias '~'.",
                     "type": "string",
                     "default": "~/.project-snapshots"
                 },
@@ -866,6 +871,69 @@
                         "type": "string"
                     },
                     "default": []
+                },
+                "sower-tools.runbookInfoGeneration.enable": {
+                    "description": "Whether to enable runbook info generation.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "sower-tools.runbookInfoGeneration.projects": {
+                    "description": "The projects which will be used to generate runbook info.",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "projectPath": {
+                                "type": "string",
+                                "description": "The path of the project, supports absolute path, path alias '~' and relative path, if relative path is used, it will be relative to the path configured in 'sower-tools.runbookInfoGeneration.projectBasePath'."
+                            },
+                            "serviceName": {
+                                "type": "string",
+                                "description": "The serviceName of the project, used in the runbook info."
+                            },
+                            "envPrefix": {
+                                "type": "string",
+                                "description": "The prefix of the env variables, used in the runbook info."
+                            }
+                        },
+                        "required": [
+                            "projectPath",
+                            "serviceName",
+                            "envPrefix"
+                        ]
+                    },
+                    "default": []
+                },
+                "sower-tools.runbookInfoGeneration.projectBasePath": {
+                    "description": "The base path of the project, must be absolute path, supports path alias '~', only used when 'sower-tools.runbookInfoGeneration.projects.projectPath' is relative path.",
+                    "type": "string"
+                },
+                "sower-tools.runbookInfoGeneration.runbookDirPath": {
+                    "description": "The path of the runbook directory, must be absolute path, supports path alias '~'.",
+                    "type": "string",
+                    "default": "~/.runbook"
+                },
+                "sower-tools.runbookInfoGeneration.migrationDirNames": {
+                    "description": "The names of the migration directories in the project, used to find the migration files.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "migrations",
+                        "migration"
+                    ]
+                },
+                "sower-tools.runbookInfoGeneration.envRelativeFilePaths": {
+                    "description": "The env files relative paths to the project root directory, used to find the env file to extract the added env variables.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "src/env.ts",
+                        "src/index.ts"
+                    ]
                 }
             }
         }

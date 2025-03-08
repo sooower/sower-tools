@@ -95,11 +95,8 @@ async function showApiDocumentReference(document: vscode.TextDocument) {
             vscode.TextEditorRevealType.InCenter
         );
     } else {
-        await vscode.window.showTextDocument(
-            await vscode.workspace.openTextDocument(apiDocFilePath),
-            {
-                viewColumn: vscode.ViewColumn.Two,
-            }
-        );
+        await vscode.window.showTextDocument(vscode.Uri.file(apiDocFilePath), {
+            viewColumn: vscode.ViewColumn.Two,
+        });
     }
 }

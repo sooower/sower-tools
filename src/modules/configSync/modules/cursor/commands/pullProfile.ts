@@ -8,12 +8,12 @@ import {
     updateConfigurationItem,
     vscode,
 } from "@/core";
-import { formatHomeDirAlias } from "@/utils/common";
+import { parseHomeDirAlias } from "@/utils/common";
 import { execCommand } from "@utils/command";
 import { CommonUtils } from "@utils/common";
 
 import { enableSyncCursorFiles, profile } from "../configs";
-import { kProfileBakDirName, kProfileTarGzFileName } from "./const";
+import { kProfileBakDirName, kProfileTarGzFileName } from "../const";
 
 export function registerCommandPullCursorProfile() {
     extensionCtx.subscriptions.push(
@@ -77,8 +77,8 @@ async function pullCursorProfile() {
 
     // Pull profile from remote repository and update to cursor profile
 
-    const profileDirPath = formatHomeDirAlias(profile.profileDirPath);
-    const storageProjectRootDirPath = formatHomeDirAlias(
+    const profileDirPath = parseHomeDirAlias(profile.profileDirPath);
+    const storageProjectRootDirPath = parseHomeDirAlias(
         profile.storage.projectRootDirPath
     );
 

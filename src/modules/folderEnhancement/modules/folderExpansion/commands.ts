@@ -59,9 +59,7 @@ async function expandFolder(uri: vscode.Uri) {
                     await sleep(openFileDelay);
 
                     // Open document for diagnostic and reveal in explorer
-                    await vscode.window.showTextDocument(
-                        await vscode.workspace.openTextDocument(fileUri)
-                    );
+                    await vscode.window.showTextDocument(fileUri);
                     await vscode.commands.executeCommand(
                         "revealInExplorer",
                         fileUri

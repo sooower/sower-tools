@@ -3,7 +3,7 @@ import path from "node:path";
 import z from "zod";
 
 import { extensionName, fs, getConfigurationItem } from "@/core";
-import { formatHomeDirAlias } from "@/utils/common";
+import { parseHomeDirAlias } from "@/utils/common";
 import { readJsonFile } from "@utils/fs";
 
 import { enableUploadImage } from "./uploadImageEnable";
@@ -24,7 +24,7 @@ export function parseUploadImageConfigFilePath() {
     }
 
     const configFilePath = path.resolve(
-        formatHomeDirAlias(
+        parseHomeDirAlias(
             z
                 .string()
                 .parse(

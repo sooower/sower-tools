@@ -16,6 +16,7 @@ import { markdownEnhancement } from "./markdownEnhancement";
 import { nodeBuiltinModulesImportsUpdate } from "./nodeBuiltinModulesImportsUpdate";
 import { projectEnhancement } from "./projectEnhancement";
 import { readmeDocumentPreview } from "./readmeDocumentPreview";
+import { runbookInfoGeneration } from "./runbookInfoGeneration";
 import { runEnhancement } from "./runEnhancement";
 import { shared } from "./shared";
 import { statusBarEnhancement } from "./statusBarEnhancement";
@@ -48,4 +49,5 @@ export const modules = defineModule([
     projectEnhancement,
     configSync,
     apiRequestAssistant,
+    runbookInfoGeneration,
 ]);
