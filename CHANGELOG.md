@@ -5,7 +5,40 @@ All notable changes to "sower-tools" will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.17.4] - 2025-03-02
+## [0.21.0] - 2025-03-08
+
+### Added
+
+-   Add new `runProject` command to run TypeScript projects using tsx
+-   Add configuration options for run enhancement and AST project source file caching
+-   Implement new API document reference module with configuration options
+-   Add command and menu entries to refer to API documents for TypeScript files
+-   Enhance API request assistant with dynamic project name support and user prompts
+-   Create dark and light SVG icons for the new feature
+-   Add Handlebars dependency to support template rendering
+-   Add "Sower Tools" category to all commands in package.json
+-   Add new configuration option `openFileDelay` to control file opening speed
+-   Implement smooth file opening with configurable delay
+
+### Changed
+
+-   Rename `debuggingEnhancement` module to `runEnhancement`
+-   Implement debounce utility function for performance optimization
+-   Update package.json configuration and command names
+-   Improve context setting and workspace folder detection
+-   Update package.json with new configuration settings for API document reference
+-   Simplify template rendering in various modules using the new utility function
+-   Update refer to env variable command icon
+-   Add detailed function descriptions and parameter explanations
+-   Improve type overload documentation for utility functions
+-   Modify API document reference to open in a side-by-side view column
+-   Enhance project open feature to indicate already opened projects in the description
+-   Update template utility types with more detailed documentation
+-   Improve home directory path formatting in project selection
+-   Rename module and configuration from `expandFolder` to `folderExpansion`
+-   Update package.json configuration keys and module structure
+
+## [0.20.0] - 2025-03-02
 
 ### Added
 
@@ -47,7 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Add GitLens diff view support to style check detection.
 -   Fix force push command with improved remote branch selection and confirmation.
 
-## [0.17.3] - 2025-02-23
+## [0.19.0] - 2025-02-23
 
 ### Added
 
@@ -73,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Rename `enumsSort` module to `enumsDeclarationSort`.
 
-## [0.17.2] - 2025-02-17
+## [0.18.0] - 2025-02-17
 
 ### Added
 
@@ -140,7 +173,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.15.1] - 2024-12-11
 
-### Added
+### Changed
 
 -   Add support convert arrow function params when convert function parameter into object structure.
 
@@ -184,7 +217,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.12.12] - 2024-11-13
 
-### Added
+### Changed
 
 -   Add prettier to format code.
 
@@ -196,7 +229,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.12.10] - 2024-11-07
 
-### Added
+### Changed
 
 -   Enhanced pg sql parser for parsing primary key and field type 'smallint' and 'bytea'.
 

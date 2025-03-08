@@ -65,6 +65,16 @@
 -   Add user confirmation for cursor profile sync actions.
 -   Add project snapshot feature with configuration and file watching.
 -   Add API request assistant with env variables reference and fix save file snapshots.
+-   Add new `runProject` command to run TypeScript projects using tsx.
+-   Add configuration options for run enhancement and AST project source file caching.
+-   Implement new API document reference module with configuration options.
+-   Add command and menu entries to refer to API documents for TypeScript files.
+-   Enhance API request assistant with dynamic project name support and user prompts.
+-   Create dark and light SVG icons for the new feature.
+-   Add Handlebars dependency to support template rendering.
+-   Add "Sower Tools" category to all commands in package.json.
+-   Add new configuration option `openFileDelay` to control file opening speed.
+-   Implement smooth file opening with configurable delay.
 
 ## Usage
 
