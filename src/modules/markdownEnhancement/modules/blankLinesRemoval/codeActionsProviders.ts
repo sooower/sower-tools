@@ -15,7 +15,7 @@ export function registerCodeActionsProviders() {
                 codeAction.command = {
                     command: `${extensionName}.markdownEnhancement.removeBlankLinesAndOpenInNewDocument`,
                     title: "",
-                    arguments: [document],
+                    arguments: [document, range],
                 };
 
                 return [codeAction];
@@ -34,7 +34,7 @@ export function registerCodeActionsProviders() {
                 codeAction.command = {
                     command: `${extensionName}.markdownEnhancement.removeBlankLinesAndCopyToClipboard`,
                     title: "",
-                    arguments: [document],
+                    arguments: [document, range],
                 };
 
                 return [codeAction];

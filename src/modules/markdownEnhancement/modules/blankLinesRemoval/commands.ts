@@ -8,11 +8,11 @@ export function registerCommands() {
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
             `${extensionName}.markdownEnhancement.removeBlankLinesAndOpenInNewDocument`,
-            async (document: vscode.TextDocument) => {
+            async (document: vscode.TextDocument, range: vscode.Range) => {
                 try {
                     await vscode.window.showTextDocument(
                         await vscode.workspace.openTextDocument({
-                            content: await filterBlankLines(document),
+                            content: await filterBlankLines(document, range),
                             language: "markdown",
                         }),
                         ViewColumn.Beside
@@ -27,10 +27,10 @@ export function registerCommands() {
         ),
         vscode.commands.registerCommand(
             `${extensionName}.markdownEnhancement.removeBlankLinesAndCopyToClipboard`,
-            async (document: vscode.TextDocument) => {
+            async (document: vscode.TextDocument, range: vscode.Range) => {
                 try {
                     await vscode.env.clipboard.writeText(
-                        await filterBlankLines(document)
+                        await filterBlankLines(document, range)
                     );
                 } catch (e) {
                     logger.error(
@@ -44,15 +44,20 @@ export function registerCommands() {
 }
 
 export async function filterBlankLines(
-    document: vscode.TextDocument
+    document: vscode.TextDocument,
+    range: vscode.Range
 ): Promise<string> {
-    const lines = document.getText().split("\n");
+    const lines = document.getText(range).split("\n");
 
     let isInsideCodeBlock = false;
     const outputLines: string[] = [];
 
     for (let i = 0; i < lines.length; i++) {
-        if (skipFirstLine && i === 0) {
+        if (
+            skipFirstLine &&
+            i === 0 &&
+            document.lineAt(range.start).lineNumber === 0
+        ) {
             continue;
         }
 
