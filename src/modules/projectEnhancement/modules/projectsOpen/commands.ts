@@ -15,6 +15,7 @@ import { CommonUtils } from "@utils/common";
 
 import {
     EProjectDisplayStyle,
+    getOpenedProjects,
     projectDisplayStyle,
     projectsOpenGroups,
 } from "./configs";
@@ -122,7 +123,7 @@ async function selectProjectsToOpen(
             .find(it => it.name === selectedGroup.label)
             ?.projects.map(({ name, fsPath }) => ({
                 label: name ?? path.basename(fsPath),
-                description: formatDescription(fsPath),
+                description: addOpenedPrefixIfNeeded(fsPath),
             })) ?? [];
     projectsQuickPick.canSelectMany = true;
     projectsQuickPick.placeholder = "[2/2] Select projects to open";
@@ -156,13 +157,20 @@ async function selectProjectsToOpen(
     });
 }
 
-function formatDescription(fsPath: string) {
-    const isProjectOpened =
-        vscode.workspace.workspaceFolders?.some(
-            it => it.uri.fsPath === parseHomeDirAlias(fsPath)
-        ) ?? false;
+const kOpenedPrefix = "(opened) ";
 
-    return isProjectOpened ? `(opened) ${fsPath}` : fsPath;
+function addOpenedPrefixIfNeeded(fsPath: string) {
+    return getOpenedProjects().some(
+        it => it.fsPath === parseHomeDirAlias(fsPath)
+    )
+        ? `${kOpenedPrefix}${fsPath}`
+        : fsPath;
+}
+
+function removeOpenedPrefixIfNeeded(fsPath: string) {
+    return fsPath.startsWith(kOpenedPrefix)
+        ? fsPath.slice(kOpenedPrefix.length)
+        : fsPath;
 }
 
 async function batchOpenProjects(projects: vscode.QuickPickItem[]) {
@@ -173,7 +181,7 @@ async function batchOpenProjects(projects: vscode.QuickPickItem[]) {
                     fsPath !== undefined,
                     `'fsPath' of project "${name}" is undefined.`
                 );
-                fsPath = parseHomeDirAlias(fsPath);
+                fsPath = parseHomeDirAlias(removeOpenedPrefixIfNeeded(fsPath));
                 CommonUtils.assert(
                     fs.existsSync(fsPath),
                     `'fsPath' "${fsPath}" of project "${name}" does not exist.`
@@ -205,7 +213,7 @@ async function openProjectsInFlatStyle() {
                 ({ name, fsPath }) =>
                     ({
                         label: name ?? path.basename(fsPath),
-                        description: formatDescription(fsPath),
+                        description: addOpenedPrefixIfNeeded(fsPath),
                     } satisfies vscode.QuickPickItem)
             )
         );

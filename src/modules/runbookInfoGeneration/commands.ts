@@ -176,7 +176,7 @@ async function generateRunbookInfo(
                     `${nowDate()}/${serviceName}`
                 );
                 if (fs.existsSync(runbookFilePath)) {
-                    logger.trace(
+                    logger.warn(
                         `Runbook "${runbookFilePath}" already exists, skipped to generate it.`
                     );
                     projectsGenerationDetails.push({
@@ -407,7 +407,7 @@ async function renderRunbookInfo({
     });
 
     await vscode.window.showTextDocument(vscode.Uri.file(runbookFilePath));
-    logger.trace(`Saved runbook info file "${runbookFilePath}".`);
+    logger.info(`Saved runbook info file "${runbookFilePath}".`);
 }
 
 type TGetDiffLineRangesOptions = {

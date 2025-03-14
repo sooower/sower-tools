@@ -513,7 +513,7 @@
                 "sower-tools.markdownEnhancement.localImage.uploadImageConfigFilePath": {
                     "description": "The config file path for uploading images to file server, must be absolute path, supports path alias '~'.",
                     "type": "string",
-                    "default": "~/.config/sower-tools/.upload-image-config.json"
+                    "default": "~/.sower-tools/.config/.upload-image-config.json"
                 },
                 "sower-tools.markdownEnhancement.blankLinesRemoval.languageIds": {
                     "description": "Array of supported markdown code blocks language ids (case sensitive) which will maintain the blank lines in code blocks, others languages will remove blank lines in code blocks.",
@@ -736,6 +736,11 @@
                     ],
                     "default": "flat"
                 },
+                "sower-tools.projectsOpen.openedProjectsFilePath": {
+                    "description": "The path of the file that stores the opened projects, must be absolute path, supports path alias '~'.",
+                    "type": "string",
+                    "default": "~/.sower-tools/.opened-projects"
+                },
                 "sower-tools.timestampTools.timestampFormat": {
                     "description": "The timestamp format used in timestamp insertion or conversion. See more details in https://day.js.org/docs/en/display/format.",
                     "type": "string",
@@ -791,7 +796,7 @@
                 "sower-tools.projectEnhancement.projectSnapshot.snapshotRootPath": {
                     "description": "The root path of the project snapshot, each project snapshots saved in a sub-folder named according to project folder path, must be absolute path, supports path alias '~'.",
                     "type": "string",
-                    "default": "~/.project-snapshots"
+                    "default": "~/.sower-tools/.project-snapshots"
                 },
                 "sower-tools.projectEnhancement.projectSnapshot.ignorePatterns": {
                     "description": "The 'glob' patterns of files or directories that will be ignored when saving project snapshot, the priority is lower than configured items in 'sower-tools.projectEnhancement.projectSnapshot.ignoreCompatibleConfigFilenames'.",
@@ -911,7 +916,7 @@
                 "sower-tools.runbookInfoGeneration.runbookDirPath": {
                     "description": "The path of the runbook directory, must be absolute path, supports path alias '~'.",
                     "type": "string",
-                    "default": "~/.runbook"
+                    "default": "~/.sower-tools/.runbook"
                 },
                 "sower-tools.runbookInfoGeneration.migrationDirNames": {
                     "description": "The names of the migration directories in the project, used to find the migration files.",
