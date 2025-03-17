@@ -3,7 +3,7 @@ import { z } from "zod";
 import { extensionName, getConfigurationItem } from "@/core";
 
 export let enableStyleCheckComment: boolean;
-export let skipCheckCharacter: string;
+export let skipCheckCharacters: string[];
 
 export function parseConfig() {
     enableStyleCheckComment = z
@@ -12,12 +12,12 @@ export function parseConfig() {
             getConfigurationItem(`${extensionName}.styleCheck.comment.enable`)
         );
 
-    skipCheckCharacter = z
-        .string()
-        .length(1)
+    skipCheckCharacters = z
+        .array(z.string().length(1))
+        .min(1)
         .parse(
             getConfigurationItem(
-                `${extensionName}.styleCheck.comment.skipCheckCharacter`
+                `${extensionName}.styleCheck.comment.skipCheckCharacters`
             )
         );
 }

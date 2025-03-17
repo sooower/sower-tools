@@ -631,10 +631,16 @@
                     "type": "boolean",
                     "default": true
                 },
-                "sower-tools.styleCheck.comment.skipCheckCharacter": {
-                    "description": "The character that will be used to skip the comment check. For example, if you set this value to '?', it will ignore checking the comment like '//? <text>', '/*? <text> */' or '/**? <text> */'.",
-                    "type": "string",
-                    "default": "?"
+                "sower-tools.styleCheck.comment.skipCheckCharacters": {
+                    "description": "The characters that will be used to skip the comment check. For example, if you set this value to '?', it will ignore checking the comment like '//? <text>', '/*? <text> */' or '/**? <text> */'.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "?",
+                        "@"
+                    ]
                 },
                 "sower-tools.styleCheck.classDeclaration.enable": {
                     "description": "If true, the class declaration style of the opened file will be checked.",

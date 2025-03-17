@@ -11,7 +11,7 @@ import {
     isIgnoredFile,
     isLastLineOfParent,
 } from "../shared/utils";
-import { enableStyleCheckComment, skipCheckCharacter } from "./configs";
+import { enableStyleCheckComment, skipCheckCharacters } from "./configs";
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -143,9 +143,9 @@ function startsWithSkipCheckCharacter(text: string): boolean {
     // There need an additional backslash '\' to prevent escape,
     // so when the skip check character is '?', the original regex is:
     // /^(\/\/|\/\*\\s*)\?/
-    return new RegExp(`^(\\/\\/|\\/\\*\\*?\\s*)\\${skipCheckCharacter}`).test(
-        text.trimStart()
-    );
+    return new RegExp(
+        `^(\\/\\/|\\/\\*\\*?\\s*)\\${skipCheckCharacters.join("|")}`
+    ).test(text.trimStart());
 }
 
 function startsOrEndsWithClosedMultiLinesComment(text: string): boolean {
