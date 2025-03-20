@@ -39,7 +39,11 @@ type TInsertOptions = {
     {{TInsertOptionsContent}}
 };
 
-async function insert(dbc: DatabaseConnection, options: TInsertOptions) {
+async function insert<T extends EColumn>(
+    dbc: DatabaseConnection,
+    options: TInsertOptions,
+    returns?: T[]
+): Promise<TSelectOneReturn<T>> {
     const columnValues: TColumnValue[] = [];
 
     columnValues.push({
@@ -54,25 +58,35 @@ async function insert(dbc: DatabaseConnection, options: TInsertOptions) {
 
     {{insertContent}}
 
-    const { preparedStmt, vars } = generateCreateStatement(
+        const { preparedStmt, vars } = generateCreateStatement(
         kFullQualifiedTableName,
         {
             inserts: columnValues,
+            returns,
         }
     );
 
-    return await dbc.query(preparedStmt, vars);
+    const { rows } = await dbc.query(preparedStmt, vars);
+    const [row] = rows;
+    const entity: any = {};
+    for (const column of returns ?? []) {
+        const resolver = kResolver[column];
+        entity[column] = resolver(row[column]);
+    }
+
+    return entity;
 }
 
 type TUpdateOptions = Partial<{
     {{TUpdateOptionsContent}}
 }>;
 
-async function update(
+async function update<T extends EColumn>(
     dbc: DatabaseConnection,
     id: string,
-    options: TUpdateOptions
-) {
+    options: TUpdateOptions,
+    returns?: T[]
+): Promise<TSelectOneReturn<T>> {
     const columnValues: TColumnValue[] = [];
 
     columnValues.push({
@@ -87,10 +101,19 @@ async function update(
         {
             id: id,
             updates: columnValues,
+            returns,
         }
     );
 
-    return await dbc.query(preparedStmt, vars);
+    const { rows } = await dbc.query(preparedStmt, vars);
+    const [row] = rows;
+    const entity: any = {};
+    for (const column of returns ?? []) {
+        const resolver = kResolver[column];
+        entity[column] = resolver(row[column]);
+    }
+
+    return entity;
 }
 
 type TSelectOneOptions<T extends EColumn> = {
@@ -123,9 +146,7 @@ async function selectOne<T extends EColumn>(
     }
 
     const [row] = rows;
-
     const entity: any = {};
-
     for (const column of columns) {
         const resolver = kResolver[column];
         entity[column] = resolver(row[column]);

@@ -31,21 +31,22 @@ export function asyncCursorRead(
 
 export type TColumnValue = {
     column: string;
-    value: any;
+    value: unknown;
 };
 
 export type TGenerateCreateStatementOptions = {
     inserts: readonly TColumnValue[];
+    returns?: readonly string[];
 };
 
 export type TGenerateCreateStatementReturn = {
     preparedStmt: string;
-    vars: any[];
+    vars: unknown[];
 };
 
 export function generateCreateStatement(
     fullQualifiedTableName: string,
-    { inserts }: TGenerateCreateStatementOptions
+    { inserts, returns }: TGenerateCreateStatementOptions
 ): TGenerateCreateStatementReturn {
     if (inserts.length === 0) {
         throw new Error(`Unable to generate create for 0-column create.`);
@@ -62,14 +63,22 @@ export function generateCreateStatement(
         variables.push(`$${vars.length.toFixed(0)}`);
     }
 
+    const preparedStmt = [
+        /* COMMAND */ "INSERT INTO",
+        /* TABLE   */ fullQualifiedTableName,
+        /* COLUMNS */ `(${columns.join(", ")})`,
+        /* VALUES  */ `VALUES (${variables.join(", ")})`,
+    ];
+
+    if (returns !== undefined) {
+        const returnCols = returns.map((it) => `"${escapePGIdentifier(it)}"`);
+        preparedStmt.push(/* RETURNING */ `RETURNING ${returnCols.join(", ")}`);
+    }
+
+    preparedStmt.push(/* EOF */ ";");
+
     return {
-        preparedStmt: [
-            /* COMMAND */ "INSERT INTO",
-            /* TABLE   */ fullQualifiedTableName,
-            /* COLUMNS */ `(${columns.join(", ")})`,
-            /* VALUES  */ `VALUES (${variables.join(", ")})`,
-            /* EOF     */ ";",
-        ].join(" "),
+        preparedStmt: preparedStmt.join(" "),
         vars: vars,
     };
 }
@@ -77,16 +86,17 @@ export function generateCreateStatement(
 export type TGenerateUpdateStatementOptions = {
     id: string;
     updates: readonly TColumnValue[];
+    returns?: readonly string[];
 };
 
 export type TGenerateUpdateStatementReturn = {
     preparedStmt: string;
-    vars: any[];
+    vars: unknown[];
 };
 
 export function generateUpdateStatement(
     fullQualifiedTableName: string,
-    { id, updates }: TGenerateUpdateStatementOptions
+    { id, updates, returns }: TGenerateUpdateStatementOptions
 ): TGenerateUpdateStatementReturn {
     const filteredUpdates = updates.filter(
         (update) => ["updatedAt"].indexOf(update.column) === -1
@@ -107,16 +117,24 @@ export function generateUpdateStatement(
         );
     }
 
+    const preparedStmt = [
+        /* COMMAND    */ "UPDATE",
+        /* TABLE      */ fullQualifiedTableName,
+        /* SET        */ "SET",
+        /* COLUMNS    */ columnAssignments.join(", "),
+        /* WHERE      */ "WHERE",
+        /* CONDITIONS */ `"id" = $1`,
+    ];
+
+    if (returns !== undefined) {
+        const returnCols = returns.map((it) => `"${escapePGIdentifier(it)}"`);
+        preparedStmt.push(/* RETURNING */ `RETURNING ${returnCols.join(", ")}`);
+    }
+
+    preparedStmt.push(/* EOF */ ";");
+
     return {
-        preparedStmt: [
-            /* COMMAND    */ "UPDATE",
-            /* TABLE      */ fullQualifiedTableName,
-            /* SET        */ "SET",
-            /* COLUMNS    */ columnAssignments.join(", "),
-            /* WHERE      */ "WHERE",
-            /* CONDITIONS */ `"id" = $1`,
-            /* EOF        */ ";",
-        ].join(" "),
+        preparedStmt: preparedStmt.join(" "),
         vars: vars,
     };
 }
@@ -128,7 +146,7 @@ export type TGenerateSelectStatementOptions = {
 
 export type TGenerateSelectStatementReturn = {
     preparedStmt: string;
-    vars: any[];
+    vars: unknown[];
 };
 
 export function generateSelectStatement(
