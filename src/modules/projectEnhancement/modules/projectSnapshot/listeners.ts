@@ -3,8 +3,8 @@ import path from "node:path";
 import { extensionCtx, format, fs, logger, vscode } from "@/core";
 import { calcFileContentMd5 } from "@/utils/common";
 import {
+    getPossibleWorkspaceRelativePath,
     getWorkspaceFolderPath,
-    getWorkspaceRelativePath,
 } from "@/utils/vscode";
 import { datetime } from "@utils/datetime";
 
@@ -40,23 +40,35 @@ async function saveFileSnapshot(filePath: string) {
         return;
     }
 
-    const relPath = getWorkspaceRelativePath(filePath);
+    const relPath = getPossibleWorkspaceRelativePath(filePath);
+
+    if (path.isAbsolute(relPath)) {
+        logger.trace(
+            `[project-snapshot] file "${relPath}" is not in current workspace, skipped to save snapshot.`
+        );
+
+        return;
+    }
 
     if (ignoreManager.ignores(relPath)) {
-        logger.trace(`File "${relPath}" is ignored, skipped to save snapshot.`);
+        logger.trace(
+            `[project-snapshot] file "${relPath}" is ignored, skipped to save snapshot.`
+        );
 
         return;
     }
 
     if (!fs.existsSync(filePath)) {
-        logger.trace(`File "${relPath}" not exists, skipped to save snapshot.`);
+        logger.trace(
+            `[project-snapshot] file "${relPath}" not exists, skipped to save snapshot.`
+        );
 
         return;
     }
 
     if (!fs.statSync(filePath).isFile()) {
         logger.trace(
-            `File "${relPath}" is not a file, skipped to save snapshot.`
+            `[project-snapshot] file "${relPath}" is not a file, skipped to save snapshot.`
         );
 
         return;
@@ -94,7 +106,9 @@ async function saveFileSnapshot(filePath: string) {
         await fs.promises.mkdir(snapshotDirPath, { recursive: true });
     }
     await fs.promises.copyFile(filePath, snapshotPath);
-    logger.trace(`Saved snapshot for file "${relPath}" to "${snapshotPath}".`);
+    logger.trace(
+        `[project-snapshot] saved snapshot for file "${relPath}" to "${snapshotPath}".`
+    );
 
     // Delete the legacy versions if needed
 
@@ -113,7 +127,7 @@ async function saveFileSnapshot(filePath: string) {
                     })
             );
             logger.trace(
-                `Deleted ${legacyFileCount} legacy version(s) of file "${relPath}" from "${snapshotDirPath}".`
+                `[project-snapshot] deleted ${legacyFileCount} legacy version(s) of file "${relPath}" from "${snapshotDirPath}".`
             );
         }
     }
@@ -128,7 +142,7 @@ async function isSnapshotContentChanged(
         return true;
     }
 
-    const relPath = getWorkspaceRelativePath(filePath);
+    const relPath = getPossibleWorkspaceRelativePath(filePath);
 
     const files = await fs.promises.readdir(snapshotDirPath);
     const currFilename = path.basename(relPath);

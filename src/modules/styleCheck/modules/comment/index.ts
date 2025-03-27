@@ -1,9 +1,7 @@
 import { defineModule } from "@/core";
 
-import {
-    registerCodeActionsProviderAddBlankLineBeforeComment,
-    registerCodeActionsProviderSuppressCommentWarning,
-} from "./codeActionsProviders";
+import { registerCodeActionsProviderAddBlankLineBeforeComment } from "./codeActionsProviders/addBlankLineBeforeComment";
+import { registerCodeActionsProviderSuppressCommentWarning } from "./codeActionsProviders/suppressCommentWarning";
 import { parseConfig } from "./configs";
 import { registerDiagnosticComment } from "./diagnostics";
 

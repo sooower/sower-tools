@@ -2,8 +2,8 @@ import path from "node:path";
 
 import { extensionCtx, extensionName, fs, logger, vscode } from "@/core";
 import {
+    getPossibleWorkspaceRelativePath,
     getWorkspaceFolderPath,
-    getWorkspaceRelativePath,
 } from "@/utils/vscode";
 import { execCommand } from "@utils/command";
 
@@ -73,7 +73,7 @@ async function runProject() {
 
     if (!fs.existsSync(runFilePath)) {
         logger.warn(
-            `Not found project entry file "${getWorkspaceRelativePath(
+            `Not found project entry file "${getPossibleWorkspaceRelativePath(
                 runFilePath
             )}".`,
             "Only supports 'src/index.ts' as project entry file for now!"

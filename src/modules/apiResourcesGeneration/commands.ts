@@ -5,8 +5,8 @@ import pluralize from "pluralize";
 import { extensionCtx, extensionName, fs, logger, vscode } from "@/core";
 import { renderTemplateFile } from "@/utils/template";
 import {
+    getPossibleWorkspaceRelativePath,
     getWorkspaceFolderPath,
-    getWorkspaceRelativePath,
 } from "@/utils/vscode";
 
 import { toUpperCamelCase } from "../shared/modules/configuration/utils";
@@ -151,6 +151,6 @@ function generate({
             return;
         }
 
-        generatedFiles.push(getWorkspaceRelativePath(absFilePath));
+        generatedFiles.push(getPossibleWorkspaceRelativePath(absFilePath));
     };
 }

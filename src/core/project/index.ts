@@ -9,8 +9,8 @@ import {
 
 import { debounce } from "@/utils/common";
 import {
+    getPossibleWorkspaceRelativePath,
     getWorkspaceFolderPath,
-    getWorkspaceRelativePath,
     isTypeScriptFile,
 } from "@/utils/vscode";
 
@@ -59,7 +59,7 @@ function createASTProject() {
     logger.trace("[AST] project created.");
     const sourceFilePaths = project
         .getSourceFiles()
-        .map(it => getWorkspaceRelativePath(it.getFilePath()));
+        .map(it => getPossibleWorkspaceRelativePath(it.getFilePath()));
     logger.trace("[AST] created %d source files.", sourceFilePaths.length);
 
     // Show added AST project source files if necessary
@@ -125,7 +125,7 @@ async function refreshSourceFileCache(document: vscode.TextDocument) {
                 overwrite: true,
             });
             logger.trace(
-                `[AST] added source file "${getWorkspaceRelativePath(
+                `[AST] added source file "${getPossibleWorkspaceRelativePath(
                     document
                 )}"`
             );
@@ -135,12 +135,14 @@ async function refreshSourceFileCache(document: vscode.TextDocument) {
                 document.getText()
             );
             logger.trace(
-                `[AST] refreshed file "${getWorkspaceRelativePath(document)}"`
+                `[AST] refreshed file "${getPossibleWorkspaceRelativePath(
+                    document
+                )}"`
             );
         }
     } catch (error) {
         logger.error(
-            `[AST] failed to refresh source file "${getWorkspaceRelativePath(
+            `[AST] failed to refresh source file "${getPossibleWorkspaceRelativePath(
                 document
             )}".`,
             error

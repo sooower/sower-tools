@@ -9,8 +9,8 @@ import {
     vscode,
 } from "@/core";
 import {
+    getPossibleWorkspaceRelativePath,
     getWorkspaceFolderPath,
-    getWorkspaceRelativePath,
 } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
@@ -92,7 +92,7 @@ async function showEnvVariablesReference(document: vscode.TextDocument) {
 
     // Find the project env file path according to the current file path
 
-    const relPathSegments = getWorkspaceRelativePath(document)
+    const relPathSegments = getPossibleWorkspaceRelativePath(document)
         .split(path.sep)
         .filter(it => it !== "");
     const envDirNames = await fs.promises.readdir(

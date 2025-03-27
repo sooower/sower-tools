@@ -17,17 +17,17 @@ import {
 } from "@/core";
 import { renderTemplateFile } from "@/utils/template";
 import {
+    getPossibleWorkspaceRelativePath,
     getWorkspaceFolderPath,
-    getWorkspaceRelativePath,
 } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
 import {
     enableOverwriteFile,
-    ignoredInsertionColumns,
-    ignoredUpdatingColumns,
-} from "../shared/configs";
-import { mapAssertionMethod, TColumnDetail } from "../shared/utils";
+    globalIgnoredInsertionColumns,
+    globalIgnoredUpdateColumns,
+} from "../configs";
+import { mapAssertionMethod, TColumnDetail } from "../utils";
 
 export function registerCommandGenerateModel() {
     extensionCtx.subscriptions.push(
@@ -90,7 +90,7 @@ async function parseSqlAndGenerateFiles(text: string) {
             outputFilePath: modelFilePath,
             formatText: true,
         });
-        generatedFiles.push(getWorkspaceRelativePath(modelFilePath));
+        generatedFiles.push(getPossibleWorkspaceRelativePath(modelFilePath));
     }
 
     // Generate "src.models.schema.index.ts" file
@@ -117,7 +117,7 @@ async function parseSqlAndGenerateFiles(text: string) {
         formatText: true,
     });
 
-    generatedFiles.push(getWorkspaceRelativePath(schemaFilePath));
+    generatedFiles.push(getPossibleWorkspaceRelativePath(schemaFilePath));
 
     // Generate "src.models.schema.table.index.ts" file
 
@@ -142,6 +142,11 @@ async function parseSqlAndGenerateFiles(text: string) {
     const funcUpdateContent: string[] = [];
 
     for (const [column, { tsType, nullable, enumType }] of detail) {
+        CommonUtils.assert(
+            !column.includes("_"),
+            `Column "${column}" in table "${schemaName}"."${tableName}" includes underscore character "_", only support camel case.`
+        );
+
         enumEColumnContent.push(`${toUpperCamelCase(column)} = "${column}",`);
 
         typeTDefinitionsContent.push(
@@ -161,7 +166,8 @@ async function parseSqlAndGenerateFiles(text: string) {
             )
         );
 
-        if (!ignoredInsertionColumns.includes(column)) {
+        // Build insert options contents
+        if (!globalIgnoredInsertionColumns.includes(column)) {
             typeTInsertOptionsContent.push(
                 format(
                     `%s%s: %s;`,
@@ -198,7 +204,8 @@ async function parseSqlAndGenerateFiles(text: string) {
             );
         }
 
-        if (!ignoredUpdatingColumns.includes(column)) {
+        // Build update options contents
+        if (!globalIgnoredUpdateColumns.includes(column)) {
             typeTUpdateOptionsContent.push(
                 format(
                     `%s: %s;`,
@@ -247,7 +254,7 @@ async function parseSqlAndGenerateFiles(text: string) {
     // Open model file in editor
     await vscode.window.showTextDocument(vscode.Uri.file(tableFilePath));
 
-    generatedFiles.push(getWorkspaceRelativePath(tableFilePath));
+    generatedFiles.push(getPossibleWorkspaceRelativePath(tableFilePath));
 
     return generatedFiles;
 }

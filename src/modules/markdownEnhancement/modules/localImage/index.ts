@@ -6,10 +6,8 @@ import {
     parseUploadImageConfigFilePath,
     parseUploadImageEnable,
 } from "./configs";
-import {
-    registerDiagnosticNoInvalidLocalImageFilePath,
-    registerDiagnosticNoLocalImageLink,
-} from "./diagnostics";
+import { registerDiagnosticNoInvalidLocalImageFilePath } from "./diagnostics/noInvalidLocalImageFilePath";
+import { registerDiagnosticNoLocalImageLink } from "./diagnostics/noLocalImageLink";
 
 export const localImage = defineModule({
     onActive() {

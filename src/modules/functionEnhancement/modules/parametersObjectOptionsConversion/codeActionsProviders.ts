@@ -37,15 +37,15 @@ function findValidFuncOrMethodOrCtorDeclaration(
         ?.getSourceFile(document.fileName)
         ?.getDescendants()
         .filter(
-            node =>
-                Node.isFunctionDeclaration(node) ||
-                Node.isConstructorDeclaration(node) ||
-                Node.isMethodDeclaration(node)
+            it =>
+                Node.isFunctionDeclaration(it) ||
+                Node.isConstructorDeclaration(it) ||
+                Node.isMethodDeclaration(it)
         )
-        .find(node => {
+        .find(it => {
             return (
-                node.getStart() <= document.offsetAt(range.start) &&
-                node.getEnd() >= document.offsetAt(range.end)
+                it.getStart() <= document.offsetAt(range.start) &&
+                it.getEnd() >= document.offsetAt(range.end)
             );
         });
 

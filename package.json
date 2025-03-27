@@ -314,8 +314,8 @@
                     "type": "boolean",
                     "default": false
                 },
-                "sower-tools.databaseModel.ignoredInsertionColumns": {
-                    "description": "Column names which will be ignored when generating method `insert()` in database model.",
+                "sower-tools.databaseModel.globalIgnoredInsertionColumns": {
+                    "description": "The global level configuration that column names which will be ignored when generating method `insert()` in database model.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -325,8 +325,55 @@
                         "updatedAt"
                     ]
                 },
-                "sower-tools.databaseModel.ignoredUpdatingColumns": {
-                    "description": "Column names which will be ignored when generating method `update()` in database model.",
+                "sower-tools.databaseModel.projectIgnoredInsertionColumns": {
+                    "description": "The project level configuration that column names which will be ignored when generating method `insert()` in database model.",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "project": {
+                                "type": "string",
+                                "description": "The project name."
+                            },
+                            "columns": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "schema": {
+                                            "type": "string",
+                                            "description": "The schema name."
+                                        },
+                                        "table": {
+                                            "type": "string",
+                                            "description": "The table name."
+                                        },
+                                        "columns": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "description": "The column names."
+                                        }
+                                    },
+                                    "required": [
+                                        "schema",
+                                        "table",
+                                        "columns"
+                                    ]
+                                },
+                                "default": []
+                            }
+                        },
+                        "required": [
+                            "project",
+                            "columns"
+                        ]
+                    },
+                    "default": []
+                },
+                "sower-tools.databaseModel.globalIgnoredUpdateColumns": {
+                    "description": "The global level configuration that column names which will be ignored when generating method `update()` in database model.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -336,6 +383,53 @@
                         "createdAt",
                         "updatedAt"
                     ]
+                },
+                "sower-tools.databaseModel.projectIgnoredUpdateColumns": {
+                    "description": "The project level configuration that column names which will be ignored when generating method `update()` in database model.",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "project": {
+                                "type": "string",
+                                "description": "The project name."
+                            },
+                            "columns": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "schema": {
+                                            "type": "string",
+                                            "description": "The schema name."
+                                        },
+                                        "table": {
+                                            "type": "string",
+                                            "description": "The table name."
+                                        },
+                                        "columns": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "description": "The column names."
+                                        }
+                                    },
+                                    "required": [
+                                        "schema",
+                                        "table",
+                                        "columns"
+                                    ]
+                                },
+                                "default": []
+                            }
+                        },
+                        "required": [
+                            "project",
+                            "columns"
+                        ]
+                    },
+                    "default": []
                 },
                 "sower-tools.runEnhancement.debugProjectConfigurationNames": {
                     "description": "Array of name (location at <projectRootDir>/.vscode/launch.json#configurations) of debugging the project. The priority depends on the array element order, the first element has the highest priority.",
@@ -508,7 +602,7 @@
                 "sower-tools.markdownEnhancement.localImage.enableUploadImage": {
                     "description": "If true, it will check local image links in markdown files and provide a code action to upload them to file server.",
                     "type": "boolean",
-                    "default": true
+                    "default": false
                 },
                 "sower-tools.markdownEnhancement.localImage.uploadImageConfigFilePath": {
                     "description": "The config file path for uploading images to file server, must be absolute path, supports path alias '~'.",

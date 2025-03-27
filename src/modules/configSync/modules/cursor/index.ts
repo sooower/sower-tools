@@ -1,9 +1,7 @@
 import { defineModule } from "@/core";
 
-import {
-    registerCommandPullCursorProfile,
-    registerCommandPushCursorProfile,
-} from "./commands";
+import { registerCommandPullCursorProfile } from "./commands/pullProfile";
+import { registerCommandPushCursorProfile } from "./commands/pushProfile";
 import { parseConfigs } from "./configs";
 
 export const cursor = defineModule({

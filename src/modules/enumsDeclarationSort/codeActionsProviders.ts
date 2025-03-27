@@ -25,7 +25,7 @@ export function registerCodeActionsProviders() {
                     sourceFile
                         .getEnums()
                         .sort((a, b) => a.getName().localeCompare(b.getName()))
-                        .map(node => node.getFullText().trim())
+                        .map(it => it.getFullText().trim())
                         .join("\n\n") + "\n";
 
                 const codeAction = new vscode.CodeAction(

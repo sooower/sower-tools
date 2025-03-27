@@ -2,8 +2,8 @@ import { Node } from "ts-morph";
 
 import { extensionCtx, extensionName, logger, project, vscode } from "@/core";
 import {
+    getPossibleWorkspaceRelativePath,
     getWorkspaceFolderPath,
-    getWorkspaceRelativePath,
     isTypeScriptFile,
     setContext,
 } from "@/utils/vscode";
@@ -44,7 +44,7 @@ async function referToEnvVariables(document: vscode.TextDocument) {
     if (envFilename === undefined) {
         logger.trace(
             `Not found envFilename in file: "%s".`,
-            getWorkspaceRelativePath(document)
+            getPossibleWorkspaceRelativePath(document)
         );
         await setContext(
             `${extensionName}.referToEnvVariables.ifShowReferToEnvVariables`,
@@ -57,7 +57,7 @@ async function referToEnvVariables(document: vscode.TextDocument) {
     logger.trace(
         `Found envFilename "%s" in file: "%s".`,
         envFilename,
-        getWorkspaceRelativePath(document)
+        getPossibleWorkspaceRelativePath(document)
     );
     await setContext(
         `${extensionName}.referToEnvVariables.ifShowReferToEnvVariables`,
@@ -122,7 +122,7 @@ function findEnvFilename(filePath: string) {
         .filter(it => Node.isClassDeclaration(it))
         .at(0);
 
-    const envClassFilePath = getWorkspaceRelativePath(
+    const envClassFilePath = getPossibleWorkspaceRelativePath(
         CommonUtils.mandatory(
             envDeclarations.at(0)?.getSourceFile().getFilePath()
         )
@@ -144,9 +144,9 @@ function findEnvFilename(filePath: string) {
         ?.getBody()
         ?.getDescendants()
         .filter(it => Node.isExpressionStatement(it))
-        .forEach(node => {
+        .forEach(it => {
             // Get 'envFilename' property from super call
-            const expr = node.getExpression();
+            const expr = it.getExpression();
             if (
                 Node.isCallExpression(expr) &&
                 expr.getExpression().getText() === "super"

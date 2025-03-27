@@ -1,7 +1,7 @@
 import { extensionCtx, extensionName, logger, vscode } from "@/core";
 import {
+    getPossibleWorkspaceRelativePath,
     getWorkspaceFolderPath,
-    getWorkspaceRelativePath,
 } from "@/utils/vscode";
 import { execCommand } from "@utils/command";
 
@@ -22,7 +22,7 @@ export function registerCommandSkipWorkTree() {
                     });
 
                     logger.info(
-                        `Skipped work tree for file "${getWorkspaceRelativePath(
+                        `Skipped work tree for file "${getPossibleWorkspaceRelativePath(
                             uri
                         )}".`
                     );

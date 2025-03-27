@@ -2,8 +2,8 @@ import path from "node:path";
 
 import { extensionCtx, extensionName, fs, logger, vscode } from "@/core";
 import {
+    getPossibleWorkspaceRelativePath,
     getWorkspaceFolderPath,
-    getWorkspaceRelativePath,
     isTypeScriptFile,
     setContext,
 } from "@/utils/vscode";
@@ -57,7 +57,7 @@ async function referToApiDocument(document: vscode.TextDocument) {
     if (!fs.existsSync(apiDocFilePath)) {
         logger.trace(
             `Not found api doc file with request file: "%s".`,
-            getWorkspaceRelativePath(document)
+            getPossibleWorkspaceRelativePath(document)
         );
         await setContext(
             `${extensionName}.referToApiDocument.ifShowReferToApiDocument`,
@@ -70,7 +70,7 @@ async function referToApiDocument(document: vscode.TextDocument) {
     logger.trace(
         `Found api doc file "%s" with request file: "%s".`,
         apiDocFilePath,
-        getWorkspaceRelativePath(document)
+        getPossibleWorkspaceRelativePath(document)
     );
     await setContext(
         `${extensionName}.referToApiDocument.ifShowReferToApiDocument`,

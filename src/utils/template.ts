@@ -2,9 +2,37 @@ import path from "node:path";
 
 import Handlebars from "handlebars";
 
-import { fs, logger } from "@/core";
+import { extensionCtx, fs, logger } from "@/core";
 
 import { prettierFormatText } from "./common";
+
+let isRegistered = false;
+
+/**
+ * Automatically register all '.hbs' files in the partials directory. Skip
+ * the registration if the partials have already been registered.
+ */
+async function registerPartialsIfNeeded() {
+    if (isRegistered) {
+        return;
+    }
+
+    const partialsDir = path.join(
+        extensionCtx.extensionPath,
+        "templates/databaseModel/models/partials"
+    );
+    const partialFiles = await fs.promises.readdir(partialsDir);
+    for (const file of partialFiles) {
+        const partialName = path.basename(file, path.extname(file));
+        const partialContent = await fs.promises.readFile(
+            path.join(partialsDir, file),
+            "utf8"
+        );
+        Handlebars.registerPartial(partialName, partialContent);
+    }
+
+    isRegistered = true;
+}
 
 type TRenderTextOptions = {
     /**
@@ -34,13 +62,15 @@ type TRenderTextOptions = {
  * @param options - options for rendering template text, see {@link TRenderTextOptions}.
  * @returns The rendered text.
  */
-export function renderText({
+export async function renderText({
     text,
     data,
     noEscape = true,
     formatText = false,
 }: TRenderTextOptions) {
     try {
+        await registerPartialsIfNeeded();
+
         const template = Handlebars.compile(text, {
             strict: true,
             noEscape,
@@ -99,7 +129,7 @@ export async function renderTemplateFile({
             throw new Error(`Template file "${templateFilePath}" not exits.`);
         }
 
-        const outputText = renderText({
+        const outputText = await renderText({
             text: await fs.promises.readFile(templateFilePath, "utf-8"),
             data,
             noEscape,

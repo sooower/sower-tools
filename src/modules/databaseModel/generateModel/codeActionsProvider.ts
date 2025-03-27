@@ -1,6 +1,6 @@
 import { extensionCtx, extensionName, vscode } from "@/core";
 
-export function registerCodeActionsProviders() {
+export function registerCodeActionProviderGenerateModel() {
     extensionCtx.subscriptions.push(
         vscode.languages.registerCodeActionsProvider("*", {
             provideCodeActions(document, range, context, token) {

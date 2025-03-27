@@ -1,7 +1,7 @@
 import { vscode } from "@/core";
 import {
+    getPossibleWorkspaceRelativePath,
     getWorkspaceFolderPath,
-    getWorkspaceRelativePath,
 } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
@@ -165,7 +165,7 @@ export function isIgnoredFile(document: vscode.TextDocument): boolean {
         }
     }
 
-    const relPath = getWorkspaceRelativePath(document);
+    const relPath = getPossibleWorkspaceRelativePath(document);
 
     CommonUtils.assert(
         !relPath.startsWith("../"),

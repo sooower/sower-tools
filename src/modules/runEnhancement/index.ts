@@ -1,10 +1,8 @@
 import { defineModule } from "@/core";
 
-import {
-    registerCommandDebugCurrentFile,
-    registerCommandDebugProject,
-    registerCommandRunProject,
-} from "./commands";
+import { registerCommandDebugCurrentFile } from "./commands/debugCurrentFile";
+import { registerCommandDebugProject } from "./commands/debugProject";
+import { registerCommandRunProject } from "./commands/runProject";
 import { parseConfigs } from "./configs";
 import { registerListeners } from "./listeners";
 

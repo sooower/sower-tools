@@ -39,82 +39,13 @@ type TInsertOptions = {
     {{TInsertOptionsContent}}
 };
 
-async function insert<T extends EColumn>(
-    dbc: DatabaseConnection,
-    options: TInsertOptions,
-    returns?: T[]
-): Promise<TSelectOneReturn<T>> {
-    const columnValues: TColumnValue[] = [];
-
-    columnValues.push({
-        column: EColumn.CreatedAt,
-        value: new Date(),
-    });
-
-    columnValues.push({
-        column: EColumn.UpdatedAt,
-        value: new Date(),
-    });
-
-    {{insertContent}}
-
-        const { preparedStmt, vars } = generateCreateStatement(
-        kFullQualifiedTableName,
-        {
-            inserts: columnValues,
-            returns,
-        }
-    );
-
-    const { rows } = await dbc.query(preparedStmt, vars);
-    const [row] = rows;
-    const entity: any = {};
-    for (const column of returns ?? []) {
-        const resolver = kResolver[column];
-        entity[column] = resolver(row[column]);
-    }
-
-    return entity;
-}
+{{> funcInsert}}
 
 type TUpdateOptions = Partial<{
     {{TUpdateOptionsContent}}
 }>;
 
-async function update<T extends EColumn>(
-    dbc: DatabaseConnection,
-    id: string,
-    options: TUpdateOptions,
-    returns?: T[]
-): Promise<TSelectOneReturn<T>> {
-    const columnValues: TColumnValue[] = [];
-
-    columnValues.push({
-        column: EColumn.UpdatedAt,
-        value: new Date(),
-    });
-
-    {{updateContent}}
-
-    const { preparedStmt, vars } = generateUpdateStatement(
-        kFullQualifiedTableName,
-        {
-            id: id,
-            updates: columnValues,
-            returns,
-        }
-    );
-
-    const { rows } = await dbc.query(preparedStmt, vars);
-    const [row] = rows;
-    const entity: any = {};
-    for (const column of returns ?? []) {
-        const resolver = kResolver[column];
-        entity[column] = resolver(row[column]);
-    }
-
-    return entity;
-}
+{{> funcUpdate}}
 
 type TSelectOneOptions<T extends EColumn> = {
     columns: T[];

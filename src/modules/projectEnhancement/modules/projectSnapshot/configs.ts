@@ -93,5 +93,5 @@ export function loadIgnorePatterns() {
         );
     }
 
-    logger.trace("[project snapshot] loaded ignore patterns.");
+    logger.trace("[project-snapshot] loaded ignore patterns.");
 }

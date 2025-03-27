@@ -1,14 +1,10 @@
 import { defineModule } from "@/core";
 
-import {
-    registerCodeActionsProviderBlankAfterLastImportStatement,
-    registerCodeActionsProviderImportStatementsTopOfFile,
-} from "./codeActionsProviders";
+import { registerCodeActionsProviderBlankAfterLastImportStatement } from "./codeActionsProviders/blankLineAfterLastImportStatement";
+import { registerCodeActionsProviderImportStatementsTopOfFile } from "./codeActionsProviders/importStatementsTopOfFile";
 import { parseConfig } from "./configs";
-import {
-    registerDiagnosticBlankLineAfterLastImportStatement,
-    registerDiagnosticImportStatementsTopOfFile,
-} from "./diagnostics";
+import { registerDiagnosticBlankLineAfterLastImportStatement } from "./diagnostics/blankLineAfterLastImportStatement";
+import { registerDiagnosticImportStatementsTopOfFile } from "./diagnostics/importStatementsTopOfFile";
 
 export const importStatement = defineModule({
     onActive() {

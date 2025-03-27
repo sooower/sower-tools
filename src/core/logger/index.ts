@@ -32,7 +32,7 @@ class Logger {
     }
 
     /**
-     * Show trace level logs in the output channel, console ( in dev mode).
+     * Show trace level logs in the output channel, console (in dev mode).
      *
      * **NOTICE:** The message is only logged if configured displaying `trace` log level
      * (open command palette and select "Developer: Set Log Level..." to configure).
@@ -50,7 +50,7 @@ class Logger {
     }
 
     /**
-     * Show debug level logs in the output channel, console ( in dev mode).
+     * Show debug level logs in the output channel, console (in dev mode).
      *
      * **NOTICE:** The message is only logged if configured displaying `debug` log level or
      * lower log level (open command palette and select "Developer: Set Log Level..." to configure).
@@ -66,7 +66,7 @@ class Logger {
     }
 
     /**
-     * Show info level logs in the output channel, console ( in dev mode) and window notification.
+     * Show info level logs in the output channel, console (in dev mode) and window notification.
      *
      * **NOTICE:** The notification only show content of `message`, the content of `args` is omitted.
      *
@@ -83,7 +83,7 @@ class Logger {
     }
 
     /**
-     * Show warning level logs in the output channel, console ( in dev mode) and window notification.
+     * Show warning level logs in the output channel, console (in dev mode) and window notification.
      *
      * **NOTICE:** The notification only show content of `message`, the content of `args` is omitted.
      *
@@ -106,7 +106,7 @@ class Logger {
     }
 
     /**
-     * Show error level logs in the output channel, console ( in dev mode) and window notification.
+     * Show error level logs in the output channel, console (in dev mode) and window notification.
      *
      * **NOTICE:** The notification only show content of `message`, the content of `args` is omitted.
      *

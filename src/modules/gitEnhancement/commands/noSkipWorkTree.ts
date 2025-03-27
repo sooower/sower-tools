@@ -1,7 +1,7 @@
 import { extensionCtx, extensionName, logger, vscode } from "@/core";
 import {
+    getPossibleWorkspaceRelativePath,
     getWorkspaceFolderPath,
-    getWorkspaceRelativePath,
 } from "@/utils/vscode";
 import { execCommand } from "@utils/command";
 
@@ -21,7 +21,7 @@ export function registerCommandNoSkipWorkTree() {
                         cwd: workspaceFolderPath,
                     });
                     logger.info(
-                        `Recovery to track changes for file "${getWorkspaceRelativePath(
+                        `Recovery to track changes for file "${getPossibleWorkspaceRelativePath(
                             uri
                         )}".`
                     );

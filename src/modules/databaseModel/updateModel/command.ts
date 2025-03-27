@@ -1,61 +1,57 @@
-import { Node, TypeAliasDeclaration } from "ts-morph";
+import path from "node:path";
 
-import {
-    toLowerCamelCase,
-    toUpperCamelCase,
-} from "@/modules/shared/modules/configuration/utils";
-
-import { ETsType } from "@/types";
+import { toUpperCamelCase } from "@/modules/shared/modules/configuration/utils";
 
 import {
     extensionCtx,
     extensionName,
     format,
+    fs,
     logger,
     project,
     vscode,
 } from "@/core";
+import { renderText } from "@/utils/template";
 import { buildRangeByNode, formatDocument } from "@/utils/vscode";
-import { CommonUtils } from "@utils/common";
 
 import {
-    ignoredInsertionColumns,
-    ignoredUpdatingColumns,
-} from "../shared/configs";
-import { mapAssertionMethod } from "../shared/utils";
+    checkIsColumnIgnoredInMethodOptions,
+    extractTypeMemberMap,
+    mapAssertionMethod,
+} from "../utils";
 
 export function registerCommandUpdateModel() {
     extensionCtx.subscriptions.push(
         vscode.commands.registerCommand(
             `${extensionName}.databaseModel.updateModel`,
             async (document: vscode.TextDocument) => {
-                vscode.window.withProgress(
-                    {
-                        location: vscode.ProgressLocation.Notification,
-                        title: "Generating files",
-                        cancellable: false,
-                    },
-                    async (progress, token) => {
-                        try {
-                            await createEditAndApply(document);
-                        } catch (e) {
-                            logger.error("Failed to generate model.", e);
-                        }
-                    }
-                );
+                try {
+                    await vscode.workspace.save(document.uri);
+                    await updateModel(document);
+                } catch (e) {
+                    logger.error("Failed to update model.", e);
+                }
             }
         )
     );
 }
 
-async function createEditAndApply(document: vscode.TextDocument) {
+async function updateModel(document: vscode.TextDocument) {
     const sourceFile = project?.getSourceFile(document.fileName);
     if (sourceFile === undefined) {
+        logger.warn(
+            `[update-model] cannot find sourceFile "${document.fileName}".`
+        );
+
         return;
     }
 
     const typTDefinitionsNode = sourceFile.getTypeAlias("TDefinitions");
     if (typTDefinitionsNode === undefined) {
+        logger.warn(
+            `[update-model] cannot find type definition "TDefinitions".`
+        );
+
         return;
     }
 
@@ -66,15 +62,20 @@ async function createEditAndApply(document: vscode.TextDocument) {
     const typeTUpdateOptionsContent: string[] = [];
     const funcUpdateContent: string[] = [];
 
-    for (const [name, { type, optional }] of extractTypeMemberMap(
+    const schemaName = path.basename(
+        path.dirname(path.resolve(document.fileName, ".."))
+    );
+    const tableName = path.basename(path.dirname(document.fileName));
+
+    for (const [column, { type, optional }] of extractTypeMemberMap(
         typTDefinitionsNode
     )) {
-        enumEColumnContent.push(`${toUpperCamelCase(name)} = "${name}",`);
+        enumEColumnContent.push(`${toUpperCamelCase(column)} = "${column}",`);
 
         varKResolverContent.push(
             format(
                 `[EColumn.%s]: %s,`,
-                toUpperCamelCase(name),
+                toUpperCamelCase(column),
                 mapAssertionMethod({
                     tsType: type,
                     nullable: optional,
@@ -83,9 +84,20 @@ async function createEditAndApply(document: vscode.TextDocument) {
             )
         );
 
-        if (!ignoredInsertionColumns.includes(name)) {
+        // Build insert options content
+        if (
+            checkIsColumnIgnoredInMethodOptions({
+                method: "insert",
+                document,
+                columnName: column,
+            })
+        ) {
+            logger.trace(
+                `[update-model] column "${column}" in table "${schemaName}"."${tableName}" is ignored in insert options.`
+            );
+        } else {
             typeTInsertOptionsContent.push(
-                format(`%s%s: %s;`, name, optional ? "?" : "", type)
+                format(`%s%s: %s;`, column, optional ? "?" : "", type)
             );
             funcInsertContent.push(
                 optional
@@ -98,9 +110,9 @@ async function createEditAndApply(document: vscode.TextDocument) {
                                   });
                               }
                           `,
-                          name,
-                          toUpperCamelCase(name),
-                          name
+                          column,
+                          toUpperCamelCase(column),
+                          column
                       )
                     : format(
                           `
@@ -109,14 +121,25 @@ async function createEditAndApply(document: vscode.TextDocument) {
                                   value: options.%s,
                               });
                           `,
-                          toUpperCamelCase(name),
-                          name
+                          toUpperCamelCase(column),
+                          column
                       )
             );
         }
 
-        if (!ignoredUpdatingColumns.includes(name)) {
-            typeTUpdateOptionsContent.push(format(`%s: %s;`, name, type));
+        // Build update options content
+        if (
+            checkIsColumnIgnoredInMethodOptions({
+                method: "update",
+                document,
+                columnName: column,
+            })
+        ) {
+            logger.trace(
+                `[update-model] column "${column}" in table "${schemaName}"."${tableName}" is ignored in update options.`
+            );
+        } else {
+            typeTUpdateOptionsContent.push(format(`%s: %s;`, column, type));
             funcUpdateContent.push(
                 format(
                     `
@@ -127,9 +150,9 @@ async function createEditAndApply(document: vscode.TextDocument) {
                             });
                         }
                     `,
-                    name,
-                    toUpperCamelCase(name),
-                    name
+                    column,
+                    toUpperCamelCase(column),
+                    column
                 )
             );
         }
@@ -180,7 +203,7 @@ async function createEditAndApply(document: vscode.TextDocument) {
         workspaceEdit.replace(
             document.uri,
             buildRangeByNode(document, varResolverNode.getParent()),
-            varResolverNodeText
+            varResolverNodeText + "\n\n"
         );
     } else {
         const typeTResolversNode = sourceFile.getTypeAlias("TResolvers");
@@ -219,32 +242,19 @@ async function createEditAndApply(document: vscode.TextDocument) {
 
     // Update or insert function insert node
 
-    const funcInsertNodeText = `
-        async function insert(dbc: DatabaseConnection, options: TInsertOptions) {
-            const columnValues: TColumnValue[] = [];
-
-            columnValues.push({
-                column: EColumn.CreatedAt,
-                value: new Date(),
-            });
-
-            columnValues.push({
-                column: EColumn.UpdatedAt,
-                value: new Date(),
-            });
-
-            ${funcInsertContent.join("\n\n")}
-
-            const { preparedStmt, vars } = generateCreateStatement(
-                kFullQualifiedTableName,
-                {
-                    inserts: columnValues,
-                }
-            );
-
-            return await dbc.query(preparedStmt, vars);
-        }
-    `;
+    const funcInsertNodeText = await renderText({
+        text: await fs.promises.readFile(
+            path.join(
+                extensionCtx.extensionPath,
+                "templates/databaseModel/models/partials/funcInsert.hbs"
+            ),
+            "utf-8"
+        ),
+        data: {
+            insertContent: funcInsertContent.join("\n\n"),
+        },
+        formatText: true,
+    });
     const funcInsertNode = sourceFile.getFunction("insert");
     if (funcInsertNode !== undefined) {
         workspaceEdit.replace(
@@ -291,28 +301,19 @@ async function createEditAndApply(document: vscode.TextDocument) {
 
     // Update or insert function update node
 
-    const funcUpdateNodeText = `
-            async function update(dbc: DatabaseConnection, id: string, options: TUpdateOptions) {
-                const columnValues: TColumnValue[] = [];
-
-                columnValues.push({
-                    column: EColumn.UpdatedAt,
-                    value: new Date(),
-                });
-
-                ${funcUpdateContent.join("\n\n")}
-
-                const { preparedStmt, vars } = generateUpdateStatement(
-                    kFullQualifiedTableName,
-                    {
-                        id: id,
-                        updates: columnValues,
-                    }
-                );
-
-                return await dbc.query(preparedStmt, vars);
-            }
-        `;
+    const funcUpdateNodeText = await renderText({
+        text: await fs.promises.readFile(
+            path.join(
+                extensionCtx.extensionPath,
+                "templates/databaseModel/models/partials/funcUpdate.hbs"
+            ),
+            "utf-8"
+        ),
+        data: {
+            updateContent: funcUpdateContent.join("\n\n"),
+        },
+        formatText: true,
+    });
     const funcUpdateNode = sourceFile.getFunction("update");
     if (funcUpdateNode !== undefined) {
         workspaceEdit.replace(
@@ -337,33 +338,4 @@ async function createEditAndApply(document: vscode.TextDocument) {
 
     // Format the document
     await formatDocument(document);
-}
-
-function extractTypeMemberMap(node: TypeAliasDeclaration) {
-    const propMap = new Map<string, { type: string; optional: boolean }>();
-
-    const typeNode = node.getTypeNode();
-    if (!Node.isTypeLiteral(typeNode)) {
-        return propMap;
-    }
-
-    for (const member of typeNode.getProperties()) {
-        if (!Node.isPropertySignature(member)) {
-            continue;
-        }
-
-        let memberName = member.getName();
-        if (memberName.includes("EColumn")) {
-            memberName = toLowerCamelCase(
-                CommonUtils.mandatory(memberName.slice(1, -1).split(".").at(-1))
-            );
-        }
-
-        propMap.set(memberName, {
-            type: member.getTypeNode()?.getText() ?? ETsType.Unknown,
-            optional: member.hasQuestionToken(),
-        });
-    }
-
-    return propMap;
 }
