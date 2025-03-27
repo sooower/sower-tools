@@ -55,8 +55,7 @@ async function convertParametersToOptionsObject({
     const workspaceEdit = new vscode.WorkspaceEdit();
 
     if (node.getParameters().length === 1) {
-        // Refactor it to named type parameter if the function only has one
-        // type literal type parameter
+        // If the function only has one type literal type parameter, refactor it to named type parameter
 
         const firstParam = node.getParameters().at(0);
         const typeNode = firstParam?.getTypeNode();
@@ -80,7 +79,7 @@ async function convertParametersToOptionsObject({
 
         const typeMembersText = node.getParameters().map(it => {
             const paramName = it.getName();
-            const paramType = it.getType().getText();
+            const paramType = it.getType().getSymbol()?.getEscapedName();
             const optional = it.hasQuestionToken() || Node.isDefaultClause(it);
 
             return format(
