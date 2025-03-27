@@ -1,4 +1,5 @@
 import { writeFileSync } from "node:fs";
+import path from "node:path";
 
 import { z } from "zod";
 
@@ -92,6 +93,7 @@ export function appendWorkspaceToOpenedProject() {
         fsPath: workspaceFolderPath,
         pid: process.pid,
     });
+    fs.mkdirSync(path.dirname(openedProjectsFilePath), { recursive: true });
     writeFileSync(
         openedProjectsFilePath,
         JSON.stringify(openedProjects, null, 2)

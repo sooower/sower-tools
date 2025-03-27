@@ -5,7 +5,7 @@ import { Client } from "minio";
 import { extensionCtx, extensionName, format, logger, vscode } from "@/core";
 import { CommonUtils } from "@utils/common";
 
-import { uploadImageConfig } from "./configs";
+import { uploadImageConfig } from "./configs/uploadImageConfigFilePath";
 
 export function registerCommandUploadImageToMinioStorage() {
     extensionCtx.subscriptions.push(

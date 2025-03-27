@@ -27,6 +27,8 @@ export function debouncedStyleCheck(
             debounce(diagnosticFunc, diagnoseUpdateDelay)(editor.document);
         })
     );
+
+    // Check files opened in the workspace recently
     vscode.workspace.textDocuments
         .filter(it => isTypeScriptFile(it))
         .forEach(document => {

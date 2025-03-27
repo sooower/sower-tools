@@ -602,7 +602,7 @@
                 "sower-tools.markdownEnhancement.localImage.enableUploadImage": {
                     "description": "If true, it will check local image links in markdown files and provide a code action to upload them to file server.",
                     "type": "boolean",
-                    "default": false
+                    "default": true
                 },
                 "sower-tools.markdownEnhancement.localImage.uploadImageConfigFilePath": {
                     "description": "The config file path for uploading images to file server, must be absolute path, supports path alias '~'.",
@@ -839,7 +839,7 @@
                 "sower-tools.projectsOpen.openedProjectsFilePath": {
                     "description": "The path of the file that stores the opened projects, must be absolute path, supports path alias '~'.",
                     "type": "string",
-                    "default": "~/.sower-tools/.opened-projects"
+                    "default": "~/.sower-tools/.opened-projects.json"
                 },
                 "sower-tools.timestampTools.timestampFormat": {
                     "description": "The timestamp format used in timestamp insertion or conversion. See more details in https://day.js.org/docs/en/display/format.",
