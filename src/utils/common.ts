@@ -250,7 +250,7 @@ export async function execCmd({ command, cwd, interactive }: TExecCmdOptions) {
         interactive,
         redirectHandle: {
             onData: data => {
-                logger.info(data);
+                logger.trace(data);
             },
             onError: e => {
                 logger.error(e.message);

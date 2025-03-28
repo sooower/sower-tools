@@ -206,11 +206,20 @@ async function generateRunbookInfo(
                     interactive: false,
                 });
 
+                if (currentBranch !== branch) {
+                    await execCmd({
+                        command: `git checkout ${branch}`,
+                        cwd: projectPath,
+                        interactive: true,
+                    });
+                }
+
                 await execCmd({
-                    command: `git checkout ${branch} && git pull`,
+                    command: `git pull`,
                     cwd: projectPath,
                     interactive: true,
                 });
+
                 await execCmd({
                     command: `npm run build`,
                     cwd: projectPath,
