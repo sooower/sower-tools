@@ -75,6 +75,10 @@
 -   Add "Sower Tools" category to all commands in package.json.
 -   Add new configuration option `openFileDelay` to control file opening speed.
 -   Implement smooth file opening with configurable delay.
+-   Add command to generate runbook info for selected projects.
+-   Enhance project configuration with new settings for runbook generation.
+-   Introduce global and project-specific ignored insertion columns in package.json for better control over database model generation.
+-   Implement new command, code action providers, code lens providers to add or remove columns from insert and update options dynamically.
 
 ## Usage
 

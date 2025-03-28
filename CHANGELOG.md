@@ -5,38 +5,64 @@ All notable changes to "sower-tools" will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.22.0] - 2025-03-28
+
+### Added
+
+-   Add command to generate runbook info for selected projects.
+-   Enhance project configuration with new settings for runbook generation.
+-   Introduce global and project-specific ignored insertion columns in package.json for better control over database model generation.
+-   Implement new command, code action providers, code lens providers to add or remove columns from insert and update options dynamically.
+
+### Changed
+
+-   Enhance blank lines removal with range-based filtering.
+-   Update package.json to include new configuration for opened projects file paths.
+-   Change skipCheckCharacter to skipCheckCharacters in package.json and related files and update type from string to array for multiple skip check characters.
+-   Update templates to enhance database model generation (accept optional returns parameter for specifying columns to return when query or update record).
+-   Refactor existing code to utilize the new getPossibleWorkspaceRelativePath function for improved path handling.
+-   Consolidate and streamline the database model generation process with new utility functions and templates for insert and update operations.
+-   Update logging and documentation to reflect changes in functionality and configuration options.
+-   Enhance error handling and logging in uploadImageConfigFilePath to create a default config file if it doesn't exist.
+-   Ensure directory creation for opened projects file path in projectsOpen module.
+-   Improve branch handling and logging in command execution when generating runbook info.
+
+### Fixed
+
+-   Change method for retrieving parameter type from getText() to getSymbol()?.getEscapedName() to fix type name error.
+
 ## [0.21.0] - 2025-03-08
 
 ### Added
 
--   Add new `runProject` command to run TypeScript projects using tsx
--   Add configuration options for run enhancement and AST project source file caching
--   Implement new API document reference module with configuration options
--   Add command and menu entries to refer to API documents for TypeScript files
--   Enhance API request assistant with dynamic project name support and user prompts
--   Create dark and light SVG icons for the new feature
--   Add Handlebars dependency to support template rendering
--   Add "Sower Tools" category to all commands in package.json
--   Add new configuration option `openFileDelay` to control file opening speed
--   Implement smooth file opening with configurable delay
+-   Add new `runProject` command to run TypeScript projects using tsx.
+-   Add configuration options for run enhancement and AST project source file caching.
+-   Implement new API document reference module with configuration options.
+-   Add command and menu entries to refer to API documents for TypeScript files.
+-   Enhance API request assistant with dynamic project name support and user prompts.
+-   Create dark and light SVG icons for the new feature.
+-   Add Handlebars dependency to support template rendering.
+-   Add "Sower Tools" category to all commands in package.json.
+-   Add new configuration option `openFileDelay` to control file opening speed.
+-   Implement smooth file opening with configurable delay.
 
 ### Changed
 
--   Rename `debuggingEnhancement` module to `runEnhancement`
--   Implement debounce utility function for performance optimization
--   Update package.json configuration and command names
--   Improve context setting and workspace folder detection
--   Update package.json with new configuration settings for API document reference
--   Simplify template rendering in various modules using the new utility function
--   Update refer to env variable command icon
--   Add detailed function descriptions and parameter explanations
--   Improve type overload documentation for utility functions
--   Modify API document reference to open in a side-by-side view column
--   Enhance project open feature to indicate already opened projects in the description
--   Update template utility types with more detailed documentation
--   Improve home directory path formatting in project selection
--   Rename module and configuration from `expandFolder` to `folderExpansion`
--   Update package.json configuration keys and module structure
+-   Rename `debuggingEnhancement` module to `runEnhancement`.
+-   Implement debounce utility function for performance optimization.
+-   Update package.json configuration and command names.
+-   Improve context setting and workspace folder detection.
+-   Update package.json with new configuration settings for API document reference.
+-   Simplify template rendering in various modules using the new utility function.
+-   Update refer to env variable command icon.
+-   Add detailed function descriptions and parameter explanations.
+-   Improve type overload documentation for utility functions.
+-   Modify API document reference to open in a side-by-side view column.
+-   Enhance project open feature to indicate already opened projects in the description.
+-   Update template utility types with more detailed documentation.
+-   Improve home directory path formatting in project selection.
+-   Rename module and configuration from `expandFolder` to `folderExpansion`.
+-   Update package.json configuration keys and module structure.
 
 ## [0.20.0] - 2025-03-02
 
