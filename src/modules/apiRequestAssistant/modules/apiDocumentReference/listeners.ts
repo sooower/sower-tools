@@ -1,6 +1,7 @@
 import path from "node:path";
 
 import { extensionCtx, extensionName, fs, logger, vscode } from "@/core";
+import { debounce } from "@/utils/common";
 import {
     getPossibleWorkspaceRelativePath,
     getWorkspaceFolderPath,
@@ -10,27 +11,39 @@ import {
 
 import { apiDirRelativePath, enableApiDocumentReference } from "./configs";
 
+const kDebounceDelay = 1000;
+
 export let apiDocFilePath: string | undefined;
 
 export function registerListeners() {
     extensionCtx.subscriptions.push(
-        vscode.workspace.onDidOpenTextDocument(referToApiDocument),
+        vscode.workspace.onDidOpenTextDocument(
+            recheckContextIfShowReferToApiDocument
+        ),
         vscode.window.onDidChangeActiveTextEditor(editor => {
             if (editor === undefined) {
                 return;
             }
 
-            referToApiDocument(editor.document);
+            recheckContextIfShowReferToApiDocument(editor.document);
+        }),
+        vscode.workspace.onDidChangeTextDocument(async e => {
+            await debounce(
+                recheckContextIfShowReferToApiDocument,
+                kDebounceDelay
+            )(e.document);
         })
     );
     vscode.workspace.textDocuments
         .filter(it => isTypeScriptFile(it))
         .forEach(document => {
-            referToApiDocument(document);
+            recheckContextIfShowReferToApiDocument(document);
         });
 }
 
-async function referToApiDocument(document: vscode.TextDocument) {
+async function recheckContextIfShowReferToApiDocument(
+    document: vscode.TextDocument
+) {
     if (!isTypeScriptFile(document)) {
         return;
     }

@@ -1,6 +1,7 @@
 import { Node } from "ts-morph";
 
 import { extensionCtx, extensionName, logger, project, vscode } from "@/core";
+import { debounce } from "@/utils/common";
 import {
     getPossibleWorkspaceRelativePath,
     getWorkspaceFolderPath,
@@ -11,27 +12,39 @@ import { CommonUtils } from "@utils/common";
 
 import { enableEnvDocumentReference } from "./configs";
 
+const kDebounceDelay = 1000;
+
 export let envFilename: string | undefined;
 
 export function registerListeners() {
     extensionCtx.subscriptions.push(
-        vscode.workspace.onDidOpenTextDocument(referToEnvVariables),
+        vscode.workspace.onDidOpenTextDocument(
+            recheckContextIfShowReferToEnvVariables
+        ),
         vscode.window.onDidChangeActiveTextEditor(editor => {
             if (editor === undefined) {
                 return;
             }
 
-            referToEnvVariables(editor.document);
+            recheckContextIfShowReferToEnvVariables(editor.document);
+        }),
+        vscode.workspace.onDidChangeTextDocument(async e => {
+            await debounce(
+                recheckContextIfShowReferToEnvVariables,
+                kDebounceDelay
+            )(e.document);
         })
     );
     vscode.workspace.textDocuments
         .filter(it => isTypeScriptFile(it))
         .forEach(document => {
-            referToEnvVariables(document);
+            recheckContextIfShowReferToEnvVariables(document);
         });
 }
 
-async function referToEnvVariables(document: vscode.TextDocument) {
+async function recheckContextIfShowReferToEnvVariables(
+    document: vscode.TextDocument
+) {
     if (!isTypeScriptFile(document)) {
         return;
     }

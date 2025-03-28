@@ -6,15 +6,15 @@ import { getWorkspaceFolderPath, setContext } from "@/utils/vscode";
 export let ifShowDebugProject: boolean;
 
 export function registerListeners() {
-    updateContextIfShowDebugProject();
+    recheckContextIfShowDebugProject();
     extensionCtx.subscriptions.push(
         vscode.workspace.onDidChangeWorkspaceFolders(e => {
-            updateContextIfShowDebugProject();
+            recheckContextIfShowDebugProject();
         })
     );
 }
 
-function updateContextIfShowDebugProject() {
+function recheckContextIfShowDebugProject() {
     const configItem = `${extensionName}.runEnhancement.ifShowDebugProject`;
 
     const workspaceFolderPath = getWorkspaceFolderPath();
