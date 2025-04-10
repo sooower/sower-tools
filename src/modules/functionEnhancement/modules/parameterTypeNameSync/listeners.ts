@@ -10,6 +10,8 @@ import {
 } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
+import { enableParameterTypeNameSync } from "./configs";
+
 export function registerOnDidSaveTextDocumentListener() {
     extensionCtx.subscriptions.push(
         vscode.workspace.onDidSaveTextDocument(async document => {
@@ -33,6 +35,10 @@ export function registerOnDidSaveTextDocumentListener() {
  * then the type name will be synced with the function name when the function is renamed.
  */
 async function syncFunctionParameterTypeName(document: vscode.TextDocument) {
+    if (!enableParameterTypeNameSync) {
+        return;
+    }
+
     const workspaceEdit = new vscode.WorkspaceEdit();
     const editor = CommonUtils.mandatory(vscode.window.activeTextEditor);
 

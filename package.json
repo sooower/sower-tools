@@ -1039,6 +1039,11 @@
                         "src/env.ts",
                         "src/index.ts"
                     ]
+                },
+                "sower-tools.functionEnhancement.parameterTypeNameSync.enable": {
+                    "description": "Whether to enable parameter type name sync. If true, the type name of the function parameter will be synced with the function name.",
+                    "type": "boolean",
+                    "default": true
                 }
             }
         }
