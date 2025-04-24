@@ -67,7 +67,7 @@ function createASTProject() {
     if (enableShowAddedASTProjectSourceFiles) {
         logger.trace("[AST] source files details:");
         sourceFilePaths.forEach((it, index) => {
-            logger.trace("[AST]  %d %s.", index + 1, it);
+            logger.trace("[AST] %d %s.", index + 1, it);
         });
     }
 }

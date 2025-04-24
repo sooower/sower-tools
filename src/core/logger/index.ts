@@ -1,5 +1,7 @@
 import { extensionCtx, extensionDisplayName, format, vscode } from "@/core";
-import { datetime } from "@utils/datetime";
+import { nowDatetime } from "@utils/datetime";
+
+import { convertColor, EColor } from "./color";
 
 export let logger: Logger;
 
@@ -34,7 +36,7 @@ class Logger {
     /**
      * Show trace level logs in the output channel, console (in dev mode).
      *
-     * **NOTICE:** The message is only logged if configured displaying `trace` log level
+     * **NOTICE:** The message is only logged if configured displaying `TRACE` log level
      * (open command palette and select "Developer: Set Log Level..." to configure).
      *
      * @param message - The message to log
@@ -45,14 +47,14 @@ class Logger {
 
         // The log level of `trace` will append additional stack trace in
         // console, use `debug` level to prevent.
-        console.debug(this.addTimestamp(ELevel.Trace, log));
+        console.debug(this.colorAndAddTimestamp(ELevel.Trace, log));
         this.channel.trace(log);
     }
 
     /**
      * Show debug level logs in the output channel, console (in dev mode).
      *
-     * **NOTICE:** The message is only logged if configured displaying `debug` log level or
+     * **NOTICE:** The message is only logged if configured displaying `DEBUG` log level or
      * lower log level (open command palette and select "Developer: Set Log Level..." to configure).
      *
      * @param message - The message to log
@@ -61,7 +63,7 @@ class Logger {
     debug(message: string, ...args: unknown[]) {
         const log = this.formatMessage(message, ...args);
 
-        console.debug(this.addTimestamp(ELevel.Debug, log));
+        console.debug(this.colorAndAddTimestamp(ELevel.Debug, log));
         this.channel.debug(log);
     }
 
@@ -76,7 +78,7 @@ class Logger {
     info(message: string, ...args: unknown[]) {
         const log = this.formatMessage(message, ...args);
 
-        console.info(this.addTimestamp(ELevel.Info, log));
+        console.info(this.colorAndAddTimestamp(ELevel.Info, log));
         this.channel.info(log);
 
         vscode.window.showInformationMessage(message);
@@ -93,7 +95,7 @@ class Logger {
     warn(message: string, ...args: unknown[]) {
         const log = this.formatMessage(message, ...args);
 
-        console.warn(this.addTimestamp(ELevel.Warn, log));
+        console.warn(this.colorAndAddTimestamp(ELevel.Warn, log));
         this.channel.warn(log);
 
         vscode.window
@@ -116,7 +118,7 @@ class Logger {
     error(message: string, ...args: unknown[]) {
         const log = this.formatMessage(message, ...args);
 
-        console.error(this.addTimestamp(ELevel.Error, log));
+        console.error(this.colorAndAddTimestamp(ELevel.Error, log));
         this.channel.error(log);
 
         vscode.window.showErrorMessage(message, kSeeDetails).then(selection => {
@@ -133,12 +135,37 @@ class Logger {
         );
     }
 
-    private addTimestamp(level: ELevel, message: string) {
+    private colorAndAddTimestamp(level: ELevel, message: string) {
         return format(
-            `[%s] [%s] %s`,
-            datetime().format("YYYY-MM-DD HH:mm:ss.SSS"),
+            `${mapLevelColor(level, `[%s] [%s]`)} %s`,
+            nowDatetime(),
             level,
             message
         );
+    }
+}
+
+/**
+ * Map log level to color, `error` is red, `warn` is yellow, `info` is green,
+ * `debug` is cyan, `trace` is blue.
+ *
+ * @param level - Log level
+ * @param msg - Message to convert
+ * @returns - Color string
+ */
+function mapLevelColor(level: ELevel, msg: string) {
+    switch (level) {
+        case ELevel.Error:
+            return convertColor(EColor.Red, msg);
+        case ELevel.Warn:
+            return convertColor(EColor.Yellow, msg);
+        case ELevel.Info:
+            return convertColor(EColor.Green, msg);
+        case ELevel.Debug:
+            return convertColor(EColor.Cyan, msg);
+        case ELevel.Trace:
+            return convertColor(EColor.Blue, msg);
+        default:
+            return msg;
     }
 }
