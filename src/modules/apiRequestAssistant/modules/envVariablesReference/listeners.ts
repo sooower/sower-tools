@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import { Node } from "ts-morph";
 
 import { extensionCtx, extensionName, logger, project, vscode } from "@/core";
@@ -10,7 +12,7 @@ import {
 } from "@/utils/vscode";
 import { CommonUtils } from "@utils/common";
 
-import { enableEnvDocumentReference } from "./configs";
+import { enableEnvDocumentReference, supportedProjectNames } from "./configs";
 
 const kDebounceDelay = 1000;
 
@@ -50,6 +52,16 @@ async function recheckContextIfShowReferToEnvVariables(
     }
 
     if (!enableEnvDocumentReference) {
+        return;
+    }
+
+    const workspaceFolderPath = getWorkspaceFolderPath();
+    if (workspaceFolderPath === undefined) {
+        return;
+    }
+
+    const projectName = path.basename(workspaceFolderPath);
+    if (!supportedProjectNames.includes(projectName)) {
         return;
     }
 
