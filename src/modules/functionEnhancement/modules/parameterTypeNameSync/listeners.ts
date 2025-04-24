@@ -54,30 +54,32 @@ async function syncFunctionParameterTypeName(document: vscode.TextDocument) {
                 return;
             }
 
-            const param = CommonUtils.mandatory(it.getParameters().at(0));
-            if (Node.isTypeLiteral(param.getTypeNode())) {
+            const firstParamTypeNode = CommonUtils.mandatory(
+                it.getParameters().at(0)?.getTypeNode()
+            );
+            if (Node.isTypeLiteral(firstParamTypeNode)) {
                 return;
             }
 
-            const paramTypeName = param.getType().getText();
+            const firstParamTypeName = firstParamTypeNode.getText();
             const expectedParamTypeName = format(
                 `T%sOptions`,
                 toUpperCamelCase(it.getName() ?? "")
             );
             if (
-                !paramTypeName.toLowerCase().includes("option") ||
-                paramTypeName === "TOptions" ||
-                paramTypeName === expectedParamTypeName
+                !firstParamTypeName.toLowerCase().includes("option") ||
+                firstParamTypeName === "TOptions" ||
+                firstParamTypeName === expectedParamTypeName
             ) {
                 return;
             }
 
             const typeDeclarationNode = it
                 .getSourceFile()
-                .getTypeAlias(paramTypeName);
+                .getTypeAlias(firstParamTypeName);
             CommonUtils.assert(
                 typeDeclarationNode !== undefined,
-                `Cannot find type declaration for ${paramTypeName} in current file.`
+                `Cannot find type declaration for ${firstParamTypeName} in current file.`
             );
 
             workspaceEdit.replace(
@@ -87,10 +89,7 @@ async function syncFunctionParameterTypeName(document: vscode.TextDocument) {
             );
             workspaceEdit.replace(
                 document.uri,
-                buildRangeByNode(
-                    document,
-                    CommonUtils.mandatory(param.getTypeNode())
-                ),
+                buildRangeByNode(document, firstParamTypeNode),
                 expectedParamTypeName
             );
         });
