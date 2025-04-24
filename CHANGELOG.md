@@ -5,6 +5,22 @@ All notable changes to "sower-tools" will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.23.0] - 2025-04-24
+
+### Fixed
+
+-   Skip listen env variables reference when opened project is not in supported projects.
+-   Fix type name error when refactor function parameter.
+
+### Added
+
+-   Add configuration for parameter type name synchronization.
+
+### Changed
+
+-   Implement debouncing on text document changes to optimize performance.
+-   Add ANSI color support for logging.
+
 ## [0.22.0] - 2025-03-28
 
 ### Added

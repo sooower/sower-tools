@@ -79,6 +79,7 @@
 -   Enhance project configuration with new settings for runbook generation.
 -   Introduce global and project-specific ignored insertion columns in package.json for better control over database model generation.
 -   Implement new command, code action providers, code lens providers to add or remove columns from insert and update options dynamically.
+-   Add configuration for parameter type name synchronization.
 
 ## Usage
 
